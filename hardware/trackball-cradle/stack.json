@@ -1,0 +1,62 @@
+{
+  "openscad": "OpenSCAD version 2026.10.11",
+  "variants": {
+    "25mm": {
+      "ball_d": 25.0,
+      "sensor_angle": 0.0,
+      "ball_centre_z": 10.55,
+      "ball_top_above_pcb_top": 23.05,
+      "ball_bottom_z": -1.95,
+      "bearing_contact_z": 3.38029,
+      "rim_z": 9.55,
+      "claw_top_z": 15.55,
+      "retainer_ball_play": 1.14773,
+      "lens_reference_plane_dist": 2.4,
+      "sensor_pcb_plane_dist": 18.3,
+      "lowest_plastic_z": -7.75,
+      "lowest_sensor_board_z": -11.6,
+      "depth_below_pcb_bottom": 10.0,
+      "housing_radial_extent_x": 13.0,
+      "cup_outer_d": 29.0,
+      "pcb_cutout_d": 30.0
+    },
+    "25mm-tilted": {
+      "ball_d": 25.0,
+      "sensor_angle": 60.0,
+      "ball_centre_z": 9.00128,
+      "ball_top_above_pcb_top": 21.5013,
+      "ball_bottom_z": -3.49872,
+      "bearing_contact_z": 1.83157,
+      "rim_z": 8.00128,
+      "claw_top_z": 14.0013,
+      "retainer_ball_play": 1.14773,
+      "lens_reference_plane_dist": 2.4,
+      "sensor_pcb_plane_dist": 18.3,
+      "lowest_plastic_z": -11.4071,
+      "lowest_sensor_board_z": -11.6,
+      "depth_below_pcb_bottom": 10.0,
+      "housing_radial_extent_x": 22.3483,
+      "cup_outer_d": 29.0,
+      "pcb_cutout_d": 30.0
+    },
+    "34mm": {
+      "ball_d": 34.0,
+      "sensor_angle": 0.0,
+      "ball_centre_z": 15.05,
+      "ball_top_above_pcb_top": 32.05,
+      "ball_bottom_z": -1.95,
+      "bearing_contact_z": 5.2992,
+      "rim_z": 14.05,
+      "claw_top_z": 20.05,
+      "retainer_ball_play": 1.64739,
+      "lens_reference_plane_dist": 2.4,
+      "sensor_pcb_plane_dist": 22.8,
+      "lowest_plastic_z": -7.75,
+      "lowest_sensor_board_z": -11.6,
+      "depth_below_pcb_bottom": 10.0,
+      "housing_radial_extent_x": 13.0,
+      "cup_outer_d": 38.0,
+      "pcb_cutout_d": 39.0
+    }
+  }
+}
