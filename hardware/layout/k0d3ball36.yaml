@@ -53,7 +53,7 @@ trackball:
   min_keycap_clearance: 1.0
 
 controller:                     # nice!nano v2 / SuperMini, Pro Micro pinout
-  center: { x: -58.0, y: 16.0 }
+  center: { x: -58.0, y: 14.0 }
   rotation: 0                   # USB connector towards the top (away from the user)
   size: { x: 18.0, y: 33.5 }
   usb_overhang: 1.5             # USB-C shell past the PCB edge
@@ -64,28 +64,29 @@ fpc:                            # sensor daughterboard connector (bottom side)
   center: { x: -4.0, y: 48.2 }
   rotation: 0                   # pads towards the top, cable exits towards the ball zone
 
-power_switch: { center: { x: -70.0, y: 36.5 }, rotation: 90 }   # MSK12C02, bottom side, actuator at the inner edge
-reset_button: { center: { x: -58.0, y: 36.5 }, rotation: 0 }    # EVQP7A, bottom side, below the controller
-battery_pads: { center: { x: -46.5, y: 36.5 }, rotation: 0 }    # 2 x 1.8 mm PTH, 2.0 mm pitch, B+ / B-
-battery_jst:  { center: { x: -58.0, y: 43.0 }, rotation: 180 }  # S2B-PH-SM4-TB, optional (6 mm tall)
+power_switch: { center: { x: -68.5, y: 30.0 }, rotation: 90 }   # MSK12C02, bottom side, actuator through the inner edge
+reset_button: { center: { x: -66.0, y: 38.0 }, rotation: 0 }    # EVQP7A, bottom side, inner corner below the power switch
+battery_pads: { center: { x: -48.0, y: 40.0 }, rotation: 0 }    # 2 x 1.7 mm PTH, 2.54 mm pitch, B+ / B-
+battery_jst:  { center: { x: -56.0, y: 42.0 }, rotation: 0 }    # S2B-PH-SM4-TB, optional (6 mm tall), bottom side
 jumpers:                        # 3-pad solder jumpers for the controller power rows
-  start: { x: -58.0, y: -5.0 }
+  start: { x: -58.0, y: -6.5 }
   pitch: 3.0
 
 test_pads:                      # spare controller pins broken out as 1.5 mm pads
-  start: { x: -47.0, y: 24.0 }
+  start: { x: -47.0, y: 5.0 }
   pitch: 2.54
 
-mounting_holes:                 # M2 through holes for the case (clearance 2.2 mm)
-  - { x: 27.0,  y: -3.2 }
-  - { x: -9.0,  y: -3.2 }
-  - { x: -45.0, y: -3.2 }
-  - { x: 45.0,  y: 44.0 }
-  - { x: -34.0, y: 56.0 }
-  - { x: -70.0, y: 50.0 }
+mounting_holes:                 # M2 through holes for the case (2.2 mm), in the gaps between switches
+  - { x: 27.0,  y: 10.8 }       # ring / pinky, top (outside the socket pad bands)
+  - { x: 27.0,  y: 44.5 }       # ring / pinky, bottom
+  - { x: -9.0,  y: 40.0 }       # middle / index, bottom
+  - { x: -27.0, y: 8.0 }        # index / inner, top
+  - { x: -32.0, y: 61.0 }       # between outer and middle thumb key
+  - { x: -67.0, y: 45.0 }       # controller block, bottom inner corner
 
 outline:
   margin: 0.5                   # PCB edge outside the keycap rectangles
+  socket_margin: 1.1            # extra width per side so the hot-swap socket pads (9.8 mm out) keep 0.3 mm to the edge
   corner_radius: 2.0
   controller_margin: 2.0
   ball_margin: 2.0

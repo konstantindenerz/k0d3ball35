@@ -9,7 +9,7 @@ If something here changes, the change must be propagated and a ticket filed in `
 | # | Requirement | Value |
 |---|-------------|-------|
 | R1 | Keys | 36 total, 18 per half: 3 rows x 5 columns + 3 thumb keys |
-| R2 | Switches | Kailh Choc V1 (PG1350), hot-swap sockets (CPG135001S30); footprint also solderable |
+| R2 | Switches | Kailh Choc V1 (PG1350) in hot-swap sockets (CPG135001S30); hot-swap only, like the Keyball |
 | R3 | Key pitch | 18.0 mm (x) x 17.0 mm (y) |
 | R4 | Column stagger | Keyball39 proportions scaled to 17 mm row pitch (see section 5) |
 | R5 | Thumb cluster | Keyball39 three-key arc, 0 / 10 / 20 degree rotation |
@@ -80,7 +80,7 @@ records whether that is pin 1 to 1 or mirrored.
 
 Sensor board: PMW3610DM-SUDU, LM18-LSI lens, VDD 1.8 V generated on the board from 3.3 V, VDDIO 3.3 V,
 100 nF plus 1 uF decoupling, no level shifting. Mounting holes 2x M2 at 20.0 mm spacing, outline 22 x 25 mm.
-Lens-to-ball-surface distance 2.4 to 2.9 mm (datasheet), target 2.6 mm.
+Lens-to-ball-surface distance 2.2 to 2.6 mm (datasheet: 2.4 mm typical), target 2.4 mm.
 
 ## 4. Power
 
