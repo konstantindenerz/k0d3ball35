@@ -27,3 +27,7 @@ The reference build and torabo-tsuki-lp tilt or side-mount the sensor to keep th
 ## Notes
 
 Option (b) lets the ball bottom sit almost on the case floor; the sensor sees the ball at an angle, which PixArt allows as long as the lens-to-surface distance holds at the optical axis.
+
+Sensor angle (from docs/08 section 6, folded in here): decide between straight-up mounting (simplest; the cradle
+default) and an angled mount once the cradle prototype exists. The tilted cradle variant was evaluated and only
+pays off beyond 60 degrees (see mech-ball-height-23mm).

@@ -2,7 +2,7 @@
 title: ZMK shield k0d3ball36 with trackball on the central half
 type: feature
 priority: P0
-status: in-progress
+status: done
 area: fw
 created: 2026-11-05
 ---
@@ -25,4 +25,4 @@ revision, GitHub Actions build.
 
 ## Notes
 
-None yet.
+2026-11-05: left, right and settings_reset build in Docker against the pinned ZMK commit; `scripts/check_pins.py` passes. Remaining items are tracked in fw-physical-layout-exact-coords, fw-battery-drain-measurement, fw-cursor-axis-verification, doc-zmk-yml-repo-url and fw-ball-motion-wake.

@@ -2,7 +2,7 @@
 title: Parametric 25 mm trackball cradle with ceramic ball seats
 type: feature
 priority: P0
-status: in-progress
+status: done
 area: mech
 created: 2026-11-05
 ---
@@ -26,3 +26,5 @@ ball diameter (25 mm default, 34 mm option).
 ## Notes
 
 Depends on hw-sensor-stack-height for the final sensor orientation.
+
+2026-11-05: cradle.scad renders 25 mm and 34 mm variants, retainer ring, tilted variant evaluated; stack heights in stack.json. Ball height follow-up in mech-ball-height-23mm.

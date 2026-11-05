@@ -40,7 +40,7 @@ Quantities marked "+n" include recommended spares. Sensor-board passives are 060
 | 36 (+10) | Diode | 1N4148W, SOD-123 | https://www.reichelt.de, Mouser DE | about 3 EUR per 100 | C81598 | One per key, cathode towards the row |
 | 2 | Power switch | MSK-12C02, SMD SPDT slide, 7 x 3 x 1.5 mm | https://kamami.pl/en/switches-and-buttons/584809-msk-12c02-2-position-smd-slide-switch-horizontal-5906623474981.html | about 0.60 EUR each | C431540 | Alps SSSS811101 is the premium alternative, different footprint, not used here |
 | 2 | Reset button | Panasonic EVQ-P7A01P, side actuated SMD tact, 3.5 x 2.9 mm | Mouser DE 667-EVQ-P7A01P | about 0.40 EUR each | C122222 | Alps SKRPACE010 (C139797) is the drop-in alternative |
-| 2 | Battery connector | JST S2B-PH-SM4-TB, PH 2.0 mm, 2 pin, SMD side entry | Mouser DE 306-S2B-PH-SM4-TB | about 0.50 EUR each | C295747 | Solder pads for bare leads are on the PCB as well |
+| 2 | Battery connector | JST S2B-PH-SM4-TB, PH 2.0 mm, 2 pin, SMD side entry | Mouser DE 306-S2B-PH-SM4-TB | about 0.50 EUR each | C295747 | Optional, 6 mm tall: default is bare leads soldered to the pads J2 |
 | 2 | Test pad set | printed on PCB | | | | No part to buy |
 
 ## 5. Batteries
@@ -64,7 +64,7 @@ Both halves can take either cell; the ball half needs the larger one because the
 | 2 | Capacitor | 1 uF 0603 X7R 10 V | LCSC | | C15849 | Input and output of the LDO |
 | 3 | Capacitor | 100 nF 0603 X7R 16 V | LCSC | | C14663 | VDD, VDDIO, sensor pin decoupling |
 | 1 | Resistor | 10 k 0603 | LCSC | | C25804 | NCS pull-up |
-| 2 | FPC connector | Hirose FH19SC-6S-0.5SH(05), 6 pin, 0.5 mm, bottom contact, flip lock | Mouser DE 798-FH19SC6S05SH05 | about 1 EUR each | C2764371 (compatible) | One on the main PCB, one on the sensor PCB |
+| 2 | FPC connector | Hirose FH12-6S-0.5SH(55), 6 pin, 0.5 mm, bottom contact, ZIF slider | Mouser DE 798-FH12-6S-0.5SH55 | about 1 EUR each | LCSC pin-compatible equivalents OK | One on the main PCB, one on the sensor PCB, same footprint |
 | 1 (+1) | FFC cable | 6 conductor, 0.5 mm pitch, 40 mm, same-side contacts (type A) | AliExpress, Mouser DE (Molex 15166 series) | about 0.50 EUR | | 30 to 50 mm works |
 
 ## 7. Trackball and bearings

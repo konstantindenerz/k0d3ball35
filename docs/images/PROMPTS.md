@@ -293,3 +293,88 @@ Photo of a multimeter probe touching a diode pad on an unpopulated keyboard PCB,
 a diode-test reading, a printed checklist next to it with ticked boxes, a USB meter inline on a
 cable to a controller, workshop light.
 ```
+
+## img-build-identify-halves
+
+Aspect 3:2. Which face is up for which half.
+
+```prompt
+Top-down photo of two bare green keyboard PCBs side by side on a cutting mat, mirror images of each
+other, each with a small silkscreen text below the controller outline reading "RIGHT half - this
+side up" on the left board and "LEFT half - this side up" on the right board, a strip of masking
+tape labelled "R bottom" visible on the edge of the first board, even light, no components.
+```
+
+## img-build-step-jumpers
+
+Aspect 3:2. Solder jumpers bridged.
+
+```prompt
+Extreme macro photo of three tiny three-pad solder jumpers labelled JP1, JP2, JP3 on a green PCB
+above a rectangular controller outline, each jumper with a shiny solder bridge joining the centre
+pad to the right-hand pad while the left-hand pad stays bare, flux residue, shallow depth of field.
+```
+
+## img-build-step-power-switch
+
+Aspect 3:2. Bottom-face parts near the controller.
+
+```prompt
+Macro photo of the underside corner of a keyboard PCB: a small black slide switch with its
+actuator pointing to the board edge next to an "ON" silkscreen label, a tiny 3.5 mm tactile button
+below it, and a white 6-pin flat flex connector with its flip lock open further along the board,
+all soldered, tweezers at the edge of the frame, warm workshop light.
+```
+
+## img-build-step-battery
+
+Aspect 3:2. Battery wired to the pads.
+
+```prompt
+Macro photo of a thin 110 mAh lithium polymer pouch cell with red and black leads soldered to two
+small plated pads on a keyboard PCB, the red lead on a square pad marked "+", a multimeter probe
+touching a nearby controller hole, a slide switch in the off position, shallow depth of field.
+```
+
+## img-build-step-smoke-test
+
+Aspect 3:2. Matrix test before switches are installed.
+
+```prompt
+Photo of a keyboard PCB without switches connected to a laptop by a USB-C cable, a hand holding a
+short piece of wire across the two contacts of one hot-swap socket, the laptop screen showing a text
+editor with a single typed character, oak desk, daylight.
+```
+
+## img-build-step-sensor-lens
+
+Aspect 3:2. Sensor and lens on the daughterboard.
+
+```prompt
+Macro photo of a small green 26 by 25 millimetre PCB held in a helping-hands clamp, a black
+16-pin optical sensor pushed through a rectangular cutout from the back, its leads freshly soldered
+on the front, a clear plastic LM18 style lens with two guide posts held in tweezers about to be
+clipped onto the sensor body, bright even light.
+```
+
+## img-build-step-lens-gauge
+
+Aspect 3:2. Checking the lens distance.
+
+```prompt
+Macro photo looking into a beige 3D printed trackball cup without the ball, a thin steel feeler
+gauge laid flat across the 9 millimetre hole at the bottom of the cup over the lens aperture,
+three tiny white ceramic bearings visible around the cup wall, a finger holding the gauge, soft
+light.
+```
+
+## img-build-step-switches
+
+Aspect 3:2. Installing switches and keycaps.
+
+```prompt
+Photo of a low-profile split keyboard half with most Choc switches installed in their hot-swap
+sockets, a thumb pressing the last switch into a rotated thumb position while a finger supports the
+PCB from below, a pile of white and light-grey low-profile keycaps and two orange ones next to it,
+oak desk, three-quarter view.
+```

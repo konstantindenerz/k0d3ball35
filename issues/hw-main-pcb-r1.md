@@ -26,4 +26,4 @@ cutout with cradle holes, M2 case mounting holes. Geometry comes from `hardware/
 
 ## Notes
 
-None yet.
+2026-11-05: schematic generated, ERC clean, board autorouted with freerouting; DRC with schematic parity still pending. r1 is hot-swap only (see hw-hotswap-only).

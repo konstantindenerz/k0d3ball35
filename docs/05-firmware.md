@@ -171,13 +171,33 @@ level) and shown in ZMK Studio.
 | Studio cannot connect | right half must be the USB-connected half and built with the `studio-rpc-usb-uart` snippet; press the unlock key |
 | short battery life on the right half | disable `force-awake`, lower the sleep timeout, check that the slide switch really cuts the battery (not just the controller enable) |
 
-## 9. Moving the ball to the left half
+## 9. Why the halves use different controller pins
 
-The PCB is reversible, so a left-ball build is a firmware change:
+The PCB is reversible and the controller sits in a plain 2x12 through-hole footprint. The left
+half is the same board flipped over, which swaps the two columns of controller pins. The copper
+traces are identical, so a matrix line that reaches D4 on the right half reaches D19 on the left
+half. The firmware compensates with a pin table per side; nothing changes on the PCB.
+
+| Line | Right half (central) | Left half |
+|------|---------------------|-----------|
+| COL0..COL4 (pinky to inner) | D4 D5 D6 D7 D8 | D19 D18 D15 D14 D16 |
+| ROW0..ROW3 (top to thumbs) | D21 D20 D19 D18 | D2 D3 D4 D5 |
+| TB_SCLK / TB_SDIO / TB_NCS / TB_MOT | D15 / D16 / D10 / D14 | D6 / D8 / D9 / D7 |
+
+D0 is tied to GND on both halves (part of the reversibility jumper scheme); the D1/RAW, GND/RST and
+GND/VCC rows are selected by solder jumpers, see the build guide. The sensor lines exist on both
+halves, but the sensor board is only populated on the right in r1.
+
+The nRF52840 port pins of the left-ball sensor set are P1.00 (SCLK), P1.04 (SDIO), P1.06 (NCS)
+and P0.11 (MOT). Unlike the right half these are not the NFC pins, so the `&uicr` block is not needed there.
+
+## 10. Moving the ball to the left half
+
+Because of the per-side pin tables a left-ball build is a firmware change:
 
 1. Populate the sensor board and cradle on the left half.
-2. In `k0d3ball36_left.overlay`, copy the `&pinctrl`, `&spi1` (with the `trackball` node) and
-   `&uicr` blocks from the right overlay and uncomment the `&trackball_split { device = <&trackball>; };` block.
+2. In `k0d3ball36_left.overlay`, uncomment the prepared left-ball block (`&pinctrl`, `&spi1` with
+   the `trackball` node on the left pin set, and `&trackball_split { status = "okay"; device = <&trackball>; };`).
 3. In `k0d3ball36_right.overlay`, remove `trackball_listener` and enable the shared
    `trackball_split_listener` and the `trackball_split` node (`status = "okay";` on both). Move the input processor settings to that listener.
 4. Add `CONFIG_INPUT_PMW3610=y`, `CONFIG_SPI=y` and `CONFIG_INPUT=y` to `k0d3ball36_left.conf`.
@@ -187,8 +207,9 @@ The peripheral forwards motion events to the central through ZMK's `zmk,input-sp
 processors can run on either side. The same mechanism is the basis for a future dongle build in which
 both halves are peripherals.
 
-## 10. Checks
+## 11. Checks
 
-`firmware/zmk-config/scripts/check_pins.py` compares the devicetree pin usage against
+`firmware/zmk-config/scripts/check_pins.py` compares the devicetree pin usage of both halves
+(including the commented left-ball set) against the right-half and left-half tables in
 `docs/01-design-spec.md` and is run by `tests/test_firmware_pins.py`. The firmware itself is
 validated by building it (CI, or the Docker commands above).

@@ -30,6 +30,8 @@ Out of scope for r1: RGB, OLED/nice!view, rotary encoder, dongle (prepared in fi
 Controller pins are named by their Pro Micro position (ZMK `&pro_micro N`). nRF52840 port pins
 are given for the nice!nano v2; the SuperMini is pin compatible.
 
+**Right half** (trackball half, split central):
+
 | Signal | Pro Micro | nRF52840 | Direction | Note |
 |--------|-----------|----------|-----------|------|
 | COL0 (pinky) | D4 | P0.22 | out | matrix column, outermost |
@@ -55,6 +57,30 @@ are given for the nice!nano v2; the SuperMini is pin compatible.
 P0.09 and P0.10 are the NFC pins; the ZMK nice!nano board definition already configures them as GPIO.
 The same mapping is used by the existing community Keyball39 ZMK configs, so their tuning carries over.
 
+**Left half** (same PCB flipped over): the controller footprint is a plain 2x12 through-hole pattern, so
+flipping the board swaps the two Pro Micro pin columns. The copper is identical, the controller pins on each
+matrix line are not:
+
+| Signal | Pro Micro | nRF52840 | Direction | Note |
+|--------|-----------|----------|-----------|------|
+| COL0 (pinky) | D19 | P0.02 | out | |
+| COL1 (ring) | D18 | P1.15 | out | |
+| COL2 (middle) | D15 | P1.13 | out | |
+| COL3 (index) | D14 | P1.11 | out | |
+| COL4 (inner) | D16 | P0.10 | out | |
+| ROW0 (top) | D2 | P0.17 | in, pull-down | |
+| ROW1 (home) | D3 | P0.20 | in, pull-down | |
+| ROW2 (bottom) | D4 | P0.22 | in, pull-down | |
+| ROW3 (thumbs) | D5 | P0.24 | in, pull-down | |
+| TB_SCLK | D6 | P1.00 | out | sensor not populated on the left in r1 |
+| TB_SDIO | D8 | P1.04 | bidir | |
+| TB_NCS | D9 | P1.06 | out | |
+| TB_MOT | D7 | P0.11 | in, pull-up | |
+| spare | D21, D20, D10 | P0.31, P0.29, P0.09 | | the test pads carry these pins on the left half |
+
+D0 (P0.08) is tied to GND on both halves (its hole pairs with a GND pin on the other column). The RAW, RST and
+VCC rows are selected with the solder jumpers described in section 4. Firmware keeps one overlay per half.
+
 Matrix: 4 rows x 5 columns, diode direction COL2ROW (diode cathode towards the row line).
 Row 3 holds the three thumb keys in columns 2, 3 and 4 (middle, index, inner).
 Cells (3,0) and (3,1) are unused.
@@ -72,15 +98,31 @@ Main PCB connector pin order (fixed):
 | 5 | TB_NCS |
 | 6 | TB_MOT |
 
-Connector family: 0.5 mm pitch, 6 contacts, bottom contact, flip lock (Hirose FH19SC-6S-0.5SH or
-compatible, e.g. the many LCSC equivalents). Cable: 0.5 mm pitch, 6 conductor, same-side contacts
+Connector family: Hirose FH12-6S-0.5SH (0.5 mm pitch, 6 contacts, bottom contact, ZIF slider) or a
+pin-compatible LCSC equivalent; the same footprint is used on both boards. Cable: 0.5 mm pitch, 6 conductor, same-side contacts
 (type A), 30 to 50 mm long. The sensor board's connector pin order is chosen so that this cable
 works when both connectors sit on the top side of their boards; the sensor PCB documentation
 records whether that is pin 1 to 1 or mirrored.
 
-Sensor board: PMW3610DM-SUDU, LM18-LSI lens, VDD 1.8 V generated on the board from 3.3 V, VDDIO 3.3 V,
-100 nF plus 1 uF decoupling, no level shifting. Mounting holes 2x M2 at 20.0 mm spacing, outline 22 x 25 mm.
-Lens-to-ball-surface distance 2.2 to 2.6 mm (datasheet: 2.4 mm typical), target 2.4 mm.
+Sensor board (`hardware/sensor-pcb/`): PMW3610DM-SUDU, LM18-LSI lens, VDD 1.8 V generated on the board from
+3.3 V, VDDIO 3.3 V, 100 nF plus 1 uF decoupling, no level shifting. Outline 26 x 25 mm (17 mm sensor body cutout
+plus a routing channel on each side), two M2 holes 20 mm apart on the vertical 25 mm axis with the optical centre
+exactly between them at the board centre; the lens runs along the 26 mm side. Component side is the top (FPC
+connector, passives); the back carries the "BALL SIDE" silkscreen, the sensor body (protrudes 0.7 mm) and the lens.
+
+Sensor-board connector pin order is MIRRORED relative to the main board: 1 TB_MOT, 2 TB_NCS, 3 TB_SDIO, 4 TB_SCLK,
+5 GND, 6 VCC. Both FH12-6S connectors are bottom contact on the component sides of their boards and a type A
+same-side FFC reverses the order between them. R3 (1 k in series with MOTION) and R2 (NCS pull-up) make a
+wrongly inserted cable non-destructive.
+
+Optical stack (datasheet lens-to-surface 2.2 to 2.6 mm, 2.4 mm typical):
+
+| From the ball surface to | Distance |
+|--------------------------|----------|
+| lens flange | 2.40 mm |
+| PCB face on the lens side | 5.80 mm |
+| PCB face on the component side | 7.40 mm |
+| top of the tallest component (FPC connector) | 9.05 mm |
 
 ## 4. Power
 
@@ -89,9 +131,21 @@ Lens-to-ball-surface distance 2.2 to 2.6 mm (datasheet: 2.4 mm typical), target 
 | plain | 301230, 110 mAh, protected | under the socketed controller | weeks |
 | trackball (central) | 702025, 300 mAh, protected | case pocket next to controller | 3 to 6 weeks mixed use |
 
-Both halves have the same PCB: battery pads (JST-PH 2.0 SMD, S2B-PH-SM4-TB) plus solder pads for bare
-leads, MSK-12C02 slide switch in the B+ line, reset button on RST, controller on 1.27 mm mill-max or
+Both halves have the same PCB: solder pads J2 for bare battery leads (2.54 mm pitch, B+ is the square pad)
+as the default, an optional JST-PH 2.0 connector J3 (S2B-PH-SM4-TB, 6 mm tall, only if the case allows it),
+MSK-12C02 slide switch PS1 in the B+ line, reset button RB1 on RST, controller on 1.27 mm mill-max or
 "conthrough" sockets so that a 3.3 mm cell fits underneath.
+
+Controller power rows on a flipped board: the first four Pro Micro rows pair D1/RAW, D0/GND, GND/RST and
+GND/VCC. Three 3-pad solder jumpers next to the controller select the right hole per half:
+
+| Jumper | Net on pad 2 | Right half | Left half |
+|--------|--------------|------------|-----------|
+| JP1 | RAW (battery via switch) | bridge 2-3 | bridge 1-2 |
+| JP2 | RST (reset button) | bridge 2-3 | bridge 1-2 |
+| JP3 | VCC (3.3 V to the sensor) | bridge 2-3 | bridge 1-2 |
+
+The D0/GND row needs no jumper: both holes are tied to GND, which sacrifices D0 on both halves.
 Sensor supply is the controller's VCC (3.3 V, up to 500 mA available); the PMW3610 draws 0.6 mA when
 tracking and 36 uA in rest.
 
@@ -111,7 +165,7 @@ Column stagger (y offset of a column relative to the middle column; Keyball39 va
 | index | 3 | -18 | +2.23 |
 | inner | 4 | -36 | +4.46 |
 
-Thumb arc (Keyball39 positions scaled by 17 / 19.05, pitch 19.5 mm along the arc, rotations kept):
+Thumb arc (Keyball39 positions scaled by 18 / 19.05 in x and 17 / 19.05 in y, 20.4 mm between neighbouring thumb centres, rotations kept):
 
 | Key | Matrix cell | approx. x | approx. y | rotation |
 |-----|-------------|-----------|-----------|----------|
@@ -124,11 +178,28 @@ Exact values come out of the layout generator and are tabulated in `docs/02-layo
 Ball zone: centre near (+12, +64), i.e. below the middle/ring columns, outboard of the outer thumb.
 PCB cutout diameter 30 mm for the cradle, three M2 holes on a 36 mm circle for the cradle flange.
 The cutout and holes exist on both halves (reversible PCB); the left half leaves them unused.
-Minimum clearance between the cradle outline (diameter 34 mm) and any keycap: 1.0 mm.
+Minimum clearance between the cradle outline (diameter 34 mm) and any keycap: 1.0 mm. The PCB outline
+ring around the ball zone is cradle radius 17 mm plus a 3.5 mm margin, so the three flange holes on the 36 mm
+circle keep 0.3 mm of material to the edge.
 
-Controller: at the inner edge, USB connector facing the inner edge, component side up, long axis
+Controller: at the inner edge, USB connector towards the top edge, component side up, long axis
 parallel to the columns. FPC connector between controller and ball zone.
-Mounting holes: 5x M2 (2.2 mm) per half for the later case.
+
+Mounting holes: six M2 (2.2 mm) non-plated holes per half for the later case, placed in the gaps between
+switch bodies and outside the hot-swap socket pad bands (from `hardware/layout/k0d3ball36.yaml`):
+
+| Hole | x | y | Location |
+|------|---|---|----------|
+| H1 | +27.0 | +10.8 | ring / pinky, top |
+| H2 | +27.0 | +44.5 | ring / pinky, bottom |
+| H3 | -9.0 | +40.0 | middle / index, bottom |
+| H4 | -27.0 | +8.0 | index / inner, top |
+| H5 | -32.0 | +61.0 | between outer and middle thumb key |
+| H6 | -67.0 | +45.0 | controller block, bottom inner corner |
+
+Plus the three cradle flange holes HB1..HB3 on the 36 mm circle. Twelve GND stitching vias tie the two
+ground pours together, and a 0.45 mm wide track/via keep-out ring runs along the board edge and the cutout
+so the autorouter keeps the 0.3 mm copper-to-edge clearance.
 
 ## 6. Firmware contract
 
