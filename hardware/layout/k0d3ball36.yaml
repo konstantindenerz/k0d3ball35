@@ -1,0 +1,95 @@
+# k0d3ball36 layout - single source of truth for the key geometry.
+# SPDX-License-Identifier: CERN-OHL-P-2.0
+#
+# Coordinates describe the RIGHT half in millimetres. x grows outward (towards the
+# pinky), y grows downward (towards the user). The origin is the centre of the
+# middle-column top key. The left half is the mirror image (x -> -x); the PCB is
+# reversible, so the same board is flipped for the left half.
+#
+# The column stagger and the thumb arc are the Keyball39 proportions (measured from
+# the published Keyball39 gerbers: 19.05 mm pitch, stagger 11.70 / 4.70 / 0 / 2.50 /
+# 5.00 mm, thumb keys at 0 / 10 / 20 degrees) scaled to the Choc 18 x 17 mm pitch.
+
+name: k0d3ball36
+revision: r1
+units: mm
+
+pitch:
+  x: 18.0
+  y: 17.0
+
+keycap:            # Choc 1u cap footprint used for clearance checks and outlines
+  width: 17.5
+  height: 16.5
+
+switch_body: 13.8  # Choc V1 housing, square
+
+# Finger columns, outer to inner. "stagger" is the y offset of row 0 relative to the
+# middle column (positive = lower). Values are Keyball39 stagger * 17 / 19.05.
+columns:
+  - { name: pinky,  col: 0, x: 36.0,  stagger: 10.44 }
+  - { name: ring,   col: 1, x: 18.0,  stagger: 4.19 }
+  - { name: middle, col: 2, x: 0.0,   stagger: 0.0 }
+  - { name: index,  col: 3, x: -18.0, stagger: 2.23 }
+  - { name: inner,  col: 4, x: -36.0, stagger: 4.46 }
+
+rows: 3            # finger rows 0..2; row 3 is the thumb row
+
+# Thumb keys. Offsets are relative to the centre of the inner column's bottom key
+# (row 2). Keyball39 offsets (+15.05/+23.75, -6.50/+25.55, -27.42/+31.07 mm) scaled
+# by 18/19.05 in x and 17/19.05 in y. Rotation is KiCad convention (positive = CCW).
+thumbs:
+  - { name: thumb_outer,  row: 3, col: 2, dx: 14.22,  dy: 21.19, rotation: 0 }
+  - { name: thumb_middle, row: 3, col: 3, dx: -6.14,  dy: 22.80, rotation: 10 }
+  - { name: thumb_inner,  row: 3, col: 4, dx: -25.91, dy: 27.73, rotation: 20 }
+
+trackball:
+  ball_diameter: 25.0
+  center: { x: 12.0, y: 65.0 }
+  pcb_cutout_diameter: 30.0     # cradle passes through the main PCB
+  cradle_diameter: 34.0         # outer diameter of the cradle flange (clearance check)
+  flange_hole_circle: 36.0      # 3x M2 on this circle, first hole at angle 90 deg (towards the user)
+  flange_hole_angles: [90, 210, 330]
+  min_keycap_clearance: 1.0
+
+controller:                     # nice!nano v2 / SuperMini, Pro Micro pinout
+  center: { x: -58.0, y: 16.0 }
+  rotation: 0                   # USB connector towards the top (away from the user)
+  size: { x: 18.0, y: 33.5 }
+  usb_overhang: 1.5             # USB-C shell past the PCB edge
+  pin_pitch: 2.54
+  row_spacing: 15.24            # 2 x 7.62
+
+fpc:                            # sensor daughterboard connector (bottom side)
+  center: { x: -4.0, y: 48.2 }
+  rotation: 0                   # pads towards the top, cable exits towards the ball zone
+
+power_switch: { center: { x: -70.0, y: 36.5 }, rotation: 90 }   # MSK12C02, bottom side, actuator at the inner edge
+reset_button: { center: { x: -58.0, y: 36.5 }, rotation: 0 }    # EVQP7A, bottom side, below the controller
+battery_pads: { center: { x: -46.5, y: 36.5 }, rotation: 0 }    # 2 x 1.8 mm PTH, 2.0 mm pitch, B+ / B-
+battery_jst:  { center: { x: -58.0, y: 43.0 }, rotation: 180 }  # S2B-PH-SM4-TB, optional (6 mm tall)
+jumpers:                        # 3-pad solder jumpers for the controller power rows
+  start: { x: -58.0, y: -5.0 }
+  pitch: 3.0
+
+test_pads:                      # spare controller pins broken out as 1.5 mm pads
+  start: { x: -47.0, y: 24.0 }
+  pitch: 2.54
+
+mounting_holes:                 # M2 through holes for the case (clearance 2.2 mm)
+  - { x: 27.0,  y: -3.2 }
+  - { x: -9.0,  y: -3.2 }
+  - { x: -45.0, y: -3.2 }
+  - { x: 45.0,  y: 44.0 }
+  - { x: -34.0, y: 56.0 }
+  - { x: -70.0, y: 50.0 }
+
+outline:
+  margin: 0.5                   # PCB edge outside the keycap rectangles
+  corner_radius: 2.0
+  controller_margin: 2.0
+  ball_margin: 2.0
+
+silkscreen:
+  title: k0d3ball36
+  revision_text: r1

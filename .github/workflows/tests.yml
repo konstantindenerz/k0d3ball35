@@ -1,0 +1,20 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install dependencies
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python pytest pyyaml kiutils numpy
+      - name: Ticket index is current
+        run: .venv/bin/python scripts/issues.py --diff
+      - name: Run tests (KiCad gates skip here, see hardware.yml)
+        run: .venv/bin/python -m pytest -q -m "not kicad"

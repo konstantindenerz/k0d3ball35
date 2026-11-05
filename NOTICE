@@ -1,0 +1,51 @@
+k0d3ball36 - third-party notices and credits
+
+This project is licensed under the MIT License (firmware, scripts, tests, documentation; see LICENSE)
+and the CERN Open Hardware Licence Version 2 - Permissive (hardware design files under hardware/;
+see LICENSE-HARDWARE).
+
+The following projects inspired or are used by k0d3ball36. None of their files are redistributed
+in this repository unless stated.
+
+Keyball (Yowkees)
+  https://github.com/Yowkees/keyball - GPL-3.0 (repository), GPL-2.0-or-later (firmware)
+  Inspiration for the hand geometry and the build guide structure. The column stagger ratios and
+  thumb arc angles were measured from the published gerber files and re-expressed as parameters.
+  No design files, footprints, symbols, copper or firmware code from Keyball are included.
+  "Keyball" is the name of Yowkees' product line; k0d3ball36 is an independent design.
+
+torabo-tsuki-lp (sekigon-gonnoc)
+  https://github.com/sekigon-gonnoc/torabo-tsuki-lp - MIT
+  Reference for low-profile 25 mm trackball mechanics and FPC-connected sensor modules.
+
+kiswitch (formerly perigoso/keyswitch-kicad-library)
+  https://github.com/kiswitch/kiswitch - MIT (scripts), CC-BY-SA 4.0 (library data)
+  Kailh Choc V1 switch and hot-swap socket footprints, included in hardware/lib.
+
+marbastlib (ebastler, MarvFPV)
+  https://github.com/ebastler/marbastlib - CERN-OHL-P-2.0
+  Controller, connector and battery footprints, included in hardware/lib.
+
+pmw3610-pcb (bullwinkle3000)
+  https://github.com/bullwinkle3000/pmw3610-pcb - CERN-OHL-P-2.0
+  Reference circuit for the PMW3610 sensor board.
+
+ZMK Firmware
+  https://github.com/zmkfirmware/zmk - MIT
+  Firmware framework used by firmware/zmk-config.
+
+Zephyr Project
+  https://github.com/zephyrproject-rtos/zephyr - Apache-2.0
+  RTOS underlying ZMK, provides the pixart,pmw3610 input driver.
+
+roBa (kumamuk-git)
+  https://github.com/kumamuk-git/roBa - GPL-3.0
+  Studied for its PMW3610 breakout and power design. No files included.
+
+Kivipallur (dr3san)
+  https://github.com/dr3san/Kivipallur - GPL-3.0
+  Studied for its 25 mm ball and ceramic bearing choices. No files included.
+
+PixArt PMW3610DM-SUDU datasheet
+  https://www.pixart.com/products-detail/21/PMW3610DM-SUDU
+  Electrical and optical parameters of the sensor.

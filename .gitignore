@@ -1,0 +1,32 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Build outputs
+build/
+*.uf2
+*.hex
+
+# KiCad
+*-backups/
+*.kicad_prl
+fp-info-cache
+*-bak
+*.bak
+_autosave-*
+*.lck
+~*.lck
+
+# Ergogen: regenerate with `make layout`; only points and DXF outlines are kept
+hardware/layout/output/*
+!hardware/layout/output/points/
+!hardware/layout/output/outlines/
+hardware/layout/output/outlines/*
+!hardware/layout/output/outlines/*.dxf
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

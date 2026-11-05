@@ -1,0 +1,65 @@
+name: hardware
+
+on:
+  push:
+    paths:
+      - "hardware/**"
+      - "scripts/**"
+      - "tests/test_kicad_gates.py"
+      - ".github/workflows/hardware.yml"
+      - "Makefile"
+  pull_request:
+    paths:
+      - "hardware/**"
+      - "scripts/**"
+  workflow_dispatch:
+
+env:
+  KICAD_CLI: kicad-cli
+
+jobs:
+  kicad-gates:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/kicad/kicad:10.0
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - name: KiCad version
+        run: kicad-cli version
+      - name: ERC
+        run: make erc KICAD_CLI=kicad-cli
+      - name: DRC with schematic parity
+        run: make drc KICAD_CLI=kicad-cli
+      - name: Export gerbers, drill, STEP, renders
+        run: |
+          if [ -x scripts/export.sh ]; then make gerbers KICAD_CLI=kicad-cli; else echo "scripts/export.sh not present yet"; fi
+      - name: Upload ERC/DRC reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kicad-reports
+          path: build/*.json
+          if-no-files-found: ignore
+      - name: Upload gerbers
+        uses: actions/upload-artifact@v4
+        with:
+          name: gerbers
+          path: |
+            hardware/main-pcb/gerbers/**
+            hardware/sensor-pcb/gerbers/**
+          if-no-files-found: ignore
+
+  kicad-pytest:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/kicad/kicad:10.0
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python dependencies
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -q pytest pyyaml kiutils numpy
+      - name: KiCad gate tests
+        run: .venv/bin/python -m pytest -q -m kicad

@@ -1,0 +1,124 @@
+# SPDX-License-Identifier: MIT
+"""Documentation hygiene: links resolve, planned docs exist or are ticketed, English only,
+no tool attribution."""
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+import pytest
+
+import issues
+
+LINK_RE = re.compile(r"(?<!!)\[[^\]]*\]\(([^)\s]+)\)")
+SPEC_DOC_RE = re.compile(r"`docs/(\d\d-[a-z0-9-]+\.md)`")
+TEXT_SUFFIXES = {".md", ".py", ".sh", ".yml", ".yaml", ".toml", ".txt", ".scad", ".conf", ".keymap", ".overlay", ".dtsi", ".cfg", ".mk", ".json"}
+FORBIDDEN_WORDS = ("Claude", "Anthropic", "AI-generated", "AI generated")
+GERMAN_WORDS = ("und", "nicht", "oder", "für", "ist", "auch", "wird", "werden", "eine", "einen", "das", "die", "der")
+GERMAN_RE = re.compile(r"(?<![\w-])(?:" + "|".join(GERMAN_WORDS) + r")(?![\w-])")
+PROMPTS_FILE = Path("docs/images/PROMPTS.md")
+
+
+def _text_files(files: list[Path]) -> list[Path]:
+    return [p for p in files if p.suffix in TEXT_SUFFIXES or p.name in ("Makefile", "LICENSE", "LICENSE-HARDWARE")]
+
+
+def _markdown_files(files: list[Path]) -> list[Path]:
+    return [p for p in files if p.suffix == ".md"]
+
+
+def test_markdown_links_resolve(repo_root: Path, tracked_files: list[Path]):
+    missing = []
+    for md in _markdown_files(tracked_files):
+        for target in LINK_RE.findall(md.read_text(encoding="utf-8")):
+            if target.startswith(("http://", "https://", "mailto:", "#")):
+                continue
+            target = target.split("#", 1)[0]
+            if not target:
+                continue
+            resolved = (md.parent / target).resolve()
+            if resolved.exists():
+                continue
+            if _is_planned_doc(repo_root, resolved):
+                continue  # covered by test_planned_docs_exist_or_are_ticketed
+            missing.append(f"{md.relative_to(repo_root)} -> {target}")
+    assert not missing, "broken links:\n" + "\n".join(missing)
+
+
+def _is_planned_doc(repo_root: Path, resolved: Path) -> bool:
+    """A link to docs/NN-name.md that is not written yet but is ticketed in issues/."""
+    try:
+        rel = resolved.relative_to(repo_root).as_posix()
+    except ValueError:
+        return False
+    if not re.fullmatch(r"docs/\d\d-[a-z0-9-]+\.md", rel):
+        return False
+    tickets, _ = issues.load_tickets()
+    return any(rel in t.path.read_text(encoding="utf-8") for t in tickets)
+
+
+def _prompt_ids(repo_root: Path) -> set[str]:
+    prompts = repo_root / PROMPTS_FILE
+    if not prompts.exists():
+        return set()
+    return set(re.findall(r"^##+\s+(img-[a-z0-9-]+)\s*$", prompts.read_text(encoding="utf-8"), re.M))
+
+
+def test_planned_docs_exist_or_are_ticketed(repo_root: Path):
+    spec = repo_root / "docs" / "01-design-spec.md"
+    readme = repo_root / "README.md"
+    planned = set(SPEC_DOC_RE.findall(spec.read_text(encoding="utf-8")))
+    planned |= set(re.findall(r"docs/(\d\d-[a-z0-9-]+\.md)", readme.read_text(encoding="utf-8")))
+    tickets, _ = issues.load_tickets()
+    ticket_text = "\n".join(t.path.read_text(encoding="utf-8") for t in tickets)
+    unaccounted = sorted(
+        name for name in planned
+        if not (repo_root / "docs" / name).exists() and f"docs/{name}" not in ticket_text
+    )
+    assert not unaccounted, f"planned docs neither present nor ticketed: {unaccounted}"
+
+
+def test_no_tool_attribution(repo_root: Path, tracked_files: list[Path]):
+    hits = []
+    for path in _text_files(tracked_files):
+        if path == Path(__file__).resolve():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        for word in FORBIDDEN_WORDS:
+            if word in text:
+                hits.append(f"{path.relative_to(repo_root)}: '{word}'")
+    assert not hits, "\n".join(hits)
+
+
+@pytest.mark.parametrize("marker_count_limit", [2])
+def test_docs_are_english(repo_root: Path, tracked_files: list[Path], marker_count_limit: int):
+    """Heuristic: a markdown file with several lowercase German function words is flagged.
+
+    The match is case sensitive on purpose: 'MIT' (the license) must not count as 'mit'.
+    """
+    flagged = []
+    for md in _markdown_files(tracked_files):
+        text = md.read_text(encoding="utf-8")
+        count = len(GERMAN_RE.findall(text))
+        if count > marker_count_limit:
+            flagged.append(f"{md.relative_to(repo_root)} ({count} markers)")
+    assert not flagged, "documents that look German:\n" + "\n".join(flagged)
+
+
+def test_image_prompts_use_prompt_blocks(repo_root: Path, tracked_files: list[Path]):
+    """Images are not committed. An image reference is allowed when the file exists or when its
+    id (file stem) is described as a prompt in docs/images/PROMPTS.md."""
+    ids = _prompt_ids(repo_root)
+    offenders = []
+    for md in _markdown_files(tracked_files):
+        for match in re.finditer(r"!\[[^\]]*\]\(([^)]+)\)", md.read_text(encoding="utf-8")):
+            target = match.group(1)
+            if target.startswith("http") or "<" in target:
+                continue
+            if (md.parent / target).exists() or Path(target).stem in ids:
+                continue
+            offenders.append(f"{md.relative_to(repo_root)} -> {target}")
+    assert not offenders, "image references without a file or prompt id:\n" + "\n".join(offenders)
