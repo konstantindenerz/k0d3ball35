@@ -3,7 +3,10 @@
 
 KICAD_CLI ?= /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli
 PY        ?= .venv/bin/python
-ERGOGEN   ?= ergogen
+KPY       ?= /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3
+JAVA      ?= java
+FREEROUTING_JAR ?= $(BUILD)/freerouting.jar
+FREEROUTING_URL := https://github.com/freerouting/freerouting/releases/download/v2.5.0/freerouting-2.5.0.jar
 
 LAYOUT     := hardware/layout/k0d3ball36.yaml
 LAYOUT_OUT := hardware/layout/output
@@ -18,15 +21,15 @@ BUILD      := build
 SCHS := $(wildcard $(MAIN_SCH) $(SENSOR_SCH))
 PCBS := $(wildcard $(MAIN_PCB) $(SENSOR_PCB))
 
-.PHONY: all layout sch pcb route erc drc gerbers firmware test issues docs-check clean help
+.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check clean help
 
-all: layout sch pcb route erc drc gerbers
+all: layout board erc drc gerbers
 
 help:
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
 
-layout: ## Run Ergogen: points, outlines, unrouted PCB
-	$(ERGOGEN) $(LAYOUT) -o $(LAYOUT_OUT)
+layout: ## Generate points.json, outline.dxf and previews from the layout yaml
+	$(PY) scripts/gen_layout.py
 
 sch: ## Generate the main PCB schematic from the layout and the design spec
 	$(PY) scripts/gen_schematic.py
@@ -34,8 +37,15 @@ sch: ## Generate the main PCB schematic from the layout and the design spec
 pcb: ## Place footprints and assign nets on the main PCB
 	$(PY) scripts/gen_pcb.py
 
-route: ## Autoroute the main PCB and import the result
-	scripts/route.sh
+route: ## Regenerate, autoroute (freerouting) and verify the main PCB; retries until DRC is clean
+	KICAD_CLI=$(KICAD_CLI) KPY=$(KPY) PY=$(PY) JAVA=$(JAVA) FREEROUTING_JAR=$(FREEROUTING_JAR) scripts/build_board.sh
+
+board: route ## Alias for route
+
+freerouting-jar: ## Download freerouting 2.5.0 into build/
+	@mkdir -p $(BUILD)
+	@test -f $(FREEROUTING_JAR) || curl -sL -o $(FREEROUTING_JAR) $(FREEROUTING_URL)
+	@ls -la $(FREEROUTING_JAR)
 
 erc: ## Electrical rules check on every schematic
 	@mkdir -p $(BUILD)
@@ -53,8 +63,8 @@ drc: ## Design rules check with schematic parity on every PCB
 	    -o $(BUILD)/$$(basename $$p .kicad_pcb).drc.json $$p || exit 1; \
 	done
 
-gerbers: ## Export gerbers, drill files, STEP and renders
-	scripts/export.sh
+gerbers: ## Export gerbers, drill files, zip, STEP, renders, schematic PDF, BOM and position file
+	KICAD_CLI=$(KICAD_CLI) scripts/export.sh
 
 firmware: ## Build ZMK firmware locally with docker (CI is the reference build)
 	@if command -v docker >/dev/null 2>&1; then \

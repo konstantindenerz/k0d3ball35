@@ -18,22 +18,31 @@ the right half in focus.
 
 | Subsystem | State | Where |
 |-----------|-------|-------|
-| Design specification | draft r1 | [docs/01-design-spec.md](docs/01-design-spec.md) |
-| Layout (Ergogen) | in progress | [hardware/layout](hardware/layout) |
-| Main PCB (KiCad) | in progress | [hardware/main-pcb](hardware/main-pcb) |
-| Sensor PCB (KiCad) | in progress | [hardware/sensor-pcb](hardware/sensor-pcb) |
-| Trackball cradle | in progress | [hardware/trackball-cradle](hardware/trackball-cradle) |
-| Firmware (ZMK) | in progress | [firmware/zmk-config](firmware/zmk-config) |
+| Design specification | r1 | [docs/01-design-spec.md](docs/01-design-spec.md) |
+| Layout generator | done, exact coordinates in [docs/02-layout.md](docs/02-layout.md) | [hardware/layout](hardware/layout) |
+| Main PCB (KiCad 10) | r1 routed, ERC and DRC clean, gerbers exported; manual review before ordering | [hardware/main-pcb](hardware/main-pcb) |
+| Sensor PCB (PMW3610) | r1 done, ERC and DRC clean, gerbers exported | [hardware/sensor-pcb](hardware/sensor-pcb) |
+| Trackball cradle | done for 25 mm (34 mm variant exported), test print pending | [hardware/trackball-cradle](hardware/trackball-cradle) |
+| Firmware (ZMK) | builds for both halves and settings_reset | [firmware/zmk-config](firmware/zmk-config) |
+| Documentation | build guide, firmware, fabrication, testing written | [docs](docs) |
 | Case | later phase | [issues/mech-case.md](issues/mech-case.md) |
-| Tests and CI | in progress | [tests](tests), [.github/workflows](.github/workflows) |
+| Tests and CI | 56 tests green locally, workflows ready for GitHub | [tests](tests), [.github/workflows](.github/workflows) |
 
-Open work is tracked as markdown tickets in [issues/](issues/README.md).
+Open work is tracked as markdown tickets in [issues/](issues/README.md). Before the first PCB order,
+work through `hw-main-pcb-review-r1`, `test-fab-gerber-viewer`, `hw-25mm-ball-sourcing` and a cradle
+test print (see [docs/09-roadmap.md](docs/09-roadmap.md)).
+
+![Main PCB, top](hardware/main-pcb/renders/main-pcb-top.png)
+
+![Main PCB, bottom](hardware/main-pcb/renders/main-pcb-bottom.png)
+
+![Layout preview, right half](hardware/layout/output/preview-right.png)
 
 ## Features
 
 - 36 keys: 3 rows x 5 columns plus 3 thumb keys per half, 18 x 17 mm pitch
 - Column stagger and thumb arc derived from the Keyball39 geometry, scaled to Choc spacing
-- Kailh Choc V1 switches in hot-swap sockets (the footprint can also be soldered directly)
+- Kailh Choc V1 switches in hot-swap sockets (hot-swap only, like the Keyball)
 - 25 mm trackball on the right half, resting on three 2 mm ceramic balls, PMW3610 sensor on a small
   daughterboard connected with a 6-pin flat cable
 - Fully wireless: nice!nano v2 (or SuperMini nRF52840) per half, Bluetooth split, LiPo cell with
@@ -43,13 +52,13 @@ Open work is tracked as markdown tickets in [issues/](issues/README.md).
 - No LEDs, display or encoder on the PCB, to keep the height and the power draw down
 - ZMK firmware on a pinned `main` revision with the upstream PMW3610 driver, automatic mouse layer,
   scroll and snipe modes, ZMK Studio
-- All geometry generated from one Ergogen file, schematic and tests generated from the same data
+- All geometry comes from one layout file; schematic, PCB, footprints and tests are generated from the same data
 
 ## Repository map
 
 ```
 docs/                 specification, layout, BOM, build guide, firmware, fabrication, testing
-hardware/layout/      Ergogen source, generated points and outlines
+hardware/layout/      layout source (yaml), generated points, outline DXF and previews
 hardware/main-pcb/    KiCad project of the reversible main PCB, gerbers and renders
 hardware/sensor-pcb/  KiCad project of the PMW3610 daughterboard
 hardware/lib/         project symbol and footprint libraries
@@ -73,7 +82,8 @@ issues/               markdown tickets and the generated index
 | [06 Fabrication](docs/06-fabrication.md) | PCB order settings, gerber checklist |
 | [07 Testing](docs/07-testing.md) | automated checks and bench procedure |
 | [08 Trackball module](docs/08-trackball-module.md) | sensor board, lens distance, cradle |
-| [09 Roadmap](docs/09-roadmap.md) | case, dongle, sensor variants |
+| [09 Roadmap](docs/09-roadmap.md) | verification before ordering, case, dongle, sensor variants |
+| [10 Lessons from Keyball](docs/10-lessons-from-keyball.md) | holykeebs and Yowkees designs, known weaknesses and our response |
 | [Image prompts](docs/images/PROMPTS.md) | every picture as a generation prompt |
 
 ## Exploded view
@@ -83,13 +93,32 @@ An interactive 3D exploded view of one half (explode slider, section through the
 ## Quick start
 
 ```sh
-brew install --cask kicad          # KiCad 10, provides kicad-cli
-npm i -g ergogen                   # layout generator
-uv venv .venv && uv pip install --python .venv/bin/python pytest pyyaml kiutils numpy
-make layout                        # regenerate points, outlines and the unrouted PCB
-make erc drc                       # KiCad gates
-make test                          # full test suite
+brew install --cask kicad          # KiCad 10.0.7 (copy the app from the DMG if the cask asks for admin rights)
+brew install openjdk               # Java for freerouting
+uv venv .venv && uv pip install --python .venv/bin/python pytest pyyaml shapely ezdxf matplotlib kiutils numpy trimesh
+make freerouting-jar               # downloads freerouting 2.5.0 to build/
+make test                          # full test suite (56 tests)
 ```
+
+## Build the hardware files
+
+Everything under `hardware/main-pcb/` is generated; edit `hardware/layout/k0d3ball36.yaml` and
+`scripts/k0d3/` instead of the KiCad files.
+
+```sh
+make layout                                   # points.json, outline.dxf, previews from the layout yaml
+JAVA=/opt/homebrew/opt/openjdk/bin/java \
+FREEROUTING_JAR=build/freerouting.jar \
+scripts/build_board.sh                        # schematic + ERC, unrouted PCB, freerouting, DRC (retries until clean)
+scripts/export.sh                             # gerbers, drill, zip, STEP, renders, schematic PDF, BOM, position file
+make erc drc                                  # the KiCad gates on their own
+```
+
+`scripts/build_board.sh` expects `kicad-cli` and KiCad's bundled Python at
+`/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli` and
+`/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3`;
+override with `KICAD_CLI=` and `KPY=`. The sensor board has its own generator:
+`hardware/sensor-pcb/generate.py all` followed by `hardware/sensor-pcb/export.sh`.
 
 Firmware is built by GitHub Actions from `firmware/zmk-config`; see
 [docs/05-firmware.md](docs/05-firmware.md) for local builds and flashing.

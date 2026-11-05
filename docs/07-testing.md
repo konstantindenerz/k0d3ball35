@@ -15,11 +15,18 @@ another step has not produced yet skip with a reason instead of failing.
 | `tests/test_docs.py` | every relative markdown link resolves; every `docs/NN-*.md` named in the spec or README exists or is ticketed; no tool attribution strings; markdown is English (German marker heuristic); no image references without a file (pictures are prompt blocks) |
 | `tests/test_license.py` | MIT and CERN-OHL-P-2.0 texts present; every script and test carries an SPDX header |
 | `tests/test_kicad_gates.py` | `kicad-cli sch erc` and `kicad-cli pcb drc --schematic-parity` report zero errors for the main and sensor boards; reports are written to `build/*.json` |
-| `tests/test_geometry.py` | 36 keys, 18 x 17 pitch, stagger values per spec, no footprint overlap, ball zone clearance, left equals mirrored right |
-| `tests/test_netlist.py` | each switch has exactly one diode, 18 unique matrix cells, no shorted rows or columns, controller pins match the spec table, FPC connector nets match between main and sensor PCB |
+| `tests/test_geometry.py` | 18 keys per half, 18 x 17 pitch, stagger values per spec, thumb arc, no keycap overlap, cradle clearance, cutout inside the outline, mirror symmetry, points.json up to date |
+| `tests/test_netlist.py` | each switch has exactly one diode, 18 unique matrix cells, controller holes match the spec table, left/right hole swap, D0 grounded, jumpers, FPC pin order, power path, unique references |
+| `tests/test_footprints.py` | reversible pad sets (mirrored for handed parts, identical for symmetric parts), no overlapping pads of different numbers, hole positions of the Choc footprint, controller 2x12 geometry, library files parse |
+| `tests/test_firmware_pins.py` | devicetree pins of both halves equal the spec tables, 36 bindings per layer |
+| `tests/test_cradle.py` | cradle renders in OpenSCAD, STL watertight and fits the 30 mm cutout, stack heights within the datasheet window |
 | `tests/test_bom.py` | BOM quantities match placed footprints, every BOM line has a source |
 
-The geometry, netlist and BOM tests are added together with the generators they verify.
+Current state: 56 tests pass locally (`.venv/bin/pytest -q`). The KiCad gates run against the generated main PCB and the sensor PCB; both are clean at error severity.
+
+### Hardware pipeline checks
+
+`scripts/build_board.sh` runs the generators, ERC, the autorouter and DRC with schematic parity and retries the route/DRC step until it is clean; a pre-route DRC catches collisions of the hand routes in `manual_routes`. `scripts/export.sh` refuses nothing by itself, so always run the DRC first. The exact commands are listed in [docs/06-fabrication.md](06-fabrication.md).
 
 ### Where the gates run
 

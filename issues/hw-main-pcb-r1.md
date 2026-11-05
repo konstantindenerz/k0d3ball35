@@ -2,7 +2,7 @@
 title: Main PCB revision 1 (reversible, 18 keys, controller, FPC, battery)
 type: feature
 priority: P0
-status: in-progress
+status: done
 area: hw
 created: 2026-11-05
 ---
@@ -18,12 +18,12 @@ cutout with cradle holes, M2 case mounting holes. Geometry comes from `hardware/
 
 ## Acceptance criteria
 
-- [ ] Schematic generated and ERC clean (`make erc`)
-- [ ] PCB routed, DRC clean with schematic parity (`make drc`), 2 layers, 1.6 mm
-- [ ] Mirror check: left half equals the flipped right half (reversible), all footprints on one side
-- [ ] Gerbers, drill, STEP and PNG renders exported into `hardware/main-pcb/`
-- [ ] `docs/02-layout.md` and `docs/06-fabrication.md` updated
+- [x] Schematic generated and ERC clean (`make erc`)
+- [x] PCB routed, DRC clean with schematic parity (`make drc`), 2 layers, 1.6 mm
+- [x] Mirror check: left half equals the flipped right half (reversible), all footprints on one side
+- [x] Gerbers, drill, STEP and PNG renders exported into `hardware/main-pcb/`
+- [x] `docs/02-layout.md` and `docs/06-fabrication.md` updated
 
 ## Notes
 
-2026-11-05: schematic generated, ERC clean, board autorouted with freerouting; DRC with schematic parity still pending. r1 is hot-swap only (see hw-hotswap-only).
+2026-11-05: schematic generated, ERC clean at all severities; board autorouted with freerouting through `scripts/build_board.sh` (retries until clean), the rotated thumb keys and the controller legs of COL3/COL4/ROW3 are hand-routed in `manual_routes`; DRC with schematic parity reports zero errors (warnings only: diode courtyards under the switches, silkscreen overlaps); gerbers, drill, STEP, schematic PDF, BOM, position file and renders exported with `scripts/export.sh`. r1 is hot-swap only (see hw-hotswap-only). Ordering is gated by `hw-main-pcb-review-r1`, `test-fab-gerber-viewer` and `hw-jlcpcb-order-r1`.

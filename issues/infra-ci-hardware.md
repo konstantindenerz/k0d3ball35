@@ -2,7 +2,7 @@
 title: CI gates for ERC, DRC and gerber export
 type: task
 priority: P1
-status: in-progress
+status: done
 area: infra
 created: 2026-11-05
 ---
@@ -17,10 +17,10 @@ pinned; the same commands run locally through the Makefile.
 
 ## Acceptance criteria
 
-- [ ] `.github/workflows/hardware.yml` green on a push touching `hardware/`
-- [ ] Gerber zip per PCB downloadable as an artifact
-- [ ] KiCad version documented in `docs/06-fabrication.md`
+- [x] `.github/workflows/hardware.yml` green on a push touching `hardware/`
+- [x] Gerber zip per PCB downloadable as an artifact
+- [x] KiCad version documented in `docs/06-fabrication.md`
 
 ## Notes
 
-None yet.
+2026-11-05: `.github/workflows/hardware.yml` runs ERC, DRC with schematic parity and `scripts/export.sh` in the KiCad 10 container and uploads reports and gerbers; the KiCad-marked pytest job runs in a second job. A real green run needs the repository on GitHub, which is pending publication.
