@@ -4,8 +4,11 @@
  * Shared devicetree for both halves. Pin assignments follow
  * docs/01-design-spec.md section 2 (Pro Micro numbering of the nice!nano v2).
  *
- *   COL0..COL4  -> pro_micro 4, 5, 6, 7, 8   (pinky .. inner)
- *   ROW0..ROW3  -> pro_micro 21, 20, 19, 18  (top, home, bottom, thumbs)
+ * The PCB is reversible and the controller sits in a plain 2x12 through-hole
+ * footprint, so flipping the board for the left half swaps the two controller
+ * pin columns. The copper is identical, but the left half therefore sees
+ * different controller pins on the same matrix lines. All kscan GPIOs live in
+ * the per-side overlays for that reason.
  *
  * The thumb keys live on row 3, columns 2, 3 and 4. Cells (3,0) and (3,1) are empty.
  */
@@ -41,15 +44,7 @@ RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4)    RC(2,9) RC(2,8) RC(2,7) RC(2,6) RC(2,
         compatible = "zmk,kscan-gpio-matrix";
         wakeup-source;
         diode-direction = "col2row";
-
-        row-gpios
-            = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-            ;
-        // col-gpios are identical on both halves and set in the overlays so that a
-        // future hand-specific pin change stays local to one file.
+        // row-gpios and col-gpios differ per half (flipped board), see the overlays.
     };
 
     /*

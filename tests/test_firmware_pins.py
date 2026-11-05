@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 """The ZMK shield must use the pins from the design spec."""
 import pathlib
 import subprocess

@@ -76,6 +76,10 @@ issues/               markdown tickets and the generated index
 | [09 Roadmap](docs/09-roadmap.md) | case, dongle, sensor variants |
 | [Image prompts](docs/images/PROMPTS.md) | every picture as a generation prompt |
 
+## Exploded view
+
+An interactive 3D exploded view of one half (explode slider, section through the ball, left-half mirror, layer toggles) lives in [`docs/exploded-view/index.html`](docs/exploded-view/index.html). It is generated from the layout data with `docs/exploded-view/build.py`; the case and top frame in it are placeholders until the case phase.
+
 ## Quick start
 
 ```sh

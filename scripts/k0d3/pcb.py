@@ -55,6 +55,75 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
         fp = fps[c.footprint]
         padnets = {pad: (net_index[n], n) for pad, n in c.pads.items() if n}
         out.append(fp.board_sexpr(LIB, c.ref, c.value, ox + c.x, oy + c.y, c.rotation, padnets, sym_uuid(c.ref), sheetfile, c.description))
+    # Fixed stubs: front and back socket pad of pin 1 -> plated joiner pad (per switch)
+    import math as _m
+    for c in comps:
+        if c.kind != "switch":
+            continue
+        th = _m.radians(c.rotation)
+        def rot(px, py):
+            return (ox + c.x + px * _m.cos(th) + py * _m.sin(th), oy + c.y - px * _m.sin(th) + py * _m.cos(th))
+        joiner = rot(-2.2, -8.0)
+        n = net_index[c.pads["1"]]
+        def seg(a, b, layer):
+            out.append(f"  (segment (locked yes) (start {num(a[0])} {num(a[1])}) (end {num(b[0])} {num(b[1])}) (width 0.25) (layer {quote(layer)}) (net {n}) (uuid {quote(uid('stub', c.ref, layer, a, b))}))")
+        # back pad touches the joiner; front pad goes up and across above the boss hole
+        seg(rot(-3.5, -6.45), joiner, "B.Cu")
+        seg(rot(3.5, -6.45), rot(3.5, -8.0), "F.Cu")
+        seg(rot(3.5, -8.0), joiner, "F.Cu")
+    # Column buses on the back: a straight locked track through the joiner pads of the three
+    # finger rows of each column (x - 2.6 keeps 0.37 mm from the diode pads and the holes).
+    by_col = {}
+    for c in comps:
+        if c.kind == "switch" and c.extra["row"] < 3:
+            by_col.setdefault(c.extra["col"], []).append(c)
+    for col, keys in by_col.items():
+        keys.sort(key=lambda k: k.y)
+        x = ox + keys[0].x - 2.6
+        y1, y2 = oy + keys[0].y - 8.0, oy + keys[-1].y - 8.0
+        n = net_index[f"COL{col}"]
+        out.append(f"  (segment (locked yes) (start {num(x)} {num(y1)}) (end {num(x)} {num(y2)}) (width 0.25) (layer \"B.Cu\") (net {n}) (uuid {quote(uid('bus', col))}))")
+    # FPC connector: the 0.3 mm GND pad cannot be reached by the pour (its neighbours are
+    # 0.2 mm away), so give pad 2 of each face a short locked stub to a GND via.
+    for c in comps:
+        if c.kind != "fpc":
+            continue
+        th = _m.radians(c.rotation)
+        def frot(px, py):
+            return (ox + c.x + px * _m.cos(th) + py * _m.sin(th), oy + c.y - px * _m.sin(th) + py * _m.cos(th))
+        g = net_index["GND"]
+        for layer, sign in (("F.Cu", -1), ("B.Cu", 1)):
+            a, b = frot(sign * 0.75, -1.85), frot(sign * 0.75, -3.9)
+            out.append(f"  (segment (locked yes) (start {num(a[0])} {num(a[1])}) (end {num(b[0])} {num(b[1])}) (width 0.25) (layer {quote(layer)}) (net {g}) (uuid {quote(uid('fpcgnd', c.ref, layer))}))")
+            out.append(f"  (via (locked yes) (at {num(b[0])} {num(b[1])}) (size 0.6) (drill 0.3) (layers \"F.Cu\" \"B.Cu\") (net {g}) (uuid {quote(uid('fpcvia', c.ref, layer))}))")
+    # Hand-placed locked tracks from the layout file (thumb cluster)
+    by_ref = {c.ref: c for c in comps}
+    def resolve(pt):
+        if not isinstance(pt, str):
+            return (ox + pt[0], oy + pt[1])
+        ref, what = pt.split(":")
+        c = by_ref[ref]
+        th = _m.radians(c.rotation)
+        def r(px, py):
+            return (ox + c.x + px * _m.cos(th) + py * _m.sin(th), oy + c.y - px * _m.sin(th) + py * _m.cos(th))
+        if what == "joiner":
+            return r(-2.2, -8.0)
+        if c.kind == "mcu":                    # controller hole number
+            h = int(what)
+            return r(-7.62 if h <= 12 else 7.62, -13.97 + ((h - 1) % 12) * 2.54)
+        if what == "bus":                      # bottom end of the column bus at this key
+            return (ox + c.x - 2.6, oy + c.y - 8.0)
+        if c.kind == "diode":
+            return r(-1.65 if what == "1" else 1.65, 0)
+        raise ValueError(pt)
+    for i, route in enumerate(layout.cfg.get("manual_routes", [])):
+        pts = [resolve(p) for p in route["points"]]
+        n = net_index[route["net"]]
+        for key, pt in (("via_start", pts[0]), ("via_end", pts[-1])):
+            if route.get(key):
+                out.append(f"  (via (locked yes) (at {num(pt[0])} {num(pt[1])}) (size 0.6) (drill 0.3) (layers \"F.Cu\" \"B.Cu\") (net {n}) (uuid {quote(uid('manualvia', i, key))}))")
+        for j, (a, b) in enumerate(zip(pts, pts[1:])):
+            out.append(f"  (segment (locked yes) (start {num(a[0])} {num(a[1])}) (end {num(b[0])} {num(b[1])}) (width {num(route.get('width', 0.25))}) (layer {quote(route['layer'])}) (net {n}) (uuid {quote(uid('manual', i, j))}))")
     # board outline
     pts = " ".join(f"(xy {num(ox + x)} {num(oy + y)})" for x, y in list(layout.outline.exterior.coords)[:-1])
     out.append(f"  (gr_poly (pts {pts}) (stroke (width 0.05) (type default)) (fill none) (layer \"Edge.Cuts\") (uuid {quote(uid('edge', 'outline'))}))")
@@ -68,19 +137,47 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
     # silkscreen texts: between the controller footprint and the reset/battery row
     silk = layout.cfg["silkscreen"]
     c = layout.cfg["controller"]
-    tx, ty = ox + c["center"]["x"], oy + c["center"]["y"] + 19.3
+    tx, ty = ox + c["center"]["x"] + 6.0, oy + c["center"]["y"] + 19.0
     for layer, side in (("F.SilkS", "RIGHT"), ("B.SilkS", "LEFT")):
         mirror = " (justify mirror)" if layer.startswith("B.") else ""
         for i, line in enumerate((f"{silk['title']} {silk['revision_text']}  CERN-OHL-P-2.0", f"{side} half - this side up")):
             out.append(f"  (gr_text {quote(line)} (at {num(tx)} {num(ty + i * 1.6)} 0) (layer {quote(layer)}) "
                        f"(uuid {quote(uid('silk', layer, i))}) (effects (font (size 0.8 0.8) (thickness 0.12)){mirror}))")
+    # Track/via keep-out rings along the board edge and around the trackball cutout, so the
+    # autorouter respects the 0.3 mm copper-to-edge clearance. A ring with a hole is written
+    # as one simple polygon with a hairline slit (KiCad normalises it).
+    from shapely.geometry import Point as _P
+    def ring_polygon(outer, inner):
+        ext = list(outer.exterior.coords)[:-1]
+        inn = list(inner.exterior.coords)[:-1]
+        # start the slit at the exterior vertex closest to an interior vertex
+        best = min(((i, j, (ext[i][0]-inn[j][0])**2 + (ext[i][1]-inn[j][1])**2) for i in range(0, len(ext), max(1, len(ext)//60)) for j in range(0, len(inn), max(1, len(inn)//60))), key=lambda t: t[2])
+        i, j = best[0], best[1]
+        path = ext[i:] + ext[:i] + [ext[i]] + [inn[j]] + list(reversed(inn[:j] + [inn[j]] if False else (inn[j:] + inn[:j])))[::1][::-1][::-1]
+        # ensure the interior is traversed in the opposite winding
+        inner_path = inn[j:] + inn[:j]
+        inner_path = inner_path[::-1]
+        inner_path = inner_path[-1:] + inner_path[:-1]  # start at inn[j]
+        path = ext[i:] + ext[:i] + [ext[i], inn[j]] + inner_path[1:] + [inn[j]]
+        return path
+    edge_ring = ring_polygon(layout.outline, layout.outline.buffer(-0.35, 16))
+    cut_ring = ring_polygon(_P(layout.ball_center).buffer(r + 0.35, 64), _P(layout.ball_center).buffer(r, 64))
+    for name, poly in (("edge_keepout", edge_ring), ("cutout_keepout", cut_ring)):
+        kpts = " ".join(f"(xy {num(ox + x)} {num(oy + y)})" for x, y in poly)
+        out.append(f"  (zone (net 0) (net_name \"\") (layers \"F&B.Cu\") (uuid {quote(uid('zone', name))}) (name {quote(name)}) (hatch edge 0.5) (priority 10)"
+                   f" (connect_pads (clearance 0)) (min_thickness 0.25) (filled_areas_thickness no)"
+                   f" (keepout (tracks not_allowed) (vias not_allowed) (pads allowed) (copperpour allowed) (footprints allowed))"
+                   f" (fill (thermal_gap 0.5) (thermal_bridge_width 0.5)) (polygon (pts {kpts})))")
+    # GND stitching vias so the two pours are tied together everywhere
+    for i, (vx, vy) in enumerate(layout.cfg.get("stitching_vias", [])):
+        out.append(f"  (via (locked yes) (at {num(ox + vx)} {num(oy + vy)}) (size 0.6) (drill 0.3) (layers \"F.Cu\" \"B.Cu\") (net {net_index['GND']}) (uuid {quote(uid('via', i))}))")
     # GND pours on both faces
     minx, miny, maxx, maxy = layout.outline.bounds
     zpts = f"(pts (xy {num(ox + minx - 1)} {num(oy + miny - 1)}) (xy {num(ox + maxx + 1)} {num(oy + miny - 1)}) (xy {num(ox + maxx + 1)} {num(oy + maxy + 1)}) (xy {num(ox + minx - 1)} {num(oy + maxy + 1)}))"
     for layer in ("F.Cu", "B.Cu"):
         out.append(f"  (zone (net {net_index['GND']}) (net_name \"GND\") (layer {quote(layer)}) (uuid {quote(uid('zone', layer))}) (name {quote('GND_' + layer)}) (hatch edge 0.5) (priority 0)"
                    f" (connect_pads (clearance 0.3)) (min_thickness 0.25) (filled_areas_thickness no)"
-                   f" (fill yes (thermal_gap 0.5) (thermal_bridge_width 0.5) (island_removal_mode 1) (island_area_min 10)) (polygon {zpts}))")
+                   f" (fill yes (thermal_gap 0.5) (thermal_bridge_width 0.5) (island_removal_mode 0)) (polygon {zpts}))")
     out.append(")")
     return "\n".join(out) + "\n"
 
@@ -97,39 +194,38 @@ def write_library(out_dir: Path) -> list[Path]:
 
 def project_json(name: str, comps: list[Component]) -> str:
     classes = net_classes()
-    power_nets = classes["Power"].pop("nets")
+    assignments = {}
+    class_list = []
+    for name, c in classes.items():
+        for n in c.get("nets", []):
+            assignments[n] = name
+        class_list.append({"name": name, "clearance": c["clearance"], "track_width": c["track_width"],
+                           "via_diameter": c["via_diameter"], "via_drill": c["via_drill"],
+                           "diff_pair_gap": 0.25, "diff_pair_via_gap": 0.25, "diff_pair_width": 0.2, "microvia_diameter": 0.3, "microvia_drill": 0.1,
+                           "pcb_color": "rgba(0, 0, 0, 0.000)", "schematic_color": "rgba(0, 0, 0, 0.000)", "wire_width": 6, "bus_width": 12, "line_style": 0})
     pro = {
         "board": {
             "design_settings": {
                 "defaults": {"board_outline_line_width": 0.05, "copper_line_width": 0.2, "silk_line_width": 0.12, "silk_text_size_h": 1.0, "silk_text_size_v": 1.0, "silk_text_thickness": 0.15},
                 "rules": {
-                    "min_clearance": 0.2, "min_connection": 0.2, "min_copper_edge_clearance": 0.3, "min_hole_clearance": 0.25,
+                    "min_clearance": 0.127, "min_connection": 0.127, "min_copper_edge_clearance": 0.3, "min_hole_clearance": 0.25,
                     "min_hole_to_hole": 0.25, "min_microvia_diameter": 0.2, "min_microvia_drill": 0.1, "min_resolved_spokes": 2,
                     "min_silk_clearance": 0.0, "min_text_height": 0.6, "min_text_thickness": 0.08, "min_through_hole_diameter": 0.3,
-                    "min_track_width": 0.2, "min_via_annular_width": 0.13, "min_via_diameter": 0.5, "solder_mask_clearance": 0.0,
+                    "min_track_width": 0.15, "min_via_annular_width": 0.1, "min_via_diameter": 0.5, "solder_mask_clearance": 0.0,
                     "solder_mask_min_width": 0.0, "use_height_for_length_calcs": True,
                 },
                 "rule_severities": {"lib_footprint_issues": "ignore", "lib_footprint_mismatch": "warning", "silk_overlap": "warning",
                                     "silk_over_copper": "warning", "footprint_type_mismatch": "ignore", "copper_sliver": "warning",
                                     "courtyards_overlap": "warning", "pth_inside_courtyard": "warning", "footprints_on_back": "ignore"},
-                "track_widths": [0.25, 0.4], "via_dimensions": [{"diameter": 0.6, "drill": 0.3}, {"diameter": 0.7, "drill": 0.35}],
+                "track_widths": [0.15, 0.25, 0.4], "via_dimensions": [{"diameter": 0.6, "drill": 0.3}],
             },
         },
         "meta": {"filename": f"{name}.kicad_pro", "version": 1},
         "net_settings": {
-            "classes": [
-                {"name": "Default", "clearance": classes["Default"]["clearance"], "track_width": classes["Default"]["track_width"],
-                 "via_diameter": classes["Default"]["via_diameter"], "via_drill": classes["Default"]["via_drill"],
-                 "diff_pair_gap": 0.25, "diff_pair_via_gap": 0.25, "diff_pair_width": 0.2, "microvia_diameter": 0.3, "microvia_drill": 0.1,
-                 "pcb_color": "rgba(0, 0, 0, 0.000)", "schematic_color": "rgba(0, 0, 0, 0.000)", "wire_width": 6, "bus_width": 12, "line_style": 0},
-                {"name": "Power", "clearance": classes["Power"]["clearance"], "track_width": classes["Power"]["track_width"],
-                 "via_diameter": classes["Power"]["via_diameter"], "via_drill": classes["Power"]["via_drill"],
-                 "diff_pair_gap": 0.25, "diff_pair_via_gap": 0.25, "diff_pair_width": 0.2, "microvia_diameter": 0.3, "microvia_drill": 0.1,
-                 "pcb_color": "rgba(0, 0, 0, 0.000)", "schematic_color": "rgba(0, 0, 0, 0.000)", "wire_width": 6, "bus_width": 12, "line_style": 0},
-            ],
+            "classes": class_list,
             "meta": {"version": 3},
-            "netclass_assignments": {n: "Power" for n in power_nets},
-            "netclass_patterns": [{"netclass": "Power", "pattern": n} for n in power_nets],
+            "netclass_assignments": assignments,
+            "netclass_patterns": [{"netclass": cls, "pattern": n} for n, cls in assignments.items()],
         },
         "pcbnew": {"page_layout_descr_file": ""},
         "schematic": {"drawing": {"default_line_thickness": 6.0, "default_text_size": 50.0, "pin_symbol_size": 25.0},

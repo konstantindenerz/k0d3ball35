@@ -42,14 +42,15 @@ class Pad:
     drill: float | None = None
     rratio: float | None = None
     rot: float = 0.0
+    zone_connect: int | None = None   # 2 = solid connection to copper pours
 
     def mirrored(self) -> "Pad":
         layers = tuple(l.replace("F.", "B.") if l.startswith("F.") else l for l in self.layers)
-        return Pad(self.number, self.kind, self.shape, -self.x, self.y, self.w, self.h, layers, self.drill, self.rratio, -self.rot)
+        return Pad(self.number, self.kind, self.shape, -self.x, self.y, self.w, self.h, layers, self.drill, self.rratio, -self.rot, self.zone_connect)
 
     def flipped_layers(self) -> "Pad":
         layers = tuple(l.replace("F.", "B.") if l.startswith("F.") else l for l in self.layers)
-        return Pad(self.number, self.kind, self.shape, self.x, self.y, self.w, self.h, layers, self.drill, self.rratio, self.rot)
+        return Pad(self.number, self.kind, self.shape, self.x, self.y, self.w, self.h, layers, self.drill, self.rratio, self.rot, self.zone_connect)
 
 
 @dataclass
@@ -118,6 +119,8 @@ class Footprint:
             parts.append("(remove_unused_layers no)")
         if p.shape == "roundrect":
             parts.append(f"(roundrect_rratio {num(p.rratio or 0.25)})")
+        if p.zone_connect is not None:
+            parts.append(f"(zone_connect {p.zone_connect})")
         if net is not None and p.number:
             parts.append(f"(net {net[0]} {quote(net[1])})")
         parts.append(f"(uuid {quote(uid(owner, 'p', p.number, p.x, p.y, p.layers[0]))}))")
@@ -200,6 +203,9 @@ def choc_v1_hotswap_reversible() -> Footprint:
         Pad("", "np_thru_hole", "circle", 5.0, -3.8, 3.05, 3.05, THT, 3.05),
         Pad("", "np_thru_hole", "circle", -5.0, -3.8, 3.05, 3.05, THT, 3.05),
     ]
+    # Plated joiner pad for pin 1: ties the front and back socket pads of pin 1 together so
+    # the column line only needs to reach one of them (the PCB generator adds the stubs).
+    pads.append(Pad("1", "thru_hole", "circle", -2.2, -8.0, 0.8, 0.8, THT, 0.4))
     back = [
         Pad("1", "smd", "roundrect", -3.5, -6.45, 2.55, 2.0, B_SMD, rratio=0.5),
         Pad("2", "smd", "roundrect", 8.5, -3.8, 2.55, 2.5, B_SMD, rratio=0.1),
@@ -236,7 +242,7 @@ def nice_nano_tht(hole_pin_right: dict[int, str], hole_pin_left: dict[int, str])
         row = (h - 1) % 12
         y = -13.97 + row * 2.54
         shape = "rect" if h == 1 else "circle"
-        pads.append(Pad(str(h), "thru_hole", shape, col, y, 1.8, 1.8, THT, 1.0))
+        pads.append(Pad(str(h), "thru_hole", shape, col, y, 1.7, 1.7, THT, 1.0, zone_connect=2 if h in (2, 14) else None))
     gfx = rect_lines(0, -0.6, 18.0, 33.5, "F.Fab", 0.1) + rect_lines(0, -0.6, 18.0, 33.5, "B.Fab", 0.1)
     gfx += rect_lines(0, -0.6, 19.0, 36.0, "F.CrtYd", 0.05) + rect_lines(0, -0.6, 19.0, 36.0, "B.CrtYd", 0.05)
     gfx += rect_lines(0, -0.6, 18.0, 33.5, "F.SilkS", 0.12) + rect_lines(0, -0.6, 18.0, 33.5, "B.SilkS", 0.12)
@@ -250,7 +256,7 @@ def nice_nano_tht(hole_pin_right: dict[int, str], hole_pin_left: dict[int, str])
     gfx += [Text("RIGHT: pins as printed on this side", 0, 16.6, "F.SilkS", 0.6),
             Text("LEFT: pins as printed on this side", 0, 16.6, "B.SilkS", 0.6)]
     return Footprint("nice_nano_v2_THT", "nice!nano v2 / SuperMini nRF52840, 2x12 2.54 mm through holes, USB at the top, component side up",
-                     "through_hole", pads, gfx, "F.SilkS", (0, 18.2))
+                     "through_hole", pads, gfx, "F.SilkS", (0, -18.6))
 
 
 def solder_jumper_3() -> Footprint:
@@ -261,11 +267,11 @@ def solder_jumper_3() -> Footprint:
     gfx_f = rect_lines(0, 0, 4.4, 2.3, "F.SilkS", 0.12) + rect_lines(0, 0, 4.6, 2.5, "F.CrtYd", 0.05)
     gfx = both_face_graphics(gfx_f, mirror=False)
     return Footprint("SolderJumper_3_bridged_both_sides", "3-pad solder jumper, pads on both faces; bridge 2-3 for the right half, 1-2 for the left half",
-                     "smd", pads, gfx, "F.SilkS", (0, -1.9))
+                     "smd", pads, gfx, "F.SilkS", (-3.9, 0))
 
 
 def fpc_fh12_6_reversible() -> Footprint:
-    pads_f = [Pad(str(i + 1), "smd", "rect", -1.25 + i * 0.5, -1.85, 0.3, 1.3, F_SMD) for i in range(6)]
+    pads_f = [Pad(str(i + 1), "smd", "rect", -1.25 + i * 0.5, -1.85, 0.3, 1.3, F_SMD, zone_connect=2) for i in range(6)]
     pads_f += [Pad("", "smd", "rect", -3.15, 1.4, 1.8, 2.2, F_SMD), Pad("", "smd", "rect", 3.15, 1.4, 1.8, 2.2, F_SMD)]
     pads = both_faces(pads_f, mirror=True)
     gfx_f = rect_lines(0, 0.6, 8.6, 4.8, "F.Fab", 0.1) + rect_lines(0, 0.6, 9.2, 5.6, "F.CrtYd", 0.05)
@@ -276,7 +282,7 @@ def fpc_fh12_6_reversible() -> Footprint:
 
 
 def battery_pads() -> Footprint:
-    pads = [Pad("1", "thru_hole", "rect", -1.27, 0, 1.7, 1.7, THT, 1.0), Pad("2", "thru_hole", "circle", 1.27, 0, 1.7, 1.7, THT, 1.0)]
+    pads = [Pad("1", "thru_hole", "rect", -1.27, 0, 1.7, 1.7, THT, 1.0, zone_connect=2), Pad("2", "thru_hole", "circle", 1.27, 0, 1.7, 1.7, THT, 1.0, zone_connect=2)]
     gfx = [Text("+", -1.27, -1.8, "F.SilkS", 0.8), Text("-", 1.27, -1.8, "F.SilkS", 0.8),
            Text("+", -1.27, -1.8, "B.SilkS", 0.8), Text("-", 1.27, -1.8, "B.SilkS", 0.8)]
     gfx += rect_lines(0, 0, 4.6, 2.6, "F.CrtYd", 0.05) + rect_lines(0, 0, 4.6, 2.6, "B.CrtYd", 0.05)
@@ -334,7 +340,7 @@ def test_pad() -> Footprint:
 def mounting_hole() -> Footprint:
     pads = [Pad("", "np_thru_hole", "circle", 0, 0, 2.2, 2.2, THT, 2.2)]
     gfx = [Circle(0, 0, 2.2, "F.CrtYd", 0.05), Circle(0, 0, 2.2, "B.CrtYd", 0.05), Circle(0, 0, 1.6, "F.Fab", 0.1)]
-    return Footprint("MountingHole_2.2mm", "M2 mounting hole, 2.2 mm, no copper, 4.4 mm keep-out", "through_hole", pads, gfx, "F.Fab", (0, -3.0))
+    return Footprint("MountingHole_2.2mm", "M2 mounting hole, 2.2 mm, no copper, 4.4 mm keep-out", "through_hole exclude_from_pos_files exclude_from_bom", pads, gfx, "F.Fab", (0, -3.0))
 
 
 def all_footprints(hole_pin_right: dict[int, str], hole_pin_left: dict[int, str]) -> dict[str, Footprint]:

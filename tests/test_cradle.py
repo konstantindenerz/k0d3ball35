@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 """Checks for the parametric trackball cradle (hardware/trackball-cradle).
 
 The OpenSCAD dependent tests are skipped when no OpenSCAD binary is available.

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
 """Generate the ZMK physical layout (key_physical_attrs rows) for k0d3ball36.
 
 Geometry follows docs/01-design-spec.md section 5. Until the layout generator in

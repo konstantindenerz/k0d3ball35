@@ -1,25 +1,86 @@
 /*
  * Left half (peripheral, no trackball in the default build).
+ *
+ * The board is flipped relative to the right half, which swaps the two Pro Micro
+ * pin columns of the controller footprint. Same copper, different controller pins:
+ *
+ *   COL0..COL4 (pinky .. inner) -> pro_micro 19, 18, 15, 14, 16
+ *   ROW0..ROW3 (top .. thumbs)  -> pro_micro 2, 3, 4, 5
+ *
+ * The sensor lines of the left half land on pro_micro 6 / 8 / 9 / 7; the sensor
+ * board is not populated on the left in r1.
  */
 
 #include "k0d3ball36.dtsi"
 
 &kscan0 {
+    row-gpios
+        = <&pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&pro_micro 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&pro_micro 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        ;
     col-gpios
-        = <&pro_micro 4 GPIO_ACTIVE_HIGH>
-        , <&pro_micro 5 GPIO_ACTIVE_HIGH>
-        , <&pro_micro 6 GPIO_ACTIVE_HIGH>
-        , <&pro_micro 7 GPIO_ACTIVE_HIGH>
-        , <&pro_micro 8 GPIO_ACTIVE_HIGH>
+        = <&pro_micro 19 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 18 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 15 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 14 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 16 GPIO_ACTIVE_HIGH>
         ;
 };
 
 /*
- * Left-ball build: populate the sensor board on the left half, then
- *   1. copy the &pinctrl / &spi1 / trackball nodes from k0d3ball36_right.overlay here,
- *   2. uncomment the block below,
- *   3. in k0d3ball36_right.overlay disable `trackball_listener` and enable
- *      `trackball_split_listener`.
+ * Left-ball build. Populate the sensor board on the left half and use this pin
+ * set (flipped-board equivalents of the right half's sensor pins):
+ *
+ *   TB_SCLK  pro_micro 6 = P1.00
+ *   TB_SDIO  pro_micro 8 = P1.04  (MOSI and MISO on the same pin)
+ *   TB_NCS   pro_micro 9 = P1.06
+ *   TB_MOT   pro_micro 7 = P0.11
+ *
+ * Steps: uncomment the block below, in k0d3ball36_right.overlay disable
+ * `trackball_listener` and enable `trackball_split_listener` plus `trackball_split`,
+ * and add CONFIG_INPUT_PMW3610=y / CONFIG_SPI=y / CONFIG_INPUT=y to k0d3ball36_left.conf.
+ *
+ * #include <dt-bindings/input/input-event-codes.h>
+ *
+ * &pinctrl {
+ *     spi1_default: spi1_default {
+ *         group1 {
+ *             psels = <NRF_PSEL(SPIM_SCK, 1, 0)>,
+ *                     <NRF_PSEL(SPIM_MOSI, 1, 4)>,
+ *                     <NRF_PSEL(SPIM_MISO, 1, 4)>;
+ *         };
+ *     };
+ *     spi1_sleep: spi1_sleep {
+ *         group1 {
+ *             psels = <NRF_PSEL(SPIM_SCK, 1, 0)>,
+ *                     <NRF_PSEL(SPIM_MOSI, 1, 4)>,
+ *                     <NRF_PSEL(SPIM_MISO, 1, 4)>;
+ *             low-power-enable;
+ *         };
+ *     };
+ * };
+ *
+ * &spi1 {
+ *     status = "okay";
+ *     compatible = "nordic,nrf-spim";
+ *     pinctrl-0 = <&spi1_default>;
+ *     pinctrl-1 = <&spi1_sleep>;
+ *     pinctrl-names = "default", "sleep";
+ *     cs-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
+ *
+ *     trackball: trackball@0 {
+ *         compatible = "pixart,pmw3610";
+ *         reg = <0>;
+ *         spi-max-frequency = <2000000>;
+ *         motion-gpios = <&gpio0 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+ *         zephyr,axis-x = <INPUT_REL_X>;
+ *         zephyr,axis-y = <INPUT_REL_Y>;
+ *         res-cpi = <400>;
+ *         smart-mode;
+ *     };
+ * };
  *
  * &trackball_split {
  *     status = "okay";

@@ -9,11 +9,22 @@ Files
 
 | File | Purpose |
 |------|---------|
-| `k0d3ball36.dtsi` | matrix transform, kscan rows, input-split scaffold |
+| `k0d3ball36.dtsi` | matrix transform, kscan skeleton, input-split scaffold |
 | `k0d3ball36-layouts.dtsi` | physical layout (ZMK Studio, keymap editors) |
-| `k0d3ball36_left.overlay` | column pins of the left half |
-| `k0d3ball36_right.overlay` | column pins, SPI, PMW3610, input listener |
+| `k0d3ball36_left.overlay` | row and column pins of the left half, left-ball pin set (commented) |
+| `k0d3ball36_right.overlay` | row and column pins, SPI, PMW3610, input listener |
 | `Kconfig.defconfig` | central role, pointing, SPI defaults |
 | `k0d3ball36.zmk.yml` | metadata for ZMK tooling |
 
 See `docs/05-firmware.md` for building, flashing and tuning.
+
+Why the halves use different pins: the PCB is reversible and the controller sits in a plain
+2x12 through-hole footprint. Flipping the board for the left half swaps the two controller pin
+columns, so the same copper trace reaches a different controller pin. The matrix is wired once;
+the firmware compensates per side.
+
+| Line | Right half | Left half |
+|------|-----------|-----------|
+| COL0..COL4 | D4 D5 D6 D7 D8 | D19 D18 D15 D14 D16 |
+| ROW0..ROW3 | D21 D20 D19 D18 | D2 D3 D4 D5 |
+| TB_SCLK / SDIO / NCS / MOT | D15 / D16 / D10 / D14 | D6 / D8 / D9 / D7 |

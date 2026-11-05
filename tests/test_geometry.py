@@ -80,8 +80,6 @@ def test_cutout_inside_outline(layout):
     assert layout.outline.contains(layout.cradle_polygon())
 
 
-@pytest.mark.xfail(reason="hw-cradle-flange-holes-at-edge: flange holes on the 36 mm circle reach 19.1 mm from the "
-                          "ball centre, the outline ring is only 19 mm (ball_margin 2.0)", strict=True)
 def test_flange_holes_inside_outline(layout):
     tb = layout.cfg["trackball"]
     r = tb["flange_hole_circle"] / 2

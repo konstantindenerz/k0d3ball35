@@ -42,9 +42,9 @@ of the module is another 3.85 mm further down. With `depth_below_pcb = 10` (lowe
 
 | Variant | Ball centre | Ball top above PCB top | Lowest plastic | Lowest sensor board | Housing reach from axis |
 |---------|-------------|------------------------|----------------|---------------------|-------------------------|
-| 25 mm, sensor below | +10.55 | **+23.05 mm** | -7.75 | -11.6 | 13.0 mm |
-| 25 mm, sensor tilted 60 deg | +8.9 | +21.5 mm | -11.4 | -11.6 | 22.3 mm |
-| 34 mm, sensor below | +15.05 | +32.05 mm | -7.75 | -11.6 | 13.0 mm |
+| 25 mm, sensor below | +10.55 | **+23.05 mm** | -7.75 | -11.6 | 15.0 mm |
+| 25 mm, sensor tilted 60 deg | +10.73 | +23.23 mm | -11.41 | -11.6 | 23.3 mm |
+| 34 mm, sensor below | +15.05 | +32.05 mm | -7.75 | -11.6 | 15.0 mm |
 
 Numbers are reproduced by `make stack` into `stack.json`. Lowering `depth_below_pcb`
 raises the ball by the same amount; the ball top height is `depth + 1.6` less than
@@ -56,9 +56,9 @@ raises the ball by the same amount; the ball top height is `depth + 1.6` less th
 the torabo-tsuki / Rollino layout where the sensor looks at the ball from the side so the
 ball can sit lower. For this module it does not pay off:
 
-- Up to about 45 deg the tilt makes things worse, because the 22 mm wide sensor board
+- Up to about 45 deg the tilt makes things worse, because the 26 mm wide sensor board
   swings down and becomes the lowest point.
-- At 60 deg the gain is 1.5 mm of ball height, but the housing now reaches 22 mm out from
+- At 60 deg there is no gain at all with the 26 mm board (the board edge becomes the lowest point), and the housing reaches 23 mm out from
   the axis and crosses the main PCB plane, so the PCB needs a keyhole cutout
   (`dxf/cutout-25mm-tilted.dxf`) and the sensor board stands above the PCB surface on the
   outer side, inside the key area.
@@ -93,12 +93,14 @@ fix each one with a dot of cyanoacrylate at the rim of the seat (not under the b
   36 mm bolt circle at 90, 210 and 330 degrees, nothing on the PCB underside within a
   40 mm circle (flange). `dxf/cutout-25mm.dxf` is the exact clearance including the holes.
   A 34 mm ball needs a 39 mm cutout and a 45 mm bolt circle: a different PCB revision.
-- Sensor daughterboard (`hardware/sensor-pcb`): 22 x 25 mm, two M2 holes 20 mm apart along
-  the 25 mm axis, the sensor optical centre at the board centre, the LM18-LSI lens oriented
-  with its 21.5 mm length along the 22 mm board side. The board is screwed with its lens
-  side against the flat housing face; the FPC connector and all other parts taller than
-  3.4 mm must sit on the pin side (facing away from the ball), the lens-side pocket is only
-  3.8 mm deep and 20 x 23 mm wide.
+- Sensor daughterboard (`hardware/sensor-pcb`): 26 x 25 mm, two M2 holes 20 mm apart along
+  the 25 mm axis, the sensor optical centre at the board centre, the LM18-LSI lens and the
+  sensor body cutout running along the 26 mm side. The board is screwed with its lens side
+  ("BALL SIDE", sensor body protruding 0.7 mm) against the flat housing face. The lens-side
+  pocket is 3.8 mm deep and 24 x 23 mm wide, so the FPC connector and every other part sit on
+  the component side facing away from the ball, where the housing is open. Resulting stack
+  from the ball surface: lens flange 2.40 mm, lens-side PCB face 5.80 mm, component-side
+  face 7.40 mm, sensor top 9.05 mm (matches `docs/08-trackball-module.md`).
 
 ## Printing
 

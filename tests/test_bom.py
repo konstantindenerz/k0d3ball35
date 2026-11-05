@@ -82,7 +82,6 @@ def test_bom_rows_have_source(rows):
     assert not missing, f"BOM rows without a source: {missing}"
 
 
-@pytest.mark.xfail(reason="hw-fpc-connector-bom-mismatch: BOM lists Hirose FH19SC-6S-0.5SH, the PCB footprint is FH12-6S-0.5SH", strict=True)
 def test_bom_connector_part_matches_pcb(rows):
     """The main PCB uses the Hirose FH12-6S-0.5SH footprint; the BOM must name a compatible part."""
     text = " ".join(r["_text"] for r in rows)

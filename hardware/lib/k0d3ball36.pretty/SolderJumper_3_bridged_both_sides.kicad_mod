@@ -2,7 +2,7 @@
   (layer "F.Cu")
   (descr "3-pad solder jumper, pads on both faces; bridge 2-3 for the right half, 1-2 for the left half")
   (tags "k0d3ball36 reversible")
-  (property "Reference" "REF**" (at 0 -1.9 0) (layer "F.SilkS") (uuid "2d5c93d6-5627-555d-b4bf-50778bac6c35") (effects (font (size 1 1) (thickness 0.15))))
+  (property "Reference" "REF**" (at -3.9 0 0) (layer "F.SilkS") (uuid "2d5c93d6-5627-555d-b4bf-50778bac6c35") (effects (font (size 1 1) (thickness 0.15))))
   (property "Value" "SolderJumper_3_bridged_both_sides" (at 0 2 0) (layer "F.Fab") (uuid "4f2017d9-42e2-59e1-9fa9-6cbb2fe72a2f") (effects (font (size 1 1) (thickness 0.15))))
   (property "Footprint" "k0d3ball36:SolderJumper_3_bridged_both_sides" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "5d5b92bc-717c-5fc9-b52e-9ba7690b24cb") (effects (font (size 1.27 1.27))))
   (property "Datasheet" "" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "b4ad96b2-3c01-570a-83be-f3040337dd8a") (effects (font (size 1.27 1.27))))

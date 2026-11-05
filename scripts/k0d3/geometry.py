@@ -146,8 +146,11 @@ def build_outline(cfg: dict, keys: Iterable[Key]) -> Polygon:
     c = cfg["controller"]
     cx, cy = c["center"]["x"], c["center"]["y"]
     inner = min(cols, key=lambda col: col["x"])
+    # The block runs down to the inner thumb key so the thumb cluster has a wide routing
+    # corridor towards the controller (no notch at the inner bottom corner).
+    thumb_inner_top = min(k.y for k in keys if k.kind == "thumb") - 2.0
     parts.append(box(cx - c["size"]["x"] / 2 - 4.5, cfg["jumpers"]["start"]["y"] - 3.0,
-                     inner["x"], cfg["battery_jst"]["center"]["y"] + 6.0))
+                     inner["x"], max(cfg["battery_jst"]["center"]["y"] + 6.0, thumb_inner_top)))
     # Ball zone and the bridges that tie it to the key block and the outer thumb key
     tb = cfg["trackball"]
     bx, by = tb["center"]["x"], tb["center"]["y"]

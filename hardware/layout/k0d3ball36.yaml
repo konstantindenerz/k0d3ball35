@@ -66,15 +66,16 @@ fpc:                            # sensor daughterboard connector (bottom side)
 
 power_switch: { center: { x: -68.5, y: 30.0 }, rotation: 90 }   # MSK12C02, bottom side, actuator through the inner edge
 reset_button: { center: { x: -66.0, y: 38.0 }, rotation: 0 }    # EVQP7A, bottom side, inner corner below the power switch
-battery_pads: { center: { x: -48.0, y: 40.0 }, rotation: 0 }    # 2 x 1.7 mm PTH, 2.54 mm pitch, B+ / B-
+battery_pads: { center: { x: -57.0, y: 50.5 }, rotation: 0 }    # 2 x 1.7 mm PTH, 2.54 mm pitch, B+ / B-, below the JST
 battery_jst:  { center: { x: -56.0, y: 42.0 }, rotation: 0 }    # S2B-PH-SM4-TB, optional (6 mm tall), bottom side
 jumpers:                        # 3-pad solder jumpers for the controller power rows
   start: { x: -58.0, y: -6.5 }
   pitch: 3.0
 
-test_pads:                      # spare controller pins broken out as 1.5 mm pads
-  start: { x: -47.0, y: 5.0 }
-  pitch: 2.54
+test_pads:                      # spare controller pins broken out as 1.5 mm pads, in a row above the controller
+  start: { x: -53.0, y: -4.0 }
+  pitch: 2.5
+  direction: x
 
 mounting_holes:                 # M2 through holes for the case (2.2 mm), in the gaps between switches
   - { x: 27.0,  y: 10.8 }       # ring / pinky, top (outside the socket pad bands)
@@ -82,14 +83,54 @@ mounting_holes:                 # M2 through holes for the case (2.2 mm), in the
   - { x: -9.0,  y: 40.0 }       # middle / index, bottom
   - { x: -27.0, y: 8.0 }        # index / inner, top
   - { x: -32.0, y: 61.0 }       # between outer and middle thumb key
-  - { x: -67.0, y: 45.0 }       # controller block, bottom inner corner
+
+stitching_vias:                 # GND vias tying the two pours together (free spots between switches)
+  - [27.0, 27.5]
+  - [9.0, 6.0]
+  - [-27.0, 25.0]
+  - [-45.0, 31.5]
+  - [-28.0, 48.5]
+  - [24.0, 50.0]
+  - [-8.0, 64.0]
+  - [-64.5, 46.8]
+  - [-70.0, 15.0]
+  - [-33.0, 47.5]
+
+# Hand-placed tracks for the rotated thumb cluster (the autorouter does not reach pads of
+# footprints rotated by 10/20 degrees). Points are layout coordinates or pad references:
+# "REF:joiner" = the switch's plated pin-1 joiner pad, "REF:1" = diode pad 1 (cathode).
+manual_routes:
+  - { net: ROW3, layer: B.Cu, width: 0.25,
+      points: ["D32:1", [-26.0, 63.0], [-35.0, 63.5], [-41.0, 64.6], "D33:1", [-46.5, 69.0], [-53.5, 69.3], [-59.5, 69.6], "D34:1"] }
+  - { net: COL3, layer: B.Cu, width: 0.25,
+      points: ["SW23:bus", [-20.6, 49.5], "SW33:joiner"] }
+  - { net: COL4, layer: B.Cu, width: 0.25,
+      points: ["SW24:bus", [-38.6, 49.0], "SW34:joiner"] }
+  # column 3 and thumb row to the controller: the autorouter also gives these up
+  - { net: COL3, layer: F.Cu, width: 0.25, via_start: true,
+      points: [[-20.6, 49.5], [-47.5, 49.5], [-47.5, 24.16], [-63.0, 24.16], "U1:10"] }
+  # thumb row to the controller: hops between the layers to cross the COL3 (front) and
+  # COL4 (back) lines, then down the inner edge to the inner thumb diode
+  - { net: ROW3, layer: F.Cu, width: 0.25, via_end: true,
+      points: ["U1:20", [-48.8, 19.4], [-48.8, 21.5]] }
+  - { net: ROW3, layer: B.Cu, width: 0.25, via_end: true,
+      points: [[-48.8, 21.5], [-48.8, 27.8]] }
+  - { net: ROW3, layer: F.Cu, width: 0.25, via_end: true,
+      points: [[-48.8, 27.8], [-48.8, 35.0]] }
+  - { net: ROW3, layer: B.Cu, width: 0.25,
+      points: [[-48.8, 35.0], [-70.0, 35.0], [-70.0, 64.0], [-68.5, 70.5], "D34:1"] }
+  - { net: COL4, layer: B.Cu, width: 0.25,
+      points: [[-38.6, 29.5], [-52.0, 29.5], [-52.0, 26.7], [-63.5, 26.7], "U1:11"] }
+  # outer thumb key to the middle column bus, around the FPC connector
+  - { net: COL2, layer: B.Cu, width: 0.25,
+      points: ["SW22:bus", [-2.6, 35.5], [-6.5, 38.5], [-6.5, 47.0], "SW32:joiner"] }
 
 outline:
   margin: 0.5                   # PCB edge outside the keycap rectangles
   socket_margin: 1.1            # extra width per side so the hot-swap socket pads (9.8 mm out) keep 0.3 mm to the edge
   corner_radius: 2.0
   controller_margin: 2.0
-  ball_margin: 2.0
+  ball_margin: 3.5                # keeps the cradle flange holes (36 mm circle) 0.3 mm inside the edge
 
 silkscreen:
   title: k0d3ball36

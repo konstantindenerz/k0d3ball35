@@ -102,7 +102,8 @@ def test_choc_holes(fps):
     fp = fps["SW_Choc_V1_HS_reversible"]
     holes = {(p.x, p.y): p.drill for p in fp.pads if p.kind == "np_thru_hole"}
     assert holes == {(0, 0): 3.4, (-5.5, 0): 1.7, (5.5, 0): 1.7, (0, -5.9): 3.05, (5.0, -3.8): 3.05, (-5.0, -3.8): 3.05}
-    assert not any(p.kind == "thru_hole" for p in fp.pads), "hot-swap only: no plated switch pin holes"
+    plated = [p for p in fp.pads if p.kind == "thru_hole"]
+    assert [(p.number, p.drill) for p in plated] == [("1", 0.4)], "hot-swap only: the only plated hole is the pin-1 joiner"
 
 
 def test_controller_footprint(fps):

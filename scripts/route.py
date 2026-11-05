@@ -5,13 +5,18 @@
 Runs with KiCad's bundled Python (needs the pcbnew module):
   /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 scripts/route.py
 
-Steps: load board -> export Specctra DSN -> freerouting (java) -> import SES -> fill zones -> save in place.
-Environment: FREEROUTING_JAR (path to freerouting-2.x.jar), JAVA (java binary, default: java).
+Stages (each in its own process, the pcbnew Python wrapper misbehaves after a Specctra import):
+  prepare  remove unlocked tracks, save; give duplicate pad numbers unique names in a copy and
+           export that copy as Specctra DSN (freerouting keeps only one pin per name otherwise)
+  route    freerouting (java) -> SES
+  import   import the SES into the real board, save
+  finish   widen undersized tracks to their net class, fill zones, save
+Environment: FREEROUTING_JAR (path to freerouting-2.x.jar), JAVA (java binary), FREEROUTING_PASSES.
 """
 from __future__ import annotations
 
+import json
 import os
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -23,36 +28,213 @@ PCB = REPO / "hardware" / "main-pcb" / "k0d3ball36.kicad_pcb"
 BUILD = REPO / "build"
 
 
-def main() -> int:
-    pcb = Path(sys.argv[1]) if len(sys.argv) > 1 else PCB
-    passes = os.environ.get("FREEROUTING_PASSES", "30")
+def prepare(pcb: Path) -> None:
+    """Remove unlocked tracks from the real board and write the router copy (file level)."""
+    import shutil
+
+    board = pcbnew.LoadBoard(str(pcb))
+    for t in list(board.GetTracks()):
+        if not t.IsLocked():          # keep the generator's stubs and stitching vias
+            board.Remove(t)
+    pcbnew.SaveBoard(str(pcb), board)
+    copy = BUILD / (pcb.stem + "-router.kicad_pcb")
+    shutil.copyfile(pcb, copy)
+    pro = json.loads(pcb.with_suffix(".kicad_pro").read_text())
+    for c in pro["net_settings"]["classes"]:
+        # absorb freerouting rounding; the FPC class stays at the pad gap so the 0.5 mm
+        # connector is not reported as a pre-existing violation
+        c["clearance"] = round(c["clearance"] + 0.05, 3)
+    copy.with_suffix(".kicad_pro").write_text(json.dumps(pro, indent=2))
+    print("router copy:", copy)
+
+
+def export_dsn(pcb: Path, dsn: Path) -> None:
+    """Separate process: unique pad names + baked rotations in the router copy, then DSN export.
+
+    Freerouting keeps only one pin per name and mis-handles images placed at angles other
+    than multiples of 90 degrees, so the copy gets unique pad numbers and pads at absolute
+    rotated positions with the footprint itself at 0 degrees. The copy is never saved back.
+    """
+    copy = BUILD / (pcb.stem + "-router.kicad_pcb")
+    board = pcbnew.LoadBoard(str(copy))
+    baked = 0
+    for fp in board.GetFootprints():
+        seen: dict[str, int] = {}
+        pads = list(fp.Pads())
+        for pad in pads:
+            n = pad.GetNumber()
+            if n:
+                seen[n] = seen.get(n, 0) + 1
+                if seen[n] > 1:
+                    pad.SetNumber(f"{n}_{seen[n]}")
+        if abs(fp.GetOrientationDegrees() % 90.0) > 1e-6:
+            absolute = [(pad, pcbnew.VECTOR2I(pad.GetPosition()), pad.GetOrientation()) for pad in pads]
+            fp.SetOrientationDegrees(0)
+            origin = fp.GetPosition()
+            for pad, pos, orient in absolute:
+                pad.SetFPRelativePosition(pcbnew.VECTOR2I(pos.x - origin.x, pos.y - origin.y))
+                pad.SetOrientation(orient)
+                if (pad.GetPosition() - pos).EuclideanNorm() > 10:
+                    raise SystemExit(f"bake failed for {fp.GetReference()} pad {pad.GetNumber()}")
+            baked += 1
+    # Drop the copper pours so GND is routed as a normal net (guaranteed connectivity);
+    # the pours are added on top afterwards.
+    for z in list(board.Zones()):
+        if not z.GetIsRuleArea():
+            board.Remove(z)
+    ok = pcbnew.ExportSpecctraDSN(board, str(dsn))
+    pcbnew.SaveBoard(str(copy.with_name(copy.stem + "-baked.kicad_pcb")), board)   # for inspection only
+    print("DSN export:", ok, dsn, "| rotated footprints baked:", baked)
+
+
+def route(dsn: Path, ses: Path) -> int:
     jar = os.environ.get("FREEROUTING_JAR")
+    jar = str(Path(jar).resolve()) if jar else None
     java = os.environ.get("JAVA", "java")
+    passes = os.environ.get("FREEROUTING_PASSES", "30")
     if not jar or not Path(jar).exists():
         print("FREEROUTING_JAR not set or missing", file=sys.stderr)
         return 2
-    BUILD.mkdir(exist_ok=True)
-    dsn, ses = BUILD / (pcb.stem + ".dsn"), BUILD / (pcb.stem + ".ses")
-    board = pcbnew.LoadBoard(str(pcb))
-    # start from a clean slate: drop existing tracks and vias
-    for t in list(board.GetTracks()):
-        board.Remove(t)
-    ok = pcbnew.ExportSpecctraDSN(board, str(dsn))
-    print("DSN export:", ok, dsn)
+    if ses.exists():
+        ses.unlink()
     cmd = [java, "-jar", jar, "-de", str(dsn), "-do", str(ses), "-mp", passes, "-l", "en", "-dct", "0"]
-    print(" ".join(cmd))
     res = subprocess.run(cmd, cwd=BUILD, capture_output=True, text=True, timeout=3600)
-    tail = "\n".join(res.stdout.splitlines()[-15:])
-    print(tail)
+    print("\n".join(l for l in res.stdout.splitlines() if "Auto-routing stage completed" in l or "pre-existing" in l))
     if not ses.exists():
         print("freerouting produced no session file", file=sys.stderr)
         print(res.stderr[-3000:], file=sys.stderr)
         return 1
-    ok = pcbnew.ImportSpecctraSES(board, str(ses))
+    return 0
+
+
+def strip_placement(ses: Path) -> Path:
+    """Drop the (placement ...) block: it carries the router copy's baked 0-degree rotations."""
+    text = ses.read_text()
+    start = text.find("(placement")
+    if start < 0:
+        return ses
+    depth, i = 0, start
+    while i < len(text):
+        if text[i] == "(":
+            depth += 1
+        elif text[i] == ")":
+            depth -= 1
+            if depth == 0:
+                break
+        i += 1
+    out = ses.with_name(ses.stem + "-noplace.ses")
+    out.write_text(text[:start] + text[i + 1:])
+    return out
+
+
+def import_ses(pcb: Path, ses: Path) -> None:
+    board = pcbnew.LoadBoard(str(pcb))
+    ok = pcbnew.ImportSpecctraSES(board, str(strip_placement(ses)))
     print("SES import:", ok)
+    pcbnew.SaveBoard(str(pcb), board)
+
+
+def finish(pcb: Path) -> None:
+    board = pcbnew.LoadBoard(str(pcb))
+    pro = json.loads(pcb.with_suffix(".kicad_pro").read_text())
+    widths = {c["name"]: c["track_width"] for c in pro["net_settings"]["classes"]}
+    assignment = {p["pattern"]: p["netclass"] for p in pro["net_settings"].get("netclass_patterns", [])}
+    fixed = 0
+    for t in board.GetTracks():
+        if t.GetClass() == "PCB_TRACK" and not t.IsLocked():
+            mm = widths.get(assignment.get(t.GetNetname(), "Default"), widths["Default"])
+            want = pcbnew.FromMM(mm)
+            if t.GetWidth() < want:
+                t.SetWidth(want)
+                fixed += 1
+    pcbnew.ZONE_FILLER(board).Fill(board.Zones())
+    added = stitch_ground(board)
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     pcbnew.SaveBoard(str(pcb), board)
-    print("saved", pcb, "tracks:", len(board.GetTracks()))
+    print("widened tracks:", fixed, "| GND stitching vias added:", added, "| saved", pcb)
+
+
+def drop_floating_ground_vias(board) -> int:
+    """Remove GND vias whose connected cluster contains no pad (they would only anchor islands)."""
+    c = board.GetConnectivity()
+    c.Build(board)
+    removed = 0
+    for v in list(board.GetTracks()):
+        if v.GetClass() != "PCB_VIA" or v.GetNetname() != "GND" or v.IsLocked():
+            continue
+        if len(c.GetConnectedPads(v)) == 0:
+            board.Remove(v)
+            removed += 1
+    return removed
+
+
+def stitch_ground(board, grid_mm: float = 6.0, via_mm: float = 0.6, drill_mm: float = 0.3, margin_mm: float = 0.3) -> int:
+    """Add GND vias on a grid wherever both pours have copper around the point.
+
+    The pours already keep their clearance to every other net, so a via that sits fully
+    inside both fills is clear of everything else and ties the two pours together.
+    """
+    import math
+
+    gnd = board.GetNetsByName()["GND"]
+    zones = {}
+    for z in board.Zones():
+        if z.GetIsRuleArea() or z.GetNetname() != "GND":
+            continue
+        for layer in z.GetLayerSet().Seq():
+            zones[layer] = z.GetFilledPolysList(layer)
+    f, b = pcbnew.F_Cu, pcbnew.B_Cu
+    if f not in zones or b not in zones:
+        return 0
+    bbox = board.GetBoardEdgesBoundingBox()
+    r = pcbnew.FromMM(via_mm / 2 + margin_mm)
+    step = pcbnew.FromMM(grid_mm)
+    ring = [(int(r * math.cos(a)), int(r * math.sin(a))) for a in [k * math.pi / 4 for k in range(8)]]
+    added = 0
+    y = bbox.GetTop() + step // 2
+    while y < bbox.GetBottom():
+        x = bbox.GetLeft() + step // 2
+        while x < bbox.GetRight():
+            ok = all(zones[l].Contains(pcbnew.VECTOR2I(x + dx, y + dy)) for l in (f, b) for dx, dy in ring)
+            if ok:
+                via = pcbnew.PCB_VIA(board)
+                via.SetPosition(pcbnew.VECTOR2I(x, y))
+                via.SetWidth(pcbnew.FromMM(via_mm))
+                via.SetDrill(pcbnew.FromMM(drill_mm))
+                via.SetLayerPair(f, b)
+                via.SetNet(gnd)
+                board.Add(via)
+                added += 1
+            x += step
+        y += step
+    return added
+
+
+def main() -> int:
+    args = sys.argv[1:]
+    pcb = Path(args[1]) if len(args) > 1 else PCB
+    BUILD.mkdir(exist_ok=True)
+    dsn, ses = BUILD / (pcb.stem + ".dsn"), BUILD / (pcb.stem + ".ses")
+    stage = args[0] if args else "all"
+    if stage == "prepare":
+        prepare(pcb)
+    elif stage == "dsn":
+        export_dsn(pcb, dsn)
+    elif stage == "import":
+        import_ses(pcb, ses)
+    elif stage == "finish":
+        finish(pcb)
+    elif stage == "all":
+        for st in ("prepare", "dsn"):
+            subprocess.check_call([sys.executable, __file__, st, str(pcb)])
+        rc = route(dsn, ses)
+        if rc:
+            return rc
+        for st in ("import", "finish"):
+            subprocess.check_call([sys.executable, __file__, st, str(pcb)])
+    else:
+        print(__doc__)
+        return 2
     return 0
 
 

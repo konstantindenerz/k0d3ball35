@@ -103,8 +103,10 @@ class SchematicWriter:
         self.body.append(f"  (wire (pts (xy {num(x1)} {num(y1)}) (xy {num(x2)} {num(y2)})) (stroke (width 0) (type default)) (uuid {quote(uid(owner, 'w', x1, y1, x2, y2))}))")
 
     def label(self, text, x, y, angle, owner):
-        just = "left bottom" if angle == 0 else "right bottom"
-        self.body.append(f"  (label {quote(text)} (at {num(x)} {num(y)} {angle}) (effects (font (size 1.27 1.27)) (justify {just})) (uuid {quote(uid(owner, 'lab', text, x, y))}))")
+        just = "left" if angle == 0 else "right"
+        lu = uid(owner, 'lab', text, x, y)
+        self.body.append(f"  (global_label {quote(text)} (shape passive) (at {num(x)} {num(y)} {angle}) (fields_autoplaced yes) (effects (font (size 1.27 1.27)) (justify {just})) (uuid {quote(lu)})"
+                         f" (property \"Intersheetrefs\" \"${{INTERSHEET_REFS}}\" (at {num(x)} {num(y)} 0) (effects (font (size 1.27 1.27)) hide)))")
 
     def no_connect(self, x, y, owner):
         self.body.append(f"  (no_connect (at {num(x)} {num(y)}) (uuid {quote(uid(owner, 'nc', x, y))}))")
@@ -163,8 +165,9 @@ class SchematicWriter:
         # column label on the left
         self.wire(x + p1.x, y - p1.y, x + p1.x - G, y - p1.y, su)
         self.label(sw.pads["1"], x + p1.x - G, y - p1.y, 180, su)
-        # switch pin 2 -> diode anode
+        # switch pin 2 -> diode anode, labelled with the switch net name
         self.wire(x + p2.x, y - p2.y, dx + pa.x, y - pa.y, su)
+        self.label(sw.pads["2"], x + p2.x + G, y - p2.y, 0, su)
         # diode cathode -> row label
         self.wire(dx + pk.x, y - pk.y, dx + pk.x + G, y - pk.y, su)
         self.label(d.pads["1"], dx + pk.x + G, y - pk.y, 0, su)
@@ -201,6 +204,11 @@ class SchematicWriter:
         return "\n".join(out) + "\n"
 
 
+def g(v: float) -> float:
+    """Snap to the 1.27 mm connection grid."""
+    return round(round(v / 1.27) * 1.27, 2)
+
+
 def build_schematic(comps: list[Component], title: str, rev: str) -> str:
     sheet_uuid = uid("sheet", "root")
     w = SchematicWriter(title, rev, sheet_uuid)
@@ -216,22 +224,22 @@ def build_schematic(comps: list[Component], title: str, rev: str) -> str:
         w.place_key_cell(c, d, x0 + c.extra["col"] * col_pitch, y0 + c.extra["row"] * row_pitch)
     # controller
     w.text("Controller (hole numbers; pin names right half / left half)", x0 - 10, 130, 2.5)
-    w.place(by_ref["U1"], x0 + 60, 170, G)
+    w.place(by_ref["U1"], g(x0 + 60), g(170), G)
     # jumpers
     w.text("Power-row jumpers: bridge 2-3 on the right half, 1-2 on the left half", x0 + 120, 130, 2.0)
     for i, ref in enumerate(["JP1", "JP2", "JP3"]):
-        w.place(by_ref[ref], x0 + 140, 142 + i * 20.32, G)
+        w.place(by_ref[ref], g(x0 + 140), g(142) + i * 20.32, G)
     # peripherals
     w.text("Power, reset, sensor connector, test pads", x0 + 190, 130, 2.5)
-    w.place(by_ref["PS1"], x0 + 210, 145, G)
-    w.place(by_ref["J2"], x0 + 210, 165, G)
-    w.place(by_ref["J3"], x0 + 210, 182, G)
-    w.place(by_ref["RB1"], x0 + 210, 200, G)
-    w.place(by_ref["J1"], x0 + 250, 150, G)
+    w.place(by_ref["PS1"], g(x0 + 210), g(145), G)
+    w.place(by_ref["J2"], g(x0 + 210), g(165), G)
+    w.place(by_ref["J3"], g(x0 + 210), g(182), G)
+    w.place(by_ref["RB1"], g(x0 + 210), g(200), G)
+    w.place(by_ref["J1"], g(x0 + 250), g(150), G)
     for i, ref in enumerate(["TP1", "TP2", "TP3"]):
-        w.place(by_ref[ref], x0 + 250, 180 + i * 12.7, G)
+        w.place(by_ref[ref], g(x0 + 250), g(180) + i * 12.7, G)
     # holes (no pins)
     holes = [c for c in comps if c.kind in ("hole", "cradle_hole")]
     for i, h in enumerate(holes):
-        w.place(h, x0 + 300 + (i % 5) * 15.24, 150 + (i // 5) * 15.24, G)
+        w.place(h, g(x0 + 300) + (i % 5) * 15.24, g(150) + (i // 5) * 15.24, G)
     return w.render()

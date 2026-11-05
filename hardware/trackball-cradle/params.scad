@@ -25,11 +25,11 @@ lens_z          = 2.4;     // ball surface to lens reference plane (datasheet ty
 lens_h          = 3.4;     // lens reference plane to sensor PCB (lens side)
 lens_l          = 21.5;    // LM18-LSI body length  (cavity gets +1.0 clearance)
 lens_w          = 11.5;    // LM18-LSI body width   (cavity gets +1.0 clearance)
-sensor_pcb_l    = 25;      // sensor daughterboard outline (docs/01-design-spec.md section 3)
-sensor_pcb_w    = 22;
+sensor_pcb_l    = 25;      // sensor daughterboard, axis of the two M2 holes (hardware/sensor-pcb)
+sensor_pcb_w    = 26;      // sensor daughterboard, axis of the lens / sensor body
 sensor_pcb_t    = 1.6;
 sensor_hole_sp  = 20;      // M2 mounting hole spacing along the long axis
-sensor_pins_h   = 1.65 + 0.6;  // package top + solder above the far side of the sensor PCB
+sensor_pins_h   = 1.65 + 0.6;  // tallest part on the component side (sensor top 9.05 - 7.40 = 1.65) + margin
 sensor_angle    = 0;       // 0 = sensor straight below the ball; >0 tilts it towards +x (deg from vertical)
 sensor_az       = 0;       // azimuth of the tilt direction (deg)
 

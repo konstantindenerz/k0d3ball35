@@ -1,0 +1,519 @@
+<title>k0d3ball36 Exploded</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #ECE8DF;
+    --panel: #F7F4EE;
+    --ink: #1F2420;
+    --muted: #6B6F66;
+    --line: #CFC9BC;
+    --accent: #E8762E;
+    --accent-ink: #FFFFFF;
+    --pcb: #2E5A3B;
+    --chip: #DDD8CE;
+    --focus: #2E7D9A;
+    --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1A1C1A; --panel: #232623; --ink: #ECE9E1; --muted: #9A9E95; --line: #3A3E39;
+      --accent: #F08A45; --accent-ink: #1A1C1A; --chip: #30342F; --focus: #6FB9D1;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1A1C1A; --panel: #232623; --ink: #ECE9E1; --muted: #9A9E95; --line: #3A3E39;
+    --accent: #F08A45; --accent-ink: #1A1C1A; --chip: #30342F; --focus: #6FB9D1;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.45; overflow-x: hidden; }
+  .app { display: grid; grid-template-columns: minmax(0, 1fr) 300px; min-height: 100vh; }
+  @media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); } .panel { border-left: 0; border-top: 1px solid var(--line); } .stage { height: 62vh; } }
+  .stage { position: relative; height: 100vh; min-height: 420px; overflow: hidden; }
+  .stage canvas { display: block; width: 100%; height: 100%; }
+  .labels { position: absolute; inset: 0; pointer-events: none; }
+  .label { position: absolute; transform: translate(-50%, -50%); font: 500 11px/1.2 var(--mono); letter-spacing: .02em; color: var(--ink);
+           background: color-mix(in srgb, var(--panel) 85%, transparent); border: 1px solid var(--line); border-radius: 3px; padding: 2px 6px; white-space: nowrap; opacity: 0; transition: opacity .25s; }
+  .label.on { opacity: 1; }
+  .label small { color: var(--muted); font-weight: 400; }
+  .leaders { position: absolute; inset: 0; pointer-events: none; }
+  .leaders line { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  .hud { position: absolute; left: 16px; top: 14px; max-width: 70%; }
+  .hud h1 { margin: 0; font: 600 20px/1.1 var(--sans); letter-spacing: -.01em; text-wrap: balance; }
+  .hud p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+  .hud .tag { display: inline-block; margin-top: 8px; font: 500 10px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 4px 7px; border-radius: 2px; }
+  .panel { background: var(--panel); border-left: 1px solid var(--line); padding: 18px 18px 28px; display: flex; flex-direction: column; gap: 18px; overflow-y: auto; }
+  .panel h2 { margin: 0 0 8px; font: 500 10px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .slider { display: grid; gap: 6px; }
+  .slider .row { display: flex; justify-content: space-between; font: 500 12px var(--mono); }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  .toggles { display: grid; gap: 6px; }
+  .toggles label, .layers label { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+  .layers { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+  input[type=checkbox] { accent-color: var(--accent); width: 15px; height: 15px; margin: 0; }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; border: 1px solid rgba(0,0,0,.15); flex: none; }
+  .btn { font: 500 12px var(--sans); color: var(--ink); background: var(--chip); border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px; cursor: pointer; }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .dims { display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; font-size: 12px; }
+  .dims dt { color: var(--muted); margin: 0; }
+  .dims dd { margin: 0; font: 500 12px var(--mono); font-variant-numeric: tabular-nums; text-align: right; }
+  .note { font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+  .note b { color: var(--ink); font-weight: 500; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  @media (prefers-reduced-motion: reduce) { .label { transition: none; } }
+</style>
+
+<div class="app">
+  <div class="stage" id="stage">
+    <canvas id="c" aria-label="3D exploded view of the k0d3ball36 right half"></canvas>
+    <svg class="leaders" id="leaders"></svg>
+    <div class="labels" id="labels"></div>
+    <div class="hud">
+      <h1 id="title">k0d3ball36 r1, right half</h1>
+      <p>Drag to orbit, wheel or pinch to zoom. Heights are real; the case and plate are placeholders until the case phase.</p>
+      <span class="tag" id="viewTag">assembled</span>
+    </div>
+  </div>
+  <aside class="panel">
+    <div class="slider">
+      <h2>Explode</h2>
+      <div class="row"><span>assembled</span><span id="explodeVal">0.00</span><span>exploded</span></div>
+      <input type="range" id="explode" min="0" max="1" step="0.01" value="0" aria-label="Explode amount">
+      <div class="actions">
+        <button class="btn primary" id="play">Animate</button>
+        <button class="btn" id="reset">Reset view</button>
+      </div>
+    </div>
+    <div>
+      <h2>View</h2>
+      <div class="toggles">
+        <label><input type="checkbox" id="rotate" checked> Auto-rotate</label>
+        <label><input type="checkbox" id="mirror"> Show left half (mirrored, no ball)</label>
+        <label><input type="checkbox" id="section"> Section through the ball centre</label>
+        <label><input type="checkbox" id="showLabels" checked> Labels</label>
+      </div>
+    </div>
+    <div>
+      <h2>Layers</h2>
+      <div class="layers" id="layerList"></div>
+    </div>
+    <div>
+      <h2>Dimensions</h2>
+      <dl class="dims" id="dims"></dl>
+    </div>
+    <p class="note"><b>Reading the stack.</b> PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 3.5 mm sockets with the 301230 cell underneath; the cradle drops through the 30 mm cutout and the sensor board hangs under it. The ball dome is only a marker for the future case.</p>
+  </aside>
+</div>
+
+<script type="importmap">{"imports":{"three":"https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+
+const D = /*__LAYOUT_DATA__*/;
+
+// ---------- helpers ----------
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const col = (hex) => new THREE.Color(hex);
+const PCB_T = D.pcb_thickness;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function outlineShape(points, holes = []) {
+  const s = new THREE.Shape();
+  points.forEach(([x, y], i) => (i ? s.lineTo(x, y) : s.moveTo(x, y)));
+  s.closePath();
+  for (const h of holes) {
+    const p = new THREE.Path();
+    p.absarc(h.x, h.y, h.r, 0, Math.PI * 2, true);
+    s.holes.push(p);
+  }
+  return s;
+}
+// Extrude a layout-plane shape downwards from `top` by `depth` (layout y -> world Z, height -> world Y)
+function slab(shape, depth, top, mat) {
+  const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false });
+  const m = new THREE.Mesh(g, mat);
+  m.rotation.x = Math.PI / 2;
+  m.position.y = top;
+  return m;
+}
+function box(w, h, d, mat, x, y, z, rotDeg = 0) {   // w along X, h along Y (height), d along Z
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z);
+  m.rotation.y = THREE.MathUtils.degToRad(rotDeg);
+  return m;
+}
+function cyl(r, h, mat, x, y, z, rt = r) {
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, r, h, 48), mat);
+  m.position.set(x, y, z);
+  return m;
+}
+// local key offset (lx, ly) rotated by the KiCad rotation (positive = counter-clockwise on screen)
+function keyLocal(k, lx, ly) {
+  const t = THREE.MathUtils.degToRad(k.rot);
+  return { x: k.x + lx * Math.cos(t) + ly * Math.sin(t), z: k.y - lx * Math.sin(t) + ly * Math.cos(t) };
+}
+
+// ---------- materials ----------
+const M = {
+  case: new THREE.MeshStandardMaterial({ color: col('#D8CDBB'), roughness: .9 }),
+  caseGhost: new THREE.MeshStandardMaterial({ color: col('#D8CDBB'), roughness: .9, transparent: true, opacity: .55 }),
+  pcb: new THREE.MeshStandardMaterial({ color: col(D.ball ? '#2E5A3B' : '#2E5A3B'), roughness: .6 }),
+  pcbEdge: new THREE.MeshStandardMaterial({ color: col('#C9A24A'), roughness: .5, metalness: .4 }),
+  black: new THREE.MeshStandardMaterial({ color: col('#2A2A2C'), roughness: .7 }),
+  socket: new THREE.MeshStandardMaterial({ color: col('#3B3B3F'), roughness: .8 }),
+  diode: new THREE.MeshStandardMaterial({ color: col('#1B1B1D'), roughness: .5 }),
+  metal: new THREE.MeshStandardMaterial({ color: col('#B9BCC2'), roughness: .35, metalness: .8 }),
+  ctrl: new THREE.MeshStandardMaterial({ color: col('#1C2538'), roughness: .5 }),
+  battery: new THREE.MeshStandardMaterial({ color: col('#8E9CB0'), roughness: .5 }),
+  battery2: new THREE.MeshStandardMaterial({ color: col('#7B8BA3'), roughness: .5, transparent: true, opacity: .7 }),
+  switchBody: new THREE.MeshStandardMaterial({ color: col('#EDE8DF'), roughness: .8 }),
+  stem: new THREE.MeshStandardMaterial({ color: col('#C8402C'), roughness: .6 }),
+  cap: new THREE.MeshStandardMaterial({ color: col('#F4F0E7'), roughness: .75 }),
+  capGrey: new THREE.MeshStandardMaterial({ color: col('#CFCAC0'), roughness: .75 }),
+  capThumb: new THREE.MeshStandardMaterial({ color: col('#EF7F3A'), roughness: .7 }),
+  cradle: new THREE.MeshStandardMaterial({ color: col('#CFC5B3'), roughness: .85 }),
+  ball: new THREE.MeshStandardMaterial({ color: col('#FFFFFF'), roughness: .25 }),
+  sensor: new THREE.MeshStandardMaterial({ color: col('#1E4A6B'), roughness: .5 }),
+  lens: new THREE.MeshStandardMaterial({ color: col('#9FB9C9'), roughness: .2, transparent: true, opacity: .8 }),
+  plate: new THREE.MeshStandardMaterial({ color: col('#D8CDBB'), roughness: .9, transparent: true, opacity: .6 }),
+  dome: new THREE.MeshBasicMaterial({ color: col('#E8762E'), wireframe: true, transparent: true, opacity: .35 }),
+  bumper: new THREE.MeshStandardMaterial({ color: col('#2A2A2C'), roughness: 1 }),
+  bearing: new THREE.MeshStandardMaterial({ color: col('#F2F2F2'), roughness: .2 }),
+};
+for (const m of Object.values(M)) m.side = THREE.DoubleSide;
+
+// ---------- scene ----------
+const stage = document.getElementById('stage');
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.localClippingEnabled = true;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 1, 2000);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8370, 1.15));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(80, 160, 120); scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffffff, .5); fill.position.set(-120, 60, -80); scene.add(fill);
+
+const root = new THREE.Group();          // mirrored for the left half
+scene.add(root);
+const bx = D.ball.x, bz = D.ball.y;
+const S = D.stack;
+
+// Layer registry: { name, group, explode (world Y offset at full explode), color, anchor }
+const layers = [];
+function layer(name, explode, color, anchor) {
+  const g = new THREE.Group();
+  g.userData = { name, explode, baseY: 0 };
+  root.add(g);
+  layers.push({ name, group: g, explode, color, anchor });
+  return g;
+}
+
+const ol = outlineShape(D.outline);
+const ol3 = outlineShape(D.outline, [{ x: bx, y: bz, r: D.ball.cutout_d / 2 }]);
+
+// --- case bottom (concept) ---
+{
+  const g = layer('Case bottom (concept)', -34, '#D8CDBB', { x: D.bounds.min_x + 10, y: -14, z: D.bounds.max_y - 10 });
+  const floorTop = -13.4;
+  g.add(slab(ol, 2.0, floorTop, M.case));
+  // walls: outline ring made of two extrusions; outer shell with the inner shape as a hole
+  const outer = new THREE.Shape();
+  const grow = 3.0;
+  // grow the outline by pushing each point away from the outline centroid (approximation for a placeholder shell)
+  const cx = (D.bounds.min_x + D.bounds.max_x) / 2, cz = (D.bounds.min_y + D.bounds.max_y) / 2;
+  D.outline.forEach(([x, y], i) => {
+    const dx = x - cx, dz = y - cz, l = Math.hypot(dx, dz) || 1;
+    const px = x + dx / l * grow, pz = y + dz / l * grow;
+    i ? outer.lineTo(px, pz) : outer.moveTo(px, pz);
+  });
+  outer.closePath();
+  const inner = new THREE.Path();
+  D.outline.forEach(([x, y], i) => (i ? inner.lineTo(x, y) : inner.moveTo(x, y)));
+  inner.closePath();
+  outer.holes.push(inner);
+  g.add(slab(outer, 20.4, 5.0, M.caseGhost));   // 5 mm above the PCB down to the floor
+  const bumpers = [[D.bounds.min_x + 12, D.bounds.min_y + 8], [D.bounds.max_x - 10, D.bounds.min_y + 16], [D.bounds.min_x + 14, D.bounds.max_y - 18], [bx + 8, bz + 14]];
+  for (const [x, z] of bumpers) g.add(cyl(5, 1.5, M.bumper, x, floorTop - 2.75, z));
+}
+// --- battery in case pocket (702025, right/trackball half) ---
+{
+  const g = layer('Battery 702025 (case pocket)', -22, '#7B8BA3', { x: -12, y: -6, z: 14 });
+  g.add(box(27, 6.7, 19.7, M.battery2, -12, -PCB_T - 2.2 - 3.35, 14));
+}
+// --- sensor board + lens ---
+{
+  const g = layer('Sensor board PMW3610', -16, '#1E4A6B', { x: bx + 16, y: -11, z: bz });
+  g.add(box(26, 1.6, 25, M.sensor, bx, S.lowest_sensor_board_z + 0.8, bz));
+  g.add(box(21.5, 3.4, 11.4, M.lens, bx, S.lowest_sensor_board_z + 1.6 + 1.7, bz));   // LM18-LSI lens block
+  g.add(box(8.6, 2.0, 4.8, M.metal, bx - 8, S.lowest_sensor_board_z - 1.0, bz + 9));    // FPC connector on the pin side
+}
+// --- cradle ---
+{
+  const g = layer('Trackball cradle', -8, '#CFC5B3', { x: bx - 18, y: 4, z: bz });
+  const rim = S.rim_z, bottom = S.lowest_plastic_z;
+  const cup = new THREE.Mesh(new THREE.CylinderGeometry(S.cup_outer_d / 2, S.cup_outer_d / 2 - 2.5, rim - bottom, 64, 1, true), M.cradle);
+  cup.position.set(bx, (rim + bottom) / 2, bz); g.add(cup);
+  const bowl = new THREE.Mesh(new THREE.SphereGeometry(D.ball.d / 2 + 1.2, 48, 24, 0, Math.PI * 2, Math.PI / 2 + 0.25, Math.PI / 2 - 0.25), M.cradle);
+  bowl.position.set(bx, S.ball_centre_z, bz); g.add(bowl);
+  g.add(cyl(20, 2.0, M.cradle, bx, -PCB_T - 1.0, bz));   // 40 mm flange under the PCB
+  // retainer ring (claws) above the equator
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(D.ball.d / 2 + 1.3, 1.2, 12, 64), M.cradle);
+  ring.rotation.x = Math.PI / 2; ring.position.set(bx, S.rim_z + 3.5, bz); g.add(ring);
+  // three 2 mm ceramic bearings 35 deg below the equator
+  for (const a of [90, 210, 330]) {
+    const t = THREE.MathUtils.degToRad(a), r = (D.ball.d / 2 + 1) * Math.cos(THREE.MathUtils.degToRad(35));
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), M.bearing)).position.set(bx + r * Math.cos(t), S.bearing_contact_z - 0.5, bz + r * Math.sin(t));
+  }
+}
+// --- bottom-side parts ---
+{
+  const g = layer('Bottom-side parts', -5, '#3B3B3F', { x: 20, y: -3, z: 28 });
+  for (const k of D.keys) {
+    const p = keyLocal(k, 2.5, -5.4);
+    g.add(box(14.8, 1.8, 6.6, M.socket, p.x, -PCB_T - 0.9, p.z, k.rot));
+    const d = keyLocal(k, 0, 6);
+    g.add(box(2.8, 1.1, 1.7, M.diode, d.x, -PCB_T - 0.55, d.z, k.rot));
+  }
+  g.add(box(8.6, 2.0, 4.8, M.metal, D.fpc.x, -PCB_T - 1.0, D.fpc.y + 0.6));
+  g.add(box(3.0, 1.5, 7.0, M.black, D.power_switch.x, -PCB_T - 0.75, D.power_switch.y));
+  g.add(box(2.0, 1.5, 1.5, M.metal, D.power_switch.x - 2.5, -PCB_T - 0.75, D.power_switch.y));  // actuator at the inner edge
+  g.add(box(3.5, 1.7, 2.9, M.metal, D.reset.x, -PCB_T - 0.85, D.reset.y));
+  g.add(box(8.0, 6.0, 6.0, M.black, D.jst.x, -PCB_T - 3.0, D.jst.y + 0.5));   // optional JST, 6 mm tall
+}
+// --- PCB ---
+{
+  const g = layer('Main PCB (1.6 mm)', 0, '#2E5A3B', { x: D.bounds.max_x - 6, y: 0, z: D.bounds.min_y + 30 });
+  const pcb = slab(ol3, PCB_T, 0, M.pcb); g.add(pcb);
+  for (const h of D.holes) g.add(cyl(1.6, PCB_T + 0.2, M.metal, h.x, -PCB_T / 2, h.y));
+  // test pads + jumper pads as tiny gold dots
+  for (let i = 0; i < 3; i++) g.add(cyl(0.75, 0.1, M.pcbEdge, D.test_pads.start.x, 0.05, D.test_pads.start.y + i * D.test_pads.pitch));
+  for (let i = 0; i < 3; i++) g.add(box(4.2, 0.1, 1.5, M.pcbEdge, D.jumpers.start.x, 0.05, D.jumpers.start.y + i * D.jumpers.pitch));
+  g.add(box(1.7, 0.1, 4.6, M.pcbEdge, D.battery_pads.x, 0.05, D.battery_pads.y));
+}
+// --- battery under the controller ---
+{
+  const g = layer('Battery 301230 (under controller)', 6, '#8E9CB0', { x: D.controller.x - 14, y: 2, z: D.controller.y + 20 });
+  g.add(box(11.5, 3.3, 32, M.battery, D.controller.x, 1.65, D.controller.y + 1.5));
+}
+// --- controller ---
+{
+  const c = D.controller;
+  const g = layer('Controller nice!nano v2', 14, '#1C2538', { x: c.x - 16, y: 6, z: c.y - 12 });
+  for (const sx of [-7.62, 7.62]) g.add(box(2.6, 3.5, 30.5, M.black, c.x + sx, 1.75, c.y));   // 1.27 mm socket strips
+  g.add(box(c.w, 1.0, c.l, M.ctrl, c.x, 4.0, c.y - 0.6));
+  g.add(box(6, 1.2, 6, M.black, c.x, 5.1, c.y + 2));                     // nRF52840 module
+  g.add(box(9, 3.2, 7.3, M.metal, c.x, 5.6, c.y - c.l / 2 + 2.5));        // USB-C shell at the top edge
+  g.add(box(1.2, 0.6, 1.6, M.stem, c.x + 5, 4.8, c.y - 8));               // blue status LED spot
+}
+// --- switches ---
+{
+  const g = layer('Choc V1 switches', 24, '#EDE8DF', { x: 36, y: 4, z: -4 });
+  for (const k of D.keys) {
+    g.add(box(D.switch_body, 2.2, D.switch_body, M.switchBody, k.x, 1.1, k.y, k.rot));
+    g.add(box(11.5, 2.8, 11.5, M.switchBody, k.x, 3.6, k.y, k.rot));
+    g.add(box(4.5, 1.5, 3.0, M.stem, k.x, 5.75, k.y, k.rot));
+  }
+}
+// --- keycaps ---
+{
+  const g = layer('Keycaps (MBK 1u)', 34, '#F4F0E7', { x: 36, y: 10, z: 44 });
+  for (const k of D.keys) {
+    const outerCol = k.ref.endsWith('0');
+    const mat = k.kind === 'thumb' ? M.capThumb : (outerCol ? M.capGrey : M.cap);
+    g.add(box(D.keycap.width, 3.0, D.keycap.height, mat, k.x, 7.0, k.y, k.rot));
+    g.add(box(D.keycap.width - 3, 0.6, D.keycap.height - 3, mat, k.x, 8.6, k.y, k.rot));
+  }
+}
+// --- ball ---
+{
+  const g = layer('Trackball 25 mm', 28, '#FFFFFF', { x: bx + 20, y: S.ball_centre_z + 6, z: bz - 6 });
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(D.ball.d / 2, 64, 48), M.ball)).position.set(bx, S.ball_centre_z, bz);
+}
+// --- plate / top frame placeholder ---
+{
+  const g = layer('Top frame (concept)', 44, '#D8CDBB', { x: D.bounds.min_x + 20, y: 9, z: D.bounds.min_y + 4 });
+  const outer = outlineShape(D.outline);
+  const innerPath = new THREE.Path();
+  const cx = (D.bounds.min_x + D.bounds.max_x) / 2, cz = (D.bounds.min_y + D.bounds.max_y) / 2;
+  D.outline.forEach(([x, y], i) => {
+    const dx = x - cx, dz = y - cz, l = Math.hypot(dx, dz) || 1;
+    const px = x - dx / l * 2.5, pz = y - dz / l * 2.5;
+    i ? innerPath.lineTo(px, pz) : innerPath.moveTo(px, pz);
+  });
+  innerPath.closePath();
+  outer.holes.push(innerPath);
+  g.add(slab(outer, 3.0, 8.0, M.plate));
+}
+// --- ball dome marker ---
+{
+  const g = layer('Ball dome (future case)', 54, '#E8762E', { x: bx, y: S.ball_top + 4, z: bz + 10 });
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(19, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), M.dome);
+  dome.position.set(bx, 2, bz); g.add(dome);
+}
+
+// ---------- section view: clip everything in front of the ball centre ----------
+const clipPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), bz);
+function setSection(on) {
+  for (const m of Object.values(M)) { m.clippingPlanes = on ? [clipPlane] : []; m.needsUpdate = true; }
+  sectionLabel.hidden = !on;
+}
+
+// ---------- labels ----------
+const labelsEl = document.getElementById('labels');
+const leaders = document.getElementById('leaders');
+const labelNodes = layers.map((l) => {
+  const el = document.createElement('div');
+  el.className = 'label';
+  el.textContent = l.name;
+  labelsEl.appendChild(el);
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  leaders.appendChild(line);
+  return { el, line };
+});
+const sectionLabel = document.createElement('div');
+sectionLabel.className = 'label on';
+sectionLabel.innerHTML = `lens gap <small>${S.lens_gap.toFixed(1)} mm (2.2 to 2.6)</small>`;
+sectionLabel.hidden = true;
+labelsEl.appendChild(sectionLabel);
+const dimsEl = document.getElementById('dims');
+const dims = [
+  ['Ball top above PCB', `+${S.ball_top.toFixed(1)} mm`],
+  ['Ball centre above PCB', `+${S.ball_centre_z.toFixed(1)} mm`],
+  ['Lowest point (sensor board)', `${S.lowest_sensor_board_z.toFixed(1)} mm`],
+  ['PCB thickness', `${PCB_T.toFixed(1)} mm`],
+  ['Controller top', `+${(3.5 + 1.0 + 1.2).toFixed(1)} mm`],
+  ['Keycap top', '+8.9 mm'],
+  ['Cradle flange', '40 mm, 3x M2 on 36 mm'],
+  ['PCB cutout', `${D.ball.cutout_d} mm`],
+  ['Board outline', `${D.bounds.width.toFixed(0)} x ${D.bounds.height.toFixed(0)} mm`],
+];
+for (const [k, v] of dims) { const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dimsEl.append(dt, dd); }
+
+// ---------- layer checkboxes ----------
+const layerList = document.getElementById('layerList');
+layers.forEach((l, i) => {
+  const lab = document.createElement('label');
+  const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = true;
+  cb.addEventListener('change', () => { l.group.visible = cb.checked; });
+  const sw = document.createElement('span'); sw.className = 'swatch'; sw.style.background = l.color;
+  lab.append(cb, sw, document.createTextNode(l.name));
+  layerList.appendChild(lab);
+});
+
+// ---------- minimal orbit control ----------
+const target = new THREE.Vector3((D.bounds.min_x + D.bounds.max_x) / 2, 4, (D.bounds.min_y + D.bounds.max_y) / 2 + 2);
+const sph = { r: 230, theta: 0.55, phi: 1.05 };
+const home = { ...sph };
+function applyCamera() {
+  camera.position.set(
+    target.x + sph.r * Math.sin(sph.phi) * Math.sin(sph.theta),
+    target.y + sph.r * Math.cos(sph.phi),
+    target.z + sph.r * Math.sin(sph.phi) * Math.cos(sph.theta));
+  camera.lookAt(target);
+}
+let drag = null, pinch = null;
+canvas.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); autoRotate.checked = false; });
+canvas.addEventListener('pointermove', (e) => {
+  if (!drag) return;
+  sph.theta -= (e.clientX - drag.x) * 0.006;
+  sph.phi = THREE.MathUtils.clamp(sph.phi - (e.clientY - drag.y) * 0.006, 0.15, 1.5);
+  drag = { x: e.clientX, y: e.clientY };
+});
+canvas.addEventListener('pointerup', () => { drag = null; });
+canvas.addEventListener('wheel', (e) => { e.preventDefault(); sph.r = THREE.MathUtils.clamp(sph.r * (1 + e.deltaY * 0.001), 90, 600); }, { passive: false });
+canvas.addEventListener('touchstart', (e) => { if (e.touches.length === 2) pinch = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }, { passive: true });
+canvas.addEventListener('touchmove', (e) => {
+  if (e.touches.length === 2 && pinch) {
+    const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+    sph.r = THREE.MathUtils.clamp(sph.r * pinch / d, 90, 600); pinch = d;
+  }
+}, { passive: true });
+
+// ---------- controls ----------
+const explodeIn = document.getElementById('explode');
+const explodeVal = document.getElementById('explodeVal');
+const viewTag = document.getElementById('viewTag');
+const autoRotate = document.getElementById('rotate');
+const mirrorIn = document.getElementById('mirror');
+const sectionIn = document.getElementById('section');
+const showLabels = document.getElementById('showLabels');
+const playBtn = document.getElementById('play');
+const titleEl = document.getElementById('title');
+let explode = 0, anim = null;
+function setExplode(v) {
+  explode = v; explodeIn.value = v.toFixed(2); explodeVal.textContent = v.toFixed(2);
+  viewTag.textContent = v < 0.02 ? 'assembled' : v > 0.98 ? 'exploded' : 'exploding';
+  for (const l of layers) l.group.position.y = l.explode * v;
+}
+explodeIn.addEventListener('input', () => { anim = null; setExplode(parseFloat(explodeIn.value)); });
+playBtn.addEventListener('click', () => {
+  const to = explode > 0.5 ? 0 : 1;
+  if (reduced) { setExplode(to); return; }
+  anim = { from: explode, to, t0: performance.now(), dur: 1600 };
+});
+document.getElementById('reset').addEventListener('click', () => { Object.assign(sph, home); autoRotate.checked = true; });
+mirrorIn.addEventListener('change', () => {
+  root.scale.x = mirrorIn.checked ? -1 : 1;
+  const ballLayers = ['Trackball 25 mm', 'Trackball cradle', 'Sensor board PMW3610', 'Ball dome (future case)', 'Battery 702025 (case pocket)'];
+  layers.forEach((l, i) => { if (ballLayers.includes(l.name)) { l.group.visible = !mirrorIn.checked; layerList.children[i].querySelector('input').checked = !mirrorIn.checked; } });
+  titleEl.textContent = mirrorIn.checked ? 'k0d3ball36 r1, left half' : 'k0d3ball36 r1, right half';
+});
+sectionIn.addEventListener('change', () => setSection(sectionIn.checked));
+showLabels.addEventListener('change', () => { labelsEl.style.visibility = leaders.style.visibility = showLabels.checked ? 'visible' : 'hidden'; });
+
+// ---------- theme-aware background ----------
+function applyTheme() { renderer.setClearColor(new THREE.Color(css('--bg') || '#ECE8DF')); }
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+applyTheme();
+
+// ---------- resize + render loop ----------
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+  leaders.setAttribute('viewBox', `0 0 ${w} ${h}`);
+}
+new ResizeObserver(resize).observe(stage);
+resize();
+const v = new THREE.Vector3();
+function project(x, y, z) {
+  v.set(x * root.scale.x, y, z).project(camera);
+  return { x: (v.x + 1) / 2 * stage.clientWidth, y: (1 - v.y) / 2 * stage.clientHeight, behind: v.z > 1 };
+}
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  if (autoRotate.checked && !drag && !reduced) sph.theta += dt * 0.18;
+  if (anim) {
+    const k = Math.min(1, (now - anim.t0) / anim.dur), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    setExplode(anim.from + (anim.to - anim.from) * e);
+    if (k >= 1) anim = null;
+  }
+  applyCamera();
+  renderer.render(scene, camera);
+  // labels: show when exploded enough or when the layer is the only visible one
+  const show = explode > 0.35;
+  layers.forEach((l, i) => {
+    const { el, line } = labelNodes[i];
+    const on = show && l.group.visible;
+    el.classList.toggle('on', on);
+    if (!on) { line.setAttribute('opacity', 0); return; }
+    const a = l.anchor, y = a.y + l.explode * explode;
+    const p = project(a.x, y, a.z);
+    const side = (a.x * root.scale.x) < (target.x * root.scale.x) ? -1 : 1;
+    const lx = p.x + side * 110, ly = p.y - 18;
+    el.style.left = lx + 'px'; el.style.top = ly + 'px';
+    line.setAttribute('x1', p.x); line.setAttribute('y1', p.y); line.setAttribute('x2', lx - side * 48); line.setAttribute('y2', ly);
+    line.setAttribute('opacity', p.behind ? 0 : 1);
+  });
+  if (!sectionLabel.hidden) {
+    const p = project(bx, S.ball_centre_z - D.ball.d / 2 - 1.2 + layers[2].explode * explode * 0, bz + 0.1);
+    sectionLabel.style.left = (p.x + 90) + 'px'; sectionLabel.style.top = p.y + 'px';
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>

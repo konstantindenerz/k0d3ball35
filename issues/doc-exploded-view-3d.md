@@ -2,7 +2,7 @@
 title: Interactive 3D exploded view of one half
 type: feature
 priority: P2
-status: in-progress
+status: done
 area: doc
 created: 2026-11-05
 ---
@@ -20,11 +20,13 @@ the ball and a left-half mirror toggle. The page is generated from the layout da
 
 ## Acceptance criteria
 
-- [ ] Explode slider, auto-rotate, layer visibility, mirror and section toggles work
-- [ ] Geometry follows points.json / stack.json (ball top +23 mm, PCB 1.6 mm, controller on 3.5 mm sockets)
-- [ ] Light and dark theme, responsive, no external hosts besides cdnjs and Google Fonts
-- [ ] Linked from README and published as an artifact
+- [x] Explode slider, auto-rotate, layer visibility, mirror and section toggles work
+- [x] Geometry follows points.json / stack.json (ball top +23 mm, PCB 1.6 mm, controller on 3.5 mm sockets)
+- [x] Light and dark theme, responsive, no external hosts besides cdnjs and Google Fonts
+- [x] Linked from README and published as an artifact
 
 ## Notes
+
+
 
 Case shell and plate are placeholders; the real case comes in the case phase (`mech-case`).

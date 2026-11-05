@@ -11,6 +11,7 @@ lands in each hole there; that is handled in firmware (see docs/05-firmware.md).
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 
 from .geometry import Layout
@@ -68,9 +69,12 @@ def build_components(layout: Layout) -> list[Component]:
                                {"1": f"COL{k.col}", "2": k.net}, "switch", k.x, k.y, k.rotation,
                                "Kailh Choc V1 switch, hot-swap socket or soldered, reversible",
                                {"row": k.row, "col": k.col, "name": k.name}))
-        # Diode sits in the free south band of the switch, cathode (pad 1) towards the row line.
+        # Diode sits in the free south band of the switch (6 mm below the centre, rotated with
+        # the key), cathode (pad 1) towards the row line.
+        th = math.radians(k.rotation)
         comps.append(Component(k.diode_ref, "1N4148W", "D_SOD-123_reversible",
-                               {"1": f"ROW{k.row}", "2": k.net}, "diode", k.x, k.y + 6.0, k.rotation,
+                               {"1": f"ROW{k.row}", "2": k.net}, "diode",
+                               round(k.x + 6.0 * math.sin(th), 3), round(k.y + 6.0 * math.cos(th), 3), k.rotation,
                                "1N4148W SOD-123, pads on both sides", {"row": k.row, "col": k.col}))
     c = cfg["controller"]
     comps.append(Component("U1", "nice!nano v2", "nice_nano_v2_THT",
@@ -108,12 +112,12 @@ def build_components(layout: Layout) -> list[Component]:
                            "Reset button, bottom side"))
     tp = cfg["test_pads"]
     for i, net in enumerate(["TP_D2", "TP_D3", "TP_D9"]):
+        along_x = tp.get("direction", "y") == "x"
         comps.append(Component(f"TP{i + 1}", net, "TestPad_1.5mm", {"1": net}, "testpoint",
-                               tp["start"]["x"], tp["start"]["y"] + i * tp["pitch"], 0, f"Spare controller pin {net[3:]}"))
+                               tp["start"]["x"] + (i * tp["pitch"] if along_x else 0),
+                               tp["start"]["y"] + (0 if along_x else i * tp["pitch"]), 0, f"Spare controller pin {net[3:]}"))
     for i, h in enumerate(cfg["mounting_holes"]):
         comps.append(Component(f"H{i + 1}", "M2", "MountingHole_2.2mm", {}, "hole", h["x"], h["y"], 0, "Case mounting hole M2"))
-    import math
-
     tb = cfg["trackball"]
     for i, ang in enumerate(tb["flange_hole_angles"]):
         r = tb["flange_hole_circle"] / 2
@@ -136,6 +140,9 @@ def net_names(comps: list[Component]) -> list[str]:
 def net_classes() -> dict[str, dict]:
     return {
         "Default": {"clearance": 0.2, "track_width": 0.25, "via_diameter": 0.6, "via_drill": 0.3},
-        "Power": {"clearance": 0.2, "track_width": 0.4, "via_diameter": 0.7, "via_drill": 0.35,
-                  "nets": ["GND", "VCC", "RAW", "BAT+", "MCU_1", "MCU_13", "MCU_4", "MCU_16"]},
+        "Power": {"clearance": 0.2, "track_width": 0.4, "via_diameter": 0.6, "via_drill": 0.3,
+                  "nets": ["RAW", "BAT+", "MCU_1", "MCU_13"]},   # GND is pour-fed, stays in Default
+        # thin tracks for the 0.5 mm pitch FPC connector (0.3 mm pads, 0.2 mm gaps)
+        "FPC": {"clearance": 0.2, "track_width": 0.15, "via_diameter": 0.6, "via_drill": 0.3,
+                "nets": ["TB_SCLK", "TB_SDIO", "TB_NCS", "TB_MOT", "VCC"]},
     }

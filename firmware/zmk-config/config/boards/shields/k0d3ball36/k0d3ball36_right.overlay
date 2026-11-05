@@ -1,6 +1,8 @@
 /*
  * Right half (split central, carries the PMW3610 trackball sensor).
  *
+ *   COL0..COL4 (pinky .. inner) -> pro_micro 4, 5, 6, 7, 8
+ *   ROW0..ROW3 (top .. thumbs)  -> pro_micro 21, 20, 19, 18
  *   TB_SCLK  pro_micro 15 = P1.13
  *   TB_SDIO  pro_micro 16 = P0.10  (3-wire SPI: MOSI and MISO on the same pin)
  *   TB_NCS   pro_micro 10 = P0.09
@@ -20,6 +22,12 @@
 };
 
 &kscan0 {
+    row-gpios
+        = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        ;
     col-gpios
         = <&pro_micro 4 GPIO_ACTIVE_HIGH>
         , <&pro_micro 5 GPIO_ACTIVE_HIGH>
