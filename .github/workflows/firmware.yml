@@ -1,0 +1,23 @@
+name: firmware
+
+on:
+  push:
+    paths:
+      - "firmware/zmk-config/**"
+      - ".github/workflows/firmware.yml"
+  pull_request:
+    paths:
+      - "firmware/zmk-config/**"
+      - ".github/workflows/firmware.yml"
+  schedule:
+    # weekly rebuild on the pinned ZMK commit to catch toolchain/container drift
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    with:
+      config_path: firmware/zmk-config/config
+      build_matrix_path: firmware/zmk-config/build.yaml
+      archive_name: k0d3ball36-firmware

@@ -1,0 +1,28 @@
+/*
+ * Left half (peripheral, no trackball in the default build).
+ */
+
+#include "k0d3ball36.dtsi"
+
+&kscan0 {
+    col-gpios
+        = <&pro_micro 4 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 5 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 6 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 7 GPIO_ACTIVE_HIGH>
+        , <&pro_micro 8 GPIO_ACTIVE_HIGH>
+        ;
+};
+
+/*
+ * Left-ball build: populate the sensor board on the left half, then
+ *   1. copy the &pinctrl / &spi1 / trackball nodes from k0d3ball36_right.overlay here,
+ *   2. uncomment the block below,
+ *   3. in k0d3ball36_right.overlay disable `trackball_listener` and enable
+ *      `trackball_split_listener`.
+ *
+ * &trackball_split {
+ *     status = "okay";
+ *     device = <&trackball>;
+ * };
+ */

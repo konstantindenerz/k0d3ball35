@@ -1,0 +1,13 @@
+# ZMK main is pinned to a known-good commit. Bump deliberately, then rebuild both halves
+# and settings_reset. The weekly CI run on the pinned commit catches toolchain drift.
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      revision: 4dd95d7840eb3d5a3f59bb29fbf1ab054715ef85
+      import: app/west.yml
+  self:
+    path: config
