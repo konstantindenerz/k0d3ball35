@@ -2,7 +2,7 @@
 title: Left half uses the mirrored controller pins
 type: task
 priority: P1
-status: done
+status: wontfix
 area: fw
 created: 2026-11-05
 ---
@@ -24,4 +24,9 @@ RAW, RST and VCC rows are selected with the solder jumpers JP1, JP2 and JP3.
 
 ## Notes
 
-Left-ball build would use TB_SCLK D6, TB_SDIO D8, TB_NCS D9, TB_MOT D7; a prepared block sits in the left overlay as a comment.
+Left-ball build would have used TB_SCLK D6, TB_SDIO D8, TB_NCS D9, TB_MOT D7 on the r1 board.
+
+2026-11-06: obsolete. r2 has one PCB per half with identical controller wiring, so both overlays
+share one kscan pin set and the sensor pins are D15 / D16 / D10 / D14 on both sides
+(`docs/01-design-spec.md` section 2, `hw-two-pcbs-r2`). Closed as wontfix; the r1 mirrored pin set
+was removed from the left overlay.

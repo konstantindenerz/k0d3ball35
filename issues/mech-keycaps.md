@@ -16,7 +16,7 @@ The reference build uses self-designed dished low profile caps with smoothed thu
 ## Acceptance criteria
 
 - [ ] Parametric 1u Choc cap with dish depth and thumb smoothing parameters
-- [ ] STL set for 36 keys exported, print settings documented
+- [ ] STL set for 35 keys (18 left, 17 right) exported, print settings documented
 
 ## Notes
 

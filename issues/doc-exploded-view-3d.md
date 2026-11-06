@@ -21,7 +21,7 @@ the ball and a left-half mirror toggle. The page is generated from the layout da
 ## Acceptance criteria
 
 - [x] Explode slider, auto-rotate, layer visibility, mirror and section toggles work
-- [x] Geometry follows points.json / stack.json (ball top +23 mm, PCB 1.6 mm, controller on 3.5 mm sockets)
+- [x] Geometry follows points-left.json / points-right.json / stack.json (r2: ball top +17.1 mm in the pocket beside the right PCB, PCB 1.6 mm, controller on 3.5 mm sockets)
 - [x] Light and dark theme, responsive, no external hosts besides cdnjs and Google Fonts
 - [x] Linked from README and published as an artifact
 

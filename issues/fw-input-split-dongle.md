@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-The reversible PCB allows the ball on either half, and a three-piece dongle setup makes both halves
+`zmk,input-split` forwards sensor events from a peripheral, so a left-ball build (with a mirrored right PCB) or a three-piece dongle setup makes both halves
 peripherals. ZMK supports forwarding pointer events from a peripheral with `zmk,input-split`. The r1
 firmware scaffolds the node; this ticket makes it a tested build variant.
 

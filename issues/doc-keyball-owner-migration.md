@@ -15,7 +15,7 @@ Keyball and holykeebs users know keycodes such as `CPI_I100`, `SCRL_MO`, `HK_C_S
 
 ## Acceptance criteria
 
-- [ ] docs page with keycode mapping and the differences in feel (ball height, 25 mm, hot-swap only)
+- [ ] docs page with keycode mapping and the differences in feel (ball height, 19 mm, two right thumb keys, hot-swap only)
 - [ ] Linked from README.md
 
 ## Notes

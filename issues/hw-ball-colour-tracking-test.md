@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-Translucent, glossy white and some plastic 25 mm balls track badly on optical sensors; matte Perixx and Elecom balls are reported to work. The BOM lists two balls.
+Translucent, glossy white and some plastic small balls (25 mm reports; the r2 ball is 19.05 mm POM) track badly on optical sensors; matte Perixx and Elecom balls are reported to work. The BOM lists two balls.
 
 ## Acceptance criteria
 

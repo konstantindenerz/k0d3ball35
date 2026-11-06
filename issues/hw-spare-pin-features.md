@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-D1, D2, D3 and D9 (right half) are broken out as jumper and test pads. A later revision could add footprints for an encoder or a small display without changing the matrix.
+D0, D1, D2, D3 and D9 are broken out as test pads on both halves (plus D10, D14, D15, D16 on the left, where the sensor pins are unused). A later revision could add footprints for an encoder or a small display without changing the matrix.
 
 ## Acceptance criteria
 

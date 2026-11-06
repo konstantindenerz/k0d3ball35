@@ -2,15 +2,17 @@
 
 The trackball module is the one part of k0d3ball36 that is not covered by the Keyball39 heritage:
 Keyball never published its sensor board or its ball holder. This document describes the sensor
-daughterboard that lives in `hardware/sensor-pcb/`, the optical stack it needs, and the rules the
-cradle (`hardware/trackball-cradle/`) has to follow.
+daughterboard that lives in `hardware/sensor-pcb/`, the optical stack it needs, the 19.05 mm
+ball decision, and the rules the cradle (`hardware/trackball-cradle/`) has to follow in the r2
+pocket mount.
 
 ## 1. Why a daughterboard
 
-* The main PCB stays reversible: it only carries a 6-pin FPC connector, no optics.
+* The main PCB stays a plain key matrix board: it only carries a 6-pin FPC connector, no optics.
+  Since r2 the module does not even pass through the PCB; it stands in a case pocket beside it.
 * The sensor height is the critical dimension of the whole module. A separate board can be moved
-  up and down by the cradle without touching the main PCB.
-* 34 mm or a different sensor later means a new daughterboard and cradle, not a new keyboard.
+  up and down by the cradle and the case floor without touching the main PCB.
+* A 25 mm ball or a different sensor later means a new cradle and pocket, not a new keyboard.
 
 ## 2. Sensor board at a glance
 
@@ -18,12 +20,13 @@ cradle (`hardware/trackball-cradle/`) has to follow.
 |------|-------|
 | Sensor | PixArt PMW3610DM-SUDU, 16-pin molded lead-frame DIP, 3-wire SPI, motion interrupt |
 | Lens | PixArt LM18-LSI (sold together with the sensor on AliExpress, LCSC part C42442560 for the IC) |
-| Supply | 3.3 V from the main PCB (controller VCC). 1.8 V core rail from an XC6206P182MR LDO on the board |
+| Supply | 3.3 V from the right PCB (controller VCC). 1.8 V core rail from an XC6206P182MR LDO on the board |
 | Logic level | VDDIO = 3.3 V, so SCLK, SDIO, NCS and MOTION connect to the nRF52840 directly. No level shifter |
 | Current | 0.6 mA tracking, 36 uA rest 1, 16 uA rest 2, 3 uA shutdown (datasheet, VDD 1.8 V) |
 | Board | 26 x 25 mm, 1.6 mm FR4, 2 layer, 2x M2 holes on the vertical centre line 20 mm apart |
 | Connector | 0.5 mm pitch, 6 contacts, bottom contact, Hirose FH12-6S-0.5SH or an LCSC clone (C2764370) |
 | Optical centre | exactly between the two mounting holes (board centre). The ball axis goes through it |
+| Position | on the case floor under the ball, centred at layout (+5, +64) of the right half, component side down |
 
 The sensor body passes through a 16.96 x 8.60 mm cutout in the board (datasheet figure 5) and
 protrudes 0.7 mm on the lens side. Its leads are soldered on the component side. The lens clips
@@ -64,30 +67,30 @@ close to the pins as possible with short traces. The layout keeps them within 3 
 
 ### 2.2 Connector pin order and why it is mirrored
 
-Main PCB connector (fixed by `docs/01-design-spec.md`):
+Right PCB connector J1 (fixed by `docs/01-design-spec.md`):
 
 | Pin | 1 | 2 | 3 | 4 | 5 | 6 |
 |-----|---|---|---|---|---|---|
-| Main PCB | VCC | GND | SCLK | SDIO | NCS | MOT |
+| Right PCB (J1) | VCC | GND | SCLK | SDIO | NCS | MOT |
 | Sensor board | MOT | NCS | SDIO | SCLK | GND | VCC |
 
 Reasoning. A bottom-contact FPC connector has its contacts between the cable and the PCB. A
 "type A" FFC has its exposed contacts on the same face at both ends. Lay the cable flat with the
-contacts facing down: both ends must plug into connectors whose contacts face up, i.e. connectors
-mounted on the top side of their boards, which means the two boards face each other end to end and
-one connector is rotated 180 degrees relative to the other when seen from above. The conductor on
-the left edge of the cable reaches pin 1 of one connector and pin 6 of the other. The same holds in
-our stacked arrangement, where the sensor board hangs below the main PCB with its component side
-pointing down: the cable leaves the main PCB on its top side, folds down through the ball cutout,
-and enters the sensor connector from below, again with the pin order reversed. Only a twist in the
-cable or a type B (opposite-side contacts) cable would make it 1:1.
+contacts facing up: both ends must plug into connectors whose contacts face down, i.e. connectors
+mounted on the underside of their boards, which means the two boards lie side by side facing the
+same way and the two connectors look at each other end to end. The conductor on the left edge of
+the cable reaches pin 1 of one connector and pin 6 of the other. That is exactly the r2
+arrangement: J1 sits on the underside of the right PCB, the sensor board lies on the case floor
+6 mm lower with its component side (and connector) facing the floor, and the cable runs flat from
+J1 into the pocket, under the sensor board and into its connector, with the pin order reversed.
+Only a twist in the cable or a type B (opposite-side contacts) cable would make it 1:1.
 
 ```
- main PCB (component side up)         FFC, contacts down        sensor board (component side DOWN)
- ┌──────────────┐                                                ┌──────────────┐
- │   [1 2 3 4 5 6]════════════════════════╗                      │              │
- └──────────────┘                         ║ fold                 │  [6 5 4 3 2 1]│ <- connector on the
-                                          ╚══════════════════════╧══════════════┘    underside
+ right PCB, component side DOWN            FFC, contacts up         sensor board on the floor, component side DOWN
+ ═══════════════════════════════╗                                   ╔═══════════════════════
+   J1 [1 2 3 4 5 6]             ║ drops 6 mm into the pocket        ║  [6 5 4 3 2 1] <- connector on the underside
+                                ╚═══════════════════════════════════╝
+ ────────────────────────────────── case floor at -11.6 mm ─────────────────────────────────────
 ```
 
 Cross-check: torabo-tsuki-lp uses the same connector family; its keyboard side is wired
@@ -109,7 +112,7 @@ make the check easy with a multimeter.
 | top row of pins (component side view) | 9 VCP, 10 +VCSEL, 11 GND, 12 CP, 13 CN, 14 VDD, 15 XYLASER, 16 -VCSEL |
 | bottom row of pins | 8 MOTION, 7 NRESET, 6 VDDIO, 5 NCS, 4 NC, 3 SCLK, 2 SDIO, 1 +VCSEL (square pad) |
 | top left | VCP, charge-pump and VDD capacitors |
-| top right | FPC connector, cable exits over the top edge |
+| top right | FPC connector, cable exits over the top edge (towards the keys in the pocket) |
 | bottom left | pull-ups, VDDIO capacitor, regulator with its capacitors |
 | bottom right | VCSEL capacitor, series resistor, serial test points |
 | both layers | GND pours, stitched with vias |
@@ -133,65 +136,98 @@ Numbers from the PMW3610DM-SUDU datasheet, figure 4 (assembly drawing with LM18-
 | top of sensor body (component side) to tracking surface | 9.05 mm, so the body sticks out 1.65 mm on the component side |
 
 For a ball the tracking surface is the ball surface directly under the optical centre. The cradle
-must therefore hold the ball so that its lowest point (or the point on the optical axis, if the
-sensor looks at the ball from an angle) is **5.80 mm away from the lens-side face of the sensor
-PCB**, and it must provide the "base plate" that the lens flange rests on, 2.40 mm from the ball
-surface. The lens locates the sensor; the PCB only has to follow.
+must therefore hold the ball so that its lowest point is **5.80 mm away from the lens-side face of
+the sensor PCB**, and it must provide the "base plate" that the lens flange rests on, 2.40 mm from
+the ball surface. The lens locates the sensor; the PCB only has to follow.
 
 ```
-                 ball (25 mm)
-             ___________________
-           /                     \
-          |          O            |      centre 12.5 mm above the lowest point
-           \_________ _ _________/
+                 ball (19.05 mm)
+               _______________
+             /                 \
+            |         O         |      centre 9.5 mm above the lowest point, +7.6 mm above the PCB top
+             \_______ _ _______/
                      ^ tracking surface
                      | 2.40  lens flange rests on the cradle "base plate"
           ===========|============  lens LM18-LSI, clipped on the sensor body
                      | 3.40  air gap / lens body
-    ─────────────────┴──────────────  PCB, lens-side face (BALL SIDE silkscreen)
+    ─────────────────┴──────────────  PCB, lens-side face (BALL SIDE silkscreen), -7.75 mm
     ////////////////////////////////  PCB 1.6 mm, sensor body passes through the cutout
-    ─────────────────────────────────  component side: leads, passives, FPC connector (about 1.0 mm)
+    ─────────────────────────────────  component side down: leads, passives, FPC connector
+    ───────────────────────────────── case floor, -11.6 mm below the main PCB top
 ```
 
-Image prompt: *Technical cross-section drawing: a 25 mm sphere resting on three tiny ceramic balls
-inside a cup; below the sphere a short optical lens block and a thin green PCB with a chip inserted
-through it; dimension lines mark 2.4 mm between lens and sphere and 5.8 mm between PCB and sphere;
-monochrome line art with blue dimension text.*
+Image prompt: *Technical cross-section drawing: a 19 mm sphere resting on three tiny ceramic balls
+inside a cup that stands on a flat case floor beside a thin green keyboard PCB; below the sphere a
+short optical lens block and a thin green sensor PCB with a chip inserted through it, lying on the
+floor; dimension lines mark 2.4 mm between lens and sphere, 5.8 mm between PCB and sphere and 17 mm
+from the keyboard PCB top to the top of the sphere; monochrome line art with blue dimension text.*
 
-### 3.1 Consequences for the cradle
+### 3.1 Resulting stack in the pocket mount
+
+From `hardware/trackball-cradle/stack.json` (z = 0 is the main PCB top, floor at -11.6):
+
+| | 19.05 mm (default) | 25 mm (fallback) |
+|---|---|---|
+| case floor (lowest point of the sensor board) | -11.6 mm | -11.6 mm |
+| sensor PCB lens-side face | -7.75 mm | -7.75 mm |
+| housing top (0.3 mm under the PCB underside) | -1.9 mm | -1.9 mm |
+| ball bottom | -1.95 mm | -1.95 mm |
+| ball centre | +7.6 mm | +10.6 mm |
+| cup rim | +6.6 mm | +9.6 mm |
+| ball top | **+17.1 mm** | +23.05 mm |
+| cup outer diameter | 23.1 mm | 29.0 mm |
+| largest diameter above the PCB (bearing bosses) | 24.1 mm | 29.6 mm |
+| PCB notch apothem needed | 15.0 mm (r2 boards) | 16.5 mm (different PCB) |
+
+Choc V1 caps top out at about 11 mm, so the 19 mm ball stands 6 mm proud of the keys, roughly what
+the torabo-tsuki LP review describes as "keycaps and ball at the same height" with its 19 mm
+option. The r1 25 mm ball stood 12 mm proud, which is why the ball size was reduced
+(`issues/mech-ball-height-23mm.md`).
+
+### 3.2 Consequences for the cradle
 
 * Sensor PCB lens-side face sits 5.80 mm below the ball surface at the optical axis; total module
-  depth below the ball contact point is about 5.8 + 1.6 + 1.0 (connector and cable) = 8.4 mm when
-  the sensor looks straight up.
-* Mounting the sensor at an angle (the sensor can read the ball anywhere on its surface) moves the
-  module to the side and lowers the stack under the ball. Looking at the ball from 30 to 45 degrees
-  below the equator is what most low-profile designs do (torabo-tsuki-lp, Rollino). The cradle
-  generator exposes the angle as a parameter; the Z distance rule stays the same along the optical
-  axis.
-* The two M2 holes are 20.0 mm apart on the board's long axis, symmetric to the optical centre.
-  Screw bosses in the cradle must leave room for the connector (top right, 9 x 5 mm) and the
-  passives (max height 1.0 mm) on the component side, and for the sensor body plus lens on the
-  lens side.
+  depth below the ball contact point is 5.8 + 1.6 + 2.25 (leads, connector) = 9.65 mm with the
+  sensor looking straight up. That is the floor depth of the pocket: 11.6 mm below the PCB top.
+* The sensor board lies in the housing with its lens side up against the housing face and is
+  screwed to two M2 posts from below. The two holes are 20.0 mm apart on the board's long axis,
+  symmetric to the optical centre.
+* The FPC connector (top right, 9 x 5 mm) and the passives (max height 1.0 mm) face the floor;
+  the 2.25 mm gap between board and floor is where the FFC runs out through the slot in the
+  key-facing wall of the housing.
+* A tilted sensor (looking at the ball from the side, as torabo-tsuki and Rollino do) was
+  evaluated in r1 and does not pay off with a 26 mm wide board: see the cradle README. The 19 mm
+  ball brought the 6 mm that the tilt would have promised.
 * Lens footprint: PixArt only gives the sensor body (16.2 x 10.1 mm, 3.96 mm tall) and marks a
   "lens interference" zone of 2.3 mm beyond pin 1. The LM18-LSI base plate is larger than the
-  body; measure the physical lens before closing the cradle pocket (see open questions). The
-  footprint carries a dashed 17 x 17 mm placeholder on `Dwgs.User`.
+  body; measure the physical lens before closing the cradle pocket
+  (`issues/mech-lm18-lens-outline-measurement.md`). The footprint carries a dashed 17 x 17 mm
+  placeholder on `Dwgs.User`.
 * The PCB does not need to be square to the ball axis in the horizontal plane; the optical centre
   must be on the ball axis within about 0.5 mm, Z within the 2.2 to 2.6 mm window.
 
-### 3.2 25 mm versus 34 mm
+### 3.3 Why 19.05 mm, and the 25 mm fallback
 
-The optics are independent of ball diameter; the same sensor board works for a 34 mm ball with
-a different cradle. What changes:
+Research summary (details and links in `docs/00-feasibility.md`, section 4a): torabo-tsuki LP
+ships with 25 or 19.05 mm POM balls on the same PMW3610-class sensor module, LiNEA40 tracks a
+19 mm ball with a PMW3610 directly on its PCB, and a seven-month review of the 19 mm torabo-tsuki
+LP reports no tracking problems. PandaKB sells a 19 mm phenolic ball made for split keyboards,
+and 3/4 inch POM bearing balls cost a few euros per pack. Nothing smaller than 19 mm exists as a
+keyboard trackball, so 19.05 mm is the floor.
 
-| | 25 mm | 34 mm |
+The optics are independent of ball diameter; the same sensor board works for both sizes with a
+different cradle. What changes:
+
+| | 19.05 mm | 25 mm |
 |---|---|---|
-| finger travel per revolution | 78.5 mm | 106.8 mm |
+| finger travel per revolution | 59.8 mm | 78.5 mm |
 | counts per mm of finger travel at the same CPI | identical (the sensor measures surface travel) |
-| perceived sensitivity | higher, because the fingertip covers more of the ball; start at 400 CPI and scale in ZMK | Keyball users typically run 500 to 1200 CPI |
-| bearings | 3x 2.0 mm ZrO2 ceramic balls | 3x 2.0 to 2.5 mm ZrO2 |
-| ball sources | Perixx PERIPRO-305, Elecom M-B25SV/RD | Perixx PERIPRO-303, Elecom M-B34 |
-| Keyball 25 mm conversion reports | twitchier, more thumb travel for long moves, sensor height was the real problem | reference |
+| perceived sensitivity | the fingertip covers more of the ball, so the same CPI feels about 30 percent faster per thumb movement; start at 600 CPI (r1 started at 400 for 25 mm) | 400 to 800 CPI |
+| inertia and flicks | little inertia, no long flicks; precise for short moves | some inertia |
+| ball top above the PCB | +17.1 mm | +23.05 mm |
+| bearings | 3x 2.0 mm ZrO2 ceramic balls | 3x 2.0 mm ZrO2 |
+| ball sources | 3/4 inch POM bearing balls (Amazon, AliExpress), PandaKB TB19 phenolic | Perixx PERIPRO-305, Elecom M-B25SV/RD |
+| PCB | r2 boards (notch apothem 15 mm) | wider notch (16.5 mm) and a 35 mm pocket: a PCB revision, `issues/hw-25mm-cradle-fallback.md` |
 
 ## 4. Assembly order
 
@@ -205,10 +241,12 @@ a different cradle. What changes:
 5. Clip the LM18-LSI lens onto the sensor body (its guide posts engage the body). Do not touch
    the optical surfaces; hold the lens by its flange.
 6. Check with a multimeter: no short between VCC and GND, no short between 1V8 and GND.
-7. Plug the FFC, power the main board, read register 0x00 (product ID 0x3E). ZMK logs the product
-   ID at boot when `CONFIG_INPUT_LOG_LEVEL_DBG` is enabled; TP3/TP4/TP5 allow probing SPI with a
-   logic analyser.
-8. Mount the board in the cradle with two M2 screws, drop in the ball, test tracking.
+7. Plug the FFC into the sensor board now (the connector is unreachable once the board is in the
+   housing), connect the other end to J1, power the right half, read register 0x00 (product ID
+   0x3E). ZMK logs the product ID at boot when `CONFIG_INPUT_LOG_LEVEL_DBG` is enabled;
+   TP3/TP4/TP5 allow probing SPI with a logic analyser.
+8. Slide the board lens-first into the cradle housing from below, cable through the slot, fasten
+   with two M2 screws from below, stand the module in the pocket, drop in the ball, test tracking.
 
 Image prompt: *Hands-on macro photo of someone pressing a small black optical sensor through a cutout
 in a green PCB from the back side, a pair of tweezers holding a clear plastic lens next to it, soft
@@ -225,20 +263,20 @@ workshop lighting, shallow depth of field.*
 | MOTION (TP6) | high when idle, pulses low when the ball moves |
 | ZMK | cursor moves, `res-cpi` changes take effect |
 
-## 6. Open questions (tickets to file)
+## 6. Open questions (tickets)
 
 * **LM18-LSI outline** (mech, P1): the exact base plate dimensions of the lens are not in the
   public datasheet. Measure a physical lens and update the `Dwgs.User` placeholder in the footprint
   and the cradle pocket. Until then print the cradle pocket oversized.
+  `issues/mech-lm18-lens-outline-measurement.md`
 * **FFC orientation check** (hw, P1): verify the mirrored pin order with the first physical cable
-  and connectors before ordering main PCBs in quantity; the analysis is solid but cheap to confirm.
-* **Sensor angle** (mech, P1): decide between straight-up (simplest, 8.4 mm under the ball) and an
-  angled mount (lower profile) once the cradle prototype exists.
+  and connectors before ordering PCBs in quantity; the analysis is solid but cheap to confirm.
+  `issues/hw-ffc-pin-order-verification.md`
+* **Ball surface** (hw, P1): POM balls vary; test two or three from the pack and the PandaKB
+  phenolic ball on the sensor before choosing a colour. `issues/hw-ball-colour-tracking-test.md`
 * **Reverse-cable safe pinout** (hw, P3): a palindromic power pinout (VCC on 1 and 6, GND on 2 and 5)
   would make the cable orientation irrelevant for power; costs two signal pins, so it needs an 8-pin
-  connector. Consider for r2.
-* **Board size** (hw, P3): the board is 26 x 25 mm instead of the 22 x 25 mm estimate in the design
-  spec, because the sensor cutout plus one routing channel on each side needs 21 mm, and the
-  connector needs clearance from the mounting hole. The design spec should be updated.
-* **Connector family** (doc, P3): the design spec still names FH19SC; the project decided on
-  FH12-6S-0.5SH (same pitch, same bottom-contact arrangement, larger KiCad library coverage).
+  connector. Consider for a later revision.
+* **Case pocket** (mech, P1): the pocket well, its floor depth and the two case-screw holes come
+  from `points-right.json` and `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`.
+  `issues/mech-case-ball-pocket.md`

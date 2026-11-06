@@ -1,5 +1,5 @@
 ---
-title: Main PCB revision 1 (reversible, 18 keys, controller, FPC, battery)
+title: Main PCB revision 1 (reversible, 18 keys, controller, FPC, battery) - superseded by r2
 type: feature
 priority: P0
 status: done
@@ -7,7 +7,7 @@ area: hw
 created: 2026-11-05
 ---
 
-# Main PCB revision 1 (reversible, 18 keys, controller, FPC, battery)
+# Main PCB revision 1 (reversible, 18 keys, controller, FPC, battery) - superseded by r2
 
 ## Context
 
@@ -25,5 +25,10 @@ cutout with cradle holes, M2 case mounting holes. Geometry comes from `hardware/
 - [x] `docs/02-layout.md` and `docs/06-fabrication.md` updated
 
 ## Notes
+
+2026-11-06: superseded. r1 was rejected (not flat and compact enough; the reversible board cost
+jumpers, a dead D0 and a mirrored pin map). r2 replaces it with two boards, `k0d3ball36-left` and
+`k0d3ball36-right`, generated from the same layout file; see `hw-two-pcbs-r2`. `hardware/main-pcb/`
+is removed once both r2 boards are clean. The r1 state for the record:
 
 2026-11-05: schematic generated, ERC clean at all severities; board autorouted with freerouting through `scripts/build_board.sh` (retries until clean), the rotated thumb keys and the controller legs of COL3/COL4/ROW3 are hand-routed in `manual_routes`; DRC with schematic parity reports zero errors (warnings only: diode courtyards under the switches, silkscreen overlaps); gerbers, drill, STEP, schematic PDF, BOM, position file and renders exported with `scripts/export.sh`. r1 is hot-swap only (see hw-hotswap-only). Ordering is gated by `hw-main-pcb-review-r1`, `test-fab-gerber-viewer` and `hw-jlcpcb-order-r1`.

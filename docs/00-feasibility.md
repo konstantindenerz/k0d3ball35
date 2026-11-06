@@ -4,8 +4,8 @@ Status: complete (2026-11-05). Verdict: **GO.**
 
 Every subsystem of k0d3ball36 has working, open-source prior art. The firmware stack needs no
 third-party driver module any more. The two genuine risks are mechanical and logistical, not
-electrical: securing a repeatable supply of 25 mm balls, and keeping the sensor stack under the ball
-low enough for a low-profile board.
+electrical: a trackball small enough for a low-profile board that still tracks (resolved in r2 with
+a 19.05 mm POM ball, see section 4a), and keeping the sensor stack under the ball low enough.
 
 ![Reference build on an oak desk](images/img-hero-desk.png)
 
@@ -42,17 +42,17 @@ netlist). Nothing from that repository is included here; see section 7.
 
 | Aspect | Keyball39 (Yowkees) | k0d3ball36 |
 |--------|---------------------|------------|
-| Keys | 39 (21 no-ball half, 18 ball half) | 36 (18 + 18, identical halves) |
+| Keys | 39 (21 no-ball half, 18 ball half) | 35 (18 left, 17 ball half; two different PCBs since r2) |
 | Switch standard | MX, 19.05 mm pitch, 5 thumb positions MX/Choc dual | Choc V1, 18 x 17 mm pitch, all positions hot-swap |
 | Column stagger | 11.70 / 4.70 / 0 / 2.50 / 5.00 mm (pinky to inner) | same proportions scaled to 17 mm rows |
-| Thumb cluster | 3-key arc, 21.63 mm pitch, 0 / 10 / 20 degrees | same arc, 19.5 mm pitch, same angles |
+| Thumb cluster | 3-key arc, 21.63 mm pitch, 0 / 10 / 20 degrees | same arc, 20.4 mm pitch, same angles; the ball half uses the two outer keys |
 | Controller | Pro Micro (ATmega32U4) or RP2040 Pro Micro, wired | nice!nano v2 / SuperMini (nRF52840), BLE |
 | Half interconnect | TRRS cable, half-duplex serial | Bluetooth split (ZMK) |
 | Sensor | PMW3360 on a 5 V daughterboard with 1.9 V LDO and two level shifters | PMW3610 on a 3.3 V daughterboard, 1.8 V LDO, no level shifting |
 | Sensor interface | 7-pin press-fit connector with 8 solder jumpers | 6-pin 0.5 mm FPC |
-| Ball | 34 mm, 3 glued 2 mm ceramic balls, injection-moulded holder (not published) | 25 mm, 3 x 2 mm ZrO2 balls, parametric printed cradle (published) |
+| Ball | 34 mm, 3 glued 2 mm ceramic balls, injection-moulded holder (not published) | 19.05 mm POM, 3 x 2 mm ZrO2 balls, parametric printed cradle standing in a case pocket beside the PCB (published) |
 | Power | USB | 1S LiPo per half, controller charger, slide switch |
-| PCB | two different PCBs per half, top FR4 plate, acrylic layers | one reversible main PCB, one sensor PCB |
+| PCB | two different PCBs per half, top FR4 plate, acrylic layers | one flat PCB per half (no plate), one sensor PCB |
 | Extras | OLED, SK6812MINI-E RGB, reset, handedness jumper | none (reset only) |
 | Firmware | QMK 0.22.14 out-of-tree, Remap / Keyball Link | ZMK main, ZMK Studio |
 | License | GPL-3.0 (blanket), firmware GPL-2.0-or-later | MIT (software, docs) + CERN-OHL-P-2.0 (hardware) |
@@ -64,7 +64,8 @@ netlist). Nothing from that repository is included here; see section 7.
 
 | Project | What it contributes | Sensor / ball | MCU | License | Source |
 |---------|---------------------|---------------|-----|---------|--------|
-| torabo-tsuki-lp (sekigon-gonnoc) | low-profile wireless split with a **25 mm** ball, FPC sensor module, full KiCad | PAW3222, 25 mm | BMP Boost | MIT | https://github.com/sekigon-gonnoc/torabo-tsuki-lp |
+| torabo-tsuki-lp (sekigon-gonnoc) | low-profile wireless split shipped with a **25 or 19.05 mm POM** ball, FPC sensor module, full KiCad | PAW3222 class module, 25 / 19.05 mm | BMP Boost | MIT | https://github.com/sekigon-gonnoc/torabo-tsuki-lp |
+| LiNEA40 (keyfreaks) | Choc split with a **19 mm** ball and the PMW3610 directly on the PCB: the tracking precedent for our ball size | PMW3610, 19 mm | nRF52840 | open hardware | https://github.com/keyfreaks/LiNEA40 |
 | roBa (kumamuk-git) | wireless Keyball-style split on ZMK, published PMW3610 breakout | PMW3610, 34 mm | XIAO nRF52840 | GPL-3.0 | https://github.com/kumamuk-git/roBa |
 | Kivipallur (dr3san) | 38-key Choc V1 split with a 25 mm ball, Ergogen built | PMW3360, 25 mm | 0xCB Helios | GPL-3.0 | https://github.com/dr3san/Kivipallur |
 | Cocot46plus (aki27kbd) | 34 / 25 mm ball option, printed 25 mm case | ADNS-5050 | Pro Micro | MIT | https://github.com/aki27kbd/cocot46plus |
@@ -88,23 +89,47 @@ netlist). Nothing from that repository is included here; see section 7.
 | ZMK Studio | GA since November 2024, proven together with split + pointing on roBa and torabo-tsuki-lp. RAM must be watched on nRF52840. | OK |
 | Battery life | PMW3610 0.60 mA tracking, 36 uA rest, 3 uA shutdown. nRF52840 central with BLE host and peripheral link 0.5 to 1.5 mA average. 110 mAh plain half: weeks. 300 mAh ball half: 3 to 6 weeks of mixed use, days if `force-awake` is enabled. | OK with 300 mAh on the ball half |
 | Battery placement | 301230 (3.3 mm thick) fits under a controller on 1.27 mm sockets; 702025 (6.7 mm) needs a case pocket. Both pads exist on every PCB. | OK |
-| Reversible PCB | Standard for 36-key splits. The ball zone (cutout plus three flange holes) is present on both halves and simply unused on the left. The sensor sits on its own board, so no component breaks the mirror. | OK |
+| Two PCBs instead of one reversible board | r1 tried a reversible board and paid for it with three solder jumpers, a sacrificed D0, a mirrored pin map on the left half and a dead 30 mm cutout on the left. r2 generates two boards from the same layout file; the controller wiring is identical, only the thumb row, the FPC connector and the pocket notch differ. Costs one more 5-piece PCB batch (about 15 EUR). | OK |
 | Components in the EU | Everything except the sensor chip and the ceramic balls is stocked by 42keebs, keycapsss, splitkb, keeb.supply, Kamami or Mouser DE. Sensor, lens and ceramic balls come from AliExpress or LCSC. | OK |
 | PCB fabrication | JLCPCB 2-layer, 1.6 mm, ENIG, 5 pcs main + 5 pcs sensor: roughly 60 to 90 EUR delivered including VAT. | OK |
 | Tooling | KiCad 9 (`kicad-cli` for ERC, DRC, gerbers), Ergogen 4 for geometry, OpenSCAD for the cradle, pytest, GitHub Actions for ZMK builds. All free. | OK |
 
 ![Pinout diagram of the controller](images/img-pinout-controller.png)
 
+## 4a. Ball size: why 19.05 mm
+
+r1 specified a 25 mm ball through a cutout of the PCB; with the PMW3610 straight below the ball
+the ball top ended 23 mm above the PCB, 12 mm above the keycaps, which defeated the low-profile
+goal (`issues/mech-ball-height-23mm.md`). Smaller balls were researched on 2026-11-06:
+
+| Finding | Source |
+|---------|--------|
+| torabo-tsuki LP ships with 25 mm or 19.05 mm POM balls on the same sensor module; the 19.05 mm option is a shipping product, not an experiment | https://github.com/sekigon-gonnoc/torabo-tsuki-lp |
+| LiNEA40 uses a 19 mm ball with a PMW3610 directly on the PCB | https://github.com/keyfreaks/LiNEA40 |
+| A seven-month review of the 19 mm torabo-tsuki LP reports no tracking problems and keycaps and ball at about the same height | https://www.naenote.net/entry/torabo-tsuki-lp-xs-review |
+| PandaKB sells a 19 mm phenolic ball made for split keyboards (TB19, 11.90 USD) | https://pandakb.com/shop/parts/pandakb-tb19-19mm-split-keyboard-trackball/ |
+| 3/4 inch (19.05 mm) POM bearing balls cost a few euros per pack of 20 | Amazon, AliExpress ("3/4 inch POM ball", "Delrin ball 19.05") |
+| Nothing smaller than 19 mm exists as a keyboard trackball: no bearings, no holders, no tracking reports | search of GitHub, kbd.news, note.com build logs |
+
+Consequences: ball top drops from about 23 to about 17 mm above the PCB top (6 mm above Choc
+caps), the cradle shrinks from 34 to about 24 mm above the PCB plane, the sensor stack stays the
+same (lens to surface 2.4 mm). Trade-off: less inertia, no long flicks, and about 30 percent more
+CPI for the same cursor speed per thumb movement (ZMK `res-cpi` starts at 600 instead of 400).
+Two mounting options were compared: the cradle on top of the PCB would have been about 12 mm
+taller; a pocket in the case beside the PCB keeps the sensor board on the case floor exactly as
+the r1 cutout did, so the pocket won. The 25 mm cradle remains a parameter for a fallback PCB with
+a wider notch (`issues/hw-25mm-cradle-fallback.md`).
+
 ## 5. Risk register
 
 | Risk | Impact | Likelihood | Mitigation | Ticket |
 |------|--------|------------|-----------|--------|
-| 25 mm ball supply. Perixx PERIPRO-305 (German company, about 12 EUR) is often sold out in the EU store; Elecom M-B25 is a Japanese import; AliExpress 25 mm balls vary in surface quality. | Build cannot be finished | Medium | Order two balls before ordering PCBs. Publish the cradle in 25 mm and 34 mm so a 34 mm ball is a drop-in. Document the AliExpress ceramic bearing ball option used in the video. | `issues/hw-25mm-ball-sourcing.md` |
-| Sensor stack height. A Keyball 34-to-25 mm conversion report names the sensor PCB height under the ball, not the ball diameter, as the ergonomic bottleneck; the author went back to 34 mm. | Ball sits too high for a low-profile board | Medium | The cradle is parametric and printed first; the main PCB has a 30 mm cutout so the sensor board can sit below PCB level. Stack math is documented in the trackball module doc. | `issues/hw-sensor-stack-height.md` |
+| 19 mm ball surface quality. POM bearing balls are industrial parts; surface finish varies between suppliers and some plastics track badly on optical sensors. | Erratic cursor | Medium | Buy a pack of 3/4 inch POM balls plus the PandaKB TB19 phenolic ball before ordering PCBs and test them on the sensor board. Keep the 25 mm pocket cradle as a fallback. | `issues/hw-19mm-ball-sourcing.md`, `issues/hw-ball-colour-tracking-test.md` |
+| Sensor stack height. A Keyball 34-to-25 mm conversion report names the sensor PCB height under the ball, not the ball diameter, as the ergonomic bottleneck; the author went back to 34 mm. | Ball sits too high for a low-profile board | Low since r2 | The sensor board lies on the case floor in a pocket beside the PCB, the ball is 19 mm: ball top 17 mm above the PCB. The cradle is parametric and printed first. Stack math is documented in the trackball module doc. | `issues/hw-sensor-stack-height.md` |
 | ZMK main is a moving target (v0.4 not tagged, board names changed to `nice_nano//zmk`). | Firmware stops building | High over time | Pin the ZMK revision in `west.yml`, build on a schedule in CI so breakage shows up early, keep the badjeff driver as a documented fallback. | `issues/infra-ci-firmware.md` |
 | FFC pin order between main PCB and sensor PCB (same-side cable, both connectors bottom contact). | Sensor dead or reversed supply | Medium | Pin order on the main PCB is fixed in the design spec; the sensor PCB mirrors or keeps it based on the connector orientation, verified with a physical cable before the order. | `issues/hw-ffc-pin-order-verification.md` |
 | Hot-swap socket stiffness on a thin board. | Keys pop out, flex | Low | 1.6 mm FR4, ENIG, kiswitch footprint with both solder and hot-swap pads, case support under the thumb cluster. | `issues/hw-sensor-stack-height.md` (case phase) |
-| 25 mm ball sensitivity. A smaller ball turns more per millimetre of thumb travel, so Keyball-style CPI values feel twitchy. | Poor pointer control | High | Default `res-cpi` 400, snipe layer at 200, scroll via input processors, per-axis scaling like the kovalev-org config if the geometry needs it. | `issues/fw-cpi-tuning-25mm.md` |
+| 19 mm ball sensitivity and inertia. A smaller ball turns more per millimetre of thumb travel and has no flick, so Keyball-style CPI values feel wrong in both directions. | Poor pointer control | High | Default `res-cpi` 600, snipe layer, scroll via input processors, per-axis scaling like the kovalev-org config if the geometry needs it; tune on hardware. | `issues/fw-cpi-tuning-19mm.md` |
 | 0.5 mm FPC connectors are the hardest hand-solder step. | Assembly failure | Low | Flip-lock connectors with wide solder tabs, build-guide step with flux and drag soldering, continuity test in the test procedure. | `issues/hw-ffc-pin-order-verification.md` |
 
 ## 6. Cost estimate for one keyboard (both halves)
@@ -113,18 +138,18 @@ Prices are EU retail including VAT, late 2025. Details and links in [the BOM](03
 
 | Group | EUR |
 |-------|-----|
-| PCBs (5 main + 5 sensor, JLCPCB, ENIG, shipping, import VAT) | 75 |
+| PCBs (5 left + 5 right + 5 sensor, JLCPCB, ENIG, shipping, import VAT) | 90 |
 | 2 x nice!nano v2 (SuperMini: about 20 EUR for two) | 42 |
 | Controller sockets, pins | 6 |
-| 36 Choc V1 switches | 28 |
-| 36 hot-swap sockets | 6 |
-| 36 MBK keycaps | 20 |
+| 35 Choc V1 switches | 27 |
+| 35 hot-swap sockets | 6 |
+| 35 MBK keycaps | 20 |
 | Diodes, slide switches, reset buttons, battery connectors, passives | 8 |
 | 2 batteries (110 + 300 mAh) | 12 |
 | PMW3610 + lens, LDO, FPC connectors, cable | 12 |
-| 25 mm ball | 12 |
+| 19.05 mm POM balls (pack) | 5 |
 | Ceramic balls, M2 hardware, bumpers | 8 |
-| **Total** | **about 230 EUR** (about 210 EUR with SuperMini controllers) |
+| **Total** | **about 240 EUR** (about 220 EUR with SuperMini controllers) |
 
 The spare PCBs allow a second build for roughly 150 EUR.
 
@@ -143,7 +168,7 @@ credited in `NOTICE` and in the README as the inspiration.
 
 Component libraries and reference circuits were chosen for compatible licenses: kiswitch (MIT and
 CC-BY-SA 4.0), marbastlib (CERN-OHL-P-2.0), the bullwinkle3000 PMW3610 breakout (CERN-OHL-P-2.0),
-torabo-tsuki-lp (MIT) for the low-profile 25 mm mechanics. roBa and Kivipallur (GPL-3.0) were
+torabo-tsuki-lp (MIT) for the low-profile 25 / 19.05 mm ball mechanics. roBa and Kivipallur (GPL-3.0) were
 studied for numbers only.
 
 Resulting licenses:
@@ -159,5 +184,5 @@ official Keyball product.
 ## 8. Decision
 
 Proceed with the design as specified in [the design specification](01-design-spec.md). First
-physical step after the design files exist: print the 25 mm cradle, buy the balls and the sensor,
-confirm the lens distance, then order PCBs.
+physical step after the design files exist: print the 19 mm pocket cradle, buy the balls and the
+sensor, confirm the lens distance, then order PCBs.

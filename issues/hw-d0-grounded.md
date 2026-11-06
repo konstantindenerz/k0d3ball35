@@ -2,7 +2,7 @@
 title: D0 (P0.08) is tied to GND on both halves
 type: task
 priority: P3
-status: done
+status: wontfix
 area: hw
 created: 2026-11-05
 ---
@@ -23,3 +23,7 @@ unusable on both halves.
 ## Notes
 
 Harmless for the nRF52840 as long as the pin stays an input without pull-up.
+
+2026-11-06: obsolete. r2 uses two separate PCBs with identical controller wiring; D0 goes to a test
+pad and is free again on both halves (`hw-two-pcbs-r2`). Closed as wontfix because the r1 reversible
+board that needed this no longer exists.

@@ -10,9 +10,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 VARIANTS = {
-    "25mm": {"ball_d": 25, "sensor_angle": 0},
-    "25mm-tilted": {"ball_d": 25, "sensor_angle": 60},
-    "34mm": {"ball_d": 34, "sensor_angle": 0},
+    "19mm-pocket": {"ball_d": 19.05, "mount": "pocket"},
+    "25mm-pocket": {"ball_d": 25, "mount": "pocket", "notch_apothem": 16.5},
+    "25mm-cutout": {"ball_d": 25, "mount": "cutout"},
 }
 
 
@@ -23,10 +23,14 @@ def find_openscad(arg=None):
     raise SystemExit("openscad not found")
 
 
+def define(key, value):
+    return f'{key}="{value}"' if isinstance(value, str) else f"{key}={value}"
+
+
 def stack_for(binary, overrides):
     cmd = [binary, "--backend", "manifold", "-D", 'part="cradle"']
     for k, v in overrides.items():
-        cmd += ["-D", f"{k}={v}"]
+        cmd += ["-D", define(k, v)]
     out = HERE / "build" / "stack.echo"
     out.parent.mkdir(exist_ok=True)
     cmd += ["-o", str(out), str(HERE / "cradle.scad")]
@@ -49,7 +53,8 @@ def main():
     for name, v in data["variants"].items():
         print(f"{name:12s} ball top +{v['ball_top_above_pcb_top']:.1f} mm, "
               f"lowest point {min(v['lowest_plastic_z'], v['lowest_sensor_board_z']):.1f} mm, "
-              f"radial reach {v['housing_radial_extent_x']:.1f} mm")
+              f"envelope above PCB {v['envelope_d_above_pcb']:.1f} mm, "
+              f"footprint {v['footprint_x']:.0f} x {v['footprint_y']:.0f} mm")
 
 
 if __name__ == "__main__":

@@ -35,7 +35,8 @@ def tracked_files(repo_root: Path) -> list[Path]:
         ).stdout
     except (subprocess.CalledProcessError, FileNotFoundError):
         return [p for p in repo_root.rglob("*") if p.is_file() and ".venv" not in p.parts and ".git" not in p.parts]
-    return [repo_root / name for name in out.decode().split("\0") if name]
+    # a tracked file that was renamed or deleted but not yet staged does not exist on disk
+    return [repo_root / name for name in out.decode().split("\0") if name and (repo_root / name).exists()]
 
 
 @pytest.fixture(scope="session")

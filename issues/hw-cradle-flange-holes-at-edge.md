@@ -21,3 +21,8 @@ The ball-zone outline ring used a 2 mm margin around the 34 mm cradle circle, wh
 ## Notes
 
 Fixed in the layout generator on 2026-11-05.
+
+2026-11-06: overtaken by r2. The cradle no longer has flange holes on the PCB; it stands in a case
+pocket beside the right PCB and screws to the case floor, the PCB only has an octagonal notch
+(`hw-two-pcbs-r2`, `mech-case-ball-pocket`). Stays done; `ball_margin` and the flange hole circle
+were removed from the layout yaml.

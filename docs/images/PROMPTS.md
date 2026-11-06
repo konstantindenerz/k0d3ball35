@@ -9,9 +9,11 @@ of the matching entry below. When a real file is added, put it at `docs/images/<
 the prompt as documentation of the intended content.
 
 Style anchor for all photographic prompts: a low-profile split keyboard in two halves, each in a
-matte beige-grey 3D printed case with a flat top, white and light-grey low-profile keycaps, two or
-three bright orange thumb keycaps per half, a glossy white 25 mm trackball on the right half, no
-cables, on an oiled oak desk with a silver laptop in the background, soft daylight from the left,
+boxy, angular matte beige-grey 3D printed case whose stepped outline follows the column stagger,
+with a slightly raised rectangular controller box at the inner edge, white and light-grey
+low-profile keycaps, three bright orange thumb keycaps on the left half and two on the right, a
+glossy white 19 mm trackball sitting low in a round pocket of the case directly beside the right
+thumb keys (ball top only a little above the keycaps), no cables, on an oiled oak desk with a silver laptop in the background, soft daylight from the left,
 shallow depth of field, product-photography look. Diagram prompts use a clean technical style:
 white background, thin dark-grey lines, one accent colour (orange), sans-serif labels.
 
@@ -24,8 +26,10 @@ Aspect 16:9. Hero photo.
 ```prompt
 Product photo, two halves of a low-profile split mechanical keyboard on an oiled oak desk, matte
 beige-grey 3D printed cases with flat tops, white and light-grey low-profile keycaps in a
-column-staggered 3x5 grid plus three thumb keys per half, orange thumb keycaps, right half has a
-glossy white 25 mm trackball next to the thumb keys in a rounded holder, no cables anywhere, a
+column-staggered 3x5 grid, three thumb keys on the left half and two on the right, orange thumb
+keycaps, boxy angular cases with a raised controller box at the inner edge, the right half has a
+glossy white 19 mm trackball sitting in a round pocket of the case right next to its two thumb
+keys, no cables anywhere, a
 silver laptop and a tablet blurred in the background, soft daylight from the left, shallow depth
 of field, 45 degree three-quarter view, photorealistic.
 ```
@@ -35,11 +39,12 @@ of field, 45 degree three-quarter view, photorealistic.
 Aspect 3:2. Straight top-down of both halves.
 
 ```prompt
-Top-down product photo of a 36-key wireless split keyboard, two mirrored halves 10 cm apart on
-light oak, column-staggered keys with the pinky column noticeably lower, three fanned thumb keys per
-half rotated 0, 10 and 20 degrees, right half with a white 25 mm trackball below the middle and
-ring finger columns, white keycaps with orange thumb caps, matte grey cases, even soft light,
-photorealistic.
+Top-down product photo of a 35-key wireless split keyboard, two halves 10 cm apart on light oak,
+column-staggered keys with the pinky column noticeably lower, angular stepped case outlines, the
+left half with three fanned thumb keys rotated 0, 10 and 20 degrees, the right half with only the
+two outer thumb keys and a white 19 mm trackball in a round pocket directly beside them below the
+middle and ring finger columns, white keycaps with orange thumb caps, matte grey boxy cases with a
+raised controller box at each inner edge, even soft light, photorealistic.
 ```
 
 ## img-layout-top
@@ -47,12 +52,13 @@ photorealistic.
 Aspect 2:1. Diagram of key positions.
 
 ```prompt
-Technical diagram, white background, the right half of a split keyboard drawn as 18 rounded
-squares of 17 x 16 mm on an 18 x 17 mm grid, five columns with vertical offsets (from the outside
-in: 10.4, 4.2, 0, 2.2, 4.5 mm lower than the middle column), three thumb keys in an arc below the
-inner columns rotated 0, 10 and 20 degrees, a dashed circle of 34 mm below the middle and ring
-columns labelled "ball zone", thin grey lines, orange highlight on the thumb keys, dimension
-arrows with millimetre labels, sans-serif font.
+Technical diagram, white background, both halves of a split keyboard drawn as rounded squares of
+17 x 16 mm on an 18 x 17 mm grid, five columns with vertical offsets (from the outside in: 10.4,
+4.2, 0, 2.2, 4.5 mm lower than the middle column), angular stepped board outlines following the
+stagger, the left half with three thumb keys in an arc below the inner columns rotated 0, 10 and
+20 degrees, the right half with the two outer thumb keys and a dashed circle of 28 mm inside an
+octagonal notch beside them labelled "ball pocket", thin grey lines, orange highlight on the thumb
+keys, dimension arrows with millimetre labels, sans-serif font.
 ```
 
 ## img-layout-compare-keyball
@@ -62,7 +68,7 @@ Aspect 2:1. Overlay of Keyball39 and k0d3ball36 geometry.
 ```prompt
 Technical overlay diagram, white background, two key layouts drawn as outlines on top of each
 other: grey outlines of a 19.05 mm pitch layout with 39 keys and a 34 mm ball circle, orange
-outlines of an 18 x 17 mm pitch layout with 36 keys and a 25 mm ball circle, same column stagger
+outlines of an 18 x 17 mm pitch layout with 35 keys and a 19 mm ball circle beside the right thumb keys, same column stagger
 proportions, legend in the corner, thin lines, sans-serif labels.
 ```
 
@@ -75,7 +81,8 @@ Schematic-style diagram, white background, a 4 by 5 grid of switch symbols each 
 diode, five vertical column lines labelled COL0 to COL4 on top, four horizontal row lines labelled
 ROW0 to ROW3 on the right, diode cathodes pointing towards the row lines, the two unused cells in
 the bottom row drawn dashed, labels "D4 D5 D6 D7 D8" above the columns and "D21 D20 D19 D18" next to
-the rows, orange highlight on the three thumb cells, clean thin lines.
+the rows, orange highlight on the thumb cells (three on the left half's diagram, two on the right
+half's, drawn side by side), clean thin lines.
 ```
 
 ## img-pinout-controller
@@ -107,11 +114,13 @@ the battery, sans-serif labels.
 Aspect 1:1. Trackball cradle cross-section.
 
 ```prompt
-Technical cross-section drawing of a trackball cradle: a 25 mm ball resting on three small
-2 mm ceramic balls set in a printed cup, the cup passing through a 30 mm hole in a 1.6 mm PCB with
-a flange on top of the PCB held by two M2 screws, a small sensor board with a lens under the
-ball with a dimension arrow "2.6 mm" between lens and ball surface, the ball's top protruding above
-the keycap height, white background, thin lines, orange accent on the dimension, sans-serif labels.
+Technical cross-section drawing of a trackball module in a case pocket: a 19 mm ball resting on
+three small 2 mm ceramic balls set in a printed cup, the cup standing on a rectangular housing that
+reaches down to the case floor beside a 1.6 mm PCB (the PCB ends with a small gap next to the cup),
+two screw ears on the floor, a small sensor board with a lens inside the housing under the ball
+with a dimension arrow "2.4 mm" between lens and ball surface, a second arrow "17 mm" from the PCB
+top to the ball top, the ball's top a little above the keycap height, white background, thin lines,
+orange accent on the dimensions, sans-serif labels.
 ```
 
 ## img-cradle-exploded
@@ -119,10 +128,12 @@ the keycap height, white background, thin lines, orange accent on the dimension,
 Aspect 4:3. Exploded view of the trackball module.
 
 ```prompt
-Exploded technical rendering on white, vertically stacked with thin guide lines: a white 25 mm
-ball, a beige printed cup with three small ceramic balls shown slightly lifted out of their seats,
-a flange ring with three screw holes, the main PCB with a round cutout, a small green sensor board
-with a black lens and a flat flex cable, three M2 screws, soft studio lighting, clean.
+Exploded technical rendering on white, vertically stacked with thin guide lines: a white 19 mm
+ball, a thin retainer ring with three claws, a beige printed cup on a rectangular housing with two
+screw ears and three small ceramic balls shown slightly lifted out of their seats, a small green
+sensor board with a black lens and a flat flex cable sliding into the housing from below, two M2
+screws for the board and two for the case floor, a beige case floor with a round pocket, soft
+studio lighting, clean.
 ```
 
 ## img-exploded-half
@@ -130,10 +141,12 @@ with a black lens and a flat flex cable, three M2 screws, soft studio lighting, 
 Aspect 3:4. Exploded view of the right half.
 
 ```prompt
-Exploded view rendering on white of the right half of a split keyboard: from top, 18 white and
-orange low-profile keycaps, 18 low-profile switches, the main PCB with hot-swap sockets and diodes
-on the underside, a controller on socket strips, a flat battery, a trackball cradle with ball,
-a beige printed case bottom, all parts aligned vertically with thin guide lines, soft light.
+Exploded view rendering on white of the right half of a split keyboard: from top, 17 white and
+orange low-profile keycaps, 17 low-profile switches, the angular main PCB with an octagonal notch
+at its lower outer edge, hot-swap sockets and diodes on the underside, a controller on socket
+strips, a flat battery, a trackball cradle with a 19 mm ball standing beside the PCB notch, a beige
+boxy printed case bottom with a round pocket, all parts aligned vertically with thin guide lines,
+soft light.
 ```
 
 ## img-sensor-board
@@ -141,7 +154,7 @@ a beige printed case bottom, all parts aligned vertically with thin guide lines,
 Aspect 4:3. Sensor PCB top and bottom.
 
 ```prompt
-Product photo on a white background of a tiny 22 x 25 mm green PCB shown twice side by side: top
+Product photo on a white background of a tiny 26 x 25 mm green PCB shown twice side by side: top
 side with a black 16-pin optical sensor chip and a small lens clipped onto it, bottom side with a
 6-pin flat flex connector, a SOT-23 regulator and a few 0603 capacitors, two M2 holes, macro lens,
 soft shadows.
@@ -163,10 +176,11 @@ contact side marked in orange, pin 1 marked on each connector with a triangle, l
 Aspect 3:2. All parts before assembly.
 
 ```prompt
-Flat lay photo on light grey paper, neatly arranged: two bare black keyboard PCBs, a tiny sensor
-PCB, two small wireless controller boards, 36 low-profile switches in rows, 36 white and 6 orange
-keycaps, a strip of SMD diodes on tape, hot-swap sockets, two small flat LiPo batteries, a white
-25 mm ball, three tiny ceramic balls in a dish, a flat flex cable, M2 screws, top-down, soft light.
+Flat lay photo on light grey paper, neatly arranged: two different bare black keyboard PCBs with
+angular stepped outlines (one with an octagonal notch), a tiny sensor PCB, two small wireless
+controller boards, 35 low-profile switches in rows, 30 white and 5 orange keycaps, a strip of SMD
+diodes on tape, hot-swap sockets, two small flat LiPo batteries, a white 19 mm ball, three tiny
+ceramic balls in a dish, a flat flex cable, M2 screws, top-down, soft light.
 ```
 
 ## img-build-step-diodes
@@ -217,7 +231,7 @@ Aspect 3:2. Fitting ceramic balls into the cradle.
 
 ```prompt
 Macro photo of a beige 3D printed trackball cup held between two fingers, a toothpick pressing a
-tiny white 2 mm ceramic ball into one of three seats, two seats already filled, a white 25 mm ball
+tiny white 2 mm ceramic ball into one of three seats, two seats already filled, a white 19 mm ball
 waiting on the desk behind, soft light.
 ```
 
@@ -227,8 +241,9 @@ Aspect 3:2. Trackball module mounted.
 
 ```prompt
 Photo of the right half of a low-profile split keyboard without keycaps, the beige trackball cup
-screwed onto the PCB below the middle columns, a white 25 mm ball dropped in, switches installed
-in the hot-swap sockets, the controller visible at the inner edge, three-quarter view, oak desk.
+standing in a round pocket of the case beside the two thumb switches, inside an octagonal notch of
+the PCB edge, a white 19 mm ball dropped in, switches installed in the hot-swap sockets, the
+controller visible in the raised box at the inner edge, three-quarter view, oak desk.
 ```
 
 ## img-build-step-flash
@@ -246,7 +261,7 @@ the foreground, its reset button being pressed with a fingernail, shallow depth 
 Aspect 16:9. Layer overview diagram.
 
 ```prompt
-Infographic on white, eight small keyboard layouts of 36 keys arranged in two rows of four,
+Infographic on white, eight small keyboard layouts of 35 keys (three thumb keys left, two right) arranged in two rows of four,
 each labelled: Base, Nav, Num, Sym, Mouse, Scroll, Snipe, System, with the thumb keys that
 activate each layer highlighted in orange and a few representative key labels on each layout,
 clean sans-serif typography, thin grey lines.
@@ -263,14 +278,14 @@ Clean bar chart on white comparing estimated battery life in days for four cases
 axis labels and values, sans-serif.
 ```
 
-## img-cradle-render-25-34
+## img-cradle-render-19-25
 
 Aspect 2:1. Two cradle sizes.
 
 ```prompt
 Rendering on white of two beige 3D printed trackball cradles side by side, the left one holding a
-25 mm white ball, the right one a 34 mm white ball, both with the same three-hole flange and the
-same 30 mm bottom boss, a small ruler for scale, soft studio light.
+19 mm white ball, the right one a 25 mm white ball, both standing on the same rectangular housing
+with two screw ears and a cable slot, a small ruler for scale, soft studio light.
 ```
 
 ## img-case-concept
@@ -278,10 +293,12 @@ same 30 mm bottom boss, a small ruler for scale, soft studio light.
 Aspect 16:9. Case concept for the later phase.
 
 ```prompt
-Concept rendering of a low-profile beige-grey printed case for a split keyboard half, flat top
-flush with the switch plate, a small round window on the inner edge glowing faintly blue from the
-controller LED, a slightly raised rounded hump around the trackball on the right half, a visible
-USB-C opening and a tiny slide switch slot on the inner edge, oak desk, soft light.
+Concept rendering of a low-profile boxy beige-grey printed case for the right half of a split
+keyboard, angular stepped outline following the key columns, flat top flush with the keycap skirts,
+a raised rectangular controller box at the inner edge with a small round window glowing faintly
+blue from the controller LED, a visible USB-C opening and a tiny slide switch slot on that box, a
+round pocket beside the two thumb keys holding a white 19 mm trackball whose top is just above the
+keycaps, oak desk, soft light.
 ```
 
 ## img-testing-bench
@@ -299,20 +316,11 @@ cable to a controller, workshop light.
 Aspect 3:2. Which face is up for which half.
 
 ```prompt
-Top-down photo of two bare green keyboard PCBs side by side on a cutting mat, mirror images of each
-other, each with a small silkscreen text below the controller outline reading "RIGHT half - this
-side up" on the left board and "LEFT half - this side up" on the right board, a strip of masking
-tape labelled "R bottom" visible on the edge of the first board, even light, no components.
-```
-
-## img-build-step-jumpers
-
-Aspect 3:2. Solder jumpers bridged.
-
-```prompt
-Extreme macro photo of three tiny three-pad solder jumpers labelled JP1, JP2, JP3 on a green PCB
-above a rectangular controller outline, each jumper with a shiny solder bridge joining the centre
-pad to the right-hand pad while the left-hand pad stays bare, flux residue, shallow depth of field.
+Top-down photo of two bare green keyboard PCBs side by side on a cutting mat, near mirror images
+of each other with angular stepped outlines, the right-hand board with an octagonal notch at its
+lower outer edge and only two thumb key positions, the left-hand board with three thumb positions,
+each with a small silkscreen text below the controller outline reading "k0d3ball36 r2 LEFT half"
+and "RIGHT half", even light, no components.
 ```
 
 ## img-build-step-power-switch

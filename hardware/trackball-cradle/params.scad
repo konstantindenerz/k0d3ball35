@@ -4,10 +4,18 @@
 // side of the right half), +y points towards the user.
 //
 // Override on the command line, e.g.
-//   openscad -D ball_d=34 -D part=\"cradle\" -o cradle-34mm.stl cradle.scad
+//   openscad -D ball_d=25 -D mount=\"pocket\" -D part=\"cradle\" -o cradle-25mm-pocket.stl cradle.scad
+
+// ---------------------------------------------------------------- mounting
+// "pocket": r2 default. The module stands on the case floor in a pocket BESIDE the PCB
+//           (the PCB edge has an octagonal notch around it). The housing walls reach down
+//           to the floor and two ears screw the module to the case; the PCB is not touched.
+// "cutout": r1 design. The cup drops through a round cutout of the PCB, a round flange
+//           under the PCB is pulled up with three M2 screws from the top.
+mount           = "pocket";
 
 // ---------------------------------------------------------------- ball & bearings
-ball_d          = 25;      // trackball diameter (25 default, 34 option)
+ball_d          = 19.05;   // trackball diameter: 19.05 (3/4 inch POM, default), 25 (fallback)
 ball_gap        = 0.4;     // radial clearance between ball and cup wall
 bearing_d       = 2.0;     // ZrO2 / Si3N4 ceramic ball diameter
 bearing_fit     = 0.05;    // press-fit interference per side (seat = bearing_d - 2*fit)
@@ -28,20 +36,26 @@ lens_w          = 11.5;    // LM18-LSI body width   (cavity gets +1.0 clearance)
 sensor_pcb_l    = 25;      // sensor daughterboard, axis of the two M2 holes (hardware/sensor-pcb)
 sensor_pcb_w    = 26;      // sensor daughterboard, axis of the lens / sensor body
 sensor_pcb_t    = 1.6;
+sensor_pcb_gap  = 0.2;     // clearance per side between the board and the housing walls (pocket mount)
 sensor_hole_sp  = 20;      // M2 mounting hole spacing along the long axis
 sensor_pins_h   = 1.65 + 0.6;  // tallest part on the component side (sensor top 9.05 - 7.40 = 1.65) + margin
-sensor_angle    = 0;       // 0 = sensor straight below the ball; >0 tilts it towards +x (deg from vertical)
+sensor_angle    = 0;       // 0 = sensor straight below the ball; >0 tilts it towards +x (deg from vertical, cutout mount only)
 sensor_az       = 0;       // azimuth of the tilt direction (deg)
 
-// ---------------------------------------------------------------- main PCB interface
+// ---------------------------------------------------------------- main PCB and case interface
 pcb_t           = 1.6;     // main PCB thickness
-pcb_cutout_d    = ball_d + 5;   // main PCB cutout: 30 for 25 mm (docs/01-design-spec.md section 5), 39 for 34 mm
-flange_d        = ball_d + 15;  // flange under the PCB (40 for 25 mm)
-flange_t        = 2.0;
-flange_hole_bcd = ball_d + 11;  // bolt circle of the three M2 flange screws (36 for 25 mm)
+depth_below_pcb = 10.0;    // case floor (pocket) / lowest point of the module (cutout) below the main PCB underside
+pcb_clear       = 0.3;     // pocket mount: nothing of the module closer than this to the PCB underside
+notch_apothem   = 15.0;    // pocket mount: PCB notch, regular octagon apothem (layout trackball.cradle_diameter / 2 + 1)
+ear_r           = 3.5;     // pocket mount: radius of the two case-screw ears at the floor, on the +x / -x sides
+cable_slot_w    = -1;      // pocket mount: width of the FFC slot in the key-facing (-y) wall; -1 = wall width minus 2 corner posts
+corner_post     = 3.0;     // pocket mount: material left at the two -y corners beside the cable slot
+pcb_cutout_d    = ball_d + 5;   // cutout mount: main PCB cutout (30 for 25 mm)
+flange_d        = ball_d + 15;  // cutout mount: flange under the PCB (40 for 25 mm)
+flange_t        = 2.0;          // flange thickness (cutout) / ear and floor-plate thickness (pocket)
+flange_hole_bcd = ball_d + 11;  // cutout mount: bolt circle of the three M2 flange screws (36 for 25 mm)
 flange_hole_az  = [90, 210, 330];
 flange_pilot_d  = 1.6;     // pilot hole for M2 self-tapping screws (use 3.2 for heat-set inserts)
-depth_below_pcb = 10.0;    // lowest point of cradle + sensor board below the main PCB underside
 
 // ---------------------------------------------------------------- cup & retainer
 wall            = 1.6;     // cup wall thickness
@@ -57,4 +71,4 @@ peg_h           = 3;
 
 // ---------------------------------------------------------------- rendering
 $fn             = 96;
-part            = "assembly";  // cradle | retainer | assembly | cutout2d | sensor_dummy
+part            = "assembly";  // cradle | retainer | assembly | section | cutout2d | floor2d | sensor_dummy

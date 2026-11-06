@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-The ball top sits 23 mm above the PCB. A flat cover would be tall; the case needs a local dome like the Keyball39ish housing.
+r1: the ball top sat 23 mm above the PCB and the case would have needed a dome like the Keyball39ish housing. r2: the 19 mm ball in the case pocket tops out at +17.1 mm, 6 mm above the caps, so a low pocket rim replaces the dome (`mech-case-ball-pocket`); what remains here is the rim shape and tenting.
 
 ## Acceptance criteria
 

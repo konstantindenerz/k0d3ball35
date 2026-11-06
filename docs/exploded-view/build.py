@@ -2,9 +2,10 @@
 # SPDX-License-Identifier: MIT
 """Build docs/exploded-view/index.html from template.html and the layout data.
 
-Reads hardware/layout/output/points.json, hardware/layout/k0d3ball36.yaml and
-hardware/trackball-cradle/stack.json, writes layout.json and inlines it into the page so
-the HTML is self-contained. Run after `make layout`.
+Reads hardware/layout/output/points-left.json and points-right.json,
+hardware/layout/k0d3ball36.yaml and hardware/trackball-cradle/stack.json (19 mm pocket
+variant), writes layout.json and inlines it into the page so the HTML is self-contained.
+The right half carries the ball pocket, the left half has no ball. Run after `make layout`.
 """
 from __future__ import annotations
 
@@ -15,6 +16,11 @@ import yaml
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
+HALVES = ("left", "right")
+TEST_PADS = {"left": ["D0", "D1", "D2", "D3", "D9", "D10", "D14", "D15", "D16"], "right": ["D0", "D1", "D2", "D3", "D9"]}
+STACK_KEYS = ("ball_centre_z", "ball_top_above_pcb_top", "cup_outer_d", "lowest_plastic_z", "lowest_sensor_board_z",
+              "lens_reference_plane_dist", "bearing_contact_z", "rim_z", "claw_top_z", "floor_z", "sensor_pcb_plane_z",
+              "housing_x", "housing_y", "housing_top_z", "footprint_x", "footprint_y", "envelope_d_above_pcb", "notch_apothem")
 
 
 def simplify(points: list[list[float]], tol: float = 0.25) -> list[list[float]]:
@@ -27,42 +33,53 @@ def simplify(points: list[list[float]], tol: float = 0.25) -> list[list[float]]:
         return [[round(x, 2), round(y, 2)] for x, y in points]
 
 
-def main() -> None:
-    points = json.loads((REPO / "hardware/layout/output/points.json").read_text())
-    cfg = yaml.safe_load((REPO / "hardware/layout/k0d3ball36.yaml").read_text())
-    stack = json.loads((REPO / "hardware/trackball-cradle/stack.json").read_text())["variants"]["25mm"]
-    data = {
-        "name": points["name"],
-        "revision": points["revision"],
+def half_data(half: str, cfg: dict, stack: dict) -> dict:
+    points = json.loads((REPO / f"hardware/layout/output/points-{half}.json").read_text())
+    tb = points.get("trackball")
+    ball = None
+    if tb:
+        ball = {"d": tb["ball_diameter"], "x": tb["center"]["x"], "y": tb["center"]["y"],
+                "cradle_d": tb["cradle_diameter"], "pocket_d": tb["pocket_diameter"],
+                "notch": tb["notch"], "sensor_board": tb["sensor_board"]}
+    fpc = points.get("fpc")
+    return {
+        "half": half,
+        "keys": [{"ref": f"SW{k['row']}{k['col']}", "x": k["x"], "y": k["y"], "rot": k["rotation"], "kind": k["kind"]} for k in points["keys"]],
         "outline": simplify(points["outline"]),
         "bounds": points["bounds"],
-        "keys": [{"ref": f"SW{k['row']}{k['col']}", "x": k["x"], "y": k["y"], "rot": k["rotation"], "kind": k["kind"]} for k in points["keys"]],
+        "ball": ball,
+        "fpc": fpc["center"] if fpc else None,
+        "holes": points["mounting_holes"],
+        "test_pads": {"start": cfg["test_pads"]["start"], "pitch": cfg["test_pads"]["pitch"], "labels": TEST_PADS[half]},
+        "battery": "702025" if ball else "301230",
+        "stack": {k: stack[k] for k in STACK_KEYS} if ball else None,
+    }
+
+
+def main() -> None:
+    cfg = yaml.safe_load((REPO / "hardware/layout/k0d3ball36.yaml").read_text())
+    stack = json.loads((REPO / "hardware/trackball-cradle/stack.json").read_text())["variants"]["19mm-pocket"]
+    right = json.loads((REPO / "hardware/layout/output/points-right.json").read_text())
+    data = {
+        "name": right["name"],
+        "revision": right["revision"],
         "keycap": cfg["keycap"],
         "switch_body": cfg["switch_body"],
-        "ball": {"d": cfg["trackball"]["ball_diameter"], "x": cfg["trackball"]["center"]["x"], "y": cfg["trackball"]["center"]["y"],
-                 "cutout_d": cfg["trackball"]["pcb_cutout_diameter"], "cradle_d": cfg["trackball"]["cradle_diameter"],
-                 "flange_circle": cfg["trackball"]["flange_hole_circle"], "flange_angles": cfg["trackball"]["flange_hole_angles"]},
         "controller": {"x": cfg["controller"]["center"]["x"], "y": cfg["controller"]["center"]["y"],
                        "w": cfg["controller"]["size"]["x"], "l": cfg["controller"]["size"]["y"]},
-        "fpc": cfg["fpc"]["center"],
         "power_switch": cfg["power_switch"]["center"],
         "reset": cfg["reset_button"]["center"],
         "battery_pads": cfg["battery_pads"]["center"],
         "jst": cfg["battery_jst"]["center"],
-        "jumpers": cfg["jumpers"],
-        "test_pads": cfg["test_pads"],
-        "holes": cfg["mounting_holes"],
-        "stack": {"ball_centre_z": stack["ball_centre_z"], "ball_top": stack["ball_top_above_pcb_top"],
-                  "cup_outer_d": stack["cup_outer_d"], "lowest_plastic_z": stack["lowest_plastic_z"],
-                  "lowest_sensor_board_z": stack["lowest_sensor_board_z"], "lens_gap": stack["lens_reference_plane_dist"],
-                  "bearing_contact_z": stack["bearing_contact_z"], "rim_z": stack["rim_z"]},
         "pcb_thickness": 1.6,
+        "halves": {half: half_data(half, cfg, stack) for half in HALVES},
     }
     (HERE / "layout.json").write_text(json.dumps(data, indent=1) + "\n")
     template = (HERE / "template.html").read_text()
     html = template.replace("/*__LAYOUT_DATA__*/", json.dumps(data, separators=(",", ":")))
     (HERE / "index.html").write_text(html)
-    print(f"wrote index.html ({len(html) // 1024} KiB), {len(data['outline'])} outline points")
+    n = {h: len(data["halves"][h]["keys"]) for h in HALVES}
+    print(f"wrote index.html ({len(html) // 1024} KiB), keys {n}, ball top +{stack['ball_top_above_pcb_top']:.1f} mm")
 
 
 if __name__ == "__main__":

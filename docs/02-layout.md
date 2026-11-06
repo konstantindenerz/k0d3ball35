@@ -1,9 +1,11 @@
 # Key layout
 
 The whole geometry of k0d3ball36 lives in one file, `hardware/layout/k0d3ball36.yaml`. The
-generator `scripts/gen_layout.py` turns it into `hardware/layout/output/points.json` (consumed by the
-schematic and PCB generators, the tests and the firmware physical layout), `outline.dxf` (for the case)
-and the two previews below. Nothing in the PCB is placed by hand.
+generator `scripts/gen_layout.py` turns it into one set of outputs per half in
+`hardware/layout/output/`: `points-left.json` and `points-right.json` (consumed by the schematic
+and PCB generators, the tests, the exploded view and the firmware physical layout),
+`outline-left.dxf` and `outline-right.dxf` (for the case) and the two previews below. Nothing in
+the PCBs is placed by hand.
 
 ![right half](../hardware/layout/output/preview-right.png)
 
@@ -13,10 +15,12 @@ and the two previews below. Nothing in the PCB is placed by hand.
 
 ## Coordinate system
 
-Right half, millimetres. x grows outward towards the pinky, y grows downward towards the user. The
-origin is the centre of the middle-column top key. This is KiCad's screen orientation, so the PCB
-generator adds only a page offset. The left half is the mirror image (x to -x) and is built from the
-same PCB flipped over.
+Millimetres, one frame per half: x grows outward towards the pinky, y grows downward towards the
+user. The origin is the centre of the middle-column top key. This is KiCad's screen orientation,
+so the PCB generator adds only a page offset. Both halves use the same frame; the left half is
+mirrored for display only. Since r2 the halves are two different PCBs: everything outside the
+`halves:` section of the yaml is shared, the thumb list, the ball pocket, the FPC connector and the
+hand routes are per half.
 
 ## Derivation from the Keyball39
 
@@ -37,10 +41,11 @@ Column x positions are simply 0, +-18 and +-36.
 
 Thumb keys are placed relative to the inner column's bottom key. The Keyball39 offsets (+15.05/+23.75,
 -6.50/+25.55 and -27.42/+31.07 mm) are scaled by 18 / 19.05 in x and 17 / 19.05 in y; the 0 / 10 / 20
-degree rotations are kept. The resulting pitch between neighbouring thumb centres is 20.4 mm, which leaves a few millimetres
-between rotated 1u Choc caps.
+degree rotations are kept. The resulting pitch between neighbouring thumb centres is 20.4 mm, which
+leaves a few millimetres between rotated 1u Choc caps. The left half uses all three positions, the
+right half the two outer ones (0 and 10 degrees) so that the ball pocket has room beside the thumb.
 
-## Key table (right half)
+## Key table, left half (18 keys)
 
 | Ref | Name | Row | Col | x | y | Rotation |
 |-----|------|-----|-----|---|---|----------|
@@ -63,42 +68,56 @@ between rotated 1u Choc caps.
 | SW33 | thumb_middle | 3 | 3 | -42.14 | 61.26 | 10 |
 | SW34 | thumb_inner | 3 | 4 | -61.91 | 66.19 | 20 |
 
+## Key table, right half (17 keys)
+
+The fifteen finger keys SW00 to SW24 are at the same coordinates as on the left half. Thumb row:
+
+| Ref | Name | Row | Col | x | y | Rotation |
+|-----|------|-----|-----|---|---|----------|
+| SW32 | thumb_outer | 3 | 2 | -21.78 | 59.65 | 0 |
+| SW33 | thumb_middle | 3 | 3 | -42.14 | 61.26 | 10 |
+
 Rotation follows the KiCad convention (positive is counter-clockwise on screen). Each key's diode
 sits 6 mm below the switch centre, rotated with it. The reference designators double as matrix
 positions: `SWrc` is row r, column c; column 0 is the pinky, column 4 the inner index column, row 3
-the thumb row. Cells (3,0) and (3,1) do not exist.
+the thumb row. Cells (3,0) and (3,1) do not exist; (3,4) exists only on the left.
 
-## Trackball zone
+## Ball pocket (right half)
 
 | Item | Value |
 |------|-------|
-| Ball centre | (+12.0, +65.0), below the middle/ring columns, outboard of the outer thumb key |
-| Ball diameter | 25 mm (cradle also available for 34 mm, needs a different cutout) |
-| PCB cutout | 30 mm diameter, the cradle cup passes through it |
-| Cradle flange | 34 mm diameter used for clearance checks; three M2 holes on a 36 mm circle at 90, 210 and 330 degrees; the outline ring is cradle radius plus 3.5 mm so the holes keep 0.3 mm to the edge |
-| Keycap clearance | at least 1.0 mm between the flange outline and any keycap (checked by the generator) |
+| Ball centre | (+5.0, +64.0), below the middle/ring columns, outboard of the outer thumb key |
+| Ball diameter | 19.05 mm (3/4 inch POM); the cradle also exists for 25 mm, which needs a wider notch |
+| Cradle clearance circle | 28 mm diameter (`trackball.cradle_diameter`); the printed cradle is 24.1 mm wide above the PCB plane |
+| PCB notch | regular octagon, apothem 15.0 mm (cradle radius + 1.0 mm `notch_clearance`), vertices in `points-right.json` under `trackball.notch` |
+| Case pocket | 32 mm circle (`pocket_diameter`, cradle + 2 mm wall) above the PCB plane; the sensor housing footprint on the floor is 43 x 29 mm including the screw ears |
+| Sensor board | 26 x 25 mm centred under the ball on the case floor, 11.6 mm below the PCB top (`trackball.sensor_board`) |
+| Keycap clearance | at least 1.0 mm between the 28 mm circle and any keycap (checked by the generator) |
+| Mounting | cradle screwed to the case floor; no cradle holes on the PCB |
 
-The ball centre was moved down until the ring-column bottom key cleared the flange; moving it outward
-instead collides with the pinky column. The cutout and the flange holes exist on both halves because
-the PCB is reversible; the left half simply leaves them empty.
+The ball centre was moved until the 28 mm circle cleared the outer thumb cap, the ring and the
+pinky bottom keys by 1 mm each and the circle stays at least `notch_clearance` away from the rest
+of the outline. The generator refuses to write if the cradle circle intersects the PCB outside the
+notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 
 ## Controller block and connectors
 
-| Part | Position | Notes |
-|------|----------|-------|
-| Controller U1 | centre (-58, 14), USB at the top edge | nice!nano v2 / SuperMini, component side up, on 1.27 mm sockets, battery underneath |
-| Solder jumpers JP1..JP3 | (-58, -6.5), 3 mm pitch, above the controller | RAW / RST / VCC row selection per half |
-| Test pads TP1..TP3 | (-47, 5), 2.54 mm pitch | spare controller pins |
-| Power switch PS1 | (-68.5, 30), rotated 90 | MSK12C02, actuator through the inner edge |
-| Reset button RB1 | (-66, 38) | EVQ-P7A, bottom side |
-| Battery pads J2 | (-48, 40) | 2.54 mm pitch, B+ is the square pad |
-| JST J3 | (-56, 42) | optional, 6 mm tall |
-| FPC J1 | (-4, 48.2) | FH12-6S, bottom side, cable exits towards the ball zone |
+| Part | Position | Notes | Halves |
+|------|----------|-------|--------|
+| Controller U1 | centre (-58, 14), USB at the top edge | nice!nano v2 / SuperMini, component side up, on 1.27 mm sockets, battery underneath | both |
+| Power switch PS1 | (-68.5, 30), rotated 90 | MSK12C02, bottom side, actuator through the inner edge | both |
+| Reset button RB1 | (-66, 38) | EVQ-P7A, bottom side | both |
+| JST J3 | (-56, 42) | optional, 6 mm tall, bottom side | both |
+| Battery pads J2 | (-57, 50.5) | 2.54 mm pitch, B+ is the square pad | both |
+| Test pads TP1.. | row from (-66, 57.5), 2.5 mm pitch along x | right: D0, D1, D2, D3, D9; left: the same plus D10, D14, D15, D16 | both |
+| FPC J1 | (-8, 46.5) | FH12-6S, bottom side, cable exits towards the pocket | right only |
+
+No solder jumpers: RAW, GND, RST and VCC are wired straight to the controller holes.
 
 ## Mounting holes
 
-Six M2 holes per half. They sit in the 4.2 mm gaps between switch bodies and outside the bands the
-hot-swap socket pads occupy on either face:
+Five M2 holes per half at identical positions. They sit in the 4.2 mm gaps between switch bodies
+and outside the bands the hot-swap socket pads occupy:
 
 | Hole | x | y |
 |------|---|---|
@@ -107,31 +126,40 @@ hot-swap socket pads occupy on either face:
 | H3 | -9.0 | 40.0 |
 | H4 | -27.0 | 8.0 |
 | H5 | -32.0 | 61.0 |
-| H6 | -67.0 | 45.0 |
 
-The three cradle holes HB1..HB3 can carry case standoffs as well.
+The case can add standoffs under the controller block; the cradle has its own two screws into the
+case floor.
 
 ## Outline
 
 The outline is the union of all keycap rectangles (plus 0.5 mm margin and 1.1 mm extra per side for
-the socket pads), the stepped bridges between neighbouring columns, the controller block, the ball
-zone and two bridges that tie the ball zone to the key block and to the outer thumb key. Corners are
-rounded with 2 mm. Size of one half: about 120.4 x 93.5 mm (bounding box).
+the socket pads), joined with 90 degree steps that follow the column stagger, the rectangular
+controller block at the inner edge (from above the controller down to the thumb cluster) and the
+thumb bridge between the index/inner bottom keys and the thumb keys. Corners are not rounded
+(`corner_radius: 0`, mitre joins; the fab's 1 mm router radius is accepted). On the right half the
+octagonal pocket notch is subtracted. Sizes (bounding boxes): left 121.0 x 86.7 mm, right
+117.8 x 80.4 mm; the ball pocket adds about 3 mm of case height beside the right PCB.
 
 ## Changing the layout
 
-1. Edit `hardware/layout/k0d3ball36.yaml` (stagger, thumb offsets, ball centre, part positions, holes).
-2. Run `make layout`. The generator prints every key and refuses to write if keycaps overlap, the
-   cradle touches a cap, a hole collides with a switch body or sits too close to the edge.
-3. Look at `hardware/layout/output/preview-right.png`.
-4. Run `make sch pcb route drc` to regenerate and re-route the board, then `make test`.
-5. Regenerate the firmware physical layout from `points.json` (ticket `fw-physical-layout-exact-coords`).
+1. Edit `hardware/layout/k0d3ball36.yaml` (stagger, thumb offsets, per-half thumb lists, ball
+   centre, part positions, holes, hand routes).
+2. Run `make layout`. The generator prints every key of both halves and refuses to write if keycaps
+   overlap, the cradle circle touches a cap or cuts into the outline, a hole collides with a switch
+   body or sits too close to the edge.
+3. Look at `hardware/layout/output/preview-left.png` and `preview-right.png`.
+4. Run `make sch pcb route drc` (both halves; `HALVES=right` for one) to regenerate and re-route
+   the boards, then `make test`.
+5. Regenerate the firmware physical layout from `points-left.json` and `points-right.json`
+   (`firmware/zmk-config/scripts/gen_physical_layout.py`).
 
 ```prompt
-Clean technical top-view diagram of a 36-key split keyboard right half on white background:
-five columns of three keys in a column-staggered grid (middle column highest, pinky column lowest),
-three thumb keys fanning out at 0, 10 and 20 degrees below the inner column, a 25 mm trackball circle
-at the lower right below the middle and ring columns, a Pro Micro sized controller rectangle at the
-left edge, six small mounting hole circles, dimension lines showing 18 mm column pitch and 17 mm row
-pitch, thin grey lines, labels in a sans-serif font, 16:10.
+Clean technical top-view diagram of the two halves of a 35-key split keyboard on white
+background: each half has five columns of three keys in a column-staggered grid (middle column
+highest, pinky column lowest) with an angular stepped board outline following the stagger, the
+left half with three thumb keys fanning out at 0, 10 and 20 degrees below the inner column, the
+right half with only the two outer thumb keys and a 19 mm trackball circle in an octagonal notch at
+the lower right beside the thumb keys, a Pro Micro sized controller rectangle in a rectangular block
+at the inner edge of each half, five small mounting hole circles per half, dimension lines showing
+18 mm column pitch and 17 mm row pitch, thin grey lines, labels in a sans-serif font, 16:10.
 ```

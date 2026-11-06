@@ -2,7 +2,8 @@
 
 k0d3ball36 runs [ZMK](https://zmk.dev) on two nice!nano v2 (or SuperMini nRF52840) controllers.
 The right half is the split central and drives the PMW3610 trackball through the upstream Zephyr
-`pixart,pmw3610` input driver; no third-party driver module is needed. ZMK Studio is enabled, so the
+`pixart,pmw3610` input driver; no third-party driver module is needed. Since r2 the two halves are
+separate PCBs with identical controller wiring: one shared kscan pin set, 35 keys (18 left, 17 right). ZMK Studio is enabled, so the
 keymap can be edited live from a browser.
 
 Sources: `firmware/zmk-config/`. Shield files: `config/boards/shields/k0d3ball36/`.
@@ -85,8 +86,8 @@ System layer, and edit layers and bindings live. Changes persist on the keyboard
 Settings" in Studio.
 
 Studio shows the keyboard using the physical layout in `k0d3ball36-layouts.dtsi`, which is
-generated from the design geometry by `scripts/gen_physical_layout.py`. Regenerate it whenever the
-hardware layout changes:
+generated from `hardware/layout/output/points-left.json` and `points-right.json` by
+`scripts/gen_physical_layout.py`. Regenerate it whenever the hardware layout changes:
 
 ```bash
 python3 firmware/zmk-config/scripts/gen_physical_layout.py > /tmp/pl.txt   # paste into the dtsi
@@ -101,26 +102,32 @@ Key positions in matrix transform order:
  0  1  2  3  4      5  6  7  8  9
 10 11 12 13 14     15 16 17 18 19
 20 21 22 23 24     25 26 27 28 29
-      30 31 32     33 34 35
+      30 31 32     33 34
 ```
+
+35 positions: the left half has three thumb keys (30 inner, 31 middle, 32 outer), the right half
+only the two outer ones (33 middle, 34 outer); the place where a right inner thumb key would sit is
+taken by the ball pocket. Matrix transform row 3 is `RC(3,2) RC(3,3) RC(3,4)` on the left and
+`RC(3,8) RC(3,7)` on the right.
 
 | Layer | Access | Content |
 |-------|--------|---------|
 | 0 Base | | QWERTY, home-row mods GACS on A S D F and J K L ; (hold = mod, tap = letter) |
 | 1 Nav | hold left middle thumb (Space) | arrows, Home/End, PgUp/PgDn, media; left hand keeps the mods |
 | 2 Num | hold left inner thumb (Tab) | numpad on the left hand, brackets and operators around it |
-| 3 Sym | hold right inner thumb (Enter) | symbols on the left hand mirroring the Num layer |
+| 3 Sym | hold right middle thumb (Enter) | symbols on the left hand mirroring the Num layer |
 | 4 Mouse | automatic, when the ball moves | right home row J K L = left / right / middle click, M , = back / forward, U = hold for scroll, I = hold for snipe, right thumbs = left / right click and scroll |
-| 5 Scroll | hold U on the mouse layer, or right outer thumb (Del) | ball movement becomes scrolling, clicks stay available |
+| 5 Scroll | hold U on the mouse layer, or right outer thumb (Backspace) | ball movement becomes scrolling, clicks stay available |
 | 6 Snipe | hold I on the mouse layer | ball movement at one third speed |
 | 7 System | hold left outer thumb (Esc), or both outer thumbs | Bluetooth profiles, output selection, F keys, bootloader, Studio unlock, reset |
 
 Thumb keys: left outer `Esc / System`, left middle `Space / Nav`, left inner `Tab / Num`,
-right inner `Enter / Sym`, right middle `Backspace`, right outer `Delete / Scroll`.
+right middle `Enter / Sym`, right outer `Backspace / Scroll`. The r1 right inner thumb key is gone,
+so its bindings moved one key outward and Delete is reached from the Nav layer.
 
 Combos on the base layer: W+E = Esc, E+R = Tab, F+J = Caps Word, both outer thumbs = System layer.
 
-Image prompt: *Top-down flat illustration of a 36-key split keyboard layout, 3x5 keys per hand plus three fanned thumb keys, legends showing a QWERTY base layer with small modifier labels (GUI ALT CTRL SHIFT) under the home-row keys, a trackball drawn to the lower right of the right half, clean technical diagram style, white background.*
+Image prompt: *Top-down flat illustration of a 35-key split keyboard layout, 3x5 keys per hand plus three fanned thumb keys on the left and two on the right, legends showing a QWERTY base layer with small modifier labels (GUI ALT CTRL SHIFT) under the home-row keys, a 19 mm trackball drawn beside the right thumb keys, clean technical diagram style, white background.*
 
 ## 6. Trackball tuning
 
@@ -128,7 +135,7 @@ All trackball settings live in `k0d3ball36_right.overlay`.
 
 | Setting | Where | Default | Notes |
 |---------|-------|---------|-------|
-| sensor resolution | `res-cpi` on the `trackball` node | 400 | 200 to 3200 in steps of 200. A 25 mm ball rotates more per millimetre of thumb travel than a 34 mm ball, so start low. 600 to 800 suits fast cursor users. |
+| sensor resolution | `res-cpi` on the `trackball` node | 600 | 200 to 3200 in steps of 200. The sensor counts surface travel, so a 19 mm ball needs about 30 percent more CPI than the 25 mm ball of r1 (which started at 400) for the same cursor speed per thumb movement. 800 to 1000 suits fast cursor users. |
 | global scaling | `input-processors` of `trackball_listener` | none | add `&zip_xy_scaler 1 2` before the temp layer processor for a finer global scale without touching the CPI |
 | axis direction | `invert-x`, `invert-y` on the `trackball` node | off | enable if the cursor moves the wrong way; swap axes with `&zip_xy_swap_mapper` if the sensor board is mounted rotated by 90 degrees |
 | auto mouse layer timeout | `&zip_temp_layer LAYER_MOUSE 700` | 700 ms | layer 4 is active while the ball moves and 700 ms after the last movement |
@@ -141,6 +148,8 @@ All trackball settings live in `k0d3ball36_right.overlay`.
 
 Known behaviour of small balls: the first few millimetres after a pause can feel jumpy because the
 sensor wakes from rest mode. If that bothers you more than battery life, try `force-awake` and measure.
+A 19 mm ball has little inertia, so there are no long flicks; the snipe layer matters less and the
+CPI matters more than on a 34 mm Keyball.
 
 ## 7. Battery expectations
 
@@ -164,44 +173,44 @@ level) and shown in ZMK Studio.
 | halves do not talk to each other | flash `settings_reset` to both, then the real firmware; power both halves within a minute of each other |
 | right half works over USB but the host sees no Bluetooth keyboard | `&out OUT_BLE` on the System layer; clear the profile and pair again |
 | cursor does not move | sensor board power (3.3 V on pin 1 of the FPC), cable seated with contacts facing the connector, `NCS` and `MOT` continuity to the controller; build log must show `pixart,pmw3610` without warnings |
-| cursor moves only on one axis or diagonally | lens not clipped on the sensor, ball too high (lens-to-ball distance must be 2.4 to 2.9 mm), dirty ball |
+| cursor moves only on one axis or diagonally | lens not clipped on the sensor, ball too high (lens-to-ball distance must be 2.2 to 2.6 mm), dirty ball |
 | cursor moves the wrong way | `invert-x` / `invert-y`; 90 degree rotation of the sensor board needs `&zip_xy_swap_mapper` |
 | mouse layer opens while typing | increase `require-prior-idle-ms`; make sure `excluded-positions` does not include letter keys |
 | scroll goes in the wrong direction | add `&zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)` after the scroll mapper |
 | Studio cannot connect | right half must be the USB-connected half and built with the `studio-rpc-usb-uart` snippet; press the unlock key |
 | short battery life on the right half | disable `force-awake`, lower the sleep timeout, check that the slide switch really cuts the battery (not just the controller enable) |
 
-## 9. Why the halves use different controller pins
+## 9. One pin set for both halves
 
-The PCB is reversible and the controller sits in a plain 2x12 through-hole footprint. The left
-half is the same board flipped over, which swaps the two columns of controller pins. The copper
-traces are identical, so a matrix line that reaches D4 on the right half reaches D19 on the left
-half. The firmware compensates with a pin table per side; nothing changes on the PCB.
+Since r2 each half is its own PCB and the controller footprint is wired identically on both, so
+there is one pin table (`docs/01-design-spec.md`, section 2) and one shared `kscan0` in
+`k0d3ball36.dtsi`:
 
-| Line | Right half (central) | Left half |
-|------|---------------------|-----------|
-| COL0..COL4 (pinky to inner) | D4 D5 D6 D7 D8 | D19 D18 D15 D14 D16 |
-| ROW0..ROW3 (top to thumbs) | D21 D20 D19 D18 | D2 D3 D4 D5 |
-| TB_SCLK / TB_SDIO / TB_NCS / TB_MOT | D15 / D16 / D10 / D14 | D6 / D8 / D9 / D7 |
+| Line | Both halves |
+|------|-------------|
+| COL0..COL4 (pinky to inner) | D4 D5 D6 D7 D8 |
+| ROW0..ROW3 (top to thumbs) | D21 D20 D19 D18 |
+| TB_SCLK / TB_SDIO / TB_NCS / TB_MOT | D15 / D16 / D10 / D14 (sensor populated on the right; test pads on the left) |
 
-D0 is tied to GND on both halves (part of the reversibility jumper scheme); the D1/RAW, GND/RST and
-GND/VCC rows are selected by solder jumpers, see the build guide. The sensor lines exist on both
-halves, but the sensor board is only populated on the right in r1.
-
-The nRF52840 port pins of the left-ball sensor set are P1.00 (SCLK), P1.04 (SDIO), P1.06 (NCS)
-and P0.11 (MOT). Unlike the right half these are not the NFC pins, so the `&uicr` block is not needed there.
+D0 to D3 and D9 are free and broken out as test pads on both halves. The r1 mirrored pin table,
+the solder jumpers and the grounded D0 are gone (`issues/fw-left-half-pin-mirror.md`,
+`issues/hw-d0-grounded.md`). The per-side overlays only differ in the matrix transform row for the
+thumbs and in the sensor node.
 
 ## 10. Moving the ball to the left half
 
-Because of the per-side pin tables a left-ball build is a firmware change:
+The left PCB has no pocket notch and no FPC connector, so a left-ball build needs a mirrored right
+PCB (the layout generator can produce one by giving the left half the `trackball` and `fpc` blocks
+and mirroring the pocket). The firmware side is a configuration change because the sensor pins are
+the same on both halves:
 
-1. Populate the sensor board and cradle on the left half.
-2. In `k0d3ball36_left.overlay`, uncomment the prepared left-ball block (`&pinctrl`, `&spi1` with
-   the `trackball` node on the left pin set, and `&trackball_split { status = "okay"; device = <&trackball>; };`).
-3. In `k0d3ball36_right.overlay`, remove `trackball_listener` and enable the shared
-   `trackball_split_listener` and the `trackball_split` node (`status = "okay";` on both). Move the input processor settings to that listener.
-4. Add `CONFIG_INPUT_PMW3610=y`, `CONFIG_SPI=y` and `CONFIG_INPUT=y` to `k0d3ball36_left.conf`.
-5. Rebuild and flash both halves.
+1. In `k0d3ball36_left.overlay`, enable the prepared left-ball block (`&pinctrl`, `&spi1` with
+   the `trackball` node on D15 / D16 / D10 / D14, and `&trackball_split { status = "okay"; device = <&trackball>; };`).
+2. In `k0d3ball36_right.overlay`, remove `trackball_listener` and enable the shared
+   `trackball_split_listener` and the `trackball_split` node (`status = "okay";` on both). Move the
+   input processor settings to that listener.
+3. Add `CONFIG_INPUT_PMW3610=y`, `CONFIG_SPI=y` and `CONFIG_INPUT=y` to `k0d3ball36_left.conf`.
+4. Rebuild and flash both halves.
 
 The peripheral forwards motion events to the central through ZMK's `zmk,input-split`; input
 processors can run on either side. The same mechanism is the basis for a future dongle build in which
@@ -209,7 +218,7 @@ both halves are peripherals.
 
 ## 11. Checks
 
-`firmware/zmk-config/scripts/check_pins.py` compares the devicetree pin usage of both halves
-(including the commented left-ball set) against the right-half and left-half tables in
+`firmware/zmk-config/scripts/check_pins.py` compares the devicetree pin usage of both overlays
+(including the prepared left-ball set) against the single pin table in
 `docs/01-design-spec.md` and is run by `tests/test_firmware_pins.py`. The firmware itself is
 validated by building it (CI, or the Docker commands above).
