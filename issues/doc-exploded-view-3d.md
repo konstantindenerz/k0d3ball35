@@ -23,10 +23,8 @@ the ball and a left-half mirror toggle. The page is generated from the layout da
 - [x] Explode slider, auto-rotate, layer visibility, mirror and section toggles work
 - [x] Geometry follows points-left.json / points-right.json / stack.json (r2: ball top +17.1 mm in the pocket beside the right PCB, PCB 1.6 mm, controller on 2.5 mm sockets, 702025 cell in the bay under the controller on both halves)
 - [x] Light and dark theme, responsive, no external hosts besides cdnjs and Google Fonts
-- [x] Linked from README and published as an artifact
+- [x] Linked from README; the page is self-contained and opens from the repo
 
 ## Notes
-
-
 
 Case shell and plate are placeholders; the real case comes in the case phase (`mech-case`).
