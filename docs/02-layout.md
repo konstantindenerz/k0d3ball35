@@ -104,11 +104,12 @@ notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 
 | Part | Position | Notes | Halves |
 |------|----------|-------|--------|
-| Controller U1 | centre (-58, 14), USB at the top edge | nice!nano v2 / SuperMini, component side up, on 1.27 mm sockets, battery underneath | both |
+| Controller U1 | centre (-58, 14), USB at the top edge | nice!nano v2 / SuperMini, component side up, on 2.5 mm low-profile sockets, nothing underneath | both |
+| Battery bay | centre (-58, 11), 21 x 28 mm, on the back | 702025 cell under the PCB in a 9 mm deep well of the case floor, lead end towards +y; dashed outline on the back silkscreen; `battery` block in `points-*.json` | both |
 | Power switch PS1 | (-68.5, 30), rotated 90 | MSK12C02, bottom side, actuator through the inner edge | both |
 | Reset button RB1 | (-66, 38) | EVQ-P7A, bottom side | both |
-| JST J3 | (-56, 42) | optional, 6 mm tall, bottom side | both |
-| Battery pads J2 | (-57, 50.5) | 2.54 mm pitch, B+ is the square pad | both |
+| JST J3 | (-56, 42) | default battery connection, 6 mm tall, bottom side, inside the battery well | both |
+| Battery pads J2 | (-57, 50.5) | 2.54 mm pitch, B+ is the square pad, solder alternative to J3 | both |
 | Test pads TP1.. | row from (-66, 57.5), 2.5 mm pitch along x | right: D0, D1, D2, D3, D9; left: the same plus D10, D14, D15, D16 | both |
 | FPC J1 | (0, 45.5) | FH12-6S, bottom side under the middle column, 1 mm above the cradle housing; the cable drops straight into the housing slot | right only |
 
@@ -128,7 +129,8 @@ and outside the bands the hot-swap socket pads occupy:
 | H5 | -32.0 | 61.0 |
 
 The case can add standoffs under the controller block; the cradle has its own two screws into the
-case floor.
+case floor. Under the controller block the case floor drops to a 9 mm deep well for the battery
+(`battery.well_floor_z` in `points-*.json`, -10.6 mm), the same on both halves.
 
 ## Outline
 
@@ -146,7 +148,8 @@ octagonal pocket notch is subtracted. Sizes (bounding boxes): left 121.0 x 86.7 
    centre, part positions, holes, hand routes).
 2. Run `make layout`. The generator prints every key of both halves and refuses to write if keycaps
    overlap, the cradle circle touches a cap or cuts into the outline, a hole collides with a switch
-   body or sits too close to the edge.
+   body or sits too close to the edge, or the battery bay leaves the outline or touches a part on
+   the back of the PCB.
 3. Look at `hardware/layout/output/preview-left.png` and `preview-right.png`.
 4. Run `make sch pcb route drc` (both halves; `HALVES=right` for one) to regenerate and re-route
    the boards, then `make test`.

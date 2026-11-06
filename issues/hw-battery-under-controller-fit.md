@@ -2,7 +2,7 @@
 title: Verify the 3.3 mm cell fits under the socketed controller
 type: task
 priority: P2
-status: open
+status: wontfix
 area: hw
 created: 2026-11-05
 ---
@@ -24,4 +24,6 @@ controller except the pads. Thermal and mechanical stress on the cell must be av
 
 ## Notes
 
-None yet.
+2026-11-06: superseded by `hw-battery-bay-both-halves`. The cell no longer sits between the
+controller and the PCB on either half; it lies under the PCB in a case well below the controller,
+and the controller uses the lowest sockets. Nothing to verify here any more.

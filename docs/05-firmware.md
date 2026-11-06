@@ -155,7 +155,7 @@ CPI matters more than on a 34 mm Keyball.
 
 | Half | Battery | Estimate |
 |------|---------|----------|
-| left (peripheral) | 110 mAh | several weeks |
+| left (peripheral) | 300 mAh | two to three months |
 | right (central, sensor) | 300 mAh | three to six weeks of mixed use |
 
 Numbers come from the PMW3610 datasheet (0.6 mA tracking, 36 uA rest) plus typical nRF52840 split

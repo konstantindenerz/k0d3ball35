@@ -20,7 +20,7 @@ are generated and autorouted; a human pass in the KiCad GUI with 3D models is st
 - [ ] FH12-6S orientation on the right board: contacts towards the keys, cable exits towards the pocket (+y)
 - [ ] MSK12C02 actuator reaches the inner board edge and can be moved from outside the case
 - [ ] Silkscreen: `LEFT half` / `RIGHT half`, revision r2, pin names at the controller
-- [ ] Controller USB-C overhang at the top edge, socket height vs battery underneath
+- [ ] Controller USB-C overhang at the top edge; battery bay outline on the back silkscreen under U1 free of parts, socket tails cut flush there
 - [ ] Five mounting holes per board clear switch bodies and sockets
 - [ ] Right board: octagonal notch (apothem 15 mm) present, no copper, pour or via inside the notch or within 0.3 mm of its edge; no cradle holes anywhere
 - [ ] Left board: three thumb positions, no FPC footprint, nine test pads (D0, D1, D2, D3, D9, D10, D14, D15, D16); right board: two thumb positions, five test pads

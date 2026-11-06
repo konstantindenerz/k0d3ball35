@@ -72,9 +72,9 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 2 | EVQ-P7A01P tact switch | bottom face, below the controller | 6 |
 | 2 | Hirose FH12-6S-0.5SH (or LCSC clone) 6-pin 0.5 mm FPC connector | one on the right PCB (bottom face), one on the sensor board | 6, 10 |
 | 1 (+1) | 6-conductor 0.5 mm FFC, type A (contacts on the same face at both ends), 30 to 50 mm | right half | 11 |
-| 2 (optional) | JST S2B-PH-SM4-TB battery connector | bottom face, only if the case has 6 mm under the PCB | 7 |
-| 1 | LiPo 301230, 110 mAh, protected, bare leads | left half, under the controller | 7 |
-| 1 | LiPo 702025, 300 mAh, protected, JST-PH | right half, case pocket | 7 |
+| 2 | JST S2B-PH-SM4-TB battery connector | bottom face, below the controller, inside the battery well | 7 |
+| 2 | LiPo 702025, 300 mAh, protected, JST-PH plug | one per half, battery bay on the bottom face under the controller | 7 |
+| 2 | foam or Kapton pad, about 20 x 27 x 0.5 mm, plus double-sided tape | between PCB underside and cell | 7 |
 | 1 (+1) | PixArt PMW3610DM-SUDU + LM18-LSI lens | sensor board | 10 |
 | 1 set | sensor-board passives: XC6206P182MR, 0603 capacitors and resistors as listed in the BOM | sensor board | 10 |
 | 1 (+1) | 19.05 mm (3/4 inch) POM trackball, or the PandaKB TB19 phenolic ball | right half | 11 |
@@ -166,11 +166,12 @@ a socket pad and the neighbouring diode.
 ## 5. Controller sockets and header pins
 
 The controller sits on the **top face** at the inner edge in the rectangular controller block,
-component side up, USB-C connector towards the top edge, raised on sockets so the 301230 cell fits
-underneath (3.3 mm cell, so keep at least 3.5 mm between PCB and controller underside). Same on
-both halves.
+component side up, USB-C connector towards the top edge, on the lowest sockets you can get
+(Mill-Max 315 with 3320 pins, or conthrough spring pins; about 2.5 mm). Nothing goes between the
+controller and the PCB: the cell lies on the other face, in the battery bay printed on the bottom
+silkscreen right under the controller. Same on both halves.
 
-![Controller on sockets with the battery underneath](images/img-build-step-controller.png)
+![Controller on low-profile sockets](images/img-build-step-controller.png)
 
 1. Push two 1 x 12 socket strips into the two rows of holes from the top face. Flip the board
    onto a flat surface so the sockets are pressed flat against the PCB, solder one pin of each
@@ -180,14 +181,14 @@ both halves.
 2. Header pins into the controller: put the pins into the sockets first, set the controller on
    top with the **USB connector at the top edge and the chip facing up**, check that the hole marked
    with a square pad (hole 1, D1) is at the top-left of the footprint, then solder the pins to the
-   controller. Do not solder the controller directly to the PCB; the socket makes it replaceable
-   and creates the battery gap.
+   controller. Do not solder the controller directly to the PCB; the socket makes it replaceable.
 3. Pull the controller off again. It goes back on in chapter 8.
-4. Check that nothing protrudes more than 1 mm into the battery gap under the controller (cut the
-   socket pins flush on the bottom face if they are long).
+4. Cut the socket tails flush on the **bottom face** inside the dashed battery bay and file off
+   any sharp solder spike: the cell will lie against this area with only a 0.5 mm pad in between.
+   Nothing may protrude more than 1 mm there.
 
 Checkpoint: two socket rows soldered flat, controller plugs in and out, USB connector at the top
-edge, square pad at top-left.
+edge, square pad at top-left, bottom face inside the battery bay smooth.
 
 ## 6. Power switch, reset button, FPC connector
 
@@ -227,29 +228,32 @@ shorts between FPC pins.
 
 ## 7. Battery
 
-Each half has two options: the solder pads J2 (any cell with bare leads) and the optional JST-PH
-connector J3 (6 mm tall, only if your case has the room). Left half: the 301230 cell goes under the
-controller. Right half: the 702025 cell lies in the case pocket next to the controller.
+Both halves are identical here: one 702025 cell (300 mAh) lies on the **bottom face** in the
+dashed battery bay printed right under the controller, lead end towards the JST connector J3, and
+plugs into J3. The case provides a 9 mm deep well under the controller block for it. The solder
+pads J2 remain for cells with bare leads.
 
-![Battery wired to the solder pads](images/img-build-step-battery.png)
+![Battery in the bay under the controller](images/img-build-step-battery.png)
 
 1. Power switch **off**. Controller removed.
 2. Measure the cell: 3.6 to 4.2 V between its red (+) and black (-) lead. Note which lead is
    which; some cells have swapped colours on the connector.
-3. Solder pads J2: the **square** pad is B+, the round pad is B-. Trim the leads so the cell
-   reaches its final position with 5 mm of slack, strip 2 mm, tin, solder red to the square pad,
-   black to the round pad. Do not let the two bare leads touch each other while you work.
-4. JST connector J3 instead: solder the connector like the FPC connector (tabs first). Pin 1 (the
+3. JST connector J3 (default): solder the connector like the FPC connector (tabs first). Pin 1 (the
    pad marked `1`) is B+. Check the cell's plug polarity against that before plugging in; swap the
    pins in the plug housing if needed.
+4. Solder pads J2 instead (bare leads): the **square** pad is B+, the round pad is B-. Trim the
+   leads so the cell reaches the bay with 5 mm of slack, strip 2 mm, tin, solder red to the square
+   pad, black to the round pad. Do not let the two bare leads touch each other while you work.
 5. Multimeter: cell voltage between the controller's RAW hole and GND must be **0 V** with the
    switch off and the cell voltage with the switch on. If it is reversed in polarity, stop and fix
    it before the controller goes on.
-6. Switch off again. Fix the cell with a square of double-sided foam tape; on the left half under
-   the controller footprint, on the right half where the case pocket will be.
+6. Switch off again. Stick the 0.5 mm foam or Kapton pad onto the PCB inside the dashed bay (it
+   covers the socket tails), then the cell onto the pad with double-sided tape, lead end towards
+   J3. Nothing but the pad may lie between the cell and the PCB; the leads must not run under
+   the cell.
 
-Checkpoint: correct polarity at RAW/GND, switch really cuts the supply, cell fixed, leads not under
-strain.
+Checkpoint: correct polarity at RAW/GND, switch really cuts the supply, cell fixed inside the bay
+on both halves, leads not under strain.
 
 ## 8. Flash the firmware
 
@@ -457,7 +461,7 @@ k0d3ball35 build checklist                       half: [ ] right (17 keys)  [ ] 
 [ ] 4  sockets (18 L / 17 R) flat on the bottom face, test switch fits everywhere
 [ ] 5  controller sockets soldered, pins on the controller, USB at the top edge
 [ ] 6  power switch (actuator to the inner edge), reset button, FPC connector (right only)
-[ ] 7  battery: square pad = B+, 0 V at RAW with switch off, cell fixed
+[ ] 7  battery: J3 pin 1 = B+ (square pad on J2), 0 V at RAW with switch off, cell on its pad in the bay
 [ ] 8  settings_reset flashed, then left / right firmware
 [ ] 9  35 positions register, no ghosting, battery level visible in Studio
 [ ] 10 sensor board: no shorts, 1.8 V present, lens clipped on

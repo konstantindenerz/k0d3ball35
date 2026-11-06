@@ -20,10 +20,10 @@ the inner edge of each half. No cables anywhere. Shallow depth of field, the rig
 
 | Subsystem | State | Where |
 |-----------|-------|-------|
-| Design specification | r2 (two PCBs, 35 keys, 19 mm ball pocket) | [docs/01-design-spec.md](docs/01-design-spec.md) |
+| Design specification | r2 (two PCBs, 35 keys, 19 mm ball pocket, battery bay under the controller on both halves) | [docs/01-design-spec.md](docs/01-design-spec.md) |
 | Layout generator | r2 done, per-half outputs, exact coordinates in [docs/02-layout.md](docs/02-layout.md) | [hardware/layout](hardware/layout) |
-| Left PCB (KiCad 10) | r2 in progress: generated from the layout, routing and export pending | [hardware/left-pcb](hardware/left-pcb) |
-| Right PCB (KiCad 10) | r2 in progress: generated from the layout, routing and export pending | [hardware/right-pcb](hardware/right-pcb) |
+| Left PCB (KiCad 10) | r2 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/left-pcb](hardware/left-pcb) |
+| Right PCB (KiCad 10) | r2 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/right-pcb](hardware/right-pcb) |
 | Sensor PCB (PMW3610) | r1 done, ERC and DRC clean, gerbers exported, unchanged in r2 | [hardware/sensor-pcb](hardware/sensor-pcb) |
 | Trackball cradle | r2 pocket mount for 19.05 mm done (25 mm pocket and r1 cutout as variants), test print pending | [hardware/trackball-cradle](hardware/trackball-cradle) |
 | Firmware (ZMK) | r2 in progress: 35 keys, one shared pin set | [firmware/zmk-config](firmware/zmk-config) |
@@ -54,8 +54,10 @@ Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 
 - 19.05 mm (3/4 inch) POM trackball on the right half, resting on three 2 mm ceramic balls in a
   printed cradle that stands in a case pocket beside the PCB; PMW3610 sensor on a small
   daughterboard on the case floor, connected with a 6-pin flat cable; ball top 17 mm above the PCB
-- Fully wireless: nice!nano v2 (or SuperMini nRF52840) per half, Bluetooth split, LiPo cell with
-  the controller's charger, slide power switch, reset button
+- Fully wireless: nice!nano v2 (or SuperMini nRF52840) per half on 2.5 mm low-profile sockets,
+  Bluetooth split, one 702025 LiPo cell (300 mAh) per half in a bay under the PCB below the
+  controller (the same bay on both halves), the controller's charger, JST-PH connector, slide
+  power switch, reset button
 - Two separate PCBs with identical controller wiring: no solder jumpers, no mirrored pin maps,
   no empty ball cutout on the left
 - Angular outline: 90 degree steps along the column stagger, rectangular controller block, no rounding
@@ -145,8 +147,8 @@ Firmware is built by GitHub Actions from `firmware/zmk-config`; see
 Top-down studio render of the right half of a low profile split keyboard, white background, soft
 shadows. Bare black PCB with an angular, stepped outline, 17 Kailh Choc hot-swap sockets, small
 SOD-123 diodes next to each key, two thumb key positions at the lower inner side, a nice!nano
-controller on low profile sockets in a rectangular block at the inner edge with a thin silver LiPo
-cell visible underneath, an octagonal notch in the lower outer edge of the board where a beige
+controller on low profile sockets in a rectangular block at the inner edge, a dashed rectangle
+printed on the board under it marking the battery bay on the other face, an octagonal notch in the lower outer edge of the board where a beige
 printed cradle holding a white 19 mm ball stands beside the PCB, a tiny flat flex cable running
 from under the cradle to a connector on the PCB. Clean, technical, product photography style.
 ```

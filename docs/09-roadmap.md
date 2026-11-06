@@ -52,10 +52,11 @@ person needs to order parts, build the two halves and flash them.
 ## r2.1 - case
 
 Boxy, angular printed case in the style of the reference build: flat tray following the stepped
-PCB outline, walls flush with the keycap skirts, a raised rectangular controller box at the inner
-edge with the LED window, USB-C opening, power switch slot and reset hole, a 32 mm pocket beside
-the right PCB for the ball with the sensor board on its floor, room for the 702025 cell in the
-controller box of the right half, bumper recesses. A removable lid per half covers keys and ball
+PCB outline, walls flush with the keycap skirts, a rectangular controller box at the inner edge
+with the LED window, USB-C opening, power switch slot and reset hole (the controller top is only
++5.7 mm now, so raising the box is a styling choice), a 9 mm deep battery well under the
+controller block on both halves for the 702025 cell (`battery` block in `points-*.json`), a 32 mm
+pocket beside the right PCB for the ball with the sensor board on its floor, bumper recesses. A removable lid per half covers keys and ball
 for transport (the cradle has no retainer, the lid is what keeps the ball in a bag) and attaches
 under the half with magnets as a flat or tenting foot. Depends on the final PCB outlines
 (`outline-left.dxf`, `outline-right.dxf`) and the cradle floor footprint

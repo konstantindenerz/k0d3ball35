@@ -25,7 +25,7 @@ board. Ticket `hw-two-pcbs-r2`.
 | R9 | PCB | two main PCBs (`k0d3ball35-left`, `k0d3ball35-right`) with identical controller wiring; one sensor PCB |
 | R10 | Height | low profile: nothing taller than the Choc switch above the PCB except the ball; ball top about 17 mm above the PCB top |
 | R11 | Indicators | none on the PCB; controller LED visible through a case window |
-| R12 | Assembly | all parts hand-solderable (SOD-123, 1.27 mm sockets, 0.5 mm FPC with care) |
+| R12 | Assembly | all parts hand-solderable (SOD-123, low-profile controller sockets, 0.5 mm FPC with care) |
 | R13 | Outline | angular: 90 degree steps following the column stagger, no corner rounding, rectangular controller block at the inner edge |
 | R14 | License | MIT for firmware/scripts/docs, CERN-OHL-P-2.0 for hardware |
 
@@ -123,14 +123,33 @@ Optical stack (datasheet lens-to-surface 2.2 to 2.6 mm, 2.4 mm typical):
 
 | Half | Battery | Position | Expected runtime |
 |------|---------|----------|------------------|
-| left | 301230, 110 mAh, protected | under the socketed controller | weeks |
-| right (central, trackball) | 702025, 300 mAh, protected | case pocket next to the controller | 3 to 6 weeks mixed use |
+| left (peripheral) | 702025, 300 mAh, protected, JST-PH | battery bay under the PCB, below the controller | two to three months |
+| right (central, trackball) | 702025, 300 mAh, protected, JST-PH | battery bay under the PCB, below the controller | 3 to 6 weeks mixed use |
 
-Both PCBs carry the same power parts in the controller block: solder pads J2 for bare battery leads
-(2.54 mm pitch, B+ is the square pad, at (-57, +50.5)) as the default, an optional JST-PH 2.0 connector
-J3 (S2B-PH-SM4-TB, 6 mm tall, at (-56, +42), only if the case allows it), MSK-12C02 slide switch PS1
-in the B+ line at (-68.5, +30) with the actuator through the inner edge, reset button RB1 on RST at
-(-66, +38), controller on 1.27 mm mill-max or "conthrough" sockets so that a 3.3 mm cell fits underneath.
+Both halves mount the cell the same way (decided 2026-11-06, `issues/hw-battery-bay-both-halves.md`):
+the cell lies **under the PCB**, directly below the controller, in a well of the case floor. The
+back of the PCB carries nothing there except the socket tails, so the "battery bay" is the same
+rectangle on both boards and is printed on the back silkscreen:
+
+| Item | Value |
+|------|-------|
+| Bay (back of the PCB, layout frame) | centre (-58, +11), 21 x 28 mm, i.e. x -68.5 to -47.5, y -3 to +25 (`battery.bay` in the layout yaml) |
+| Cell | 702025, 20 x 25 x 7 mm nominal, 20.5 x 27 x 7.2 mm with protection circuit and leads; lead end towards +y |
+| Well depth | 9.0 mm below the PCB underside (socket tails 1.0 + 0.5 mm foam pad + 7.2 mm cell + 0.3 mm), floor at z = -10.6 mm; the case may use -11.6 mm to share the ball pocket's floor level |
+| Clearances | bay 1.75 mm from the inner and top PCB edges, 0.8 mm from the power switch courtyard, checked by the layout generator |
+| Alternatives | any cell with the 20 x 25 footprint and up to 7.2 mm thickness (602025, 502025, 402025); the old 301230 is too long for the bay |
+
+Because nothing lies between the controller and the PCB any more, the controller sits on the
+lowest sockets available (Mill-Max 315 with 3320 pins or conthrough, 2.5 mm design value): the
+controller top is at about +5.7 mm above the PCB (2.5 mm socket + 1.6 mm nice!nano PCB + 1.6 mm
+USB-C shell above it), 3.5 mm below the keycap tops. A raised controller box on the case is now
+a styling choice, not a necessity.
+
+Both PCBs carry the same power parts in the controller block: JST-PH 2.0 connector J3
+(S2B-PH-SM4-TB, 6 mm tall, at (-56, +42), inside the battery well) as the default connection for
+the cell's plug, solder pads J2 for bare battery leads (2.54 mm pitch, B+ is the square pad, at
+(-57, +50.5)) as the alternative, MSK-12C02 slide switch PS1 in the B+ line at (-68.5, +30) with
+the actuator through the inner edge, reset button RB1 on RST at (-66, +38).
 
 RAW, GND, RST and VCC connect straight to their controller holes on both boards. There are no
 solder jumpers and no sacrificed pins: D0 is a free test pad. Sensor supply on the right half is
@@ -179,8 +198,9 @@ generator). Ball top about 17.1 mm above the PCB top (`hardware/trackball-cradle
 Controller block: a rectangle at the inner edge from above the controller down to the thumb
 cluster. Controller centre (-58, +14), USB connector towards the top edge, component side up, long
 axis parallel to the columns, 1.5 mm USB overhang. Power switch, reset button, battery pads, JST
-and the test-pad row live in this block. A "thumb bridge" fills the slot between the index/inner
-bottom keys and the thumb keys.
+and the test-pad row live in this block; the battery bay (21 x 28 mm, section 4) sits on the back
+under the controller. A "thumb bridge" fills the slot between the index/inner bottom keys and the
+thumb keys.
 
 Outline: the union of the keycap rectangles (0.5 mm margin plus 1.1 mm per side for the hot-swap
 socket pads), 90 degree steps between neighbouring columns, the controller block and the thumb

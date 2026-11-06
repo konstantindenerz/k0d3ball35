@@ -77,6 +77,8 @@ def test_bom_covers_placed_parts(rows, placed):
     assert _qty(rows, r"reset button") >= placed["reset"] == 2
     assert _qty(rows, r"fpc connector|ffc connector") >= placed["fpc"] + 1 == 2  # right PCB + sensor PCB
     assert _qty(rows, r"lipo") >= 2
+    assert _qty(rows, r"lipo 702025") == 2, "one 702025 cell per half, the same bay on both"
+    assert not any(re.search(r"301230", r.get("part", "")) and r["_qty"] for r in rows), "the 301230 does not fit the bay"
     assert _qty(rows, r"bearing ball|zirconia|zro2") >= 3
     assert _qty(rows, r"ball 19\.05 mm|19\.05 mm ball|3/4 inch") >= 1
     assert _qty(rows, r"jst s2b-ph|s2b-ph-sm4") >= 2

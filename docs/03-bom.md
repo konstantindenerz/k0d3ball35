@@ -24,8 +24,8 @@ Quantities marked "+n" include recommended spares. Sensor-board passives are 060
 |-----|------|------|--------|-------|------------|-------|
 | 2 | nice!nano v2 | nRF52840, Pro Micro pinout, LiPo charger, battery ADC | https://42keebs.eu/shop/parts/controllers/nice-nano-v2-wireless-controller/ | 20.70 EUR each | https://splitkb.com/products/nice-nano (25.94 EUR), https://keycapsss.com (Puchi-BLE, 27.90 EUR) | One per half, identical wiring on both PCBs |
 | 2 | SuperMini nRF52840 (alternative) | nice!nano clone, same pinout | https://mechboards.co.uk/products/supermini-nrf52840-ble-pro-micro | about 10 EUR each | AliExpress | Cheaper, slightly higher sleep current reported by some users |
-| 4 | Socket strip 1 x 12, 1.27 mm... see note | Mill-Max 310-style or "conthrough" press-fit 2.54 mm, 12 pins | https://42keebs.eu/shop/parts/ (headers and sockets) | 1 to 2 EUR each | https://keycapsss.com, AliExpress | Standard 2.54 mm pitch along the row; the socket height must leave 3.5 mm under the controller for the 301230 cell. Low-profile Mill-Max 315 sockets plus 7305 pins or conthrough pins both work. |
-| 48 | Socket pins | Mill-Max 3320 or diode-leg style | with the sockets | | | Only needed with machined sockets |
+| 4 | Socket strip 1 x 12, low profile | Mill-Max 315-43-112 (2.1 to 2.8 mm above the board) or "conthrough" spring pins (2.5 mm), 2.54 mm pitch, 12 pins | https://42keebs.eu/shop/parts/components/controller-sockets-pins-mill-max-generic/ | 1 to 2 EUR each | https://keycapsss.com, AliExpress | Nothing sits under the controller any more (the cell is under the PCB), so the lowest socket wins. Mill-Max 310 (4.2 mm) still fits but adds height. |
+| 48 | Socket pins | Mill-Max 3320-0-00-15-00-00-03-0 (0.52 mm, 6.3 mm) or diode-leg style | with the sockets | | | Only needed with machined sockets; conthrough needs none |
 
 ## 3. Switches and keycaps
 
@@ -42,19 +42,19 @@ Quantities marked "+n" include recommended spares. Sensor-board passives are 060
 | 35 (+10) | Diode | 1N4148W, SOD-123 | https://www.reichelt.de, Mouser DE | about 3 EUR per 100 | C81598 | One per key (18 left, 17 right), cathode towards the row |
 | 2 | Power switch | MSK-12C02, SMD SPDT slide, 7 x 3 x 1.5 mm | https://kamami.pl/en/switches-and-buttons/584809-msk-12c02-2-position-smd-slide-switch-horizontal-5906623474981.html | about 0.60 EUR each | C431540 | Alps SSSS811101 is the premium alternative, different footprint, not used here |
 | 2 | Reset button | Panasonic EVQ-P7A01P, side actuated SMD tact, 3.5 x 2.9 mm | Mouser DE 667-EVQ-P7A01P | about 0.40 EUR each | C122222 | Alps SKRPACE010 (C139797) is the drop-in alternative |
-| 2 | Battery connector | JST S2B-PH-SM4-TB, PH 2.0 mm, 2 pin, SMD side entry | Mouser DE 306-S2B-PH-SM4-TB | about 0.50 EUR each | C295747 | Optional, 6 mm tall: default is bare leads soldered to the pads J2 |
+| 2 | Battery connector | JST S2B-PH-SM4-TB, PH 2.0 mm, 2 pin, SMD side entry | Mouser DE 306-S2B-PH-SM4-TB | about 0.50 EUR each | C295747 | Default on both halves (the 702025 comes with a PH 2.0 plug); 6 mm tall, sits inside the battery well. Bare leads can go to the pads J2 instead |
 | 2 | Test pad set | printed on PCB | | | | No part to buy; no solder jumpers exist in r2 |
 
 ## 5. Batteries
 
 | Qty | Part | Spec | Source | Price | Notes |
 |-----|------|------|--------|-------|-------|
-| 1 | LiPo 301230 | 110 mAh, 32 x 11.5 x 3.3 mm, protected, bare leads | https://42keebs.eu/shop/parts/lithium-polymer-battery/ | about 4 EUR | Left half, fits under the controller |
-| 1 | LiPo 702025 | 300 mAh, 27 x 19.7 x 6.7 mm, protected, JST-PH | https://42keebs.eu/shop/parts/lithium-polymer-battery/ | about 7 EUR | Right half, sits in the case pocket |
-| | Alternatives | Typeractive 110 mAh, splitkb Halcyon LiPo board | https://typeractive.xyz/products/lithium-battery-110mah, https://splitkb.com/products/halcyon-lipo-battery-board | | Batteries ship within the EU only from 42keebs |
+| 2 | LiPo 702025 | 300 mAh, 20 x 25 x 7 mm (20.5 x 27 x 7.2 mm with protection circuit and leads), protected, JST-PH 2.0 plug | https://42keebs.eu/shop/parts/lithium-polymer-battery/ | about 7 EUR each | One per half, in the battery bay under the PCB below the controller; plugs into J3 |
+| | Alternatives | 602025 (250 mAh), 502025 (200 mAh), 402025 (150 mAh): same 20 x 25 footprint, thinner | https://www.lipobattery.us, AliExpress | | Any cell up to 20.5 x 27 x 7.2 mm fits the bay; the 301230 (32 mm long) does not. Batteries ship within the EU only from 42keebs |
 
-Both halves can take either cell; the ball half needs the larger one because the sensor adds about
-0.6 mA while tracking.
+Both halves use the same cell and the same bay, so there is one battery part to buy and one case
+well to print. The ball half still drains faster because the sensor adds about 0.6 mA while
+tracking.
 
 ## 6. Sensor board (one per keyboard)
 
@@ -95,7 +95,7 @@ Both halves can take either cell; the ball half needs the larger one because the
 | Controllers (nice!nano) and sockets | 48 |
 | Switches, sockets, keycaps | 53 |
 | Per-half electronics | 8 |
-| Batteries | 12 |
+| Batteries | 14 |
 | Sensor board parts, connectors, cable | 12 |
 | Ball, ceramic balls, hardware | 10 |
 | Finishing | 5 |

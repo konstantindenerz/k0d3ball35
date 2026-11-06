@@ -26,7 +26,7 @@ Each half gets a removable lid that
 
 Heights the lid has to clear, z = 0 is the PCB top (`hardware/trackball-cradle/stack.json`,
 `issues/mech-case.md`): ball top +17.1 mm on the right half (19.05 mm ball; 25 mm fallback
-+23.05 mm), controller box +11 mm, Choc V1 caps about +11 mm. The lid outline follows the case
++23.05 mm), controller top +5.7 mm (lid over the controller block about +7.5 mm), Choc V1 caps about +11 mm. The lid outline follows the case
 outline from `hardware/layout/output/outline-left.dxf` / `outline-right.dxf` plus the ball pocket
 of the right half.
 
@@ -34,7 +34,7 @@ of the right half.
 
 - [ ] Parametric CAD in `hardware/case/` sharing the outline DXFs and the pocket data with `mech-case`; one lid model per half, mirrored where the outline allows it
 - [ ] Magnet pockets in lid and case (e.g. 6 x 2 mm neodymium discs, same pockets on the case top rim and on the case floor), polarity marked so the lid snaps on in both positions; a mechanical snap or clip is acceptable instead if it holds as well
-- [ ] Lid clears the ball top (+17.1 mm over the PCB top) and the controller box (+11 mm) with at least 1 mm; the ball cannot leave the cup with the lid on
+- [ ] Lid clears the ball top (+17.1 mm over the PCB top) and the controller block (+7.5 mm) with at least 1 mm; the ball cannot leave the cup with the lid on
 - [ ] Works as a foot on both halves: attached under the half it either raises it flat or tents it by a documented angle, without rocking, and the rubber feet of the case stay usable without it
 - [ ] Both lids print without supports
 - [ ] Image prompts in `docs/images/PROMPTS.md` (lid on for transport, lid under the half as a foot)

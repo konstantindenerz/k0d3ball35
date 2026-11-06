@@ -73,7 +73,8 @@ scroll mode. k0d3ball35's keymap follows the same convention (hold thumb = scrol
 - Configuration tool: holykeebs uses Vial, Yowkees uses Remap. Neither speaks to ZMK; see
   ticket `fw-remap-compatibility` (Remap works with BLE Micro Pro or an RP2040 Pro Micro
   running QMK, both of which fit our Pro Micro footprint).
-- Low-profile headers: holykeebs' 5 mm sockets are a good match for the battery-under-controller
+- Low-profile headers: with the cell under the PCB instead of under the controller, the lowest
+  sockets (Mill-Max 315, conthrough) are the match; holykeebs' 5 mm headers were for the
   arrangement; mill-max 1.27 mm strips are the fallback.
 
 ## 2. Weaknesses reported by Keyball users
@@ -111,7 +112,7 @@ scroll mode. k0d3ball35's keymap follows the same convention (hold thumb = scrol
 | B4 | Keyboard not recognised on MacBook for minutes; both OLEDs show the logo. Cause: `SPLIT_USB_TIMEOUT` too short. | goropikari | Not applicable (BLE split, right half central). USB-only mode is still a ZMK option. |
 | B5 | Switch plate holes too tight for Kailh switches, hours of filing; middle plate and OLED rattle, fixed with tape; case flexes, rubber feet uneven; TRRS jack sits at the edge of the case opening. | goropikari, naenote Keyball44, [search summary](https://goropikari.hatenablog.com/entry/keyball39_build_log) | No plate (Choc hot-swap on the PCB), no OLED, no TRRS. Case phase: foot positions on the 5 mounting holes per half, not the plate. |
 | B6 | Eight solder jumpers for the sensor lines plus four OLED jumpers plus a hand jumper; easy to miss one. | Yowkees build guide chapter 3/5 | No jumpers at all since r2: two separate PCBs with identical controller wiring, no hand jumper (ZMK builds per side). r1's reversible board still needed three power-row jumpers, which is one of the reasons it was dropped. |
-| B7 | Pro Micro header pins bend when removed from sockets. | holykeebs buyers guide | Recommend the holykeebs 5 mm low-profile headers or mill-max; build guide. |
+| B7 | Pro Micro header pins bend when removed from sockets. | holykeebs buyers guide | Mill-Max 315 sockets with 3320 pins or conthrough spring pins; build guide. |
 
 ### 2.4 Firmware and feel
 
