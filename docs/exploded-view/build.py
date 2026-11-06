@@ -5,7 +5,8 @@
 Reads hardware/layout/output/points-left.json and points-right.json,
 hardware/layout/k0d3ball35.yaml and hardware/trackball-cradle/stack.json (19 mm pocket
 variant), writes layout.json and inlines it into the page so the HTML is self-contained.
-The right half carries the ball pocket, the left half has no ball. Run after `make layout`.
+The right half carries the ball pocket, the left half has no ball; both carry the same battery
+bay under the controller. Run after `make layout`.
 """
 from __future__ import annotations
 
@@ -83,7 +84,7 @@ def half_data(half: str, cfg: dict, stack: dict) -> dict:
         "fpc": fpc["center"] if fpc else None,
         "holes": points["mounting_holes"],
         "test_pads": {"start": cfg["test_pads"]["start"], "pitch": cfg["test_pads"]["pitch"], "labels": TEST_PADS[half]},
-        "battery": "702025" if ball else "301230",
+        "battery": points["battery"],   # same cell and bay on both halves, under the PCB below the controller
         "stack": {k: stack[k] for k in STACK_KEYS if k in stack} if ball else None,
     }
 
@@ -98,7 +99,10 @@ def main() -> None:
         "keycap": cfg["keycap"],
         "switch_body": cfg["switch_body"],
         "controller": {"x": cfg["controller"]["center"]["x"], "y": cfg["controller"]["center"]["y"],
-                       "w": cfg["controller"]["size"]["x"], "l": cfg["controller"]["size"]["y"]},
+                       "w": cfg["controller"]["size"]["x"], "l": cfg["controller"]["size"]["y"],
+                       "socket": cfg["controller"]["socket_height"]},
+        # lid over the controller block: socket + nice!nano PCB + USB-C shell above it + 1.8 mm air and lid clearance
+        "controller_lid_z": round(cfg["controller"]["socket_height"] + 1.6 + 1.6 + 1.8, 1),
         "power_switch": cfg["power_switch"]["center"],
         "reset": cfg["reset_button"]["center"],
         "battery_pads": cfg["battery_pads"]["center"],

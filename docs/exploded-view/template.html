@@ -257,10 +257,17 @@ function build(half) {
     const bumpers = ball ? [...H.feet, [bx, bz]] : H.feet;   // fifth foot under the pocket floor
     for (const [x, z] of bumpers) g.add(cyl(5, 1.5, M.bumper, x, floorTop - 2.75, z));
   }
-  // --- battery in the controller box (702025, right half) ---
-  if (ball) {
-    const g = layer('Battery 702025 (case pocket)', -22, '#7B8BA3', { x: c.x + 2, y: -6, z: c.y + 38 });
-    g.add(box(19.7, 6.7, 27, M.battery2, c.x + 3, -PCB_T - 2.2 - 3.35, c.y + 36));
+  // --- battery: one cell per half, under the PCB in the bay below the controller (case well) ---
+  {
+    const bt = H.battery, bay = bt.bay, cell = bt.size;
+    const g = layer(`Battery ${bt.cell} (bay under the controller)`, -16, '#7B8BA3', { x: bay.center.x - 14, y: -8, z: bay.center.y + 6 });
+    // bay outline on the PCB underside (printed on the back silkscreen)
+    const bayShape = outlineShape(bt.bay_polygon);
+    g.add(slab(bayShape, 0.05, -PCB_T - 0.02, M.pcbEdge));
+    // 0.5 mm foam pad, then the cell; the lead end points towards +y (J3 / J2)
+    g.add(box(cell.x, 0.5, cell.y, M.bumper, bay.center.x, -PCB_T - 1.0 - 0.25, bay.center.y));
+    g.add(box(cell.x, cell.z, cell.y, M.battery, bay.center.x, -PCB_T - 1.5 - cell.z / 2, bay.center.y));
+    g.add(box(cell.x - 2, 1.0, 2.0, M.black, bay.center.x, -PCB_T - 1.5 - cell.z / 2, bay.center.y + cell.y / 2 - 1.0));   // PCM / lead end
   }
   // --- sensor board + lens (on the case floor in the pocket) ---
   if (ball) {
@@ -309,19 +316,15 @@ function build(half) {
     for (let i = 0; i < tp.labels.length; i++) g.add(cyl(0.75, 0.1, M.pcbEdge, tp.start.x + i * tp.pitch, 0.05, tp.start.y));
     g.add(box(1.7, 0.1, 4.6, M.pcbEdge, D.battery_pads.x, 0.05, D.battery_pads.y));
   }
-  // --- battery under the controller (301230, left half) ---
-  if (!ball) {
-    const g = layer('Battery 301230 (under controller)', 6, '#8E9CB0', { x: c.x - 14, y: 2, z: c.y + 20 });
-    g.add(box(11.5, 3.3, 32, M.battery, c.x, 1.65, c.y + 1.5));
-  }
   // --- controller ---
   {
     const g = layer('Controller nice!nano v2', 14, '#1C2538', { x: c.x - 16, y: 6, z: c.y - 12 });
-    for (const sx of [-7.62, 7.62]) g.add(box(2.6, 3.5, 30.5, M.black, c.x + sx, 1.75, c.y));   // 1.27 mm socket strips
-    g.add(box(c.w, 1.0, c.l, M.ctrl, c.x, 4.0, c.y - 0.6));
-    g.add(box(6, 1.2, 6, M.black, c.x, 5.1, c.y + 2));                     // nRF52840 module
-    g.add(box(9, 3.2, 7.3, M.metal, c.x, 5.6, c.y - c.l / 2 + 2.5));        // USB-C shell at the top edge
-    g.add(box(1.2, 0.6, 1.6, M.stem, c.x + 5, 4.8, c.y - 8));               // blue status LED spot
+    const sh = c.socket;                                                   // low-profile sockets, nothing underneath
+    for (const sx of [-7.62, 7.62]) g.add(box(2.6, sh, 30.5, M.black, c.x + sx, sh / 2, c.y));
+    g.add(box(c.w, 1.6, c.l, M.ctrl, c.x, sh + 0.8, c.y - 0.6));             // nice!nano PCB 1.6 mm
+    g.add(box(6, 1.2, 6, M.black, c.x, sh + 1.6 + 0.6, c.y + 2));            // nRF52840 module
+    g.add(box(9, 3.2, 7.3, M.metal, c.x, sh + 0.8 + 0.8, c.y - c.l / 2 + 2.5));   // mid-mount USB-C shell, 1.6 mm above the PCB
+    g.add(box(1.2, 0.6, 1.6, M.stem, c.x + 5, sh + 1.6 + 0.3, c.y - 8));     // blue status LED spot
   }
   // --- switches ---
   {
@@ -355,7 +358,7 @@ function build(half) {
     // reset, JST) and raised like the reference build; the keys stay open. Inner column caps end
     // at x = -44.75, the box ends 1.2 mm before them.
     const bxz0 = B.min_y, bxz1 = D.jst.y + 5.0, bxx0 = B.min_x, bxx1 = -46.0;
-    const boxTop = 11.0, boxBottom = 5.0;
+    const boxTop = D.controller_lid_z, boxBottom = 5.0;   // lid over the controller block: 1 mm above the USB shell
     g.add(box(bxx1 - bxx0, boxTop - boxBottom, bxz1 - bxz0, M.plate, (bxx0 + bxx1) / 2, (boxTop + boxBottom) / 2, (bxz0 + bxz1) / 2));
   }
   // --- pocket rim marker ---
@@ -420,8 +423,10 @@ function buildDims() {
     ['Board outline', `${B.width.toFixed(1)} x ${B.height.toFixed(1)} mm`],
     ['Keys', `${H.keys.length} (${H.keys.filter((k) => k.kind === 'thumb').length} thumb)`],
     ['PCB thickness', `${PCB_T.toFixed(1)} mm`],
-    ['Controller top', `+${(3.5 + 1.0 + 1.2).toFixed(1)} mm`],
-    ['Controller box top', '+11.0 mm'],
+    ['Controller top', `+${(D.controller.socket + 1.6 + 1.6).toFixed(1)} mm`],
+    ['Lid over the controller block (concept)', `+${D.controller_lid_z.toFixed(1)} mm`],
+    ['Battery', `${H.battery.cell}, ${H.battery.capacity_mah} mAh, bay ${H.battery.bay.size.x} x ${H.battery.bay.size.y} mm under the controller`],
+    ['Battery well floor', `${H.battery.well_floor_z.toFixed(1)} mm`],
     ['Keycap top', '+8.9 mm'],
     ['Mounting holes', `${H.holes.length} x M2`],
     ['Test pads', H.test_pads.labels.join(' ')],
@@ -440,8 +445,8 @@ function buildDims() {
   dimsEl.replaceChildren();
   for (const [k, v] of dims) { const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dimsEl.append(dt, dd); }
   noteEl.innerHTML = H.ball
-    ? '<b>Reading the stack.</b> PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 3.5 mm sockets. The trackball module stands on the case floor in a pocket beside the PCB: its housing holds the sensor board, the cup rises through the octagonal notch and nothing touches the PCB. The pocket rim is only a marker for the future case.'
-    : '<b>Reading the stack.</b> PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 3.5 mm sockets with the 301230 cell underneath. The left half has three thumb keys and no ball, no FPC connector and nine test pads.';
+    ? '<b>Reading the stack.</b> PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets and the 702025 cell lies under the PCB in the bay below it, in a 9 mm deep well of the case floor, like on the left half. The trackball module stands on the case floor in a pocket beside the PCB: its housing holds the sensor board, the cup rises through the octagonal notch and nothing touches the PCB. The pocket rim is only a marker for the future case.'
+    : '<b>Reading the stack.</b> PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets and the 702025 cell lies under the PCB in the bay below it, in a 9 mm deep well of the case floor, identical to the right half. The left half has three thumb keys and no ball, no FPC connector and nine test pads.';
 }
 
 // ---------- minimal orbit control ----------
