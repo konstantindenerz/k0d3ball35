@@ -87,8 +87,12 @@ cable_corridor_left = [];
 cable_corridor_right = [[0.4, 50], [-5.6, 50], [-5.6, 48.5], [0.4, 48.5]];
 function cable_corridor(h) = h == "left" ? cable_corridor_left : cable_corridor_right;
 
-foot_magnets_left = [[-36.96, 3.71], [38.35, 9.69], [38.35, 45.19], [-63.862, 67.699]];
-foot_magnets_right = [[-36.96, 3.71], [38.35, 9.69], [38.35, 45.19], [-45.885, 53.555]];
+hinge_x_left = -13;
+hinge_x_right = -13;
+function hinge_x(h) = h == "left" ? hinge_x_left : hinge_x_right;
+
+foot_magnets_left = [[-2.35, -0.75], [38.35, 9.69], [38.35, 45.19], [-1, 34.75]];
+foot_magnets_right = [[-2.35, -0.75], [38.35, 9.69], [38.35, 45.19], [-3, 32.44]];
 function foot_magnets(h) = h == "left" ? foot_magnets_left : foot_magnets_right;
 
 feet_left = [[27, 10.8], [27, 44.5], [-9, 40], [-27, 8], [-32, 61], [-58, 1], [-58, 34]];
