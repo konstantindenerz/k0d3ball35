@@ -152,6 +152,11 @@ cut off and writes the ink as 34 cell rectangles into `hardware/case/logo_data.s
 cells, cell aspect 1.52). `logo.scad` scales them to millimetres and subtracts them; nothing
 about the artwork is hard-coded, so a redrawn logo only means re-running the generator.
 
+The same run writes `docs/images/logo.svg`, a 1 kB vector master in which one user unit is one
+cell wide and `logo_aspect` units tall. That file, not the PNG, is what anything downstream
+should start from - the PCB silkscreen footprint, a web page, a sticker.
+`tests/test_case.py` rasterises it and compares it cell by cell with the grid.
+
 | Where | Size | Stroke | Parameters |
 |-------|------|--------|------------|
 | Box cap plate, centred at (-59.525, 21.9) | 18.0 x 52.5 mm | 1.0 mm | `logo_cell`, `logo_stretch` |

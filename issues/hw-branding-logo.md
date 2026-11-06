@@ -19,12 +19,13 @@ the keyboard is recognisable as this project.
 Logo source: the owner supplied the `kode` labyrinth wordmark as a two-colour PNG, stored as
 `docs/images/logo.png`. It is drawn on a strict cell grid, so `scripts/gen_logo.py` recovers the
 grid instead of tracing the bitmap: 18 x 35 cells, one stroke per cell. The crop cuts the frame
-off at the top; the generator mirrors the foot in to close it. An uncropped SVG would still be
-welcome for the silkscreen path.
+off at the top; the generator mirrors the foot in to close it. `scripts/gen_logo.py` also writes `docs/images/logo.svg` from the same rectangles, so the
+vector master exists in the repo and nothing downstream has to touch the raster again.
 
 ## Acceptance criteria
 
-- [x] Logo file added to the repo (`docs/images/logo.png`), ownership noted in `NOTICE`
+- [x] Logo file added to the repo (`docs/images/logo.png` and the generated
+      `docs/images/logo.svg`), ownership noted in `NOTICE`
 - [ ] PCB: logo as a silkscreen footprint in `hardware/lib/k0d3ball35.pretty/` (generated from the
       SVG with `kicad-cli` / bitmap2component or a small script in `scripts/`), placed by
       `scripts/k0d3/pcb.py` from a `branding:` block in the layout yaml (position, size, layer,
@@ -44,7 +45,9 @@ welcome for the silkscreen path.
 ## Notes
 
 The case part is done (2026-11-06): generator, model, tests and docs are in `hardware/case/` and
-`docs/11-case.md` section 8. What is left is the PCB silkscreen: that needs the artwork as a
-KiCad footprint, so either an SVG from the owner or a converter from the same cell grid the case
-uses - `logo_data.scad` already has the rectangles, a silkscreen generator could read the same
-`gen_logo.build()` output.
+`docs/11-case.md` section 8. What is left is the PCB silkscreen. It is not blocked on
+anything: `gen_logo.build()` hands out the rectangles and `docs/images/logo.svg` is the vector
+master, so a generator can write the silkscreen polygons of a footprint in
+`hardware/lib/k0d3ball35.pretty/` directly - no tracing, no bitmap2component. Open decisions are
+placement and size per half (`branding:` block in the layout yaml) and keeping the silk off the
+pads.

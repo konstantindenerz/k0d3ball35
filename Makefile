@@ -85,7 +85,7 @@ issues: ## Regenerate issues/README.md from the ticket frontmatter
 case-data: ## Regenerate hardware/case/data.scad (layout facts for the printed case)
 	$(MAKE) -C hardware/case data PYTHON=../../$(PY)
 
-case-logo: ## Regenerate hardware/case/logo_data.scad from docs/images/logo.png
+case-logo: ## Regenerate logo_data.scad and docs/images/logo.svg from docs/images/logo.png
 	$(MAKE) -C hardware/case logo PYTHON=../../$(PY)
 
 case: ## Render the printed case: STLs, floor DXFs, previews and stack.json (needs OpenSCAD)

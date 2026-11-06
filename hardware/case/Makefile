@@ -35,6 +35,8 @@ data: data.scad
 data.scad: ../../scripts/gen_case.py ../../scripts/k0d3/geometry.py ../layout/k0d3ball35.yaml
 	cd ../.. && PYTHONPATH=scripts $(subst ../../,,$(PYTHON)) scripts/gen_case.py
 
+# one run writes logo_data.scad and the vector master docs/images/logo.svg; only the first is
+# a target here, grouped targets would need make 4.3 and this repo builds with Apple's 3.81
 logo: logo_data.scad
 logo_data.scad: ../../scripts/gen_logo.py ../../docs/images/logo.png
 	cd ../.. && $(subst ../../,,$(PYTHON)) scripts/gen_logo.py

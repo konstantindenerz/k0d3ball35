@@ -29,6 +29,7 @@ SCAD = CASE / "case.scad"
 DATA = CASE / "data.scad"
 LOGO = CASE / "logo_data.scad"
 EXPLODED = ROOT / "docs" / "exploded-view" / "index.html"
+LOGO_SVG = ROOT / "docs" / "images" / "logo.svg"
 PCB_T = 1.6
 BALL_D = 19.05
 HOLES = [(27.0, 10.8), (27.0, 44.5), (-9.0, 40.0), (-27.0, 8.0), (-32.0, 61.0)]
@@ -217,6 +218,38 @@ def test_logo_data_is_fresh(tmp_path):
     out = tmp_path / "logo_data.scad"
     gen_logo.write_data(out)
     assert out.read_bytes() == LOGO.read_bytes(), "run `make -C hardware/case logo` and commit logo_data.scad"
+
+
+def test_logo_svg_is_fresh(tmp_path):
+    import gen_logo
+
+    out = tmp_path / "logo.svg"
+    gen_logo.write_svg(out)
+    assert out.read_bytes() == LOGO_SVG.read_bytes(), "run `make case-logo` and commit docs/images/logo.svg"
+
+
+def test_logo_svg_matches_the_grid(logo):
+    """The vector master is the same artwork as the cells the case is engraved with: rasterise
+    it and compare cell by cell, so a broken path never reaches the silkscreen or the web."""
+    import io
+
+    import numpy as np
+
+    cairosvg = pytest.importorskip("cairosvg")
+    Image = pytest.importorskip("PIL.Image")
+    nx, ny = logo["logo_grid"]
+    ink_cells = {(x + i, y + j) for x, y, w, h in logo["logo_rects"]
+                 for i in range(w) for j in range(h)}
+    scale = 8
+    w, h = nx * scale, round(ny * logo["logo_aspect"] * scale)
+    png = cairosvg.svg2png(url=str(LOGO_SVG), output_width=w, output_height=h)
+    ink = (np.array(Image.open(io.BytesIO(png)).convert("RGBA"))[:, :, 3] > 128).astype(int)
+    cy = h / ny
+    for j in range(ny):
+        y0, y1 = round(j * cy + 3), round((j + 1) * cy - 3)
+        for i in range(nx):
+            filled = ink[y0:y1, i * scale + 2:i * scale + 6].mean() > 0.5
+            assert filled == ((i, j) in ink_cells), f"cell ({i}, {j})"
 
 
 def test_logo_grid(logo):
