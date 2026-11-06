@@ -609,7 +609,19 @@
     ],
     "well_floor_z": -10.6
    },
-   "stack": null
+   "stack": null,
+   "case_stack": {
+    "base_z": -14.1,
+    "floor_z_key": -4.6,
+    "well_floor_z": -11.6,
+    "pocket_floor_z": -11.6,
+    "rim_z": 5.0,
+    "standoff_h": 3.0,
+    "box_roof_under_z": 6.7,
+    "box_top_z": 8.7,
+    "lid_roof_under_z": 12.0,
+    "lid_top_z": 14.0
+   }
   },
   "right": {
    "half": "right",
@@ -1376,6 +1388,18 @@
     "footprint_y": 29.0,
     "envelope_d_above_pcb": 24.1003,
     "notch_apothem": 15.0
+   },
+   "case_stack": {
+    "base_z": -14.1,
+    "floor_z_key": -4.6,
+    "well_floor_z": -11.6,
+    "pocket_floor_z": -11.6,
+    "rim_z": 5.0,
+    "standoff_h": 3.0,
+    "box_roof_under_z": 6.7,
+    "box_top_z": 8.7,
+    "lid_roof_under_z": 18.1,
+    "lid_top_z": 20.1
    }
   }
  }

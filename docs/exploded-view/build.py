@@ -3,13 +3,18 @@
 """Build docs/exploded-view/index.html from template.html and the layout data.
 
 Reads hardware/layout/output/points-left.json and points-right.json,
-hardware/layout/k0d3ball35.yaml and hardware/trackball-cradle/stack.json (19 mm pocket
-variant), writes layout.json and inlines it into the page so the HTML is self-contained.
+hardware/layout/k0d3ball35.yaml, hardware/trackball-cradle/stack.json (19 mm pocket
+variant), hardware/case/stack.json and the case STLs (tray, controller box cap, lid per
+half), writes layout.json and inlines everything into the page so the HTML is self-contained.
+The STLs are embedded as base64 binary STL in the page's world frame (x, z up, y towards the
+user) and are not written to layout.json (they would triple its size).
 The right half carries the ball pocket, the left half has no ball; both carry the same battery
 bay under the controller. Run after `make layout`.
 """
 from __future__ import annotations
 
+import base64
+import io
 import json
 from pathlib import Path
 
@@ -62,6 +67,30 @@ def feet(outline: list[list[float]], inset: float = 7.0) -> list[list[float]]:
     return out
 
 
+CASE_PARTS = {"tray": "tray-{half}", "cap": "box-cap-{half}", "lid": "lid-{half}"}
+CASE_STACK_KEYS = ("base_z", "floor_z_key", "well_floor_z", "pocket_floor_z", "rim_z", "standoff_h",
+                   "box_roof_under_z", "box_top_z", "lid_roof_under_z", "lid_top_z")
+
+
+def case_meshes(half: str) -> dict[str, str]:
+    """Case STLs as base64 binary STL in the page's world frame: world X = layout x, world Y =
+    layout z (up), world Z = layout y. The left STLs are mirrored boards; the page mirrors the
+    whole left half for display (root.scale.x = -1), so they are mirrored back to the frame here."""
+    import numpy as np
+    import trimesh
+
+    out = {}
+    swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]], dtype=float)
+    unmirror = np.diag([-1.0, 1.0, 1.0, 1.0]) if half == "left" else np.eye(4)
+    for key, name in CASE_PARTS.items():
+        m = trimesh.load(REPO / "hardware/case/stl" / f"{name.format(half=half)}.stl", force="mesh")
+        m.apply_transform(swap @ unmirror)   # trimesh flips the winding for reflections
+        buf = io.BytesIO()
+        m.export(buf, file_type="stl")
+        out[key] = base64.b64encode(buf.getvalue()).decode()
+    return out
+
+
 def half_data(half: str, cfg: dict, stack: dict) -> dict:
     # points-*.json is in the handedness-neutral layout frame; the page mirrors the left half for
     # display (root.scale.x = -1), which matches the mirrored left board files (hardware/left-pcb).
@@ -88,7 +117,13 @@ def half_data(half: str, cfg: dict, stack: dict) -> dict:
         "test_pads": {"start": cfg["test_pads"]["start"], "pitch": cfg["test_pads"]["pitch"], "labels": TEST_PADS[half]},
         "battery": points["battery"],   # same cell and bay on both halves, under the PCB below the controller
         "stack": {k: stack[k] for k in STACK_KEYS if k in stack} if ball else None,
+        "case_stack": case_stack(half),
     }
+
+
+def case_stack(half: str) -> dict:
+    s = json.loads((REPO / "hardware/case/stack.json").read_text())["variants"][half]
+    return {k: s[k] for k in CASE_STACK_KEYS if k in s}
 
 
 def main() -> None:
@@ -113,6 +148,8 @@ def main() -> None:
         "halves": {half: half_data(half, cfg, stack) for half in HALVES},
     }
     (HERE / "layout.json").write_text(json.dumps(data, indent=1) + "\n")
+    for half in HALVES:
+        data["halves"][half]["case"] = case_meshes(half)
     template = (HERE / "template.html").read_text()
     html = template.replace("/*__LAYOUT_DATA__*/", json.dumps(data, separators=(",", ":")))
     (HERE / "index.html").write_text(html)
