@@ -3,8 +3,10 @@
 
 Writes a KiCad 8 format .kicad_pcb with all footprints placed and nets assigned, the
 board outline (with the ball pocket notch on the right), GND pours on both faces and
-silkscreen. The case pocket and the ball are drawn on User.Comments for reference. Routing
-is done afterwards (scripts/route.py) and the file is round-tripped through pcbnew so
+silkscreen. Components arrive in board coordinates (netlist.build_components); every
+value taken from the layout frame directly (outline, silkscreen, keep-out, vias, hand
+routes) goes through `layout.to_board`, which mirrors x on the left half. The case pocket
+and the ball are drawn on User.Comments for reference. Routing is done afterwards (scripts/route.py) and the file is round-tripped through pcbnew so
 the committed board is in the current KiCad format.
 """
 from __future__ import annotations
@@ -30,6 +32,14 @@ LAYERS = [(0, "F.Cu", "signal"), (31, "B.Cu", "signal"), (32, "B.Adhes", "user",
 
 def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
     ox, oy = OFFSET
+
+    def P(x: float, y: float) -> tuple[float, float]:
+        """Layout-frame point -> page coordinates (mirrored on the left, plus the page offset)."""
+        bx, by = layout.to_board(x, y)
+        return (ox + bx, oy + by)
+
+    def pts_sexpr(coords) -> str:
+        return " ".join("(xy {} {})".format(*map(num, P(x, y))) for x, y in coords)
     nets = net_names(comps)
     net_index = {n: i + 1 for i, n in enumerate(nets)}
     fps = all_footprints(HOLE_PIN)
@@ -106,7 +116,7 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
     by_ref = {c.ref: c for c in comps}
     def resolve(pt):
         if not isinstance(pt, str):
-            return (ox + pt[0], oy + pt[1])
+            return P(pt[0], pt[1])
         ref, what = pt.split(":")
         c = by_ref[ref]
         th = _m.radians(c.rotation)
@@ -135,30 +145,31 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
         for j, (a, b) in enumerate(zip(pts, pts[1:])):
             out.append(f"  (segment (locked yes) (start {num(a[0])} {num(a[1])}) (end {num(b[0])} {num(b[1])}) (width {num(route.get('width', 0.25))}) (layer {quote(route['layer'])}) (net {n}) (uuid {quote(uid('manual', i, j))}))")
     # board outline
-    pts = " ".join(f"(xy {num(ox + x)} {num(oy + y)})" for x, y in list(layout.outline.exterior.coords)[:-1])
+    pts = pts_sexpr(list(layout.outline.exterior.coords)[:-1])
     out.append(f"  (gr_poly (pts {pts}) (stroke (width 0.05) (type default)) (fill none) (layer \"Edge.Cuts\") (uuid {quote(uid('edge', 'outline'))}))")
     # ball pocket reference (case wall and ball) on User.Comments; the PCB itself only has the notch
     if layout.has_ball:
         tb = layout.cfg["trackball"]
-        bx, by = ox + layout.ball_center[0], oy + layout.ball_center[1]
+        bx, by = P(*layout.ball_center)
         out.append(f"  (gr_circle (center {num(bx)} {num(by)}) (end {num(bx + tb['ball_diameter'] / 2)} {num(by)}) (stroke (width 0.1) (type dash)) (fill none) (layer \"Cmts.User\") (uuid {quote(uid('cmts', 'ball'))}))")
-        ppts = " ".join(f"(xy {num(ox + x)} {num(oy + y)})" for x, y in list(layout.pocket_polygon().exterior.coords)[:-1])
+        ppts = pts_sexpr(list(layout.pocket_polygon().exterior.coords)[:-1])
         out.append(f"  (gr_poly (pts {ppts}) (stroke (width 0.1) (type dash)) (fill none) (layer \"Cmts.User\") (uuid {quote(uid('cmts', 'pocket'))}))")
         out.append(f"  (gr_text \"ball pocket (case)\" (at {num(bx)} {num(by + tb['cradle_diameter'] / 2 + 3.5)} 0) (layer \"Cmts.User\") "
                    f"(uuid {quote(uid('cmts', 'label'))}) (effects (font (size 1.0 1.0) (thickness 0.15))))")
     # battery bay on the back silkscreen: the cell lies under the PCB here, in the case well
     bat = layout.cfg["battery"]
     bay = layout.battery_bay()
-    bpts = " ".join(f"(xy {num(ox + x)} {num(oy + y)})" for x, y in list(bay.exterior.coords)[:-1])
+    bpts = pts_sexpr(list(bay.exterior.coords)[:-1])
     out.append(f"  (gr_poly (pts {bpts}) (stroke (width 0.15) (type dash)) (fill none) (layer \"B.SilkS\") (uuid {quote(uid('silk', 'bay'))}))")
     bminx, bminy, bmaxx, bmaxy = bay.bounds
     for i, line in enumerate((f"{bat['cell']} cell", f"{bat['capacity_mah']} mAh", f"leads {bat['leads']}")):   # short lines: they sit between the two hole rows
-        out.append(f"  (gr_text {quote(line)} (at {num(ox + (bminx + bmaxx) / 2)} {num(oy + bmaxy - 4.5 + i * 1.5)} 0) (layer \"B.SilkS\") "
+        btx, bty = P((bminx + bmaxx) / 2, bmaxy - 4.5 + i * 1.5)
+        out.append(f"  (gr_text {quote(line)} (at {num(btx)} {num(bty)} 0) (layer \"B.SilkS\") "
                    f"(uuid {quote(uid('silk', 'B.SilkS', 'bay', i))}) (effects (font (size 0.8 0.8) (thickness 0.12)) (justify mirror)))")
     # silkscreen texts (front only): between the controller footprint and the reset/battery row
     silk = layout.cfg["silkscreen"]
     c = layout.cfg["controller"]
-    tx, ty = ox + c["center"]["x"] + 6.0, oy + c["center"]["y"] + 19.0
+    tx, ty = P(c["center"]["x"] + 6.0, c["center"]["y"] + 19.0)   # inboard of the controller, above the reset/battery row
     for i, line in enumerate((f"{silk['title']} {silk['revision_text']}  CERN-OHL-P-2.0", f"{layout.half.upper()} half")):
         out.append(f"  (gr_text {quote(line)} (at {num(tx)} {num(ty + i * 1.6)} 0) (layer \"F.SilkS\") "
                    f"(uuid {quote(uid('silk', 'F.SilkS', i))}) (effects (font (size 0.8 0.8) (thickness 0.12))))")
@@ -180,17 +191,18 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
         return path
     edge_ring = ring_polygon(layout.outline, layout.outline.buffer(-0.35, join_style=2))
     for name, poly in (("edge_keepout", edge_ring),):
-        kpts = " ".join(f"(xy {num(ox + x)} {num(oy + y)})" for x, y in poly)
+        kpts = pts_sexpr(poly)
         out.append(f"  (zone (net 0) (net_name \"\") (layers \"F&B.Cu\") (uuid {quote(uid('zone', name))}) (name {quote(name)}) (hatch edge 0.5) (priority 10)"
                    f" (connect_pads (clearance 0)) (min_thickness 0.25) (filled_areas_thickness no)"
                    f" (keepout (tracks not_allowed) (vias not_allowed) (pads allowed) (copperpour allowed) (footprints allowed))"
                    f" (fill (thermal_gap 0.5) (thermal_bridge_width 0.5)) (polygon (pts {kpts})))")
     # GND stitching vias so the two pours are tied together everywhere
     for i, (vx, vy) in enumerate(layout.cfg.get("stitching_vias", [])):
-        out.append(f"  (via (locked yes) (at {num(ox + vx)} {num(oy + vy)}) (size 0.6) (drill 0.3) (layers \"F.Cu\" \"B.Cu\") (net {net_index['GND']}) (uuid {quote(uid('via', i))}))")
+        vx, vy = P(vx, vy)
+        out.append(f"  (via (locked yes) (at {num(vx)} {num(vy)}) (size 0.6) (drill 0.3) (layers \"F.Cu\" \"B.Cu\") (net {net_index['GND']}) (uuid {quote(uid('via', i))}))")
     # GND pours on both faces
     minx, miny, maxx, maxy = layout.outline.bounds
-    zpts = f"(pts (xy {num(ox + minx - 1)} {num(oy + miny - 1)}) (xy {num(ox + maxx + 1)} {num(oy + miny - 1)}) (xy {num(ox + maxx + 1)} {num(oy + maxy + 1)}) (xy {num(ox + minx - 1)} {num(oy + maxy + 1)}))"
+    zpts = "(pts " + pts_sexpr([(minx - 1, miny - 1), (maxx + 1, miny - 1), (maxx + 1, maxy + 1), (minx - 1, maxy + 1)]) + ")"
     for layer in ("F.Cu", "B.Cu"):
         out.append(f"  (zone (net {net_index['GND']}) (net_name \"GND\") (layer {quote(layer)}) (uuid {quote(uid('zone', layer))}) (name {quote('GND_' + layer)}) (hatch edge 0.5) (priority 0)"
                    f" (connect_pads (clearance 0.3)) (min_thickness 0.25) (filled_areas_thickness no)"

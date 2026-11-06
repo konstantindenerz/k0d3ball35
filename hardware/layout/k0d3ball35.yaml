@@ -137,32 +137,37 @@ halves:
     # "REF:joiner" = the switch's plated pin-1 joiner pad, "REF:pad2" / "REF:pad2f" = the switch's
     # socket pad 2 on the back / front face, "REF:bus" = bottom end of the column bus at this key,
     # "REF:1" / "REF:2" = diode pad 1 (cathode) / pad 2 (anode).
+    # The left BOARD is the mirror image of the frame (x -> -x) while the footprints are not
+    # mirrored, so pad references land on the mirrored side of their part and the free points
+    # below are chosen for the left board, not copied from the right half.
     manual_routes:
+      # ROW3 along the thumb diodes on the back: the cathodes sit on the pinky side of each diode
+      # on the left board, so the track passes above the diode bodies (between the switch holes
+      # and the diodes) before dropping onto the next cathode.
       - { net: ROW3, layer: B.Cu, width: 0.25,
-          points: ["D32:1", [-26.0, 63.0], [-35.0, 63.5], [-41.0, 64.6], "D33:1", [-46.5, 69.0], [-53.5, 69.3], [-59.5, 69.6], "D34:1"] }
+          points: ["D32:1", [-19.0, 63.3], [-34.5, 63.3], [-38.3, 65.6], "D33:1"] }
+      - { net: ROW3, layer: B.Cu, width: 0.25,
+          points: ["D33:1", [-38.6, 64.8], [-50.0, 64.8], "D34:1"] }
       - { net: COL3, layer: B.Cu, width: 0.25,
-          points: ["SW23:bus", [-20.6, 49.5], "SW33:joiner"] }
+          points: ["SW23:bus", [-15.4, 49.5], "SW33:joiner"] }
       # Controller to the inner column and the thumb row: the router gives up on these two on the
       # left, so they are fixed. COL4 leaves hole 11 under the controller's bottom holes on the
-      # back; ROW3 leaves hole 20 on the front through the gap between the controller and the
-      # inner key column and ends at the cathode of the middle thumb diode.
+      # back; ROW3 leaves hole 20 (inner-edge hole column on the left board) on the front, crosses
+      # between the hole rows, runs down past the test pad row and ends at the middle thumb cathode.
       - { net: COL4, layer: B.Cu, width: 0.25,
-          points: ["U1:11", [-63.5, 23.1], [-63.5, 29.8], [-41.0, 29.8], "SW24:bus"] }   # sideways first, clear of hole 12 below
+          points: ["U1:11", [-52.5, 23.1], [-52.5, 29.8], [-35.8, 29.8], "SW24:bus"] }   # sideways first, clear of hole 12 below
       - { net: ROW3, layer: F.Cu, width: 0.25,
-          points: ["U1:20", [-47.5, 18.5], [-47.5, 52.5], [-45.5, 56.5], [-45.3, 64.5], "D33:1"] }
+          points: ["U1:20", [-64.3, 16.78], [-48.3, 16.78], [-48.3, 28.0], [-50.75, 30.5], [-50.75, 64.0], "D33:1"] }
       - { net: COL4, layer: B.Cu, width: 0.25,   # below the battery pads, between TP4 and TP5, to the inner thumb key
-          points: ["SW24:bus", [-38.6, 49.0], [-52.5, 52.8], [-60.75, 52.8], [-60.75, 56.5], "SW34:joiner"] }
-      # Inner thumb key (20 deg): its switch net crosses the ROW3 track, so it runs on the front
-      # from the diode to a via and on the back from there to socket pad 2; the front copy of pad 2
-      # is fed around the socket boss holes.
-      - { net: SW34, layer: F.Cu, width: 0.25, via_end: true,
-          points: ["D34:2", [-54.5, 66.5]] }
+          points: ["SW24:bus", [-33.4, 45.8], [-52.5, 52.8], [-60.75, 52.8], [-60.75, 56.5], "SW34:joiner"] }
+      # Inner thumb key (20 deg): anode to socket pad 2 on the back along the board edge; the front
+      # copy of pad 2 is fed around the switch centre hole and the post.
       - { net: SW34, layer: B.Cu, width: 0.25,
-          points: [[-54.5, 66.5], "SW34:pad2"] }
+          points: ["D34:2", [-66.3, 71.0], "SW34:pad2"] }
       - { net: SW34, layer: F.Cu, width: 0.25,
-          points: ["D34:2", [-63.5, 70.5], [-70.0, 69.0], "SW34:pad2f"] }
-      - { net: COL2, layer: B.Cu, width: 0.25,   # between SW22/SW23, past H3, left of the thumb notch
-          points: ["SW22:bus", [-2.6, 35.5], [-7.0, 38.0], [-7.0, 41.5], [-10.5, 42.3], [-12.5, 44.5], [-12.5, 50.5], "SW32:joiner"] }
+          points: ["D34:2", [-62.6, 69.4], [-56.0, 69.4], [-54.0, 67.0], [-53.3, 61.5], "SW34:pad2f"] }
+      - { net: COL2, layer: B.Cu, width: 0.25,   # down the bus line, along the lower edge of SW22 past H3, into the thumb bridge
+          points: ["SW22:bus", [2.6, 42.0], [-8.6, 42.0], [-12.1, 43.3], [-12.1, 50.0], "SW32:joiner"] }
     test_pads:                      # nine pads on the left: one row below the battery pads, above the inner thumb key
       start: { x: -69.5, y: 54.5 }
   right:

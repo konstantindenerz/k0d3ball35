@@ -3,9 +3,12 @@
 
 Everything is derived from hardware/layout/k0d3ball35.yaml. Coordinates are in mm,
 x outward (pinky), y downward (towards the user), origin at the centre of the
-middle-column top key. Both halves use this frame; the left half is mirrored for
-display only. This matches KiCad's screen coordinate system, so the PCB generator
-can use the values unchanged (after adding a page offset).
+middle-column top key. Both halves use this frame, which is handedness-neutral: it
+describes the right half as seen from the top and the left half as seen through the
+board. Every physical artefact of the left half (PCB, case, lid) therefore mirrors x
+(`Layout.to_board`, `Layout.board_sx`); the frame itself, points-*.json, outline-*.dxf
+and the docs tables stay in frame coordinates. The frame matches KiCad's screen
+coordinate system, so the PCB generator only adds the mirror and a page offset.
 
 `load_layout("left")` and `load_layout("right")` return a Layout whose `cfg` is the
 global configuration merged with the half's block from `halves:` (lists are
@@ -74,6 +77,16 @@ class Layout:
     @property
     def has_ball(self) -> bool:
         return self.ball_center is not None
+
+    # ----- board frame ---------------------------------------------------------
+    @property
+    def board_sx(self) -> int:
+        """x sign from the layout frame to the physical board: -1 on the left half, else 1."""
+        return -1 if self.half == "left" else 1
+
+    def to_board(self, x: float, y: float) -> tuple[float, float]:
+        """Layout-frame point to board coordinates (top view, before the page offset)."""
+        return (self.board_sx * x, y)
 
     @property
     def thumbs(self) -> list[Key]:

@@ -135,10 +135,11 @@ def test_test_pads(half, comps):
     hole_nets = set(hole_net(half).values())
     for c in tps:
         assert c.pads["1"] in hole_nets, c.ref
-    tp_cfg = load_layout(half).cfg["test_pads"]
+    layout = load_layout(half)
+    tp_cfg = layout.cfg["test_pads"]
     for a, b in zip(tps, tps[1:]):
-        if tp_cfg.get("direction", "y") == "x":
-            assert b.x - a.x == pytest.approx(tp_cfg["pitch"]) and a.y == b.y
+        if tp_cfg.get("direction", "y") == "x":   # the row runs along +x in the frame, mirrored on the left board
+            assert b.x - a.x == pytest.approx(layout.board_sx * tp_cfg["pitch"]) and a.y == b.y
         else:
             assert b.y - a.y == pytest.approx(tp_cfg["pitch"]) and a.x == b.x
 

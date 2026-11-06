@@ -72,59 +72,75 @@ class Component:
 
 
 def build_components(layout: Layout) -> list[Component]:
+    """Components of one half in board coordinates (top view, before the page offset).
+
+    Positions are layout-frame values passed through `layout.to_board`; on the left half this
+    mirrors x. Footprints themselves are never mirrored (the parts are chiral and the nets hang
+    on the pads), only their rotation flips sign: an x mirror maps a direction angle a to -a for
+    y-directed parts and to 180 - a for x-directed ones, and for the 0/90/270 degree parts of
+    this design both rules agree with `-rotation`.
+    """
     cfg = layout.cfg
     half = layout.half
+    sx = layout.board_sx
+    B = layout.to_board
+
+    def place(x: float, y: float, rotation: float) -> tuple[float, float, float]:
+        bx, by = B(x, y)
+        return (bx, by, (sx * rotation) % 360)
+
     comps: list[Component] = []
     for k in layout.keys:
         comps.append(Component(k.ref, "Choc V1", "SW_Choc_V1_HS_reversible",
-                               {"1": f"COL{k.col}", "2": k.net}, "switch", k.x, k.y, k.rotation,
+                               {"1": f"COL{k.col}", "2": k.net}, "switch", *place(k.x, k.y, k.rotation),
                                "Kailh Choc V1 switch, hot-swap socket on the back",
                                {"row": k.row, "col": k.col, "name": k.name}))
         # Diode sits in the free south band of the switch (6 mm below the centre, rotated with
-        # the key), cathode (pad 1) towards the row line.
+        # the key), cathode (pad 1) towards the row line. Offset in the frame, then mirrored.
         th = math.radians(k.rotation)
+        dx, dy = round(k.x + 6.0 * math.sin(th), 3), round(k.y + 6.0 * math.cos(th), 3)
         comps.append(Component(k.diode_ref, "1N4148W", "D_SOD-123_reversible",
-                               {"1": f"ROW{k.row}", "2": k.net}, "diode",
-                               round(k.x + 6.0 * math.sin(th), 3), round(k.y + 6.0 * math.cos(th), 3), k.rotation,
+                               {"1": f"ROW{k.row}", "2": k.net}, "diode", *place(dx, dy, k.rotation),
                                "1N4148W SOD-123, pads on both sides", {"row": k.row, "col": k.col}))
     c = cfg["controller"]
     nets = hole_net(half)
     comps.append(Component("U1", "nice!nano v2", "nice_nano_v2_THT",
                            {str(h): nets[h] for h in nets}, "mcu",
-                           c["center"]["x"], c["center"]["y"], c["rotation"],
+                           *place(c["center"]["x"], c["center"]["y"], c["rotation"]),
                            "nice!nano v2 / SuperMini nRF52840 on 1.27 mm sockets, component side up, USB at the top"))
     f = cfg.get("fpc")
     if f:
         comps.append(Component("J1", "FH12-6S-0.5SH", "FPC_0.5mm_6P_FH12-6S_bottom",
                                {str(p): n for p, n in FPC_PINS.items()}, "fpc",
-                               f["center"]["x"], f["center"]["y"], f["rotation"],
+                               *place(f["center"]["x"], f["center"]["y"], f["rotation"]),
                                "Sensor daughterboard, 6-pin 0.5 mm FPC, bottom side"))
     b = cfg["battery_pads"]
     comps.append(Component("J2", "BAT", "BatteryPads_2x1.8mm_P2.0mm",
-                           {"1": "BAT+", "2": "GND"}, "battery", b["center"]["x"], b["center"]["y"], b["rotation"],
+                           {"1": "BAT+", "2": "GND"}, "battery", *place(b["center"]["x"], b["center"]["y"], b["rotation"]),
                            "Battery solder pads, B+ / B-"))
     bj = cfg["battery_jst"]
     comps.append(Component("J3", "S2B-PH-SM4-TB", "JST_PH_S2B-PH-SM4-TB_reversible",
-                           {"1": "BAT+", "2": "GND"}, "battery", bj["center"]["x"], bj["center"]["y"], bj["rotation"],
+                           {"1": "BAT+", "2": "GND"}, "battery", *place(bj["center"]["x"], bj["center"]["y"], bj["rotation"]),
                            "Optional JST-PH 2.0 battery connector, bottom side"))
     ps = cfg["power_switch"]
     comps.append(Component("PS1", "MSK12C02", "SW_SPDT_MSK12C02_reversible",
                            {"1": "RAW", "2": "BAT+", "3": ""}, "power_switch",
-                           ps["center"]["x"], ps["center"]["y"], ps["rotation"],
+                           *place(ps["center"]["x"], ps["center"]["y"], ps["rotation"]),
                            "Power slide switch in the battery positive line, bottom side"))
     rb = cfg["reset_button"]
     comps.append(Component("RB1", "EVQ-P7A01P", "SW_SPST_EVQP7A_reversible",
                            {"1": "RST", "2": "GND"}, "reset",
-                           rb["center"]["x"], rb["center"]["y"], rb["rotation"],
+                           *place(rb["center"]["x"], rb["center"]["y"], rb["rotation"]),
                            "Reset button, bottom side"))
     tp = cfg["test_pads"]
     along_x = tp.get("direction", "y") == "x"
     for i, net in enumerate(spare_pad_nets(half)):
         comps.append(Component(f"TP{i + 1}", net, "TestPad_1.5mm", {"1": net}, "testpoint",
-                               tp["start"]["x"] + (i * tp["pitch"] if along_x else 0),
-                               tp["start"]["y"] + (0 if along_x else i * tp["pitch"]), 0, f"Spare controller pin {net[3:]}"))
+                               *place(tp["start"]["x"] + (i * tp["pitch"] if along_x else 0),
+                                      tp["start"]["y"] + (0 if along_x else i * tp["pitch"]), 0),
+                               f"Spare controller pin {net[3:]}"))
     for i, h in enumerate(cfg["mounting_holes"]):
-        comps.append(Component(f"H{i + 1}", "M2", "MountingHole_2.2mm", {}, "hole", h["x"], h["y"], 0, "Case mounting hole M2"))
+        comps.append(Component(f"H{i + 1}", "M2", "MountingHole_2.2mm", {}, "hole", *place(h["x"], h["y"], 0), "Case mounting hole M2"))
     return comps
 
 
