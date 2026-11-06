@@ -620,7 +620,9 @@
     "box_roof_under_z": 6.7,
     "box_top_z": 8.7,
     "lid_roof_under_z": 12.0,
-    "lid_top_z": 14.0
+    "lid_top_z": 15.0,
+    "lid_lift": 13.0,
+    "lid_lip_depth": 3.0
    }
   },
   "right": {
@@ -1399,7 +1401,9 @@
     "box_roof_under_z": 6.7,
     "box_top_z": 8.7,
     "lid_roof_under_z": 18.1,
-    "lid_top_z": 20.1
+    "lid_top_z": 21.1,
+    "lid_lift": 19.1,
+    "lid_lip_depth": 3.0
    }
   }
  }

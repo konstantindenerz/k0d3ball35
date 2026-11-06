@@ -69,7 +69,7 @@ def feet(outline: list[list[float]], inset: float = 7.0) -> list[list[float]]:
 
 CASE_PARTS = {"tray": "tray-{half}", "cap": "box-cap-{half}", "lid": "lid-{half}"}
 CASE_STACK_KEYS = ("base_z", "floor_z_key", "well_floor_z", "pocket_floor_z", "rim_z", "standoff_h",
-                   "box_roof_under_z", "box_top_z", "lid_roof_under_z", "lid_top_z")
+                   "box_roof_under_z", "box_top_z", "lid_roof_under_z", "lid_top_z", "lid_lift", "lid_lip_depth")
 
 
 def case_meshes(half: str) -> dict[str, str]:

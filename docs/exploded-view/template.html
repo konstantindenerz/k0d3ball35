@@ -72,7 +72,7 @@
     <div class="labels" id="labels"></div>
     <div class="hud">
       <h1 id="title">k0d3ball35</h1>
-      <p>Drag to orbit, wheel or pinch to zoom. Heights are real and the case parts are the printed tray, controller box cap and lid from hardware/case.</p>
+      <p>Drag to orbit, wheel or pinch to zoom. Heights are real and the case parts are the printed tray, controller box cap and lid from hardware/case. The lid holds on top by an inner lip; magnets only hold it as a foot.</p>
       <span class="tag" id="viewTag">assembled</span>
     </div>
   </div>
@@ -99,6 +99,14 @@
         <label><input type="checkbox" id="rotate" checked> Auto-rotate</label>
         <label><input type="checkbox" id="section"> Section through the ball centre</label>
         <label><input type="checkbox" id="showLabels" checked> Labels</label>
+      </div>
+    </div>
+    <div>
+      <h2>Lid</h2>
+      <div class="halves" id="lidMode">
+        <label><input type="radio" name="lid" value="off" checked> Off</label>
+        <label><input type="radio" name="lid" value="on"> On top</label>
+        <label><input type="radio" name="lid" value="foot"> As foot</label>
       </div>
     </div>
     <div>
@@ -226,6 +234,7 @@ scene.add(root);
 
 // Layer registry: { name, group, explode (world Y offset at full explode), color, anchor }
 let layers = [];
+let lidLayer = null;
 let H = D.halves.right;
 const target = new THREE.Vector3();
 const clipPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
@@ -236,7 +245,7 @@ function layer(name, explode, color, anchor, hidden = false) {
   g.userData = { name, explode, baseY: 0 };
   g.visible = !hidden;
   root.add(g);
-  layers.push({ name, group: g, explode, color, anchor, hidden });
+  layers.push({ name, group: g, explode, color, anchor, hidden, baseY: 0 });
   return g;
 }
 
@@ -354,15 +363,18 @@ function build(half) {
     const g = layer('Controller box cap', 44, '#B9A98E', { x: c.x, y: H.case_stack.box_top_z + 2, z: B.min_y + 4 });
     g.add(stlMesh(H.case.cap, M.cap));
   }
-  // --- lid: transport cover per half, doubles as a foot; drawn as a ghost ---
+  // --- lid: cover on top (inner lip, no magnets) or foot under the tray (magnets in floor and roof) ---
   {
-    const g = layer('Lid (transport cover)', 60, '#E8762E', { x: B.max_x - 20, y: H.case_stack.lid_top_z + 2, z: B.min_y + 10 }, true);   // off by default, it hides everything
+    const g = layer('Lid', 60, '#E8762E', { x: B.max_x - 20, y: H.case_stack.lid_top_z + 2, z: B.min_y + 10 }, true);
     g.add(stlMesh(H.case.lid, M.lid));
+    lidLayer = layers[layers.length - 1];
+    lidLayer.nolist = true;   // driven by the Lid radio, not the layer list
   }
 
   buildLabels();
   buildDims();
   titleEl.textContent = `${D.name} ${D.revision}, ${half} half (${H.keys.length} keys${ball ? ', ' + ball.d + ' mm ball' : ''})`;
+  applyLidMode();
   sectionIn.disabled = !ball;
   if (!ball && sectionIn.checked) { sectionIn.checked = false; setSection(false); }
   setExplode(explode);
@@ -398,6 +410,7 @@ function buildLabels() {
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     leaders.appendChild(line);
     const lab = document.createElement('label');
+    if (l.nolist) { lab.style.display = 'none'; }
     const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !l.hidden;
     cb.addEventListener('change', () => { l.group.visible = cb.checked; });
     const sw = document.createElement('span'); sw.className = 'swatch'; sw.style.background = l.color;
@@ -481,7 +494,7 @@ let explode = 0, anim = null;
 function setExplode(v) {
   explode = v; explodeIn.value = v.toFixed(2); explodeVal.textContent = v.toFixed(2);
   viewTag.textContent = v < 0.02 ? 'assembled' : v > 0.98 ? 'exploded' : 'exploding';
-  for (const l of layers) l.group.position.y = l.explode * v;
+  for (const l of layers) l.group.position.y = l.baseY + l.explode * v;
 }
 explodeIn.addEventListener('input', () => { anim = null; setExplode(parseFloat(explodeIn.value)); });
 playBtn.addEventListener('click', () => {
@@ -490,6 +503,23 @@ playBtn.addEventListener('click', () => {
   anim = { from: explode, to, t0: performance.now(), dur: 1600 };
 });
 document.getElementById('reset').addEventListener('click', () => { Object.assign(sph, home); autoRotate.checked = true; });
+function applyLidMode() {
+  if (!lidLayer) return;
+  const mode = document.querySelector('input[name=lid]:checked').value;
+  const cs = H.case_stack;
+  lidLayer.group.visible = mode !== 'off';
+  if (mode === 'foot') {   // unflipped under the tray: roof top against the tray underside, lip hanging free
+    lidLayer.baseY = cs.base_z - cs.lid_top_z; lidLayer.explode = -60;
+    lidLayer.anchor.y = cs.base_z - 4;
+  } else {
+    lidLayer.baseY = 0; lidLayer.explode = 60;
+    lidLayer.anchor.y = cs.lid_top_z + 2;
+  }
+  lidLayer.name = mode === 'foot' ? `Lid as foot (lift ${(cs.lid_lift ?? (cs.lid_top_z - cs.rim_z)).toFixed(1)} mm)` : 'Lid (cover, inner lip)';
+  if (labelNodes[layers.indexOf(lidLayer)]) labelNodes[layers.indexOf(lidLayer)].el.textContent = lidLayer.name;
+  setExplode(explode);
+}
+for (const r of document.querySelectorAll('input[name=lid]')) r.addEventListener('change', () => { if (r.checked) applyLidMode(); });
 for (const r of document.querySelectorAll('input[name=half]')) r.addEventListener('change', () => { if (r.checked) build(r.value); });
 sectionIn.addEventListener('change', () => setSection(sectionIn.checked));
 showLabels.addEventListener('change', () => { labelsEl.style.visibility = leaders.style.visibility = showLabels.checked ? 'visible' : 'hidden'; });
@@ -532,7 +562,7 @@ function frame(now) {
     const on = show && l.group.visible;
     el.classList.toggle('on', on);
     if (!on) { line.setAttribute('opacity', 0); return; }
-    const a = l.anchor, y = a.y + l.explode * explode;
+    const a = l.anchor, y = a.y + l.baseY + l.explode * explode;
     const p = project(a.x, y, a.z);
     const side = (a.x * root.scale.x) < (target.x * root.scale.x) ? -1 : 1;
     const lx = p.x + side * 110, ly = p.y - 18;
