@@ -78,9 +78,9 @@ GRAPHIC_LAYERS = {
     ("mechanical", "outline"),
 }
 
-# KiCad coordinates of the battery bay (layout bay centre (-58, 11), 21 x 28 mm, offset 120/60)
-BAY_KICAD = (51.5, 57.0, 72.5, 85.0)
-BAY_TEXTS = ("702025 cell", "300 mAh", "leads +y")
+# KiCad coordinates of the battery bay (layout bay centre (-53.9, 17.5), 21 x 41 mm, offset 120/60)
+BAY_KICAD = (55.6, 57.0, 76.6, 98.0)
+BAY_TEXTS = ("LP552035 cell", "350 mAh", "leads +y")
 # controller footprint area in KiCad coordinates (centre (62, 74), 18 x 33.5 mm)
 CONTROLLER_KICAD = (53.0, 57.25, 71.0, 90.75)
 NOTCH_APOTHEM = 15.0  # cradle radius 14 + 1 mm clearance
@@ -309,7 +309,8 @@ def test_battery_bay_marking_on_back_silkscreen(board: str):
         block = pcb[m.end():m.end() + 300]
         assert "(justify mirror)" in block.split("(gr_", 1)[0], f"{board}: {text!r} not mirrored"
         assert BAY_KICAD[0] < x < BAY_KICAD[2] and BAY_KICAD[1] < y < BAY_KICAD[3], f"{board}: {text!r} at {x},{y} outside the bay"
-        assert CONTROLLER_KICAD[0] < x < CONTROLLER_KICAD[2] and CONTROLLER_KICAD[1] < y < CONTROLLER_KICAD[3]
+        # the label sits in the lower part of the bay, below the controller's hole rows
+        assert CONTROLLER_KICAD[0] < x < CONTROLLER_KICAD[2] + 4 and y > CONTROLLER_KICAD[1]
     # the dashed rectangle is the only dashed item on B.SilkS
     dashed = re.findall(r"\(gr_poly\s*\(pts\s*((?:\(xy [\d. -]+\)\s*)+)\)\s*\(stroke\s*\(width [\d.]+\)\s*\(type dash\)\s*\)\s*\(fill no\)\s*\(layer \"B\.SilkS\"\)", pcb)
     assert len(dashed) == 1, f"{board}: {len(dashed)} dashed polygons on B.SilkS"

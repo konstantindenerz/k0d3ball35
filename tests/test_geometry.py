@@ -180,16 +180,18 @@ def test_battery_bay_fits_cell_and_board(layout):
     edge, clear of everything assembled on the back and fully under the controller's footprint."""
     bay = layout.battery_bay()
     bat = layout.cfg["battery"]
-    assert bat["cell"] == "702025"
-    assert bat["size"]["x"] <= bat["bay"]["size"]["x"] and bat["size"]["y"] <= bat["bay"]["size"]["y"]
+    assert bat["cell"] == "LP552035"
+    assert bat["bay"]["size"]["x"] - bat["size"]["x"] >= 0.5 and bat["bay"]["size"]["y"] - bat["size"]["y"] >= 1.0
     assert bat["size"]["z"] + 1.5 <= bat["depth_below_pcb"]
     assert layout.outline.contains(bay)
     assert layout.outline.exterior.distance(bay) >= bat["edge_clearance"] - 0.05
     for name, poly in layout.back_parts().items():
         assert not poly.intersects(bay), name
     c = layout.cfg["controller"]
-    ctrl = rotated_box(c["center"]["x"], c["center"]["y"], c["size"]["x"] + 4, c["size"]["y"] + 4, 0)
-    assert ctrl.contains(bay), "bay must stay under the controller (the only part-free zone on the back)"
+    ctrl = rotated_box(c["center"]["x"], c["center"]["y"], c["size"]["x"], c["size"]["y"], 0, offset=(0, c["pcb_offset_y"]))
+    assert ctrl.intersection(bay).area >= 0.5 * bay.area, "bay must lie mostly under the controller"
+    inner = min(col["x"] for col in layout.cfg["columns"])
+    assert bay.bounds[2] < inner - layout.cfg["switch_body"] / 2, "bay must stay clear of the inner column's switch holes"
 
 
 def test_battery_bay_in_points_json(layout):

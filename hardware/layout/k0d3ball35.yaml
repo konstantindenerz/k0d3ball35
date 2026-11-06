@@ -71,23 +71,25 @@ controller:                     # nice!nano v2 / SuperMini, Pro Micro pinout, on
   row_spacing: 15.24            # 2 x 7.62
   socket_height: 2.5            # design value for the stack (controller PCB underside above the main PCB top)
 
-# Battery: one 702025 cell per half, identical on both halves. The cell lies UNDER the PCB
-# directly below the controller, in a well of the case floor (the "battery bay"). The back of
-# the PCB carries nothing there except the socket tails, so the bay is the same rectangle on
-# both boards. The lead / PCM end points towards +y, where J3 (JST-PH, default) and the J2 pads sit.
+# Battery: one PKCELL LP552035 cell (350 mAh, JST-PH plug, protection circuit) per half, identical
+# on both halves. The cell lies UNDER the PCB below the controller, in a well of the case floor (the
+# "battery bay"). The back of the PCB carries nothing there except the right row of socket tails, so
+# the bay is the same rectangle on both boards: it starts between the two controller hole rows and
+# runs down to the reset button. The lead / PCM end points towards +y, where J3 (JST-PH, default)
+# and the J2 pads sit. Any cell up to 20.5 x 37.5 x 7.2 mm fits (702025, 602025, 502030, 602030, 552035).
 battery:
-  cell: "702025"
-  capacity_mah: 300
-  size: { x: 20.5, y: 27.0, z: 7.2 }            # with protection circuit and leads
-  bay: { center: { x: -58.0, y: 11.0 }, size: { x: 21.0, y: 28.0 } }   # on the back, under U1
-  depth_below_pcb: 9.0          # well floor below the PCB underside: tails 1.0 + pad 0.5 + cell 7.2 + 0.3 clearance
+  cell: "LP552035"
+  capacity_mah: 350
+  size: { x: 20.5, y: 37.5, z: 5.7 }            # PKCELL datasheet maxima incl. protection circuit
+  bay: { center: { x: -53.9, y: 17.5 }, size: { x: 21.0, y: 41.0 } }   # on the back, x -64.4..-43.4, y -3..38
+  depth_below_pcb: 9.0          # well floor below the PCB underside: tails 1.0 + pad 0.5 + up to 7.2 mm cell + 0.3 clearance
   edge_clearance: 1.5           # minimum distance from the bay to the PCB edge
   leads: "+y"                   # lead end towards J3 / J2
 
 power_switch: { center: { x: -68.5, y: 30.0 }, rotation: 270 }  # MSK12C02, bottom side; 270 puts the actuator (local +y) at -x, through the inner edge
-reset_button: { center: { x: -66.0, y: 38.0 }, rotation: 0 }    # EVQP7A, bottom side, inner corner below the power switch
+reset_button: { center: { x: -66.0, y: 41.0 }, rotation: 0 }    # EVQP7A, bottom side, inner corner below the power switch and the battery bay
 battery_pads: { center: { x: -57.0, y: 50.5 }, rotation: 0 }    # 2 x 1.7 mm PTH, 2.54 mm pitch, B+ / B-, below the JST (solder alternative)
-battery_jst:  { center: { x: -56.0, y: 42.0 }, rotation: 0 }    # S2B-PH-SM4-TB, 6 mm tall, bottom side, default (sits in the battery well)
+battery_jst:  { center: { x: -56.0, y: 44.0 }, rotation: 0 }    # S2B-PH-SM4-TB, 6 mm tall, bottom side, default, below the battery bay (sits in the same well)
 
 test_pads:                      # spare controller pins as 1.5 mm pads, in a row below the battery pads
   start: { x: -66.0, y: 57.5 }

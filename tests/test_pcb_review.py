@@ -496,7 +496,7 @@ def test_battery_bay_on_back_silkscreen(board, layout):
     bay = _page(layout.battery_bay())
     dashed = [p for layer, stroke, p in board.gr_polys if layer == "B.SilkS" and stroke == "dash"]
     assert any(p.symmetric_difference(bay).area < 1e-6 for p in dashed), "dashed bay rectangle on B.SilkS"
-    assert bay.bounds == (51.5, 57.0, 72.5, 85.0)
+    assert tuple(round(v, 3) for v in bay.bounds) == (55.6, 57.0, 76.6, 98.0)
     texts = {g.text for g in board.gr_texts if g.layer == "B.SilkS" and bay.contains(Point(g.pts[0]))}
     assert texts == {"702025 cell", "300 mAh", "leads +y"}
     assert bay.within(board.outline.buffer(-layout.cfg["battery"]["edge_clearance"] + 1e-6)), "bay keeps the edge clearance"
@@ -516,7 +516,7 @@ def test_battery_bay_holds_nothing_but_u1(board, layout):
             assert not fp.local_box(*SOCKET_BODY).intersects(bay), f"{ref}: socket body inside the battery bay"
     u1 = board.footprints["U1"]
     tails = [p for p in u1.pads if bay.contains(Point(p.x, p.y))]
-    assert len(tails) >= 20, "the socket tails of U1 are the only things inside the bay (cut flush by hand)"
+    assert len(tails) >= 12, "the right row of U1 socket tails is the only thing inside the bay (cut flush by hand)"
 
 
 # ----- mounting holes ------------------------------------------------------------------

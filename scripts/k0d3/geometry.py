@@ -161,6 +161,8 @@ class Layout:
             parts[k.ref] = rotated_box(k.x, k.y, cfg["switch_body"], cfg["switch_body"], k.rotation)
             # CPG135001S30 hot-swap socket body on the back: local x -4.8..10.2, y -8.9..-2.0
             parts[k.ref + " socket"] = rotated_box(k.x, k.y, 15.0, 6.9, k.rotation, offset=(2.7, -5.45))
+            # SOD-123 diode 6 mm south of the key centre (netlist.build_components), courtyard 4.6 x 2.2
+            parts[k.diode_ref] = rotated_box(k.x, k.y, 4.6, 2.2, k.rotation, offset=(0.0, 6.0))
         fp = self.fpc_box()
         if fp is not None:
             parts["J1"] = fp
