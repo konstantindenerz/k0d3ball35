@@ -108,6 +108,35 @@ class Layout:
         tb = self.cfg["trackball"]
         return Point(*self.ball_center).buffer(tb["cradle_diameter"] / 2 + tb["pocket"]["wall"], 64)
 
+    def housing_box(self) -> Polygon | None:
+        """Cradle housing on the case floor (below the PCB plane), centred on the ball."""
+        if not self.has_ball:
+            return None
+        h = self.cfg["trackball"]["pocket"]["housing"]
+        bx, by = self.ball_center
+        return box(bx - h["x"] / 2, by - h["y"] / 2, bx + h["x"] / 2, by + h["y"] / 2)
+
+    def housing_footprint(self) -> Polygon | None:
+        """Pocket outline at floor level: housing plus clearance plus case wall, 3 mm corner radius."""
+        if not self.has_ball:
+            return None
+        pk = self.cfg["trackball"]["pocket"]
+        grow = pk["housing_clearance"] + pk["wall"]
+        return self.housing_box().buffer(grow - 3.0, join_style=2).buffer(3.0, 16).simplify(0.05)
+
+    def case_screws(self) -> list[tuple[float, float]]:
+        if not self.has_ball:
+            return []
+        sp = self.cfg["trackball"]["pocket"]["case_screw_spacing"]
+        bx, by = self.ball_center
+        return [(bx, round(by - sp / 2, 3)), (bx, round(by + sp / 2, 3))]
+
+    def fpc_box(self) -> Polygon | None:
+        f = self.cfg.get("fpc")
+        if not f:
+            return None
+        return box(f["center"]["x"] - 4.5, f["center"]["y"] - 3.0, f["center"]["x"] + 4.5, f["center"]["y"] + 3.0)
+
     def bounds(self) -> tuple[float, float, float, float]:
         return self.outline.bounds
 
@@ -120,6 +149,8 @@ class Layout:
             tb = {**t, "center": {"x": self.ball_center[0], "y": self.ball_center[1]},
                   "notch": [[round(x, 3), round(y, 3)] for x, y in self.notch_polygon().exterior.coords],
                   "pocket_diameter": t["cradle_diameter"] + 2 * t["pocket"]["wall"],
+                  "housing_footprint": [[round(x, 3), round(y, 3)] for x, y in self.housing_footprint().exterior.coords],
+                  "case_screws": [[x, y] for x, y in self.case_screws()],
                   # sensor board (26 x 25 mm) centred under the ball, long side along x
                   "sensor_board": {"width": 26.0, "height": 25.0, "x": self.ball_center[0], "y": self.ball_center[1]}}
         return {
@@ -302,9 +333,17 @@ def check_layout(layout: Layout) -> list[str]:
             problems.append(f"cradle flange only {d:.2f} mm from the PCB edge (notch clearance {clear} mm)")
         if layout.outline.intersects(Point(*layout.ball_center).buffer(cfg["trackball"]["ball_diameter"] / 2)):
             problems.append("ball overlaps the PCB")
-        f = cfg.get("fpc")
-        if f:
-            fp = box(f["center"]["x"] - 4.5, f["center"]["y"] - 3.0, f["center"]["x"] + 4.5, f["center"]["y"] + 3.0)
+        housing = layout.housing_box()
+        for ref in caps:
+            k = layout.key(int(ref[2]), int(ref[3]))
+            body = rotated_box(k.x, k.y, cfg["switch_body"], cfg["switch_body"], k.rotation)
+            if body.intersects(housing):
+                problems.append(f"cradle housing collides with switch {ref}")
+        fp = layout.fpc_box()
+        if fp is not None:
+            d = housing.distance(fp)
+            if d < 0.5:
+                problems.append(f"cradle housing only {d:.2f} mm from the FPC connector (need 0.5 mm)")
             if not layout.outline.contains(fp):
                 problems.append("FPC connector not inside the PCB outline")
             for ref, poly in caps.items():
@@ -350,6 +389,9 @@ def write_outline_dxf(layout: Layout, out: Path) -> None:
         msp.add_circle(layout.ball_center, tb["ball_diameter"] / 2, dxfattribs={"layer": "BALL"})
         msp.add_circle(layout.ball_center, tb["cradle_diameter"] / 2, dxfattribs={"layer": "CRADLE"})
         msp.add_circle(layout.ball_center, tb["cradle_diameter"] / 2 + tb["pocket"]["wall"], dxfattribs={"layer": "POCKET"})
+        msp.add_lwpolyline(list(layout.housing_footprint().exterior.coords), close=True, dxfattribs={"layer": "POCKET_FLOOR"})
+        for sx_, sy_ in layout.case_screws():
+            msp.add_circle((sx_, sy_), 1.0, dxfattribs={"layer": "HOLES"})
     for h in layout.cfg["mounting_holes"]:
         msp.add_circle((h["x"], h["y"]), 1.1, dxfattribs={"layer": "HOLES"})
     for k in layout.keys:
@@ -390,6 +432,10 @@ def write_preview(layout: Layout, out: Path) -> None:
         bx, by = layout.ball_center
         pocket_r = tb["cradle_diameter"] / 2 + tb["pocket"]["wall"]
         ax.add_patch(Circle((sx * bx, by), pocket_r, fc="#e0e0e0", ec="#777", ls="--", lw=0.8))
+        hx, hy = zip(*layout.housing_footprint().exterior.coords)
+        ax.add_patch(MplPoly(list(zip([sx * x for x in hx], hy)), closed=True, fc="none", ec="#777", ls=":", lw=0.8))
+        for sx_, sy_ in layout.case_screws():
+            ax.add_patch(Circle((sx * sx_, sy_), 1.0, fc="white", ec="#777", lw=0.6))
         ax.add_patch(Circle((sx * bx, by), tb["cradle_diameter"] / 2, fc="none", ec="#999", ls=":"))
         ax.add_patch(Circle((sx * bx, by), tb["ball_diameter"] / 2, fc="white", ec="#333"))
         minx, miny = min(minx, bx - pocket_r), min(miny, by - pocket_r)

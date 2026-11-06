@@ -242,10 +242,15 @@ function build(half) {
     const outer = outlineShape(H.outline_case, [{ points: H.outline }]);
     g.add(slab(outer, 5.0 - floorTop, 5.0, M.caseGhost));   // walls: 5 mm above the PCB down to the floor
     if (ball) {
-      // pocket: floor disk, wall ring (2 mm) from the floor to the cup rim, the PCB-side open where the PCB meets the notch
-      g.add(cyl(ball.pocket_d / 2 + 2, 2.0, M.case, bx, floorTop - 1.0, bz));
+      // pocket: below the PCB plane a rounded-rectangle wall around the cradle housing (0.5 mm
+      // clearance + 2 mm wall), above the PCB plane the 32 mm ring up to the cup rim; the side
+      // towards the PCB is open where the housing runs under the board
+      const fpOuter = ball.housing_footprint;
+      const fpInner = fpOuter.map(([x, y]) => [bx + (x - bx) * (1 - 2 / 17.5), bz + (y - bz) * (1 - 2 / 17)]);
+      g.add(slab(outlineShape(fpOuter), 2.0, floorTop, M.case));                                  // pocket floor
+      g.add(slab(outlineShape(fpOuter, [{ points: fpInner }]), -PCB_T - 0.3 - floorTop, -PCB_T - 0.3, M.caseGhost));   // low wall
       const ring = new THREE.Mesh(new THREE.RingGeometry(ball.pocket_d / 2, ball.pocket_d / 2 + 2, 64), M.caseGhost);
-      const wall = cyl(ball.pocket_d / 2 + 2, S.rim_z - floorTop, M.caseGhost, bx, (S.rim_z + floorTop) / 2, bz, ball.pocket_d / 2 + 2, true);
+      const wall = cyl(ball.pocket_d / 2 + 2, S.rim_z + PCB_T + 0.3, M.caseGhost, bx, (S.rim_z - PCB_T - 0.3) / 2, bz, ball.pocket_d / 2 + 2, true);
       g.add(wall);
       ring.rotation.x = -Math.PI / 2; ring.position.set(bx, S.rim_z, bz); g.add(ring);
     }
@@ -270,7 +275,7 @@ function build(half) {
     const g = layer('Trackball cradle (pocket mount)', -8, '#CFC5B3', { x: bx - 18, y: 4, z: bz });
     const housing = new THREE.Mesh(new THREE.BoxGeometry(S.housing_x, S.housing_top_z - S.floor_z, S.housing_y), M.cradle);
     housing.position.set(bx, (S.housing_top_z + S.floor_z) / 2, bz); g.add(housing);
-    for (const sx of [-1, 1]) g.add(cyl(3.5, 2.0, M.cradle, bx + sx * (S.footprint_x / 2 - 3.5), S.floor_z + 1.0, bz));   // screw ears
+    for (const [sx_, sz_] of ball.case_screws) g.add(cyl(1.75, 1.5, M.metal, sx_, S.floor_z - 2.0 - 0.75, sz_));   // M2 x 10 heads under the case floor
     g.add(cyl(S.cup_outer_d / 2, S.rim_z - S.housing_top_z, M.cradle, bx, (S.rim_z + S.housing_top_z) / 2, bz));         // cup skirt
     const bowl = new THREE.Mesh(new THREE.SphereGeometry(ball.d / 2 + 1.2, 48, 24, 0, Math.PI * 2, Math.PI / 2 + 0.25, Math.PI / 2 - 0.25), M.cradle);
     bowl.position.set(bx, S.ball_centre_z, bz); g.add(bowl);
@@ -429,8 +434,8 @@ function buildDims() {
     ['Cup outer diameter', `${S.cup_outer_d.toFixed(1)} mm`],
     ['Cradle envelope above PCB', `${S.envelope_d_above_pcb.toFixed(1)} mm`],
     ['PCB notch', `octagon, apothem ${S.notch_apothem.toFixed(0)} mm`],
-    ['Case pocket', `${H.ball.pocket_d.toFixed(0)} mm`],
-    ['Housing on the floor', `${S.footprint_x.toFixed(0)} x ${S.footprint_y.toFixed(0)} mm (with ears)`],
+    ['Case pocket', `${H.ball.pocket_d.toFixed(0)} mm ring above the PCB`],
+    ['Housing on the floor', `${S.housing_x.toFixed(0)} x ${S.housing_y.toFixed(0)} mm, 2 x M2 from below`],
   );
   dimsEl.replaceChildren();
   for (const [k, v] of dims) { const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dimsEl.append(dt, dd); }

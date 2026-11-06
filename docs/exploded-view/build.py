@@ -51,7 +51,8 @@ def half_data(half: str, cfg: dict, stack: dict) -> dict:
     if tb:
         ball = {"d": tb["ball_diameter"], "x": tb["center"]["x"], "y": tb["center"]["y"],
                 "cradle_d": tb["cradle_diameter"], "pocket_d": tb["pocket_diameter"],
-                "notch": tb["notch"], "sensor_board": tb["sensor_board"]}
+                "notch": tb["notch"], "sensor_board": tb["sensor_board"],
+                "housing_footprint": tb["housing_footprint"], "case_screws": tb["case_screws"]}
     fpc = points.get("fpc")
     return {
         "half": half,

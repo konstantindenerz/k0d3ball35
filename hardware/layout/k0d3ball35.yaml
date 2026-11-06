@@ -55,7 +55,10 @@ trackball:
   min_keycap_clearance: 1.0     # cradle flange to any keycap
   pocket:
     notch_clearance: 1.0        # PCB notch = cradle radius + this (octagon apothem)
-    wall: 2.0                   # case wall around the cradle (pocket circle in the previews / DXF)
+    wall: 2.0                   # case wall around the cradle (pocket circle above the PCB plane)
+    housing: { x: 30.0, y: 29.0 }   # cradle housing on the case floor (sensor board 26 x 25 plus 2 mm walls), no ears
+    housing_clearance: 0.5      # gap between housing and pocket wall at floor level
+    case_screw_spacing: 20.0    # two M2 x 10 from below through floor and sensor board into the posts, on the y axis
 
 controller:                     # nice!nano v2 / SuperMini, Pro Micro pinout
   center: { x: -58.0, y: 14.0 }
@@ -149,7 +152,7 @@ halves:
     trackball:
       center: { x: 5.0, y: 64.0 }   # outboard of the outer thumb key, below the middle/ring columns
     fpc:                            # sensor daughterboard connector (bottom side), cable exits downward into the pocket
-      center: { x: -8.0, y: 46.5 }
+      center: { x: 0.0, y: 45.5 }     # under the middle column, 1 mm above the cradle housing, cable drops straight into its slot
       rotation: 0
     mounting_holes: []
     stitching_vias:

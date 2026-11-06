@@ -144,3 +144,25 @@ def test_points_json_up_to_date(layout):
         assert len(data["trackball"]["notch"]) == 9
     else:
         assert data["trackball"] is None
+
+
+def test_housing_footprint_and_case_screws():
+    """The cradle housing (30 x 29 on the case floor) is exported for the case and keeps clear of the FPC."""
+    right, left = load_layout("right"), load_layout("left")
+    assert left.housing_box() is None and left.case_screws() == []
+    pk = right.cfg["trackball"]["pocket"]
+    hb = right.housing_box()
+    assert (hb.bounds[2] - hb.bounds[0], hb.bounds[3] - hb.bounds[1]) == (pk["housing"]["x"], pk["housing"]["y"])
+    fp = right.housing_footprint()
+    grow = 2 * (pk["housing_clearance"] + pk["wall"])
+    assert fp.bounds[2] - fp.bounds[0] == pytest.approx(pk["housing"]["x"] + grow, abs=0.1)
+    assert fp.bounds[3] - fp.bounds[1] == pytest.approx(pk["housing"]["y"] + grow, abs=0.1)
+    s = right.case_screws()
+    assert len(s) == 2 and s[0][0] == s[1][0] == right.ball_center[0]
+    assert math.dist(s[0], s[1]) == pytest.approx(pk["case_screw_spacing"])
+    assert hb.distance(right.fpc_box()) >= 0.5
+    for k in right.keys:
+        assert not rotated_box(k.x, k.y, right.cfg["switch_body"], right.cfg["switch_body"], k.rotation).intersects(hb), k.ref
+    data = json.loads((REPO / "hardware" / "layout" / "output" / "points-right.json").read_text())
+    assert len(data["trackball"]["case_screws"]) == 2
+    assert len(data["trackball"]["housing_footprint"]) > 8
