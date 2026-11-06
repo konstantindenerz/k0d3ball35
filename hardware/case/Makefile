@@ -1,0 +1,76 @@
+# k0d3ball35 printed case build
+# Requires OpenSCAD 2025.x or newer with the Manifold backend (tested with 2026.10.11,
+# `brew install --cask openscad@snapshot`) and the repository venv for the data generator.
+#
+# data.scad is generated from the layout (scripts/gen_case.py) and committed; `make data`
+# refreshes it. The left half is mirrored inside case.scad, both halves share the sources.
+
+OPENSCAD ?= $(shell command -v openscad 2>/dev/null || echo /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD)
+OSC       = $(OPENSCAD) --backend manifold
+PYTHON   ?= ../../.venv/bin/python
+CAM_ASM   = --camera=-10,30,0,55,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_SEC   = --camera=5,64,0,75,0,150,230 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_BOX   = --camera=-58,22,5,60,0,300,150 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_FOOT  = --camera=-10,30,-10,70,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
+SRC       = case.scad params.scad data.scad common.scad tray.scad lid.scad
+LEFT      = -D 'half="left"'
+RIGHT     = -D 'half="right"'
+
+STL = stl/tray-left.stl stl/tray-right.stl stl/box-cap-left.stl stl/box-cap-right.stl \
+      stl/lid-left.stl stl/lid-right.stl stl/pocket-test-right.stl
+DXF = dxf/floor-left.dxf dxf/floor-right.dxf
+PNG = preview/assembly-left.png preview/assembly-right.png preview/section-right.png \
+      preview/lid-on-right.png preview/lid-foot-right.png preview/box-right.png
+
+.PHONY: all data stls dxfs previews stack clean
+all: data stls dxfs previews stack
+stls: $(STL)
+dxfs: $(DXF)
+previews: $(PNG)
+
+data: data.scad
+data.scad: ../../scripts/gen_case.py ../../scripts/k0d3/geometry.py ../layout/k0d3ball35.yaml
+	cd ../.. && PYTHONPATH=scripts $(subst ../../,,$(PYTHON)) scripts/gen_case.py
+
+stl dxf preview:
+	@mkdir -p $@
+
+stl/tray-left.stl: $(SRC) | stl
+	$(OSC) -D 'part="tray"' $(LEFT) -o $@ case.scad
+stl/tray-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="tray"' $(RIGHT) -o $@ case.scad
+stl/box-cap-left.stl: $(SRC) | stl
+	$(OSC) -D 'part="box_cap"' $(LEFT) -o $@ case.scad
+stl/box-cap-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="box_cap"' $(RIGHT) -o $@ case.scad
+stl/lid-left.stl: $(SRC) | stl
+	$(OSC) -D 'part="lid"' $(LEFT) -o $@ case.scad
+stl/lid-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="lid"' $(RIGHT) -o $@ case.scad
+stl/pocket-test-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="pocket_test"' $(RIGHT) -o $@ case.scad
+
+dxf/floor-left.dxf: $(SRC) | dxf
+	$(OSC) -D 'part="floor2d"' $(LEFT) -o $@ case.scad
+dxf/floor-right.dxf: $(SRC) | dxf
+	$(OSC) -D 'part="floor2d"' $(RIGHT) -o $@ case.scad
+
+preview/assembly-left.png: $(SRC) | preview
+	$(OSC) --render -D 'part="assembly"' $(LEFT) $(CAM_ASM) -o $@ case.scad
+preview/assembly-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="assembly"' $(RIGHT) $(CAM_ASM) -o $@ case.scad
+preview/section-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="section"' $(RIGHT) $(CAM_SEC) -o $@ case.scad
+preview/lid-on-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="lid_on"' $(RIGHT) $(CAM_ASM) -o $@ case.scad
+preview/lid-foot-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="lid_foot"' $(RIGHT) $(CAM_FOOT) -o $@ case.scad
+preview/box-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="assembly"' $(RIGHT) $(CAM_BOX) -o $@ case.scad
+
+stack: stack.json
+stack.json: $(SRC) stack.py
+	$(PYTHON) stack.py $(OPENSCAD)
+
+clean:
+	rm -rf build stl dxf preview stack.json
