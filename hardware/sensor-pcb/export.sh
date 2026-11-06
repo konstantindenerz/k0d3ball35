@@ -11,7 +11,7 @@ mkdir -p gerbers renders fab build
 "$K" sch erc --exit-code-violations --severity-error --format report -o build/erc.rpt "$S"
 "$K" pcb drc --schematic-parity --exit-code-violations --severity-error --format report -o build/drc.rpt "$B"
 "$K" pcb export gerbers --layers F.Cu,B.Cu,F.Paste,B.Paste,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts \
-  --subtract-soldermask --no-x2 --no-netlist --use-drill-file-origin -o gerbers/ "$B"
+  --subtract-soldermask --no-protel-ext --no-x2 --no-netlist --use-drill-file-origin -o gerbers/ "$B"
 "$K" pcb export drill --format excellon --excellon-units mm --excellon-zeros-format decimal \
   --excellon-separate-th --generate-map --map-format gerberx2 -o gerbers/ "$B"
 (cd gerbers && zip -q -r "../fab/k0d3ball35-sensor-${REV}-gerbers.zip" .)

@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=8"]
+test = ["pytest>=8", "gerbonara>=1.6", "cairosvg>=2.7", "pillow>=10"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

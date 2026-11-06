@@ -5,7 +5,7 @@
       "Application": "Pcbnew",
       "Version": "10.0.7"
     },
-    "CreationDate": "2026-11-06T07:39:36+01:00"
+    "CreationDate": "2026-11-06T10:55:46+01:00"
   },
   "GeneralSpecs": {
     "ProjectId": {
@@ -34,47 +34,47 @@
   ],
   "FilesAttributes": [
     {
-      "Path": "k0d3ball35-sensor-F_Cu.gtl",
+      "Path": "k0d3ball35-sensor-F_Cu.gbr",
       "FileFunction": "Copper,L1,Top",
       "FilePolarity": "Positive"
     },
     {
-      "Path": "k0d3ball35-sensor-B_Cu.gbl",
+      "Path": "k0d3ball35-sensor-B_Cu.gbr",
       "FileFunction": "Copper,L2,Bot",
       "FilePolarity": "Positive"
     },
     {
-      "Path": "k0d3ball35-sensor-F_Paste.gtp",
+      "Path": "k0d3ball35-sensor-F_Paste.gbr",
       "FileFunction": "SolderPaste,Top",
       "FilePolarity": "Positive"
     },
     {
-      "Path": "k0d3ball35-sensor-B_Paste.gbp",
+      "Path": "k0d3ball35-sensor-B_Paste.gbr",
       "FileFunction": "SolderPaste,Bot",
       "FilePolarity": "Positive"
     },
     {
-      "Path": "k0d3ball35-sensor-F_Silkscreen.gto",
+      "Path": "k0d3ball35-sensor-F_Silkscreen.gbr",
       "FileFunction": "Legend,Top",
       "FilePolarity": "Positive"
     },
     {
-      "Path": "k0d3ball35-sensor-B_Silkscreen.gbo",
+      "Path": "k0d3ball35-sensor-B_Silkscreen.gbr",
       "FileFunction": "Legend,Bot",
       "FilePolarity": "Positive"
     },
     {
-      "Path": "k0d3ball35-sensor-F_Mask.gts",
+      "Path": "k0d3ball35-sensor-F_Mask.gbr",
       "FileFunction": "SolderMask,Top",
       "FilePolarity": "Negative"
     },
     {
-      "Path": "k0d3ball35-sensor-B_Mask.gbs",
+      "Path": "k0d3ball35-sensor-B_Mask.gbr",
       "FileFunction": "SolderMask,Bot",
       "FilePolarity": "Negative"
     },
     {
-      "Path": "k0d3ball35-sensor-Edge_Cuts.gm1",
+      "Path": "k0d3ball35-sensor-Edge_Cuts.gbr",
       "FileFunction": "Profile",
       "FilePolarity": "Positive"
     }
