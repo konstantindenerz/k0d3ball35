@@ -1,7 +1,7 @@
 [project]
 name = "k0d3ball35"
 version = "0.1.0"
-description = "Wireless 36-key low profile split keyboard with a 25 mm trackball"
+description = "Wireless 35-key low profile split keyboard with a 19 mm trackball"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.12"

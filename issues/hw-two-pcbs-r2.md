@@ -2,7 +2,7 @@
 title: r2 - two PCBs (15+3 / 15+2), stepped outline, 19 mm ball pocket beside the right PCB
 type: feature
 priority: P0
-status: in-progress
+status: done
 area: hw
 created: 2026-11-06
 ---
@@ -34,14 +34,14 @@ enough. r2 (decided 2026-11-06, see `docs/01-design-spec.md`):
 - [x] Cradle `mount = "pocket"` variant, 19.05 mm default, `stack.json`, STL / DXF exports, tests
 - [x] Documentation r2: design spec, layout, BOM, build guide, firmware, fabrication, testing,
       trackball module, roadmap, lessons, feasibility, README, image prompts, exploded view, tickets
-- [ ] Netlist, schematic and PCB generators per half; `hardware/left-pcb/` and `hardware/right-pcb/`
+- [x] Netlist, schematic and PCB generators per half; `hardware/left-pcb/` and `hardware/right-pcb/`
       generated, ERC clean
-- [ ] Both boards routed (freerouting plus hand routes), DRC clean with schematic parity, gerbers,
+- [x] Both boards routed (freerouting plus hand routes), DRC clean with schematic parity, gerbers,
       renders, schematic PDFs, BOM and position files exported; `hardware/main-pcb/` removed
-- [ ] Firmware: shield with 35 keys, one shared kscan pin set, transform row 3 per half,
+- [x] Firmware: shield with 35 keys, one shared kscan pin set, transform row 3 per half,
       `res-cpi = <600>`, physical layout regenerated, pin checker against the single spec table
-- [ ] `make test` green, CI workflows point at the new paths
-- [ ] Optional last step: rename to k0d3ball35 (folder, shield, libraries, yaml)
+- [x] `make test` green, CI workflows point at the new paths
+- [x] Optional last step: rename to k0d3ball35 (folder, shield, libraries, yaml)
 
 ## Notes
 
