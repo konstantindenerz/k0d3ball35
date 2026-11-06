@@ -137,6 +137,35 @@ class Layout:
             return None
         return box(f["center"]["x"] - 4.5, f["center"]["y"] - 3.0, f["center"]["x"] + 4.5, f["center"]["y"] + 3.0)
 
+    def battery_bay(self) -> Polygon:
+        """Rectangle on the back of the PCB where the cell lies (in the case well under the controller)."""
+        b = self.cfg["battery"]["bay"]
+        return box(b["center"]["x"] - b["size"]["x"] / 2, b["center"]["y"] - b["size"]["y"] / 2,
+                   b["center"]["x"] + b["size"]["x"] / 2, b["center"]["y"] + b["size"]["y"] / 2)
+
+    def back_parts(self) -> dict[str, Polygon]:
+        """Courtyards of everything that is assembled on the back of the PCB (layout frame):
+        power switch, reset button, JST, battery pads, hot-swap sockets and the FPC connector.
+        Switch bodies are included because the socket boss holes sit inside them."""
+        cfg = self.cfg
+        parts: dict[str, Polygon] = {}
+        ps = cfg["power_switch"]
+        parts["PS1"] = rotated_box(ps["center"]["x"], ps["center"]["y"], 8.4, 5.4, ps["rotation"], offset=(0.0, 0.6))
+        rb = cfg["reset_button"]
+        parts["RB1"] = rotated_box(rb["center"]["x"], rb["center"]["y"], 5.4, 3.5, rb["rotation"])
+        j3 = cfg["battery_jst"]
+        parts["J3"] = rotated_box(j3["center"]["x"], j3["center"]["y"], 9.4, 8.4, j3["rotation"], offset=(0.0, 0.3))
+        j2 = cfg["battery_pads"]
+        parts["J2"] = rotated_box(j2["center"]["x"], j2["center"]["y"], 4.6, 2.6, j2["rotation"])
+        for k in self.keys:
+            parts[k.ref] = rotated_box(k.x, k.y, cfg["switch_body"], cfg["switch_body"], k.rotation)
+            # CPG135001S30 hot-swap socket body on the back: local x -4.8..10.2, y -8.9..-2.0
+            parts[k.ref + " socket"] = rotated_box(k.x, k.y, 15.0, 6.9, k.rotation, offset=(2.7, -5.45))
+        fp = self.fpc_box()
+        if fp is not None:
+            parts["J1"] = fp
+        return parts
+
     def bounds(self) -> tuple[float, float, float, float]:
         return self.outline.bounds
 
@@ -162,6 +191,9 @@ class Layout:
             "keys": [asdict(k) for k in self.keys],
             "trackball": tb,
             "controller": self.cfg["controller"],
+            "battery": {**self.cfg["battery"],
+                        "bay_polygon": [[round(x, 3), round(y, 3)] for x, y in self.battery_bay().exterior.coords],
+                        "well_floor_z": round(-1.6 - self.cfg["battery"]["depth_below_pcb"], 3)},
             "fpc": self.cfg.get("fpc"),
             "outline": [[round(x, 3), round(y, 3)] for x, y in self.outline.exterior.coords],
             "bounds": {"min_x": minx, "min_y": miny, "max_x": maxx, "max_y": maxy,
@@ -170,10 +202,13 @@ class Layout:
         }
 
 
-def rotated_box(cx: float, cy: float, w: float, h: float, rotation_deg: float) -> Polygon:
-    b = box(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2)
-    # KiCad positive rotation is counter-clockwise on screen (y down). Shapely rotates
-    # counter-clockwise in a y-up frame, so negate to get the same on-screen result.
+def rotated_box(cx: float, cy: float, w: float, h: float, rotation_deg: float,
+                offset: tuple[float, float] = (0.0, 0.0)) -> Polygon:
+    """Axis box of w x h centred at (cx, cy) plus a local offset, rotated about (cx, cy).
+    KiCad's positive rotation is counter-clockwise on screen (y down), which is clockwise in the
+    mathematical frame shapely uses, hence the sign."""
+    ox, oy = offset
+    b = box(cx + ox - w / 2, cy + oy - h / 2, cx + ox + w / 2, cy + oy + h / 2)
     return affinity.rotate(b, -rotation_deg, origin=(cx, cy))
 
 
@@ -363,6 +398,19 @@ def check_layout(layout: Layout) -> list[str]:
                 problems.append(f"mounting hole at ({hole['x']}, {hole['y']}) collides with switch {ref}")
         if layout.has_ball and p.distance(Point(*layout.ball_center)) < cfg["trackball"]["cradle_diameter"] / 2 + 2:
             problems.append(f"mounting hole at ({hole['x']}, {hole['y']}) collides with the cradle")
+    bay = layout.battery_bay()
+    clear = cfg["battery"]["edge_clearance"]
+    if not layout.outline.contains(bay):
+        problems.append("battery bay not inside the PCB outline")
+    elif layout.outline.exterior.distance(bay) < clear - 0.05:
+        problems.append(f"battery bay only {layout.outline.exterior.distance(bay):.2f} mm from the PCB edge (need {clear} mm)")
+    cell = cfg["battery"]["size"]
+    b = cfg["battery"]["bay"]["size"]
+    if cell["x"] > b["x"] or cell["y"] > b["y"]:
+        problems.append(f"battery cell {cell['x']} x {cell['y']} mm does not fit the bay {b['x']} x {b['y']} mm")
+    for name, poly in layout.back_parts().items():
+        if poly.intersects(bay):
+            problems.append(f"battery bay collides with {name} on the back of the PCB")
     expected = 15 + len(cfg["thumbs"])
     if len(layout.keys) != expected:
         problems.append(f"expected {expected} keys on the {layout.half} half, got {len(layout.keys)}")
@@ -394,6 +442,7 @@ def write_outline_dxf(layout: Layout, out: Path) -> None:
             msp.add_circle((sx_, sy_), 1.0, dxfattribs={"layer": "HOLES"})
     for h in layout.cfg["mounting_holes"]:
         msp.add_circle((h["x"], h["y"]), 1.1, dxfattribs={"layer": "HOLES"})
+    msp.add_lwpolyline(list(layout.battery_bay().exterior.coords), close=True, dxfattribs={"layer": "BATTERY_BAY"})
     for k in layout.keys:
         poly = rotated_box(k.x, k.y, layout.cfg["switch_body"], layout.cfg["switch_body"], k.rotation)
         msp.add_lwpolyline(list(poly.exterior.coords), close=True, dxfattribs={"layer": "SWITCHES"})
@@ -445,6 +494,10 @@ def write_preview(layout: Layout, out: Path) -> None:
             ax.add_patch(MplPoly([(sx * (f["center"]["x"] - 4.5), f["center"]["y"] - 3), (sx * (f["center"]["x"] + 4.5), f["center"]["y"] - 3),
                                   (sx * (f["center"]["x"] + 4.5), f["center"]["y"] + 3), (sx * (f["center"]["x"] - 4.5), f["center"]["y"] + 3)],
                                  closed=True, fc="#ffe082", ec="#8d6e63"))
+    bay = layout.battery_bay()
+    bxs, bys = zip(*bay.exterior.coords)
+    ax.add_patch(MplPoly(list(zip([sx * x for x in bxs], bys)), closed=True, fc="#c8e6c9", ec="#2e7d32", ls="--", lw=1.0))
+    ax.text(sx * bay.centroid.x, bay.bounds[3] - 1.5, f"{layout.cfg['battery']['cell']} (back)", ha="center", va="bottom", fontsize=5, color="#2e7d32")
     c = layout.cfg["controller"]
     ax.add_patch(MplPoly([(sx * (c["center"]["x"] - 9), c["center"]["y"] - 16.75), (sx * (c["center"]["x"] + 9), c["center"]["y"] - 16.75),
                           (sx * (c["center"]["x"] + 9), c["center"]["y"] + 16.75), (sx * (c["center"]["x"] - 9), c["center"]["y"] + 16.75)],

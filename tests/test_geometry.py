@@ -166,3 +166,48 @@ def test_housing_footprint_and_case_screws():
     data = json.loads((REPO / "hardware" / "layout" / "output" / "points-right.json").read_text())
     assert len(data["trackball"]["case_screws"]) == 2
     assert len(data["trackball"]["housing_footprint"]) > 8
+
+
+def test_battery_bay_identical_on_both_halves():
+    left, right = load_layout("left"), load_layout("right")
+    assert left.cfg["battery"] == right.cfg["battery"]
+    assert left.battery_bay().equals(right.battery_bay())
+    assert left.cfg["controller"]["socket_height"] <= 3.0
+
+
+def test_battery_bay_fits_cell_and_board(layout):
+    """The 702025 cell lies under the PCB below the controller: inside the outline, away from the
+    edge, clear of everything assembled on the back and fully under the controller's footprint."""
+    bay = layout.battery_bay()
+    bat = layout.cfg["battery"]
+    assert bat["cell"] == "702025"
+    assert bat["size"]["x"] <= bat["bay"]["size"]["x"] and bat["size"]["y"] <= bat["bay"]["size"]["y"]
+    assert bat["size"]["z"] + 1.5 <= bat["depth_below_pcb"]
+    assert layout.outline.contains(bay)
+    assert layout.outline.exterior.distance(bay) >= bat["edge_clearance"] - 0.05
+    for name, poly in layout.back_parts().items():
+        assert not poly.intersects(bay), name
+    c = layout.cfg["controller"]
+    ctrl = rotated_box(c["center"]["x"], c["center"]["y"], c["size"]["x"] + 4, c["size"]["y"] + 4, 0)
+    assert ctrl.contains(bay), "bay must stay under the controller (the only part-free zone on the back)"
+
+
+def test_battery_bay_in_points_json(layout):
+    path = REPO / "hardware" / "layout" / "output" / f"points-{layout.half}.json"
+    if not path.exists():
+        pytest.skip("points not generated yet (run scripts/gen_layout.py)")
+    data = json.loads(path.read_text())
+    bat = data["battery"]
+    assert bat["cell"] == layout.cfg["battery"]["cell"]
+    assert bat["well_floor_z"] == pytest.approx(-1.6 - layout.cfg["battery"]["depth_below_pcb"])
+    assert len(bat["bay_polygon"]) == 5
+    assert data["controller"]["socket_height"] == layout.cfg["controller"]["socket_height"]
+
+
+def test_battery_bay_marked_on_both_pcbs(layout):
+    pcb = REPO / "hardware" / f"{layout.half}-pcb" / f"k0d3ball35-{layout.half}.kicad_pcb"
+    if not pcb.exists():
+        pytest.skip("PCB not generated yet")
+    text = pcb.read_text()
+    assert f"{layout.cfg['battery']['cell']} cell" in text
+    assert text.count('(layer "B.SilkS")') >= 4
