@@ -91,7 +91,7 @@ def test_cradle_clearance_and_pocket_outside_pcb():
     assert need >= 1.0
     for k in layout.keys:
         assert layout.keycap_polygon(k).distance(cradle) >= need, k.ref
-    # the cradle sits beside the PCB, inside the octagonal notch, never over copper
+    # the cradle sits beside the PCB, inside the notch, never over copper
     assert not layout.outline.intersects(cradle)
     assert layout.outline.distance(cradle) >= tb["pocket"]["notch_clearance"] - 0.05
     ball = Point(*layout.ball_center).buffer(tb["ball_diameter"] / 2)
@@ -141,7 +141,8 @@ def test_points_json_up_to_date(layout):
     if layout.has_ball:
         assert data["trackball"]["center"]["x"] == pytest.approx(layout.ball_center[0], abs=0.01)
         assert data["trackball"]["center"]["y"] == pytest.approx(layout.ball_center[1], abs=0.01)
-        assert len(data["trackball"]["notch"]) == 9
+        # octagon with the corner towards the keys squared off: 7 corners plus the closing point
+        assert len(data["trackball"]["notch"]) == 8
     else:
         assert data["trackball"] is None
 

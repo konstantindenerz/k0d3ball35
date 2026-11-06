@@ -1,22 +1,27 @@
 # SPDX-License-Identifier: MIT
 """Desk verification of the 6-pin FFC between the right PCB (J1) and the sensor PCB (J1).
 
-Both connectors are Hirose FH12-6S-0.5SH bottom-contact parts joined by a type A FFC
-(contacts on the same face at both ends).  The test reads the pads of both connectors
-straight from the board files, places both boards in one world frame the way they are
-mounted in the ball pocket (docs/08-trackball-module.md section 2.2 and 3.2) and pairs the
-pads that a straight, untwisted cable joins.  The nets on paired pads must match.
+Both connectors are Hirose FH12-6S-0.5SH bottom-contact parts.  Since r2.2 the keyboard-side
+one sits on the KEY side of the right PCB: the cable climbs the gap between the cradle cup and
+the PCB notch, folds over the board edge and goes into the mouth from +y, so the lock can be
+worked with everything assembled.  The test reads the pads of both connectors straight from the
+board files, places both boards in one world frame the way they are mounted in the ball pocket
+(docs/08-trackball-module.md sections 2.2 and 3.2) and pairs the pads that a straight, untwisted
+cable joins.  The nets on paired pads must match.
 
 World frame: X and Y are the right PCB's board axes (KiCad, +Y towards the user), Z up.
 
-* Right PCB J1 sits on the bottom face (pads on B.Cu); the footprint is the back-face
-  variant placed unflipped on F.Cu, so its pad coordinates are already in the board's
-  top-view frame.  Bottom contact on the underside: the cable's contact face points up.
-* The sensor board lies on the case floor with the component side (and J1) facing down,
-  its cable edge towards the right PCB.  Turning the board over about the axis that runs
-  along the cable (Y) keeps board y and negates board x.  Its connector is bottom contact
-  too, so it also wants the cable's contact face pointing up: no twist, a type A cable fits.
-* A straight cable joins pads at the same world X, so the pads are paired by X.
+* Right PCB J1 sits on the key side (pads on F.Cu); a front-face footprint is not mirrored, so
+  its pad coordinates are the connector's own drawing.  Bottom contact on the top face: the
+  cable's contact face points DOWN.
+* The sensor board lies on the case floor with the component side (and its J1) facing down, its
+  cable edge towards the keys.  Turning the board over about the axis that runs along the cable
+  (Y) keeps board y and negates board x.  Bottom contact under a board that is above the cable:
+  the cable's contact face points UP there.
+* Opposite faces at the two ends is exactly what a **type B** FFC provides (type A has its
+  contacts on the same face at both ends and will NOT work here).  A type B cable carries each
+  conductor straight through, so pads at the same world X are joined -- and because the
+  keyboard-side pad set is no longer mirrored, the pin numbers now run 1 to 1.
 """
 from __future__ import annotations
 
@@ -122,18 +127,18 @@ def test_right_j1_pin_order_is_the_spec_order(right):
         1: "VCC", 2: "GND", 3: "TB_SCLK", 4: "TB_SDIO", 5: "TB_NCS", 6: "TB_MOT"}
 
 
-def test_sensor_j1_pin_order_is_mirrored(sensor):
+def test_sensor_j1_pin_order_is_straight_through(sensor):
     assert {p: d["net"] for p, d in sensor["pads"].items()} == {
-        1: "MOT_J", 2: "NCS", 3: "SDIO", 4: "SCLK", 5: "GND", 6: "VCC"}
+        1: "VCC", 2: "GND", 3: "SCLK", 4: "SDIO", 5: "NCS", 6: "MOT_J"}
 
 
 # -- step 2: faces, pad 1 positions, cable entry sides -----------------------------------------
 
 def test_faces_and_footprints(right, sensor):
-    # Right J1: back-face footprint variant, placed unflipped, copper on the bottom face only.
-    assert right["name"].endswith("FPC_0.5mm_6P_FH12-6S_bottom")
+    # Right J1: front-face footprint variant, copper on the key side only (r2.2).
+    assert right["name"].endswith("FPC_0.5mm_6P_FH12-6S_top")
     assert right["layer"] == "F.Cu" and right["rot"] == 0.0
-    assert all(d["copper"] == ["B.Cu"] for d in right["pads"].values())
+    assert all(d["copper"] == ["F.Cu"] for d in right["pads"].values())
     # Sensor J1: front-face variant on the component side, rotated 180 degrees.
     assert sensor["name"].endswith("FPC_0.5mm_6P_FH12-6S")
     assert sensor["layer"] == "F.Cu" and sensor["rot"] == 180.0
@@ -141,22 +146,23 @@ def test_faces_and_footprints(right, sensor):
 
 
 def test_pad_rows_are_straight_and_pin1_sides(right, sensor):
-    for conn in (right, sensor):
+    for conn, step in ((right, PITCH), (sensor, -PITCH)):
         ys = {d["y"] for d in conn["pads"].values()}
         assert len(ys) == 1, "contact row must be parallel to the board x axis"
         xs = [conn["pads"][i]["x"] for i in range(1, 7)]
         steps = {round(b - a, 3) for a, b in zip(xs, xs[1:])}
-        assert steps == {-PITCH}, f"expected 0.5 mm pitch with pad 1 at +x, got {xs}"
-    # pad 1 is on the +x side of both connectors in their own top-view board frames
-    assert right["pads"][1]["x"] > right["pads"][6]["x"]
+        assert steps == {step}, f"expected 0.5 mm pitch with step {step}, got {xs}"
+    # The keyboard side is a front-face part (pad 1 at -x), the sensor side a flipped one
+    # (pad 1 at +x in its own frame); turning the sensor board over makes the two agree.
+    assert right["pads"][1]["x"] < right["pads"][6]["x"]
     assert sensor["pads"][1]["x"] > sensor["pads"][6]["x"]
 
 
 def test_cable_entry_sides_face_each_other(right, sensor):
     """Contacts sit at the rear of an FH12; the metal-fitting pads are towards the cable side.
 
-    Right J1 exits towards +y (towards the user, into the pocket); the sensor connector exits
-    towards its board -y (the edge that faces the keys once the board lies in the pocket).
+    Right J1 takes the cable from +y (the notch edge, where it folds over); the sensor connector
+    takes it from its board -y (the edge that faces the keys once the board lies in the pocket).
     """
     right_contact_y = right["pads"][1]["y"]
     sensor_contact_y = sensor["pads"][1]["y"]
@@ -167,7 +173,7 @@ def test_cable_entry_sides_face_each_other(right, sensor):
 # -- step 3 and 4: model the cable and compare the nets ----------------------------------------
 
 def cable_pairs(right: dict, sensor: dict) -> list[tuple[int, int]]:
-    """Pairs (right pin, sensor pin) joined by a straight, untwisted type A FFC.
+    """Pairs (right pin, sensor pin) joined by a straight, untwisted type B FFC.
 
     World X of a right-board pad is its board x (the right PCB is not turned over).
     The sensor board is turned over about the cable axis, so world X of its pads is the
@@ -184,8 +190,8 @@ def cable_pairs(right: dict, sensor: dict) -> list[tuple[int, int]]:
     return sorted(pairs)
 
 
-def test_type_a_cable_mirrors_the_pin_numbers(right, sensor):
-    assert cable_pairs(right, sensor) == [(i, 7 - i) for i in range(1, 7)]
+def test_type_b_cable_keeps_the_pin_numbers(right, sensor):
+    assert cable_pairs(right, sensor) == [(i, i) for i in range(1, 7)]
 
 
 def test_nets_match_across_the_cable(right, sensor):

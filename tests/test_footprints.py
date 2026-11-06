@@ -14,6 +14,7 @@ from k0d3.netlist import HOLE_PIN
 LIB_DIR = REPO / "hardware" / "lib" / "k0d3ball35.pretty"
 HANDED = {"SW_Choc_V1_HS_reversible", "SW_SPDT_MSK12C02_reversible", "JST_PH_S2B-PH-SM4-TB_reversible"}
 BOTTOM_ONLY = {"FPC_0.5mm_6P_FH12-6S_bottom"}
+TOP_ONLY = {"FPC_0.5mm_6P_FH12-6S_top"}
 SYMMETRIC = {"D_SOD-123_reversible", "TestPad_1.5mm", "SW_SPST_EVQP7A_reversible"}
 
 
@@ -37,6 +38,9 @@ def test_pad_numbers_on_both_faces(fps):
         if name in BOTTOM_ONLY:
             assert not f and b, f"{name}: expected pads on the back face only"
             continue
+        if name in TOP_ONLY:
+            assert f and not b, f"{name}: expected pads on the front face only"
+            continue
         assert f == b, f"{name}: F {f} vs B {b}"
 
 
@@ -46,6 +50,25 @@ def test_fpc_bottom_only(fps):
     assert all(g.layer.startswith("B.") for g in fp.graphics)
     signal = sorted((p for p in fp.pads if p.number), key=lambda p: p.x)
     assert [p.number for p in signal] == ["6", "5", "4", "3", "2", "1"], "pad 1 at +x when seen from the front"
+
+
+def test_fpc_top_variant_mirrors_the_bottom_one(fps):
+    """The front-face variant is the same part on the other face: pads are not mirrored, so
+    pad 1 sits at -x, and everything stays on the front layers."""
+    top, bottom = fps["FPC_0.5mm_6P_FH12-6S_top"], fps["FPC_0.5mm_6P_FH12-6S_bottom"]
+    assert all("F.Cu" in p.layers for p in top.pads)
+    assert all(g.layer.startswith("F.") for g in top.graphics)
+    signal = sorted((p for p in top.pads if p.number), key=lambda p: p.x)
+    assert [p.number for p in signal] == ["1", "2", "3", "4", "5", "6"], "pad 1 at -x on the front face"
+    for a in top.pads:
+        assert any(b.number == a.number and math.isclose(b.x, -a.x, abs_tol=1e-6)
+                   and math.isclose(b.y, a.y, abs_tol=1e-6) and (b.w, b.h) == (a.w, a.h)
+                   for b in bottom.pads), f"no mirrored counterpart for pad {a.number!r}"
+    # the cable mouth is the metal-fitting side (local +y) on both variants
+    for fp in (top, bottom):
+        anchors = [p for p in fp.pads if not p.number]
+        contacts = [p for p in fp.pads if p.number]
+        assert max(p.y for p in contacts) < min(p.y for p in anchors)
 
 
 def _match(fp, mirror: bool):

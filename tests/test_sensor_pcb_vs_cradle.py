@@ -392,7 +392,7 @@ def test_fpc_connector_faces_the_cable_slot(board, geometry, params, stack):
     x0, x1, y0, y1 = geometry["bbox"]
     cx, cy = geometry["centre"]
     slot_w = params["cable_slot_w"] if params["cable_slot_w"] > 0 else stack["housing_x"] - 2 * params["corner_post"]
-    assert slot_w == 24.0, slot_w
+    assert slot_w == pytest.approx(23.0), slot_w      # 29 mm housing minus the two corner posts
     # the FH12 footprint has its contact leads at local y = -1.85 and the cable mouth at local +y
     mouth = j1.to_board(0, 4.4)
     leads = j1.to_board(0, -1.85)
@@ -413,16 +413,21 @@ def test_fpc_connector_faces_the_cable_slot(board, geometry, params, stack):
     assert cx0 >= x0 and cx1 <= x1 and cy0 >= y0 and cy1 <= y1, (cx0, cx1, cy0, cy1)
     # the connector and the cable live in the component gap; the slot spans it fully
     assert FH12_HEIGHT < (stack["sensor_pcb_plane_z"] - params["sensor_pcb_t"]) - stack["floor_z"]
+    # r2.2: from the board plane up, the cable climbs a narrower channel in the same wall. It
+    # must line up with the connector (the cable runs straight) and stay inside the slot.
+    ch_x, ch_w = stack["cable_channel_x"], stack["cable_channel_w"]
+    assert abs((j1.x - cx) - -ch_x) < 0.5, f"cable channel at {ch_x} does not line up with J1 at {j1.x - cx:+.2f}"
+    assert abs(ch_x) + ch_w / 2 <= slot_w / 2 + 1e-6
 
 
 def test_board_fits_the_housing_cavity(geometry, params, stack):
     w, h = geometry["size"]
-    inner_x = stack["housing_x"] - 2 * params["housing_wall"]
+    inner_x = stack["housing_x"] - 2 * params["housing_wall_x"]
     inner_y = stack["housing_y"] - 2 * params["housing_wall"]
     assert inner_x == pytest.approx(params["sensor_pcb_w"]) and inner_y == pytest.approx(params["sensor_pcb_l"])
     # the board cavity is the board plus sensor_pcb_gap per side, cut into the walls
-    assert w + 2 * params["sensor_pcb_gap"] < stack["housing_x"] - 2 * (params["housing_wall"] - params["sensor_pcb_gap"]) + 1e-6
-    assert params["housing_wall"] - params["sensor_pcb_gap"] >= 1.5, "walls too thin beside the board"
+    assert w + 2 * params["sensor_pcb_gap"] < stack["housing_x"] - 2 * (params["housing_wall_x"] - params["sensor_pcb_gap"]) + 1e-6
+    assert params["housing_wall_x"] - params["sensor_pcb_gap"] >= 1.2, "walls too thin beside the board"
     assert stack["case_screw_sp"] == params["sensor_hole_sp"]
 
 

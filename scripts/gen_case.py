@@ -32,7 +32,6 @@ WALL_GUESS = 3.2         # pcb_clear + wall, only for the sanity checks here
 FOOT_D = 10.5
 MAGNET_D = 6.2           # foot magnet pocket (params.scad magnet_d)
 MAGNET_INSET = 8.0       # foot magnet centres this far inside the PCB outline
-FFC_CHANNEL_W = 12.0     # params.scad ffc_channel_w
 CTRL_CLEAR = 1.0         # boss protrusions keep this to the controller board
 
 
@@ -140,15 +139,6 @@ def foot_magnets(layout: Layout, box_r, keep_out: list[Polygon]) -> list[tuple[f
     return magnets
 
 
-def ffc_channel(layout: Layout) -> Polygon:
-    """The FFC channel of common.scad: FFC_CHANNEL_W wide from the FPC connector courtyard down
-    to 1 mm inside the housing well."""
-    fb = layout.fpc_box().bounds
-    hb = layout.housing_box().bounds
-    cx = (fb[0] + fb[2]) / 2
-    return box(cx - FFC_CHANNEL_W / 2, fb[1], cx + FFC_CHANNEL_W / 2, hb[1] + 1.0)
-
-
 def feet(layout: Layout, box_r) -> list[tuple[float, float]]:
     """Rubber feet: the five mounting holes projected onto the floor plus two under the
     controller block so the half does not rock when a thumb key is pressed."""
@@ -189,8 +179,8 @@ def half_data(layout: Layout) -> dict:
         d["case_screws"] = layout.case_screws()
         d["notch"] = ring(layout.notch_polygon())
         d["fpc_box"] = ring(layout.fpc_box())
+        d["cable_corridor"] = ring(layout.cable_corridor()) if layout.cable_corridor() is not None else []
         keep = [layout.housing_box().buffer(0.5, join_style=2).buffer(2.0, join_style=2),
-                ffc_channel(layout).buffer(2.0, join_style=2),
                 layout.notch_polygon().buffer(2.0, join_style=2)]
     else:
         d["ball_center"] = (0.0, 0.0)
@@ -199,6 +189,7 @@ def half_data(layout: Layout) -> dict:
         d["case_screws"] = []
         d["notch"] = []
         d["fpc_box"] = []
+        d["cable_corridor"] = []
         keep = []
     keep.append(well.buffer(2.0, join_style=2))
     d["foot_magnets"] = foot_magnets(layout, br, keep)
@@ -218,7 +209,7 @@ def sanity(layout: Layout, d: dict, well: Polygon) -> None:
             problems.append(f"mounting hole ({x}, {y}) inside the pocket well")
     keep_outs = [well.buffer(2.0, join_style=2)] + [Point(x, y).buffer(3.0) for x, y in d["holes"]]
     if pocket_well is not None:
-        keep_outs += [pocket_well.buffer(2.0, join_style=2), ffc_channel(layout).buffer(2.0, join_style=2)]
+        keep_outs += [pocket_well.buffer(2.0, join_style=2)]
     if len(d["foot_magnets"]) != 4:
         problems.append("four foot magnets expected")
     for x, y in d["foot_magnets"]:
@@ -263,7 +254,7 @@ def render(data: dict[str, dict]) -> str:
              "// Selector functions take the half name: outline(\"left\"), holes(\"right\"), ...", ""]
     names = ["outline", "holes", "bay", "well", "j3", "rb1", "ps1", "reset", "switch", "ctrl_rect", "box_rect",
              "test_pads", "keys", "has_ball", "ball_center", "housing_footprint", "housing_box", "case_screws",
-             "notch", "fpc_box", "foot_magnets", "feet"]
+             "notch", "fpc_box", "cable_corridor", "foot_magnets", "feet"]
     for name in names:
         for half in HALVES:
             v = data[half][name]

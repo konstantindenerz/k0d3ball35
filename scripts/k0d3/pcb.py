@@ -94,8 +94,9 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
         y1, y2 = oy + keys[0].y - 8.0, oy + keys[-1].y - 8.0
         n = net_index[f"COL{col}"]
         out.append(f"  (segment (locked yes) (start {num(x)} {num(y1)}) (end {num(x)} {num(y2)}) (width 0.25) (layer \"B.Cu\") (net {n}) (uuid {quote(uid('bus', col))}))")
-    # FPC connector (back face): the 0.3 mm GND pad cannot be reached by the pour (its
-    # neighbours are 0.2 mm away), so give pad 2 a short locked stub to a GND via.
+    # FPC connector: the 0.3 mm GND pad cannot be reached by the pour (its neighbours are
+    # 0.2 mm away), so give pad 2 a short locked stub to a GND via. The front-face variant
+    # is not mirrored, so its pad 2 sits at -x instead of +x.
     for c in comps:
         if c.kind != "fpc":
             continue
@@ -103,7 +104,8 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
         def frot(px, py):
             return (ox + c.x + px * _m.cos(th) + py * _m.sin(th), oy + c.y - px * _m.sin(th) + py * _m.cos(th))
         g = net_index["GND"]
-        for layer, sign in (("B.Cu", 1),):
+        top = c.extra.get("side") == "top"
+        for layer, sign in ((("F.Cu", -1),) if top else (("B.Cu", 1),)):
             a, b = frot(sign * 0.75, -1.85), frot(sign * 0.75, -3.9)
             out.append(f"  (segment (locked yes) (start {num(a[0])} {num(a[1])}) (end {num(b[0])} {num(b[1])}) (width 0.25) (layer {quote(layer)}) (net {g}) (uuid {quote(uid('fpcgnd', c.ref, layer))}))")
             out.append(f"  (via (locked yes) (at {num(b[0])} {num(b[1])}) (size 0.6) (drill 0.3) (layers \"F.Cu\" \"B.Cu\") (net {g}) (uuid {quote(uid('fpcvia', c.ref, layer))}))")

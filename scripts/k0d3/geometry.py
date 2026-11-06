@@ -108,11 +108,14 @@ class Layout:
         return Point(*self.ball_center).buffer(self.cfg["trackball"]["cradle_diameter"] / 2, 64)
 
     def notch_polygon(self) -> Polygon | None:
-        """Octagonal notch in the PCB edge where the ball pocket docks."""
+        """Notch in the PCB edge where the ball pocket docks: an octagon whose corner towards
+        the keys and the inner column is square, so the cradle housing and the sensor board
+        pass it on their way into the pocket (issues/mech-cradle-notch-relief.md)."""
         if not self.has_ball:
             return None
         tb = self.cfg["trackball"]
-        return octagon(*self.ball_center, tb["cradle_diameter"] / 2 + tb["pocket"]["notch_clearance"])
+        return notch_shape(*self.ball_center, tb["cradle_diameter"] / 2 + tb["pocket"]["notch_clearance"],
+                           tb["pocket"].get("square_corner", False))
 
     def pocket_polygon(self) -> Polygon | None:
         """Outer wall of the case pocket around the cradle (reference for the case)."""
@@ -144,11 +147,58 @@ class Layout:
         bx, by = self.ball_center
         return [(bx, round(by - sp / 2, 3)), (bx, round(by + sp / 2, 3))]
 
+    @property
+    def fpc_side(self) -> str:
+        """Face J1 is assembled on: "top" (key side, r2.2) or "bottom"."""
+        f = self.cfg.get("fpc")
+        return f.get("side", "bottom") if f else ""
+
     def fpc_box(self) -> Polygon | None:
+        """J1 courtyard in the layout frame (FH12 footprint: 9.2 x 5.6 around a centre
+        offset 0.6 mm towards the cable mouth, which is the connector's local +y)."""
         f = self.cfg.get("fpc")
         if not f:
             return None
-        return box(f["center"]["x"] - 4.5, f["center"]["y"] - 3.0, f["center"]["x"] + 4.5, f["center"]["y"] + 3.0)
+        return rotated_box(f["center"]["x"], f["center"]["y"], 9.2, 5.6, f["rotation"], offset=(0.0, 0.6))
+
+    def fpc_mouth(self) -> tuple[float, float] | None:
+        """Centre of the cable mouth (front face of the connector body), layout frame."""
+        f = self.cfg.get("fpc")
+        if not f:
+            return None
+        th = math.radians(f["rotation"])
+        return (f["center"]["x"] + 3.0 * math.sin(th), f["center"]["y"] + 3.0 * math.cos(th))
+
+    def cable_corridor(self) -> Polygon | None:
+        """Where the FFC lies on the board: a band from the cable mouth out past the notch edge.
+
+        Only meaningful for the top-side connector of r2.2. No part and no piece of the case
+        (in particular the lid lip) may sit in it."""
+        if not self.has_ball or self.fpc_side != "top":
+            return None
+        pk = self.cfg["trackball"]["pocket"]
+        w = pk["cable_width"]
+        mx, my = self.fpc_mouth()
+        bx, by = self.ball_center
+        band = box(mx - w / 2, min(my, by), mx + w / 2, max(my, by))
+        return band.intersection(self.outline.buffer(1.0, join_style=2))
+
+    def sensor_board(self) -> Polygon:
+        """Sensor daughterboard in the layout frame (26 x 25 mm, long side along x)."""
+        sb = self.cfg["trackball"]["pocket"]["sensor_board"]
+        bx, by = self.ball_center
+        return box(bx - sb["x"] / 2, by - sb["y"] / 2, bx + sb["x"] / 2, by + sb["y"] / 2)
+
+    def insertion_corridor(self) -> Polygon | None:
+        """Plan view of the trackball module: cradle housing plus the sensor board inside it.
+
+        Everything in this area passes the PCB plane when the module is lowered into its
+        pocket, so the board must not cover any of it: that is what makes the module a
+        cartridge that drops in and lifts out with the PCB fitted
+        (issues/mech-cradle-notch-relief.md)."""
+        if not self.has_ball:
+            return None
+        return unary_union([self.housing_box(), self.sensor_board()])
 
     def battery_bay(self) -> Polygon:
         """Rectangle on the back of the PCB where the cell lies (in the case well under the controller)."""
@@ -177,8 +227,20 @@ class Layout:
             # SOD-123 diode 6 mm south of the key centre (netlist.build_components), courtyard 4.6 x 2.2
             parts[k.diode_ref] = rotated_box(k.x, k.y, 4.6, 2.2, k.rotation, offset=(0.0, 6.0))
         fp = self.fpc_box()
-        if fp is not None:
+        if fp is not None and self.fpc_side == "bottom":
             parts["J1"] = fp
+        return parts
+
+    def front_parts(self) -> dict[str, Polygon]:
+        """Courtyards of everything assembled on the key side of the PCB besides switches and
+        keycaps: since r2.2 that is J1 and the FFC corridor on the right half."""
+        parts: dict[str, Polygon] = {}
+        fp = self.fpc_box()
+        if fp is not None and self.fpc_side == "top":
+            parts["J1"] = fp
+            corr = self.cable_corridor()
+            if corr is not None and not corr.is_empty:
+                parts["FFC"] = corr
         return parts
 
     def bounds(self) -> tuple[float, float, float, float]:
@@ -195,8 +257,13 @@ class Layout:
                   "pocket_diameter": t["cradle_diameter"] + 2 * t["pocket"]["wall"],
                   "housing_footprint": [[round(x, 3), round(y, 3)] for x, y in self.housing_footprint().exterior.coords],
                   "case_screws": [[x, y] for x, y in self.case_screws()],
-                  # sensor board (26 x 25 mm) centred under the ball, long side along x
-                  "sensor_board": {"width": 26.0, "height": 25.0, "x": self.ball_center[0], "y": self.ball_center[1]}}
+                  # sensor board centred under the ball, long side along x
+                  "sensor_board": {"width": t["pocket"]["sensor_board"]["x"], "height": t["pocket"]["sensor_board"]["y"],
+                                   "x": self.ball_center[0], "y": self.ball_center[1]},
+                  # plan view of the module on its way into the pocket (chamfered corner)
+                  "module_footprint": [[round(x, 3), round(y, 3)] for x, y in self.insertion_corridor().exterior.coords],
+                  "cable_corridor": ([[round(x, 3), round(y, 3)] for x, y in self.cable_corridor().exterior.coords]
+                                     if self.cable_corridor() is not None else [])}
         return {
             "name": self.cfg["name"],
             "revision": self.cfg["revision"],
@@ -225,6 +292,17 @@ def rotated_box(cx: float, cy: float, w: float, h: float, rotation_deg: float,
     ox, oy = offset
     b = box(cx + ox - w / 2, cy + oy - h / 2, cx + ox + w / 2, cy + oy + h / 2)
     return affinity.rotate(b, -rotation_deg, origin=(cx, cy))
+
+
+def notch_shape(cx: float, cy: float, apothem: float, square_corner: bool = False) -> Polygon:
+    """Notch cut into the PCB edge for the ball pocket: a regular octagon, optionally with its
+    -x / -y corner squared off (that is the only corner where PCB material would otherwise
+    overhang the cradle housing and block the module's way into the pocket)."""
+    poly = octagon(cx, cy, apothem)
+    if square_corner:
+        # the union leaves duplicate and collinear vertices on the two merged facets
+        poly = Polygon(unary_union([poly, box(cx - apothem, cy - apothem, cx, cy)]).exterior).simplify(0.001)
+    return poly
 
 
 def octagon(cx: float, cy: float, apothem: float) -> Polygon:
@@ -331,7 +409,8 @@ def build_outline(cfg: dict, keys: Iterable[Key], ball_center: tuple[float, floa
     poly = Polygon(closed.exterior)
     if ball_center:
         tb = cfg["trackball"]
-        poly = poly.difference(octagon(*ball_center, tb["cradle_diameter"] / 2 + tb["pocket"]["notch_clearance"]))
+        poly = poly.difference(notch_shape(*ball_center, tb["cradle_diameter"] / 2 + tb["pocket"]["notch_clearance"],
+                                           tb["pocket"].get("square_corner", False)))
         if poly.geom_type != "Polygon":
             poly = max(poly.geoms, key=lambda g: g.area)
         poly = Polygon(poly.exterior)
@@ -401,6 +480,21 @@ def check_layout(layout: Layout) -> list[str]:
             body = rotated_box(k.x, k.y, cfg["switch_body"], cfg["switch_body"], k.rotation)
             if body.intersects(housing):
                 problems.append(f"cradle housing collides with switch {ref}")
+        # r2.2: the module is lowered into the pocket as one piece and lifted out again with
+        # the PCB fitted, so its plan view (housing and sensor board, both chamfered on the
+        # corner that faces the notch facet) must stay clear of the board.
+        corridor = layout.insertion_corridor()
+        pk = cfg["trackball"]["pocket"]
+        need = pk["corner_clearance"]
+        overlap = corridor.intersection(layout.outline)
+        if not overlap.is_empty and overlap.area > 0.001:
+            problems.append(f"trackball module cannot be lowered past the PCB: {overlap.area:.2f} mm2 of the board "
+                            f"covers it (grow trackball.pocket.corner_chamfer)")
+        else:
+            d = corridor.distance(layout.outline)
+            if d < need - 0.005:
+                problems.append(f"trackball module only {d:.2f} mm from the PCB edge on its insertion path "
+                                f"(need {need} mm)")
         fp = layout.fpc_box()
         if fp is not None:
             d = housing.distance(fp)
@@ -413,6 +507,34 @@ def check_layout(layout: Layout) -> list[str]:
                                    cfg["switch_body"], cfg["switch_body"], layout.key(int(ref[2]), int(ref[3])).rotation)
                 if body.intersects(fp):
                     problems.append(f"FPC connector collides with switch {ref}")
+            if layout.fpc_side == "top":
+                # The cable climbs the gap between the cup and the notch, folds over the board
+                # edge and enters the connector from +y: the corridor must be free and the
+                # mouth must sit a little inside the edge so the fold has somewhere to land.
+                mouth_y = layout.fpc_mouth()[1]
+                edge = layout.outline.exterior.distance(Point(layout.fpc_mouth()))
+                if edge < 0.3:
+                    problems.append(f"FPC cable mouth only {edge:.2f} mm from the PCB edge (need 0.3 mm)")
+                if edge > 3.0:
+                    problems.append(f"FPC cable mouth {edge:.2f} mm from the PCB edge: the cable cannot fold "
+                                    f"over the edge into it (max 3 mm)")
+                corr = layout.cable_corridor()
+                for name, poly in layout.back_parts().items():
+                    if poly.intersects(corr) or poly.intersects(fp):
+                        problems.append(f"{name} collides with the FFC corridor on the key side")
+                for ref, poly in caps.items():
+                    if poly.intersects(corr):
+                        problems.append(f"keycap {ref} covers the FFC corridor")
+                for hole in cfg["mounting_holes"]:
+                    if Point(hole["x"], hole["y"]).buffer(3.0).intersects(fp.union(corr)):
+                        problems.append(f"mounting hole at ({hole['x']}, {hole['y']}) collides with J1 or the FFC corridor")
+                cup = Point(*layout.ball_center).buffer(pk["cup_envelope"] / 2, 64)
+                gap = pk["notch_clearance"] + (cfg["trackball"]["cradle_diameter"] - pk["cup_envelope"]) / 2
+                if gap < pk["cable_gap_min"]:
+                    problems.append(f"only {gap:.2f} mm between the cradle cup envelope and the PCB notch: the "
+                                    f"FFC cannot climb beside the cup (need {pk['cable_gap_min']} mm)")
+                if cup.intersects(layout.outline):
+                    problems.append("cradle cup envelope overlaps the PCB")
     for hole in cfg["mounting_holes"]:
         p = Point(hole["x"], hole["y"])
         if layout.outline.exterior.distance(p) < 2.0:

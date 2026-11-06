@@ -110,10 +110,14 @@ def build_components(layout: Layout) -> list[Component]:
                            "nice!nano v2 / SuperMini nRF52840 on 1.27 mm sockets, component side up, USB at the top"))
     f = cfg.get("fpc")
     if f:
-        comps.append(Component("J1", "FH12-6S-0.5SH", "FPC_0.5mm_6P_FH12-6S_bottom",
+        side = f.get("side", "bottom")
+        if side not in ("top", "bottom"):
+            raise ValueError(f"fpc.side must be top or bottom, got {side!r}")
+        comps.append(Component("J1", "FH12-6S-0.5SH", f"FPC_0.5mm_6P_FH12-6S_{side}",
                                {str(p): n for p, n in FPC_PINS.items()}, "fpc",
                                *place(f["center"]["x"], f["center"]["y"], f["rotation"]),
-                               "Sensor daughterboard, 6-pin 0.5 mm FPC, bottom side"))
+                               f"Sensor daughterboard, 6-pin 0.5 mm FPC, {side} side",
+                               {"side": side}))
     b = cfg["battery_pads"]
     comps.append(Component("J2", "BAT", "BatteryPads_2x1.8mm_P2.0mm",
                            {"1": "BAT+", "2": "GND"}, "battery", *place(b["center"]["x"], b["center"]["y"], b["rotation"]),

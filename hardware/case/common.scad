@@ -42,13 +42,11 @@ module pocket_cavity_2d() { translate(bc()) circle(d = cradle_d); offset(delta =
 module pocket_ring_2d() { offset(delta = pocket_wall) pocket_cavity_2d(); translate(bc()) circle(d = pocket_d); }
 
 module well_2d() polygon(well(half));
-module ffc_channel_2d() {
-    fb = fpc_box(half);
-    hb = housing_box(half);
-    cx = (minx(fb) + maxx(fb)) / 2;
-    y0 = miny(fb);
-    y1 = miny(hb) + 1.0;
-    translate([cx - ffc_channel_w / 2, y0]) square([ffc_channel_w, y1 - y0]);
+// J1 and the FFC lie on the key side of the PCB since r2.2: nothing of the case may sit on
+// them, in particular not the lid lip (docs/08-trackball-module.md).
+module fpc_keepout_2d() {
+    if (len(fpc_box(half)) > 0) offset(delta = fpc_clear) polygon(fpc_box(half));
+    if (len(cable_corridor(half)) > 0) offset(delta = fpc_clear) polygon(cable_corridor(half));
 }
 
 module box_2d() {

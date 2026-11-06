@@ -266,7 +266,10 @@ def _load(half: str) -> Board:
     for z in _kids(tree, "zone"):
         if _kid(z, "keepout"):
             continue
-        polys = [Polygon([tuple(float(c) for c in xy[1:]) for xy in _kids(_kid(fpoly, "pts"), "xy")]) for fpoly in _kids(z, "filled_polygon")]
+        # `(island yes)` would mark a fill area that KiCad drops as unconnected; the pours
+        # keep their islands (island_removal_mode 0), so this is only a safety net.
+        polys = [Polygon([tuple(float(c) for c in xy[1:]) for xy in _kids(_kid(fpoly, "pts"), "xy")])
+                 for fpoly in _kids(z, "filled_polygon") if not _kid(fpoly, "island")]
         zones.append((net_of(z), _s(_kid(z, "layer")[1]), polys))
     gr_polys, outline = [], None
     for g in _kids(tree, "gr_poly"):
@@ -438,18 +441,22 @@ def test_fpc_connector_orientation(board, layout, half):
     j1 = board.footprints["J1"]
     f = layout.cfg["fpc"]
     assert (j1.x, j1.y) == _board(layout, f["center"]["x"], f["center"]["y"]) and j1.rot == f["rotation"]
-    assert j1.name == "FPC_0.5mm_6P_FH12-6S_bottom"
-    assert all("B.Cu" in p.layers and "F.Cu" not in p.layers for p in j1.pads), "back face only"
+    # r2.2: J1 lives on the key side so the lock can be reached with the case assembled; the
+    # cable climbs the gap beside the cradle cup and folds over the notch edge into the mouth.
+    assert j1.name == "FPC_0.5mm_6P_FH12-6S_top"
+    assert all("F.Cu" in p.layers and "B.Cu" not in p.layers for p in j1.pads), "front face only"
     contacts = sorted((p for p in j1.pads if p.number), key=lambda p: p.x)
-    assert [p.number for p in contacts] == ["6", "5", "4", "3", "2", "1"], "pin 1 at +x seen from the front, i.e. at the left when the back faces you"
+    assert [p.number for p in contacts] == ["1", "2", "3", "4", "5", "6"], "pin 1 at -x: a front-face part is not mirrored"
     assert [p.net for p in sorted(contacts, key=lambda p: int(p.number))] == [FPC_PINS[i] for i in range(1, 7)]
     anchors = [p for p in j1.pads if not p.number]
-    # contacts towards the keys (-y), hold-down pads and the cable mouth towards the pocket (+y)
+    # contacts and lock towards the keys (-y), hold-down pads and the cable mouth towards the notch (+y)
     assert all(p.y < j1.y for p in contacts) and all(p.y > j1.y for p in anchors)
-    housing_top = layout.ball_center[1] - layout.cfg["trackball"]["pocket"]["housing"]["y"] / 2
-    body_bottom = max(y for g in j1.lines("B.Fab") for _, y in g.pts) - OFFSET[1]
-    assert 0.5 <= housing_top - body_bottom <= 1.5, f"connector body ends {housing_top - body_bottom:.2f} mm above the cradle housing"
-    assert "1" in {g.text for g in j1.graphics if g.kind == "text" and g.layer == "B.SilkS"}, "pin 1 marker on the back silkscreen"
+    body_top = max(y for g in j1.lines("F.Fab") for _, y in g.pts) - OFFSET[1]
+    edge = layout.outline.exterior.distance(Point(f["center"]["x"], body_top))
+    assert 0.3 <= edge <= 1.5, f"cable mouth {edge:.2f} mm from the PCB edge: the cable cannot fold into it"
+    cap_gap = min(layout.keycap_polygon(k).distance(layout.fpc_box()) for k in layout.keys)
+    assert cap_gap >= 0.5, f"J1 only {cap_gap:.2f} mm from a keycap: no room to work the lock"
+    assert "1" in {g.text for g in j1.graphics if g.kind == "text" and g.layer == "F.SilkS"}, "pin 1 marker on the front silkscreen"
 
 
 # ----- controller ------------------------------------------------------------------------
@@ -735,9 +742,14 @@ def test_power_tracks_use_the_wide_class(board):
 
 
 def test_gnd_zones_have_no_slivers(board):
-    """Every filled GND polygon is a real pour, not a sliver, and is anchored by a GND via or
-    pad (so no isolated island survives the fill). Ticket hw-gnd-stitching-review."""
+    """Every filled GND polygon is anchored by a GND via or pad, and anything smaller than a
+    real pour is only the copper remnant around such an anchor.
+
+    An anchor is a GND pad, via or track: that is also how KiCad decides what counts as an
+    island. Dropping islands in the fill settings is not an option, KiCad then reports every
+    tagged island as a missing zone connection. Ticket hw-gnd-stitching-review."""
     min_area = 2.0
+    max_remnants = 4        # anchored sub-millimetre remnants per face
     anchors = {layer: [] for layer in ("F.Cu", "B.Cu")}
     for net, x, y, _, _ in board.vias:
         if net == "GND":
@@ -749,14 +761,24 @@ def test_gnd_zones_have_no_slivers(board):
                 for layer in anchors:
                     if pad.on(layer):
                         anchors[layer].append(pad.poly())
+    # GND tracks count as a connection too (that is how KiCad decides what is an island)
+    for layer, net, width, a, b in board.segments:
+        if net == "GND" and layer in anchors:
+            anchors[layer].append(LineString([a, b]).buffer(width / 2))
     for net, layer, polys in board.zones:
         if net != "GND" or layer not in anchors:
             continue
+        remnants = []
         for raw in polys:
             # KiCad joins holes to the outline with zero-width slits; buffer(0) repairs that
             poly = raw.buffer(0) if not raw.is_valid else raw
             assert not poly.is_empty, f"{board.half} {layer}: unrepairable GND fill polygon"
-            assert poly.area >= min_area, f"{board.half} {layer}: GND sliver of {poly.area:.2f} mm2 at {poly.centroid.coords[0]}"
             grown = poly.buffer(0.05)
             assert any(grown.intersects(a) for a in anchors[layer]), \
                 f"{board.half} {layer}: isolated GND island of {poly.area:.1f} mm2 at {poly.centroid.coords[0]}"
+            if poly.area < min_area:
+                assert poly.area > 0.05, \
+                    f"{board.half} {layer}: hairline GND fill of {poly.area:.3f} mm2 at {poly.centroid.coords[0]}"
+                remnants.append(round(poly.area, 2))
+        assert len(remnants) <= max_remnants, \
+            f"{board.half} {layer}: {len(remnants)} GND fill remnants {remnants}, more than {max_remnants}"

@@ -56,9 +56,21 @@ trackball:
   pocket:
     notch_clearance: 1.0        # PCB notch = cradle radius + this (octagon apothem)
     wall: 2.0                   # case wall around the cradle (pocket circle above the PCB plane)
-    housing: { x: 30.0, y: 29.0 }   # cradle housing on the case floor (sensor board 26 x 25 plus 2 mm walls), no ears
+    housing: { x: 29.0, y: 29.0 }   # cradle housing on the case floor (sensor board 26 x 25 plus walls), no ears.
+                                    # x is 1 mm narrower than the notch across flats so the housing clears the
+                                    # board edge at x = -10 on its way into the pocket (walls 1.5 mm on x, 2 on y).
+    cup_envelope: 24.1          # widest part of the cradle above the PCB plane (bearing bosses), cradle stack.json
+    cable_gap_min: 1.5          # radial room the FFC needs between the cup envelope and the notch edge
     housing_clearance: 0.5      # gap between housing and pocket wall at floor level
     case_screw_spacing: 20.0    # two M2 x 10 from below through floor and sensor board into the posts, on the y axis
+    sensor_board: { x: 26.0, y: 25.0 }   # daughterboard inside the housing, long side along x
+    # r2.2: the module is a cartridge. It is lowered into the pocket and lifted out again with
+    # the PCB fitted, so nothing of it may be covered by the board. The notch's 45 degree facet
+    # towards the keys used to overhang the housing corner by 5.86 mm and the sensor board by
+    # 3.03 mm, so that one corner of the notch is square (issues/mech-cradle-notch-relief.md).
+    square_corner: true
+    corner_clearance: 0.3       # minimum gap between the module and the PCB edge on its way in
+    cable_width: 6.0            # FFC corridor on the board: 4.4 mm cable plus handling clearance
 
 controller:                     # nice!nano v2 / SuperMini, Pro Micro pinout, on the lowest sockets (2.5 mm class,
   center: { x: -58.0, y: 11.7 } # Mill-Max 315 or conthrough): nothing lies between the controller and the PCB any more.
@@ -174,9 +186,14 @@ halves:
     thumbs: [thumb_middle, thumb_outer]
     trackball:
       center: { x: 5.0, y: 64.0 }   # outboard of the outer thumb key, below the middle/ring columns
-    fpc:                            # sensor daughterboard connector (bottom side), cable exits downward into the pocket
-      center: { x: 0.0, y: 45.5 }     # under the middle column, 1 mm above the cradle housing, cable drops straight into its slot
+    fpc:                            # sensor daughterboard connector, KEY SIDE (r2.2): the cable climbs
+                                    # the gap between the cradle cup and the notch, folds over the board
+                                    # edge at y = 49 and enters the connector from +y, so the lock stays
+                                    # reachable with everything assembled (docs/08-trackball-module.md).
+      center: { x: -2.6, y: 45.5 }    # mouth 0.5 mm short of the notch edge, contact row lined up
+                                      # with the sensor board's connector so the cable runs straight
       rotation: 0
+      side: top
     mounting_holes: []
     stitching_vias:
       - [-14.0, 58.0]

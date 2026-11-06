@@ -12,7 +12,8 @@ footprints were designed for the reversible r1 board and keep their pads on both
 
 Since r2 the two halves are separate boards, so only one face of each pad set is used;
 the second copy is harmless (same net on both faces) and keeps the freedom to mount a
-socket on either face. The FPC connector is the exception (back face only). Pad geometry comes from the KiCad standard library, kiswitch and
+socket on either face. The FPC connector is the exception (one face only, in two
+variants: `_bottom` for the back face and `_top` for the front face). Pad geometry comes from the KiCad standard library, kiswitch and
 marbastlib (all permissive licences, see NOTICE).
 """
 from __future__ import annotations
@@ -273,6 +274,24 @@ def fpc_fh12_6_bottom() -> Footprint:
                      "smd", pads, gfx, "B.Fab", (0, 4.2))
 
 
+def fpc_fh12_6_top() -> Footprint:
+    """Hirose FH12-6S-0.5SH on the front face (right half, r2.2).
+
+    Same part as the back-face variant, mounted on the key side of the board: the sensor
+    cable climbs the gap between the cradle cup and the PCB notch, folds over the board
+    edge and goes into the connector from +y, so the lock stays reachable with the case
+    closed. A front-face part is not mirrored, so the pad set is the connector's own
+    drawing: pad 1 at -x. The cable entry is the metal-fitting side (local +y); contacts
+    and lock sit at local -y.
+    """
+    pads = [Pad(str(i + 1), "smd", "rect", -1.25 + i * 0.5, -1.85, 0.3, 1.3, F_SMD, zone_connect=2) for i in range(6)]
+    pads += [Pad("", "smd", "rect", -3.15, 1.4, 1.8, 2.2, F_SMD), Pad("", "smd", "rect", 3.15, 1.4, 1.8, 2.2, F_SMD)]
+    gfx = rect_lines(0, 0.6, 8.6, 4.8, "F.Fab", 0.1) + rect_lines(0, 0.6, 9.2, 5.6, "F.CrtYd", 0.05)
+    gfx += [Line(-4.3, -1.8, -4.3, -2.6, "F.SilkS"), Line(-4.3, -2.6, -2.0, -2.6, "F.SilkS"), Text("1", -2.0, -3.3, "F.SilkS", 0.6)]
+    return Footprint("FPC_0.5mm_6P_FH12-6S_top", "Hirose FH12-6S-0.5SH (0.5 mm, 6 contacts, bottom contact), front face, cable from +y",
+                     "smd", pads, gfx, "F.Fab", (0, 4.2))
+
+
 def battery_pads() -> Footprint:
     pads = [Pad("1", "thru_hole", "rect", -1.27, 0, 1.7, 1.7, THT, 1.0, zone_connect=2), Pad("2", "thru_hole", "circle", 1.27, 0, 1.7, 1.7, THT, 1.0, zone_connect=2)]
     gfx = [Text("+", -1.27, -1.8, "F.SilkS", 0.8), Text("-", 1.27, -1.8, "F.SilkS", 0.8),
@@ -339,6 +358,6 @@ def mounting_hole() -> Footprint:
 
 def all_footprints(hole_pin: dict[int, str]) -> dict[str, Footprint]:
     fps = [choc_v1_hotswap_reversible(), sod123_reversible(), nice_nano_tht(hole_pin),
-           fpc_fh12_6_bottom(), battery_pads(), jst_ph_sm4_reversible(), msk12c02_reversible(), evqp7a_reversible(),
+           fpc_fh12_6_bottom(), fpc_fh12_6_top(), battery_pads(), jst_ph_sm4_reversible(), msk12c02_reversible(), evqp7a_reversible(),
            test_pad(), mounting_hole()]
     return {f.name: f for f in fps}

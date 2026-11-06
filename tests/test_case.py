@@ -457,8 +457,8 @@ def test_floor_dxf_right():
     holes = _holes(loops)
     for hx, hy in HOLES + CASE_SCREWS:
         assert any(abs(x - hx) < 0.05 and abs(y - hy) < 0.05 for x, y in holes), (hx, hy)
-    pocket = [b for b in loops if abs(b[1] - b[0] - 31.0) < 0.05 and abs(b[3] - b[2] - 30.0) < 0.05]
-    assert len(pocket) == 1, "31 x 30 pocket outline"
+    pocket = [b for b in loops if abs(b[1] - b[0] - 30.0) < 0.05 and abs(b[3] - b[2] - 30.0) < 0.05]
+    assert len(pocket) == 1, "30 x 30 pocket outline (housing 29 x 29 plus 0.5 mm clearance)"
     cradle = _dxf_loops(CRADLE / "dxf" / "floor-19mm-pocket.dxf")
     outer = max(cradle, key=lambda b: b[1] - b[0])
     for i, off in enumerate((BALL[0], BALL[0], BALL[1], BALL[1])):

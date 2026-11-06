@@ -34,7 +34,8 @@ L_pcb  = R + lens_z + lens_h;          // ball centre -> sensor PCB (lens side) 
 L_low  = L_pcb + sensor_pcb_t + sensor_pins_h;   // ball centre -> lowest point of the sensor board
 cav_h  = lens_h + 0.4;                 // lens cavity height (lens + 0.4 clearance)
 hw     = housing_wall;
-hous_x = sensor_pcb_w + 2 * hw;        // housing footprint, local x (tilt plane)
+hwx    = pocket ? housing_wall_x : hw;
+hous_x = sensor_pcb_w + 2 * hwx;       // housing footprint, local x (tilt plane)
 hous_y = sensor_pcb_l + 2 * hw;        // housing footprint, local y (tangential)
 th     = pocket ? 0 : sensor_angle;    // the pocket housing is always straight
 s = sin(th); c = cos(th);
@@ -84,6 +85,8 @@ echo(str("STACK floor_z=", floor_z));
 echo(str("STACK depth_below_pcb_bottom=", depth_below_pcb));
 echo(str("STACK housing_radial_extent_x=", radial_ext));
 echo(str("STACK housing_x=", hous_x));
+if (pocket) echo(str("STACK cable_channel_x=", cable_ch_x));
+if (pocket) echo(str("STACK cable_channel_w=", cable_ch_w));
 echo(str("STACK housing_y=", hous_y));
 echo(str("STACK housing_top_z=", hous_top));
 echo(str("STACK footprint_x=", pocket ? hous_x : flange_d));
@@ -164,6 +167,10 @@ module cradle_cuts() {
         translate([-bw / 2, -bl / 2, floor_z - 1]) cube([bw, bl, board_z - floor_z + 1.01]);
         // FFC slot through the key-facing (-y) wall, from the floor up to the board plane
         translate([-slot_w / 2, -hous_y / 2 - 1, floor_z - 1]) cube([slot_w, hw + 2, board_z - floor_z + 1.01]);
+        // and on from the board plane to the top of the housing: the cable turns up here and
+        // climbs past the PCB plane in the gap between the cup and the notch (r2.2)
+        translate([cable_ch_x - cable_ch_w / 2, -hous_y / 2 - 1, board_z - 0.01])
+            cube([cable_ch_w, hw + 2, hous_top - board_z + 0.02]);
         // case screw path: the post pilot holes continue straight down to the housing underside, so
         // the M2 x 10 screws pass the case floor, the component gap and the board into the posts
         for (sy = [-1, 1]) translate([0, sy * sensor_hole_sp / 2, floor_z - 1])

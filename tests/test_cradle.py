@@ -28,7 +28,7 @@ LENS_H, SENSOR_PCB_T = 3.4, 1.6
 PCB_T = 1.6
 RIM_DROP = 1.0   # params.scad rim_drop: cup rim this far below the ball equator
 CLAW_KEYS = {"claw_top_z", "retainer_ball_play"}
-HOUSING_X, HOUSING_Y = 30.0, 29.0   # sensor board 26 x 25 plus 2 mm walls
+HOUSING_X, HOUSING_Y = 29.0, 29.0   # sensor board 26 x 25 plus walls (1.5 on x, 2 on y)
 CASE_SCREW_SP = 20.0                # sensor_hole_sp: the case screws go into the sensor posts
 EAR_RE = re.compile(r"\bears?\b", re.I)
 
@@ -193,7 +193,7 @@ def _dxf_loops(path):
 
 
 def test_floor_dxf_is_housing_with_two_screw_holes():
-    """dxf/floor-19mm-pocket.dxf: 31 x 30 mm outline (0.5 mm clearance) and two 2.2 mm holes 20 mm apart."""
+    """dxf/floor-19mm-pocket.dxf: 30 x 30 mm outline (0.5 mm clearance) and two 2.2 mm holes 20 mm apart."""
     loops = _dxf_loops(CRADLE / "dxf" / "floor-19mm-pocket.dxf")
     assert len(loops) == 3, len(loops)
     boxes = []

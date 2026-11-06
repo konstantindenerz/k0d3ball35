@@ -51,9 +51,12 @@ def uid():
 # --------------------------------------------------------------------------------------
 
 # Sensor-board FPC pin order.  The main PCB uses 1 VCC, 2 GND, 3 SCLK, 4 SDIO, 5 NCS, 6 MOT.
-# Both connectors are bottom-contact types mounted on the component side of their boards and
-# are joined by a same-side-contact (type A) cable, which mirrors the order: see docs/08.
-FPC_PINS = {1: "MOT_J", 2: "NCS", 3: "SDIO", 4: "SCLK", 5: "GND", 6: "VCC", "MP": "GND"}
+# Since r2.2 the keyboard-side connector sits on the KEY side of the right PCB, so its pad set
+# is not mirrored and pin 1 ends up on the same side of the cable as pin 1 here: the order is
+# straight through, 1 to 1.  The cable is a type B FFC (contacts on opposite faces at its two
+# ends), which is what lets one bottom-contact connector look up at the board above it and the
+# other look down at the board below it without a twist.  See docs/08-trackball-module.md.
+FPC_PINS = {1: "VCC", 2: "GND", 3: "SCLK", 4: "SDIO", 5: "NCS", 6: "MOT_J", "MP": "GND"}
 
 # Reference, symbol, value, footprint, {pin: net}
 PARTS = [
@@ -96,7 +99,7 @@ LCSC = {
 DESCRIPTIONS = {
     "U1": "PixArt low power laser mouse sensor, 16-pin molded DIP, LM18-LSI lens",
     "U2": "Torex 1.8 V 200 mA LDO, SOT-23",
-    "J1": "0.5 mm 6-pos FPC connector, bottom contact, FH12-6S-0.5SH or clone",
+    "J1": "0.5 mm 6-pos FPC connector, bottom contact, FH12-6S-0.5SH or clone (type B cable)",
     "C1": "1 uF 0603 X5R 10 V, LDO input", "C2": "1 uF 0603 X5R 10 V, 1.8 V rail",
     "C3": "3.3 uF 0603 X7R 16 V, 1.8 V rail bulk", "C4": "100 nF 0603 X7R, VDD decoupling",
     "C5": "100 nF 0603 X7R, VDDIO decoupling", "C6": "100 nF 0603 X7R 16 V, charge pump",
@@ -502,10 +505,10 @@ def write_schematic():
          'VDD 1.8 V is generated on board by U2.  MOTION is push-pull; R3 limits current if the\\n'
          'FFC is inserted the wrong way round.  R2 keeps the sensor deselected while the host boots."'
          ' (exclude_from_sim no) (at 30 170 0) (effects (font (size 2 2)) (justify left bottom)) (uuid "%s"))' % uid()),
-        ('  (text "FPC pin order on THIS board: 1 MOT, 2 NCS, 3 SDIO, 4 SCLK, 5 GND, 6 VCC.\\n'
-         'Main PCB order: 1 VCC, 2 GND, 3 SCLK, 4 SDIO, 5 NCS, 6 MOT.\\n'
-         'Both connectors are bottom-contact parts on the component side of their boards and are\\n'
-         'joined by a same-side-contact (type A) FFC, which mirrors the pin order end to end."'
+        ('  (text "FPC pin order on THIS board: 1 VCC, 2 GND, 3 SCLK, 4 SDIO, 5 NCS, 6 MOT.\\n'
+         'Same order as the main PCB: J1 sits on the KEY side there, so its pads are not mirrored.\\n'
+         'Both connectors are bottom-contact parts; the cable is a type B FFC (contacts on\\n'
+         'OPPOSITE faces at its two ends). A type A cable will not work."'
          ' (exclude_from_sim no) (at 30 185 0) (effects (font (size 2 2)) (justify left bottom)) (uuid "%s"))' % uid()),
     ]
     out += wires + labels + nocon + syms + notes
@@ -773,8 +776,8 @@ def finish():
             outline.Append(mm(x), mm(y))
         board.Add(z)
     # silkscreen (component side is cramped, so most text goes on the ball side)
-    add_text(board, "6:VCC", 117.5, 106.4, pcbnew.F_SilkS, 0.6)
-    add_text(board, "1:MOT", 120.9, 105.3, pcbnew.F_SilkS, 0.6)
+    add_text(board, "6:MOT", 117.5, 106.4, pcbnew.F_SilkS, 0.6)   # pad 6 is at -x, pad 1 at +x
+    add_text(board, "1:VCC", 120.9, 105.3, pcbnew.F_SilkS, 0.6)
     add_text(board, "BALL SIDE", 103.5, 100.4, pcbnew.B_SilkS, 1.2, mirror=True, bold=True)
     add_text(board, "PMW3610 / LM18-LSI", 103.5, 98.6, pcbnew.B_SilkS, 0.7, mirror=True)
     add_text(board, "k0d3ball35 sensor " + REV, 110.0, 117.6, pcbnew.B_SilkS, 0.7, mirror=True)

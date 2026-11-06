@@ -68,7 +68,15 @@ flange_pilot_d  = 1.6;     // pilot hole for M2 self-tapping screws (use 3.2 for
 // gravity alone. A removable case lid (issues/mech-case-lid.md) covers the ball in transport.
 wall            = 1.6;     // cup wall thickness
 rim_drop        = 1.0;     // cup rim this far below the equator (finger clearance, ball lifts out freely)
-housing_wall    = 2.0;     // walls around the sensor board / lens cavity
+housing_wall    = 2.0;     // walls around the sensor board / lens cavity (y, the key-facing side)
+housing_wall_x  = 1.5;     // same on x: 29 mm total, 1 mm narrower than the notch across flats, so
+                           // the housing clears the PCB edge when the module is lowered into the pocket
+// FFC channel (pocket mount): the cable leaves the sensor connector under the board, turns up
+// inside the key-facing wall and climbs past the PCB plane in the gap between the cup and the
+// notch, where it folds over the board edge into J1 on the key side of the main PCB.
+// cable_ch_x is the local x of the cable, i.e. (J1 x in the layout frame) - (ball centre x).
+cable_ch_x      = -7.6;
+cable_ch_w      = 6.0;
 
 // ---------------------------------------------------------------- rendering
 $fn             = 96;

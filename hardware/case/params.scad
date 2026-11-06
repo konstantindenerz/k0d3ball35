@@ -92,7 +92,7 @@ ball_top_z      = 17.1;        // cradle stack.json ball_top_above_pcb_top (19.0
 case_screw_d    = 2.2;         // clearance holes for the M2 x 10 case screws from below
 case_screw_cb_d = 4.5;         // counterbore so 2 mm of floor remain under the cradle
 case_screw_cb_h = floor_t - 2.0;
-ffc_channel_w   = 12.0;
+fpc_clear       = 0.5;         // clearance around J1 and the FFC corridor on the key side
 
 // ---------------------------------------------------------------- rendering
 $fn             = 64;

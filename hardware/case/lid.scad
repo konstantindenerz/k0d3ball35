@@ -34,7 +34,10 @@ lid_lip_steps   = 5;
 // where the lip must not be: the controller box walls (plus their notch) and the pocket cup
 module lip_clear_2d() {
     if (controller_box) offset(delta = pcb_clear + wall + lid_box_clear + 1) box_2d();
-    if (has_ball(half)) offset(delta = 1) pocket_cavity_2d();
+    if (has_ball(half)) {
+        offset(delta = 1) pocket_cavity_2d();
+        fpc_keepout_2d();
+    }
 }
 // ring between the inner wall face minus `inset` and the lip's inner face
 module lip_2d(inset) difference() {

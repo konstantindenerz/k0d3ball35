@@ -245,28 +245,18 @@ def test_main_board_outline_is_angular_without_cutout(board: str):
     assert set(angles) <= allowed, f"{board}: unexpected outline directions {dict(angles)}"
 
 
-def test_right_board_has_octagonal_notch_left_board_none():
-    """The notch is the 45 degree side of a regular octagon (apothem 15 mm) plus its axis-aligned neighbours."""
-    right = _outline_segments(_stack("right"))
-    diagonals = [s for s in right if abs((math.degrees(math.atan2(s[3] - s[1], s[2] - s[0])) % 180) - 45) < 0.5]
-    assert len(diagonals) == 1, f"right: expected one 45 degree notch side, got {diagonals}"
-    x1, y1, x2, y2 = diagonals[0]
-    assert abs(math.hypot(x2 - x1, y2 - y1) - NOTCH_SIDE) < 0.05
-    idx = right.index(diagonals[0])
-    before, after = right[idx - 1], right[(idx + 1) % len(right)]
-    # the neighbours are the horizontal and vertical octagon sides (clipped by the board edge)
-    horizontal = before if abs(before[1] - before[3]) < 1e-6 else after
-    vertical = after if horizontal is before else before
-    assert abs(horizontal[1] - horizontal[3]) < 1e-6 and abs(vertical[0] - vertical[2]) < 1e-6
-    centre = (vertical[0] + NOTCH_APOTHEM, horizontal[1] - NOTCH_APOTHEM)
-    # layout pocket centre (5, 64) is KiCad (125, 124), gerber y is negated
-    assert abs(centre[0] - 125.0) < 0.05 and abs(centre[1] - -124.0) < 0.05, f"notch centre {centre}"
-    # and the 45 degree side really is at apothem distance from that centre
-    mx, my = (x1 + x2) / 2, (y1 + y2) / 2
-    assert abs(math.hypot(mx - centre[0], my - centre[1]) - NOTCH_APOTHEM) < 0.05
-
-    left = _outline_segments(_stack("left"))
-    assert not [s for s in left if abs((math.degrees(math.atan2(s[3] - s[1], s[2] - s[0])) % 180) - 45) < 0.5]
+def test_right_board_notch_corner_is_square():
+    """The notch is an octagon with the corner towards the keys squared off, so the trackball
+    module can be lowered into its pocket past the board edge. The fab outline must be exactly
+    the generated one: same side lengths, and no 45 degree side left on that corner."""
+    from k0d3.geometry import load_layout
+    segs = _outline_segments(_stack("right"))
+    diagonals = [s for s in segs if abs((math.degrees(math.atan2(s[3] - s[1], s[2] - s[0])) % 180) - 45) < 0.5]
+    assert not diagonals, f"right: the notch corner is square, found 45 degree sides {diagonals}"
+    outline = load_layout("right").outline
+    pts = [(x1, y1) for x1, y1, _, _ in segs]
+    area = abs(sum(a[0] * b[1] - b[0] * a[1] for a, b in zip(pts, pts[1:] + pts[:1]))) / 2
+    assert abs(area - outline.area) < 0.5, f"fab outline encloses {area:.1f} mm2, layout {outline.area:.1f} mm2"
 
 
 @pytest.mark.parametrize("board", MAIN)
