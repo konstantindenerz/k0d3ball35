@@ -100,3 +100,49 @@ def test_bom_connector_part_matches_pcb(rows):
     """The right PCB uses the Hirose FH12-6S-0.5SH footprint; the BOM must name a compatible part."""
     text = " ".join(r["_text"] for r in rows)
     assert re.search(r"fh12-6s|fh12", text), "BOM does not mention the FH12-6S-0.5SH connector used on the PCB"
+
+
+SENSOR_FAB_BOM = REPO / "hardware" / "sensor-pcb" / "fab" / "k0d3ball35-sensor-r1-bom.csv"
+
+
+def test_sensor_bom_matches_fab_export():
+    """Section 6 of docs/03-bom.md lists every LCSC code of the sensor board fab export with at
+    least the exported quantity (summed over the rows that carry the code)."""
+    import csv
+
+    fab: dict[str, int] = {}
+    with SENSOR_FAB_BOM.open(newline="") as f:
+        for row in csv.DictReader(f):
+            fab[row["LCSC"]] = fab.get(row["LCSC"], 0) + int(row["Quantity"])
+    assert fab, "fab BOM is empty"
+
+    text = BOM.read_text()
+    start = text.index("## 6.")
+    end = text.index("## 7.")
+    section = text[start:end]
+    docs: dict[str, int] = {}
+    for row in _rows_from(section):
+        m = re.search(r"\bC\d{3,}\b", row.get("lcsc", ""))
+        if m:
+            docs[m.group(0)] = docs.get(m.group(0), 0) + row["_qty"]
+    missing = {code: qty for code, qty in fab.items() if docs.get(code, 0) < qty}
+    assert not missing, f"docs/03-bom.md section 6 short of the fab export: {missing} (docs: {docs})"
+
+
+def _rows_from(markdown: str) -> list[dict]:
+    rows, header = [], None
+    for line in markdown.splitlines():
+        if not line.startswith("|"):
+            header = None
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if all(set(c) <= set("-: ") for c in cells):
+            continue
+        if header is None:
+            header = [c.lower() for c in cells]
+            continue
+        row = dict(zip(header, cells))
+        m = re.match(r"\s*(\d+)", row.get("qty", ""))
+        row["_qty"] = int(m.group(1)) if m else 0
+        rows.append(row)
+    return rows

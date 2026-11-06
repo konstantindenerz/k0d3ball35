@@ -50,7 +50,7 @@ BOARDS = {
         "prefix": "k0d3ball35-sensor-",
         "size": (26.0, 25.0),
         "keys": 0,
-        "protel": True,  # export.sh of the sensor board uses KiCad's default protel extensions
+        "protel": False,  # hardware/sensor-pcb/export.sh passes --no-protel-ext like the main boards
         "outlines": 2,  # outer outline plus the sensor window
     },
 }

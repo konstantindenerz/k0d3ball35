@@ -15,7 +15,7 @@ Quantities marked "+n" include recommended spares. Sensor-board passives are 060
 |-----|------|------|--------|-------|-------|
 | 1 (min. order 5) | Left PCB `k0d3ball35-left` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 121 x 87 mm | JLCPCB, gerbers in `hardware/left-pcb/` | 15 to 25 EUR per 5 | 18 keys, no sensor connector |
 | 1 (min. order 5) | Right PCB `k0d3ball35-right` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 118 x 80 mm | JLCPCB, gerbers in `hardware/right-pcb/` | 15 to 25 EUR per 5 | 17 keys, FPC connector, octagonal notch for the ball pocket |
-| 1 (min. order 5) | Sensor PCB `k0d3ball35-sensor` | 2 layer, 1.6 mm, ENIG, 26 x 25 mm | JLCPCB, gerbers in `hardware/sensor-pcb/gerbers/` | 2 to 5 EUR per 5 | Order all three in the same cart to share shipping |
+| 1 (min. order 5) | Sensor PCB `k0d3ball35-sensor` | 2 layer, 1.6 mm, ENIG, 26 x 25 mm | JLCPCB, zip `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip` | 2 to 5 EUR per 5 | Order all three in the same cart to share shipping |
 | | Shipping and import VAT | | | 20 to 40 EUR | |
 
 ## 2. Controllers and sockets
@@ -58,15 +58,22 @@ tracking.
 
 ## 6. Sensor board (one per keyboard)
 
+Quantities and LCSC codes follow the fab export `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-bom.csv`
+(`tests/test_bom.py` compares the two); the designators are those of `hardware/sensor-pcb/generate.py`.
+
 | Qty | Part | Spec | Source | Price | LCSC | Notes |
 |-----|------|------|--------|-------|------|-------|
-| 1 (+1) | Optical sensor | PixArt PMW3610DM-SUDU, 16-pin DIP lead frame | https://www.aliexpress.com/item/1005006208592770.html (chip + lens kit) | about 8 EUR per kit | C42442560 | JLCPCB extended part, can be placed by JLCPCB for a production run |
-| 1 (+1) | Lens | PixArt LM18-LSI | with the chip kit | | | Peel both protective films before fitting |
-| 1 | LDO 1.8 V | Torex XC6206P182MR, SOT-23 | LCSC, Mouser DE | 0.10 EUR | C5446 | Generates VDD from 3.3 V |
-| 2 | Capacitor | 1 uF 0603 X7R 10 V | LCSC | | C15849 | Input and output of the LDO |
-| 3 | Capacitor | 100 nF 0603 X7R 16 V | LCSC | | C14663 | VDD, VDDIO, sensor pin decoupling |
-| 1 | Resistor | 10 k 0603 | LCSC | | C25804 | NCS pull-up |
-| 2 | FPC connector | Hirose FH12-6S-0.5SH(55), 6 pin, 0.5 mm, bottom contact, ZIF slider | Mouser DE 798-FH12-6S-0.5SH55 | about 1 EUR each | LCSC pin-compatible equivalents OK | One on the right PCB (J1), one on the sensor PCB, same footprint; the left PCB has none |
+| 1 (+1) | Optical sensor U1 | PixArt PMW3610DM-SUDU, 16-pin DIP lead frame | https://www.aliexpress.com/item/1005006208592770.html (chip + lens kit) | about 8 EUR per kit | C42442560 | JLCPCB extended part, can be placed by JLCPCB for a production run |
+| 1 (+1) | Lens | PixArt LM18-LSI | with the chip kit | | | Peel both protective films before fitting; no lens holes in the PCB, the guide posts engage the sensor body |
+| 1 (+1) | LDO 1.8 V U2 | Torex XC6206P182MR, SOT-23 | LCSC, Mouser DE | 0.10 EUR | C5446 | Generates VDD from 3.3 V |
+| 2 | Capacitor C1, C2 | 1 uF 0603 X5R 10 V | LCSC | | C15849 | Input and output of the LDO |
+| 1 | Capacitor C3 | 3.3 uF 0603 X7R 16 V | LCSC | | C1678 | 1.8 V rail bulk |
+| 3 | Capacitor C4, C5, C6 | 100 nF 0603 X7R 16 V | LCSC | | C14663 | VDD and VDDIO decoupling, charge pump |
+| 2 | Capacitor C7, C9 | 10 nF 0603 X7R 16 V | LCSC | | C57112 | VCSEL supply, VCP |
+| 1 | Capacitor C8 | 10 uF 0603 X7R 16 V | LCSC | | C19702 | VCP |
+| 2 | Resistor R1, R2 | 10 k 0603 | LCSC | | C25804 | NRESET and NCS pull-ups |
+| 1 | Resistor R3 | 1 k 0603 | LCSC | | C21190 | MOTION series protection |
+| 2 | FPC connector J1 | Hirose FH12-6S-0.5SH(55), 6 pin, 0.5 mm, bottom contact, ZIF slider | Mouser DE 798-FH12-6S-0.5SH55 | about 1 EUR each | C2764370 | One on the right PCB (J1), one on the sensor PCB, same footprint; the left PCB has none. The LCSC code is a pin-compatible equivalent for a JLCPCB assembly run |
 | 1 (+1) | FFC cable | 6 conductor, 0.5 mm pitch, 40 mm, same-side contacts (type A) | AliExpress, Mouser DE (Molex 15166 series) | about 0.50 EUR | | 30 to 50 mm works |
 
 ## 7. Trackball and bearings

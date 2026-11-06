@@ -32,7 +32,8 @@ octagon with 15 mm apothem; JLCPCB mills it without a note.
 ## Sensor PCB order settings
 
 Same as above except: 26 x 25 mm, 1.6 mm, ENIG strongly preferred (the 16-pin lead-frame sensor and
-the 0.5 mm connector), quantity 5. Files in `hardware/sensor-pcb/gerbers/`, the zip in `hardware/sensor-pcb/fab/`.
+the 0.5 mm connector), quantity 5. Upload the zip `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip` (the loose
+files are in `hardware/sensor-pcb/gerbers/`).
 
 Optional assembly: the PMW3610DM-SUDU is JLCPCB part C42442560 (extended part), so economic PCBA can
 place the sensor, LDO and capacitors. The lens is clipped on by hand afterwards. For five boards the
