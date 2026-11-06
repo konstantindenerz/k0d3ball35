@@ -16,8 +16,8 @@ together and how the wordmark is engraved into them. Tickets: [mech-case](../iss
 |------|-----|------------|
 | Tray | `tray-left.stl`, `tray-right.stl` | the case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, pocket for the cradle (right), five standoffs with M2 heat-set inserts, four foot magnet pockets from below, feet recesses |
 | Box cap | `box-cap-left.stl`, `box-cap-right.stl` | roof of the controller box: a plate in a rebate plus an L-shaped skirt towards the keys and the thumb keys, two M2 screws into corner bosses |
-| Lid, outer plate | `lid-outer-left.stl`, `lid-outer-right.stl` | pinky-side half of the transport cover: ball window (right), the four roof magnets, the even hinge knuckles including both ends |
-| Lid, inner plate | `lid-inner-left.stl`, `lid-inner-right.stl` | controller-notch and thumb-side half: the odd knuckles; folded down it is the leg of the tenting foot |
+| Lid, outer plate | `lid-outer-left.stl`, `lid-outer-right.stl` | pinky-side half of the transport cover: ball window (right), the four roof magnets, the even hinge knuckles including both ends; as a foot it lies under the controller half |
+| Lid, inner plate | `lid-inner-left.stl`, `lid-inner-right.stl` | controller-notch and thumb-side half: the odd knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot |
 | Lid, closed pair | `lid-left.stl`, `lid-right.stl` | both plates joined by a 2 mm steel pin, held on top by an inner lip; for the exploded view, not for printing |
 | Pocket test | `pocket-test-right.stl` | the 50 x 50 mm corner of the right tray around the ball, for the first test print with the cradle |
 
@@ -158,28 +158,43 @@ the user); the last knuckle towards the user is blind, so the pin cannot walk ou
 vertical cut faces are 0.2 mm apart.
 
 The stop is in the cut itself. Below the axis each plate's cut face is a plane through the
-axis leaning outward by `tent_deg` = 15 degrees, so closed there is a V slit at the skirt
-bottom (about 6.7 mm wide at the front and back skirt, 1.3 mm under the strip), and when the
-lid is folded by 30 degrees (`hinge_fold_deg`) the two faces meet flat on flat along the whole
-cut - skirt ends and strip underside - and carry the load. Knuckle and groove are round and
-never take it.
+axis leaning outward by `hinge_stop_deg`, half the solved fold (16.9 degrees right, 16.8
+left), so closed there is a V slit at the skirt bottom (about 7.5 mm wide at the front and
+back skirt, 1.5 mm under the strip), and when the lid is folded by `hinge_fold_deg` (33.8
+degrees right, 33.6 left) the two faces meet flat on flat along the whole cut - skirt ends
+and strip underside - and carry the load. Knuckle and groove are round and never take it.
 
-Magnets only hold the foot position: four 6 x 2 mm discs from below in the tray floor, one
-near each corner of the outer plate's footprint (8 mm inside the PCB edge and the hinge line,
-in the thick floor under the keys, kept 2 mm clear of J1 and the cable corridor) and four in
-the outer plate's roof, pushed in from the roof underside with 0.6 mm of roof left on top, so
-nothing is visible from outside. Polarity: tray floor pockets north down, lid roof pockets
-south up. Eight per half, sixteen in total. Glue them after printing, check the snap with a
-loose magnet before the glue sets.
+Magnets only hold the foot position: four 6 x 2 mm discs from below in the tray floor under
+the key area next to the battery well (right (-36.94, 9.69), (-26.35, 17.69), (-26.35, 45.19),
+(-37.0, 38.94); left (-37.25, 9.69), (-29.478, 17.19), (-29.478, 45.19), (-37.19, 38.94)),
+placed by the generator where the outer plate's roof region and the tray floor region shifted
+by `foot_dx` overlap, kept 2 mm clear of the wells, J1 and the cable corridor, and four in
+the outer plate's roof at the same points shifted by -`foot_dx` (lid x about 28 to 38, clear
+of the hinge strip and the ball window), pushed in from the roof underside with 0.6 mm of
+roof left on top, so nothing is visible from outside. Polarity: tray floor pockets north
+down, lid roof pockets south up. Eight per half, sixteen in total. Glue them after printing,
+check the snap with a loose magnet before the glue sets.
 
 ![Lid folded as a tenting foot](images/img-case-lid-folded.png)
 
-As a foot the lid folds: the outer plate lies roof-up against the tray underside, its four
-magnets on the four floor magnets, and the inner plate hangs down by 30 degrees as the leg.
-Both plates stand on their skirt-and-lip bottom edges. The half tilts by about 15 degrees
-with the inner edge up (`foot_tilt_deg` 14.9 right, 15.3 left), the hinge axis is 27.2 mm
-above the desk and the tray's outer bottom edge 13.6 mm (`stack.json`). `tent_deg` sets the
-tilt and the stop is cut for twice that angle; the rubber feet stay usable without the lid.
+As a foot the lid folds and goes under the controller half of the tray: the whole folded lid
+is shifted inward by `foot_dx` (-64.7 mm right, -67.8 left, `data.scad`) so that the hinge
+axis sits 3 mm (`foot_overhang`) outside the inner tray wall. The outer plate lies roof-up
+against the tray underside, its four magnets on the four floor magnets, and the inner plate
+folds down beyond the inner edge as a kickstand that points inward, towards the other half.
+The half stands on its own outer bottom edge and on the hinge directly above the kickstand's
+lip edge, so nothing is cantilevered: a thumb press or a resting palm cannot pivot the board
+against the magnets, which only keep the plate aligned. The tilt `tent_deg` = 15 degrees is the
+input; the fold is solved so that the kickstand's lip edge reaches the desk (`hinge_fold_deg`
+33.8 degrees right, 33.6 left), and the stop is cut at half of that. In numbers
+(`stack.json`, right; left in brackets): the kickstand hangs 18.8 degrees (18.6) below the
+tray (`foot_beta_deg`), the hinge axis is 30.5 mm (31.3) above the desk (`foot_hinge_h`), the
+kickstand's foot stands 53.9 mm (57.0) beyond the inner wall (`foot_reach`), and the outer
+plate's free end floats 3.2 mm (4.0) above the desk (`foot_free_end_h`). Below about 13
+degrees of tilt the lid thickness alone would hold the board up, so `tent_deg` must stay
+above that (`tests/test_case.py` asserts more than 0.5 mm of clearance). The rubber feet at
+(-58, 1), (-58, 34), (-27, 8) and (-32, 61) rest on the lid roof, the others are off the
+plate; the feet stay usable without the lid.
 
 ## 8. Wordmark
 
@@ -222,6 +237,8 @@ Set `logo_on_cap = false` / `logo_on_floor = false` for a plain case.
 - `lid_fit` (0.15 mm between lip and wall), `hinge_clear` (0.3 mm around a knuckle) and
   `hinge_pin_fit` (0.2 mm around the rod) are set for a 0.4 mm nozzle; adjust after the first
   lid print, and check that the folded lid does not rock as a foot.
+- The kickstand reaches about 54 mm (right; 57 left) inward beyond the inner wall; the two
+  halves need that gap between them.
 - First print: pocket test, then the right tray, then the four lid plates.
 - The supplied wordmark is cropped at the top; the frame foot is mirrored in to close it. If
   the owner supplies the uncropped original, drop `close_frame` in `scripts/gen_logo.py`.

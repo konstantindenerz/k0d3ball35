@@ -517,9 +517,11 @@ function applyLidMode() {
   const mode = document.querySelector('input[name=lid]:checked').value;
   const cs = H.case_stack;
   lidLayer.group.visible = mode !== 'off';
-  // foot: the plates folded by hinge_fold_deg, the outer plate roof-up against the tray underside
-  // (the page keeps the half level; on the desk the inner plate is the leg and tilts it)
+  // foot: the plates folded by hinge_fold_deg and shifted inward by foot_dx, the outer plate
+  // roof-up under the controller half, the inner plate as the kickstand beyond the inner edge
+  // (the page keeps the half level; on the desk the kickstand tilts it by tent_deg)
   lidLayer.cover.visible = mode !== 'foot'; lidLayer.folded.visible = mode === 'foot';
+  lidLayer.folded.position.x = cs.foot_dx ?? 0;
   if (mode === 'foot') {
     lidLayer.baseY = cs.base_z - cs.lid_top_z; lidLayer.explode = -60;
     lidLayer.anchor.y = cs.base_z - 4;
@@ -528,7 +530,7 @@ function applyLidMode() {
     lidLayer.anchor.y = cs.lid_top_z + 2;
   }
   lidLayer.name = mode === 'foot'
-    ? `Lid folded as foot (hinge ${(cs.hinge_fold_deg ?? 30).toFixed(0)} deg, tilts the half by ${(cs.foot_tilt_deg ?? 15).toFixed(1)} deg)`
+    ? `Lid folded as kickstand (hinge ${(cs.hinge_fold_deg ?? 34).toFixed(0)} deg, tilts the half by ${(cs.tent_deg ?? 15).toFixed(0)} deg)`
     : 'Lid (two hinged plates, inner lip)';
   if (labelNodes[layers.indexOf(lidLayer)]) labelNodes[layers.indexOf(lidLayer)].el.textContent = lidLayer.name;
   setExplode(explode);

@@ -39,23 +39,32 @@ function hinge_seg_y0(i) = hinge_span()[0] + i * (hinge_seg() + hinge_seg_gap);
 function hinge_owner(i) = (i % 2 == 0) ? "outer" : "inner";
 
 // ---------------------------------------------------------------- foot pose
-// The folded lid stands on the desk on two edges: the lowest ring of the lip (lip_bottom_z,
-// inset lid_fit + lid_lip_chamfer from the PCB cavity face) at the outer edge of the outer
-// plate and at the inner edge of the inner plate. Rotating the half about the hinge axis by
-// foot_tilt_deg puts both on the desk; solved by bisection.
+// As a foot the lid is shifted by foot_dx (data.scad) so its hinge axis sits foot_overhang
+// outside the inner tray wall: the outer plate lies roof-up under the controller half, the
+// inner plate folds down beyond the inner edge as the kickstand. The half rotates about its
+// outer bottom edge by tent_deg (input); the fold is the angle at which the kickstand's lip
+// edge reaches the desk, solved by bisection. The stop faces are cut for exactly that fold.
 function _rot2(p, a) = [p[0] * cos(a) + p[1] * sin(a), -p[0] * sin(a) + p[1] * cos(a)];
-function _outer_x() = maxx(outline(half)) + pcb_clear + wall;
-function _inner_x() = minx(outline(half)) - pcb_clear - wall;
 function _lip_in() = pcb_clear - lid_fit - lid_lip_chamfer;    // lip foot outside the PCB edge (negative: inside)
-function _foot_outer_rel() = [maxx(outline(half)) + _lip_in() - hx, lip_bottom_z - hinge_axis_z];
-function _foot_inner_rel() = _rot2([minx(outline(half)) - _lip_in() - hx, lip_bottom_z - hinge_axis_z], -hinge_fold_deg);
-function _foot_gap(t) = _rot2(_foot_outer_rel(), t)[1] - _rot2(_foot_inner_rel(), t)[1];
+function foot_pivot_x() = maxx(outline(half)) + pcb_clear + wall;             // tray's outer bottom edge
+function foot_axis_x() = hx + foot_dx(half);                                   // hinge axis, board frame
+// hinge axis above the desk: the axis is hinge_knuckle_d / 2 under the roof top = tray underside
+function foot_hinge_h() = _rot2([foot_axis_x() - foot_pivot_x(), -hinge_knuckle_d / 2], tent_deg)[1];
+// the kickstand's contact edge relative to the axis in the lid frame (lip bottom at the inner edge)
+function _kick_rel() = [minx(outline(half)) - _lip_in() - hx, lip_bottom_z - hinge_axis_z];
+function _kick_gap(f) = foot_hinge_h() + _rot2(_kick_rel(), tent_deg - f)[1];
 function _bisect(lo, hi, n) = n == 0 ? (lo + hi) / 2
-    : let (m = (lo + hi) / 2) (_foot_gap(m) > 0 ? _bisect(m, hi, n - 1) : _bisect(lo, m, n - 1));
-function foot_tilt_deg() = _bisect(0, 89, 40);
-function foot_hinge_h() = -_rot2(_foot_outer_rel(), foot_tilt_deg())[1];   // hinge axis above the desk
-// the tray's outer bottom edge above the desk (the lid roof top sits on the tray underside)
-function foot_outer_h() = foot_hinge_h() + _rot2([_outer_x() - hx, lid_top_z - hinge_axis_z], foot_tilt_deg())[1];
+    : let (m = (lo + hi) / 2) (_kick_gap(m) > 0 ? _bisect(m, hi, n - 1) : _bisect(lo, m, n - 1));
+hinge_fold_solved = _bisect(0, 90 + tent_deg, 40);
+hinge_fold_deg    = hinge_fold_override > 0 ? hinge_fold_override : hinge_fold_solved;
+hinge_stop_deg    = hinge_fold_solved / 2;                     // each cut face leans this far outward
+function foot_beta_deg() = hinge_fold_solved - tent_deg;       // kickstand angle below the desk plane... measured from the tray
+function foot_reach() = -(foot_axis_x() - foot_pivot_x() + _rot2(_kick_rel(), tent_deg - hinge_fold_solved)[0]
+                          + foot_pivot_x() - (minx(outline(half)) - pcb_clear - wall));   // kickstand foot beyond the inner wall
+// the outer plate's free end (lip bottom at its outer edge, shifted) above the desk
+function foot_free_end_h() = _rot2([maxx(outline(half)) + _lip_in() + foot_dx(half) - foot_pivot_x(),
+                                    -(lid_top_z - lip_bottom_z)], tent_deg)[1];
+function foot_tilt_deg() = tent_deg;
 
 // controller box: inner wall faces and boss axes
 function box_r() = box_rect(half);

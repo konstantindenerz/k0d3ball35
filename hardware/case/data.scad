@@ -91,8 +91,12 @@ hinge_x_left = -13;
 hinge_x_right = -13;
 function hinge_x(h) = h == "left" ? hinge_x_left : hinge_x_right;
 
-foot_magnets_left = [[-2.35, -0.75], [38.35, 9.69], [38.35, 45.19], [-1, 34.75]];
-foot_magnets_right = [[-2.35, -0.75], [38.35, 9.69], [38.35, 45.19], [-3, 32.44]];
+foot_dx_left = -67.828;
+foot_dx_right = -64.7;
+function foot_dx(h) = h == "left" ? foot_dx_left : foot_dx_right;
+
+foot_magnets_left = [[-37.25, 9.69], [-29.478, 17.19], [-29.478, 45.19], [-37.19, 38.94]];
+foot_magnets_right = [[-36.94, 9.69], [-26.35, 17.69], [-26.35, 45.19], [-37, 38.94]];
 function foot_magnets(h) = h == "left" ? foot_magnets_left : foot_magnets_right;
 
 feet_left = [[27, 10.8], [27, 44.5], [-9, 40], [-27, 8], [-32, 61], [-58, 1], [-58, 34]];

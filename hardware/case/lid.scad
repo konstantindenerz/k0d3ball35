@@ -4,10 +4,12 @@
 // smaller than itself. A 1 mm lip on the inside of the skirt reaches lid_lip_depth into the
 // tray and holds the lid by friction, no magnets on top. The lid is split along x = hx into
 // the outer and the inner plate, joined by a pin hinge whose knuckles are flush with the roof
-// top. Under the half the outer plate lies roof-up against the tray (four magnets meet four in
-// the floor) and the inner plate folds down by hinge_fold_deg as the leg: the half tilts by
-// foot_tilt_deg with the inner edge up. Each plate's cut face below the axis leans outward by
-// tent_deg, so the two faces meet flat on flat at the fold and carry the load.
+// top. Under the half the lid is shifted by foot_dx so the hinge sits just outside the inner
+// wall: the outer plate lies roof-up under the controller half (four magnets meet four in the
+// floor) and the inner plate folds down by hinge_fold_deg as the kickstand; the half rests on
+// its outer bottom edge and tilts by tent_deg with the inner edge up. Each plate's cut face
+// below the axis leans outward by hinge_stop_deg (half the fold), so the two faces meet flat
+// on flat at the fold and carry the load.
 
 module lid_body(top) translate([0, 0, rim_z]) linear_extrude(top - rim_z) outer_top_2d();
 
@@ -25,15 +27,15 @@ module lid_box_notch() {
             offset(delta = pcb_clear + wall + lid_box_clear) box_2d();
 }
 
-// magnets in the roof, inserted from the roof underside; magnet_skin stays closed on top
+// magnets in the roof of the outer plate, inserted from the roof underside; magnet_skin stays
+// closed on top. foot_magnets is in the board frame (tray pockets), the lid is shifted by
+// foot_dx as a foot
 module lid_roof_magnets(under) {
     for (c = foot_magnets(half))
-        translate([c[0], c[1], under - 1]) cylinder(d = magnet_d, h = 1 + magnet_h + magnet_pocket_extra);
+        translate([c[0] - foot_dx(half), c[1], under - 1]) cylinder(d = magnet_d, h = 1 + magnet_h + magnet_pocket_extra);
 }
 
 // ---------------------------------------------------------------- lip
-lid_lip_chamfer = 0.5;         // lead-in on the lower outer edge of the lip
-lid_lip_steps   = 5;
 
 // where the lip must not be: the controller box walls (plus their notch) and the pocket cup
 module lip_clear_2d() {
@@ -103,13 +105,13 @@ module lid_full() {
 module xz_prism(p) rotate([90, 0, 0]) linear_extrude(1000, center = true) polygon(p);
 
 // what the outer plate keeps: x > hx + hinge_gap / 2 above the axis, below it the face leans
-// outward by tent_deg through the axis line (the stop face)
+// outward by hinge_stop_deg through the axis line (the stop face)
 module keep_outer() {
     g = hinge_gap / 2;
     zt = lid_top_z + 10;
     zb = lip_bottom_z - 10;
-    xz_prism([[hx + g, zt], [hx + g, hinge_axis_z - g / tan(tent_deg)],
-              [hx + (hinge_axis_z - zb) * tan(tent_deg), zb], [hx + 500, zb], [hx + 500, zt]]);
+    xz_prism([[hx + g, zt], [hx + g, hinge_axis_z - g / tan(hinge_stop_deg)],
+              [hx + (hinge_axis_z - zb) * tan(hinge_stop_deg), zb], [hx + 500, zb], [hx + 500, zt]]);
 }
 module keep_inner() translate([hx, 0, 0]) mirror([1, 0, 0]) translate([-hx, 0, 0]) keep_outer();
 
@@ -168,13 +170,14 @@ module lid() { lid_plate("outer"); lid_plate("inner"); }
 module fold_inner(fold) translate([hx, 0, hinge_axis_z]) rotate([0, -fold, 0]) translate([-hx, 0, -hinge_axis_z]) children();
 module lid_folded(fold = hinge_fold_deg) { lid_plate("outer"); fold_inner(fold) lid_plate("inner"); }
 
-// foot pose relative to the tray: outer plate roof-up against the tray underside
-module lid_under_tray() translate([0, 0, base_z - lid_top_z]) lid_folded();
-// tray plus folded lid tilted by foot_tilt_deg about the hinge axis and lifted so that both
-// contact edges stand on z = 0 (the desk)
+// foot pose relative to the tray: the folded lid shifted by foot_dx, the outer plate roof-up
+// against the tray underside under the controller half
+module lid_under_tray() translate([foot_dx(half), 0, base_z - lid_top_z]) lid_folded();
+// tray plus folded lid rotated by tent_deg about the tray's outer bottom edge, which stays on
+// z = 0 (the desk); the kickstand's lip edge lands on the desk by construction of the fold
 module on_desk() {
-    translate([0, 0, foot_hinge_h()]) translate([hx, 0, 0]) rotate([0, foot_tilt_deg(), 0])
-        translate([-hx, 0, -(hinge_axis_z + base_z - lid_top_z)]) children();
+    px = foot_pivot_x();
+    translate([px, 0, 0]) rotate([0, tent_deg, 0]) translate([-px, 0, -base_z]) children();
 }
 
 // dome variant for the ball half: flat roof at keycap height plus a round turret over the pocket

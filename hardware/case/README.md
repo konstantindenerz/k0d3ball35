@@ -62,12 +62,15 @@ is handedness-neutral; the left half is mirrored once at the top level of `case.
   below so 2.0 mm of floor remain as the cradle assumes. A 12 mm wide channel from J1 to the
   housing wall is where the cradle's own cable channel brings the FFC up; the tray only keeps the
   lid lip off J1 and the cable corridor on the key side (`fpc_clear`).
-- Foot magnets: four 6.2 mm pockets from below in the 9.5 mm floor under the key area, one
-  near each corner of the outer lid plate (8 mm inside the PCB edge and the hinge line, placed
-  by `gen_case.py` clear of the wells, the FFC channel, J1 and the cable corridor, the standoffs
-  and the feet): right (-5, 1.48), (38.35, 9.69), (38.35, 45.19), (-5, 31.5); left the same
-  except (-5, 31.25). The outer lid plate's roof carries the matching pockets. The outer wall
-  is smooth, no pads.
+- Foot magnets: four 6.2 mm pockets from below in the 9.5 mm floor under the key area next
+  to the battery well. `gen_case.py` places them in the intersection of the outer lid plate's
+  roof region (8 mm inside the outline, clear of the hinge strip and the ball window) and the
+  tray floor region shifted by `foot_dx`, clear of the wells, the FFC channel, J1 and the cable
+  corridor, the standoffs and the feet: right (-36.94, 9.69), (-26.35, 17.69),
+  (-26.35, 45.19), (-37.0, 38.94); left (-37.25, 9.69), (-29.478, 17.19), (-29.478, 45.19),
+  (-37.19, 38.94). The outer lid plate's roof carries the matching pockets at the same points
+  shifted by -`foot_dx` (lid x about 28 to 38, well inside the outer plate). The outer wall is
+  smooth, no pads.
 - Lid lip: a 1.0 mm lip on the inside of the lid skirt reaches 3.0 mm into the tray with
   `lid_fit` = 0.15 to the wall and holds the lid on top by friction; the lip stops at the
   controller box walls and the pocket cup. The keycaps end 1.6 mm inside the PCB edge, the
@@ -75,7 +78,7 @@ is handedness-neutral; the left half is mirrored once at the top level of `case.
 - Lid plates: the lid is split along the hinge line x = -13 (`hinge_x` in `data.scad`, the
   left half mirrored like everything else). The outer plate (pinky side) carries the ball
   window on the right and all four roof magnets; the inner plate carries the controller box
-  notch (to +9.0) and the thumb cluster and is the leg of the foot. Roof underside +14.0
+  notch (to +9.0) and the thumb cluster and is the kickstand of the foot. Roof underside +14.0
   (`lid_clear` 3.0 over the caps), roof top +17.0 on both halves. Within 6 mm of the line
   (`hinge_strip_w`) the roof is thickened downward to 5 mm (`hinge_knuckle_d`), underside
   +12.0, 1 mm over the Choc caps.
@@ -94,10 +97,12 @@ is handedness-neutral; the left half is mirrored once at the top level of `case.
   cannot walk out. `-D hinge_pin_d=1.75` fits a piece of filament. Above the axis the two
   plates' vertical cut faces are 0.2 mm apart (`hinge_gap`).
 - Stop: below the axis each plate's cut face is a plane through the axis leaning outward by
-  `tent_deg` = 15, so closed there is a V slit at the skirt bottom (about 6.7 mm wide at the
-  front and back skirt, 1.3 mm under the strip) and when folded by `hinge_fold_deg` = 30 the
-  two faces meet flat on flat along the whole cut (skirt ends and strip underside) and carry
-  the load. Knuckle and groove are round and never take the stop load.
+  `hinge_stop_deg`, half the solved fold (16.9 degrees right, 16.8 left), so closed there is a
+  V slit at the skirt bottom (about 7.5 mm wide at the front and back skirt, 1.5 mm under the
+  strip) and when folded by `hinge_fold_deg` (33.8 right, 33.6 left) the two faces meet flat
+  on flat along the whole cut (skirt ends and strip underside) and carry the load. Knuckle and
+  groove are round and never take the stop load. The fold is derived from `tent_deg` = 15 (the
+  input): it is the angle at which the kickstand's lip edge reaches the desk.
 - Feet: seven 10.5 mm recesses 0.5 deep (the five hole positions and two under the
   controller block).
 
@@ -117,7 +122,7 @@ From `stack.json` (`make stack`):
 | lid roof under / lid top | +14.0 / +17.0 | +14.0 / +17.0 | +26.1 / +29.1 (`lid_mode` flat) |
 | hinge strip under / hinge axis | +12.0 / +14.5 | +12.0 / +14.5 | +24.1 / +26.55 |
 | lid lip bottom | +2.0 | +2.0 | +2.0 |
-| foot: tilt / hinge axis / outer edge above the desk | 15.3 deg / 27.6 / 13.5 | 14.9 deg / 27.2 / 13.6 | 14.9 deg / 38.8 / 25.2 |
+| foot: tilt / fold / hinge axis above the desk / kickstand reach / free-end clearance | 15 deg / 33.6 deg / 31.3 / 57.0 / 4.0 | 15 deg / 33.8 deg / 30.5 / 53.9 / 3.2 | 15 deg / 21.0 deg / 30.5 / 58.1 / -8.4 (not usable, see below) |
 
 ## Printing
 
@@ -170,31 +175,46 @@ From `stack.json` (`make stack`):
    FFC through the channel into J1, fasten the two M2 x 10 from below. Drop the ball in.
 7. Battery into the well, JST into J3, stick the rubber feet on.
 8. Lid on for transport (press it down until the lip is in). As a foot: fold the inner plate
-   down to the stop, lay the outer plate roof-up against the tray underside so the magnets
-   snap it on, and stand the half on the desk, inner edge up.
+   down to the stop, lay the outer plate roof-up against the tray underside under the
+   controller half so the magnets snap it on, and stand the half on the desk on its outer
+   bottom edge and the kickstand, which points inward towards the other half.
 
 ## Lid, hinge and foot
 
 Closed, the two plates are one cover: skirt on the rim, lip in the tray, the knuckles flush
 with the roof top, a 0.2 mm gap between the cut faces above the axis and the V slit of the
-stop below it. Folded, the lid is the stand: the outer plate lies roof-up against the tray
-underside (its four roof magnets meet the four floor magnets at the same xy, invisible in both
-positions thanks to the 0.6 mm skin on the roof and the pockets from below in the tray) and the
-inner plate hangs down by 30 degrees as the leg, the two cut faces pressed flat on flat. Both
-plates stand on their skirt-and-lip bottom edges. Result (`stack.json`): the half tilts by
-`foot_tilt_deg` 14.9 degrees (right; 15.3 left) with the inner edge up, the hinge axis is
-27.2 mm above the desk (`foot_hinge_h`), the tray's outer bottom edge 13.6 mm (`foot_outer_h`).
-`tent_deg` sets the tilt; the stop is cut for twice that angle (`hinge_fold_deg`). The rubber
-feet stay usable without the lid. Parts: `lid_outer` and `lid_inner` are the plates to print,
-`lid` the closed pair, `lid_folded` the folded pair; the previews `lid_foot` (tilted on the
-desk) and `lid_foot_flat` show the half on its lid.
+stop below it. Folded, the lid is the stand. The whole folded lid is shifted inward by
+`foot_dx` (`data.scad`: -64.7 mm right, -67.8 left) so that the hinge axis sits 3 mm
+(`foot_overhang`) outside the inner tray wall: the outer plate lies roof-up against the tray
+underside under the controller half (its four roof magnets meet the four floor magnets,
+invisible in both positions thanks to the 0.6 mm skin on the roof and the pockets from below
+in the tray) and the inner plate folds down beyond the inner edge as a kickstand that points
+inward, between the two halves, the two cut faces pressed flat on flat. The half stands on its
+own outer bottom edge on the desk and on the hinge directly above the kickstand: nothing is
+cantilevered, so a thumb press or a resting palm cannot pivot the board against the magnets,
+which only keep the plate aligned. The four rubber feet at (-58, 1), (-58, 34), (-27, 8) and
+(-32, 61) rest on the lid roof. Result (`stack.json`, right; left in brackets): `tent_deg` = 15
+is the input, the fold `hinge_fold_deg` is solved so that the kickstand's lip edge reaches the
+desk: 33.8 degrees (33.6), stop faces at `hinge_stop_deg` = half of that. The kickstand hangs
+`foot_beta_deg` 18.8 degrees (18.6) below the tray, the hinge axis is 30.5 mm (31.3) above the
+desk (`foot_hinge_h`), the kickstand's foot stands 53.9 mm (57.0) beyond the inner wall
+(`foot_reach`) and the outer plate's free end floats 3.2 mm (4.0) above the desk
+(`foot_free_end_h`; below about 13 degrees of tilt the lid thickness alone would hold the
+board up, `tests/test_case.py` asserts more than 0.5 mm). `hinge_fold_override` (`params.scad`,
+-1) shows another fold in `lid_folded` for the collision test only. The rubber feet stay
+usable without the lid. Parts: `lid_outer` and `lid_inner` are the plates to print, `lid` the
+closed pair, `lid_folded` the folded pair; the previews `lid_foot` (tilted on the desk) and
+`lid_foot_flat` show the half on its lid.
 
 ## 25 mm fallback
 
 `-D ball_d=25 -D notch_apothem=16.5 -D pocket_d=35 -D ball_top_z=23.05` (a different PCB
 notch): the pocket cavity follows the octagon, and with `-D lid_mode="flat"` the right lid roof
 rises over the ball to +26.1 (top +29.1, hinge axis +26.55). Documented as a parameter, not
-printed.
+printed. The foot does not work with that lid: the solver gives a 21.0 degree fold for 15
+degrees of tilt, but the thicker outer plate's free end would be 8.4 mm below the desk
+(`foot_free_end_h`), so the plate touches down before the kickstand and the half would need a
+steeper tilt.
 
 ## Open points
 
@@ -206,7 +226,11 @@ printed.
   first print, change it (0.1 tighter, 0.2 looser) and reprint only the lid plates.
 - `hinge_clear` = 0.3 and `hinge_pin_fit` = 0.2 are guesses too: the knuckles must turn freely
   in the grooves and the rod must push in by hand. Check on the first print that the folded
-  lid does not rock as a foot (the stop faces meet along the whole cut).
+  lid does not rock as a foot (the stop faces meet along the whole cut, the outer bottom edge
+  and the kickstand's lip edge both touch the desk).
+- As a foot the kickstand reaches about 54 mm (right; 57 left) inward beyond the inner wall,
+  so the two halves need at least that gap between them; with both kickstands pointing at each
+  other the halves cannot stand closer than about 11 cm.
 - The pocket well corners outside the octagon are closed by a 1.6 mm shelf at the PCB
   underside level; if a printer sags there, cut the shelf back with `pocket_wall`.
 - The supplied wordmark is cropped at the top and `scripts/gen_logo.py` mirrors the frame foot

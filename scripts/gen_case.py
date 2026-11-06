@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 
 from shapely.geometry import LineString, Point, Polygon, box
+from shapely.affinity import translate
 from shapely.ops import unary_union
 
 from k0d3.geometry import HALVES, Layout, load_layout
@@ -33,8 +34,10 @@ FOOT_D = 10.5
 MAGNET_D = 6.2           # foot magnet pocket (params.scad magnet_d)
 MAGNET_INSET = 8.0       # foot magnet centres this far inside the PCB outline / the hinge line
 HINGE_X = -13.0          # lid hinge line (x = const, runs front to back), 2 mm inboard of the pocket ring
-HINGE_STRIP_CLEAR = 2.0  # magnets this far beyond MAGNET_INSET from the hinge line: the 6 mm hinge strip
-                         # under the lid roof must not cover a roof pocket (6 + 3.1 + margin < 10)
+HINGE_STRIP = 6.0        # the hinge strip under the lid roof, no roof pocket within this of the line
+WALL_LID = 3.2           # pcb_clear + wall: the lid skirt outer face beyond the PCB outline
+FOOT_OVERHANG = 3.0      # as a foot the hinge axis sits this far outside the inner tray wall
+WINDOW_D = 16.0          # ball window in the lid roof (params.scad ball_window_d)
 CTRL_CLEAR = 1.0         # boss protrusions keep this to the controller board
 
 
@@ -99,27 +102,41 @@ def well_polygon(layout: Layout) -> Polygon:
     return Polygon(well.exterior).simplify(0.01)
 
 
-def foot_magnets(layout: Layout, box_r, keep_out: list[Polygon]) -> list[tuple[float, float]]:
-    """Four 6 x 2 mm magnets in the tray floor for the lid-as-foot: one near each corner of the
-    outer lid plate (x > HINGE_X), MAGNET_INSET inside the PCB edge and the hinge line (the floor
-    is 9.5 mm thick under the key area). A candidate must clear the battery well, the pocket well
-    and the FFC channel by 2 mm, the standoffs (insert hole plus 3) and the feet recesses by 1 mm,
-    and the controller box bosses. If the point nearest to a corner collides, the search walks
-    along the inset contour in both directions until a free point is found."""
+def foot_dx(layout: Layout) -> float:
+    """As a foot the lid is shifted inward until its hinge axis sits FOOT_OVERHANG outside the
+    inner tray wall: the outer plate lies under the controller half, the inner plate folds down
+    beyond the inner edge as the kickstand. Board x = lid x + foot_dx."""
+    minx = layout.outline.bounds[0]
+    return round(minx - WALL_LID - FOOT_OVERHANG - HINGE_X, 3)
+
+
+def foot_magnets(layout: Layout, box_r, keep_out: list[Polygon], dx: float) -> list[tuple[float, float]]:
+    """Four 6 x 2 mm magnets in the tray floor for the lid-as-foot, returned in the board frame.
+    They sit in the roof of the outer lid plate (lid frame: x > HINGE_X + the hinge strip, inside
+    the outline by MAGNET_INSET, clear of the ball window) and, shifted by foot_dx, in thick
+    floor of the tray (board frame: clear of the battery well, the pocket well and the FFC
+    channel by 2 mm, of the standoffs by 3, of the feet recesses by 1 and of the controller box
+    bosses). The search walks the inset contour of the allowed region from each of its corners
+    in both directions until a free point is found."""
     poly = layout.outline
     minx, miny, maxx, maxy = poly.bounds
-    plate = poly.intersection(box(HINGE_X + HINGE_STRIP_CLEAR, miny - 1, maxx + 1, maxy + 1))
-    inset = plate.buffer(-MAGNET_INSET, join_style=2)
-    assert inset.geom_type == "Polygon", inset.geom_type
-    ring_ls = LineString(inset.exterior.coords)
+    inset = poly.buffer(-MAGNET_INSET, join_style=2)
+    lid_region = inset.intersection(box(HINGE_X + HINGE_STRIP + MAGNET_D / 2 + 0.5, miny - 1, maxx + 1, maxy + 1))
+    board_region = translate(inset, -dx, 0)
+    allowed = lid_region.intersection(board_region)
+    assert allowed.geom_type == "Polygon", allowed.geom_type
+    ring_ls = LineString(allowed.exterior.coords)
     length = ring_ls.length
-    corners = [(HINGE_X, miny), (maxx, miny), (maxx, maxy), (HINGE_X, maxy)]
+    ax0, ay0, ax1, ay1 = allowed.bounds
+    corners = [(ax0, ay0), (ax1, ay0), (ax1, ay1), (ax0, ay1)]
     x0, y0, x1, y1 = box_r
     bosses = [box(x0 - 0.2, y0 - 0.2, x0 + 3.3, y0 + 3.3), box(x0 - 0.2, y1 - 6.6, x0 + 3.3, y1)]
-    blocked = unary_union(keep_out + bosses)
     holes = [Point(h["x"], h["y"]).buffer(3.0) for h in layout.cfg["mounting_holes"]]
     foot_circles = [Point(f).buffer(FOOT_D / 2 + 1.0) for f in feet(layout, box_r)]
-    blocked = unary_union([blocked] + holes + foot_circles)
+    board_blocked = unary_union(keep_out + bosses + holes + foot_circles)
+    blocked = translate(board_blocked, -dx, 0)          # into the lid frame
+    if layout.has_ball:
+        blocked = unary_union([blocked, Point(layout.ball_center).buffer(WINDOW_D / 2 + 1.0)])
     magnets = []
     for corner in corners:
         t0 = ring_ls.project(Point(corner))
@@ -132,9 +149,9 @@ def foot_magnets(layout: Layout, box_r, keep_out: list[Polygon]) -> list[tuple[f
                 disc = c.buffer(MAGNET_D / 2)
                 if disc.intersects(blocked):
                     continue
-                if any(Point(m).distance(c) < MAGNET_D + 2.0 for m in magnets):
+                if any(Point(m).distance(Point(c.x + dx, c.y)) < MAGNET_D + 2.0 for m in magnets):
                     continue
-                found = (round(c.x, 3), round(c.y, 3))
+                found = (round(c.x + dx, 3), round(c.y, 3))
                 break
             if found:
                 break
@@ -200,7 +217,8 @@ def half_data(layout: Layout) -> dict:
         keep = []
     keep.append(well.buffer(2.0, join_style=2))
     d["hinge_x"] = HINGE_X
-    d["foot_magnets"] = foot_magnets(layout, br, keep)
+    d["foot_dx"] = foot_dx(layout)
+    d["foot_magnets"] = foot_magnets(layout, br, keep, d["foot_dx"])
     d["feet"] = feet(layout, br)
     sanity(layout, d, well)
     return d
@@ -226,8 +244,18 @@ def sanity(layout: Layout, d: dict, well: Polygon) -> None:
             problems.append(f"foot magnet at ({x}, {y}) outside the case floor")
         if any(disc.intersects(k) for k in keep_outs):
             problems.append(f"foot magnet at ({x}, {y}) in a well, channel or standoff")
-        if x - MAGNET_D / 2 < d["hinge_x"] + 6.0 + 0.5:
+        lx = x - d["foot_dx"]
+        if lx - MAGNET_D / 2 < d["hinge_x"] + HINGE_STRIP + 0.5:
             problems.append(f"foot magnet at ({x}, {y}) under the hinge strip of the lid roof")
+        if not layout.outline.buffer(-3.0, join_style=2).contains(Point(lx, y).buffer(MAGNET_D / 2)):
+            problems.append(f"foot magnet at ({x}, {y}) outside the lid roof")
+        if d["has_ball"] and Point(lx, y).distance(Point(d["ball_center"])) < WINDOW_D / 2 + MAGNET_D / 2 + 1.0:
+            problems.append(f"foot magnet at ({x}, {y}) in the ball window")
+    # as a foot every rubber foot is either fully on the outer lid plate or fully off it
+    plate_x1 = layout.outline.bounds[2] + WALL_LID + d["foot_dx"]
+    for x, y in d["feet"]:
+        if abs(x - plate_x1) < FOOT_D / 2 + 0.5:
+            problems.append(f"foot at ({x}, {y}) straddles the lid plate edge at x {plate_x1:.2f}")
     x0, y0, x1, y1 = d["box_rect"]
     ctrl = box(*d["ctrl_rect"]).buffer(CTRL_CLEAR, join_style=2)
     # boss protrusions into the box (see tray.scad boss_2d): 3.5 mm along the outer wall
@@ -264,13 +292,13 @@ def render(data: dict[str, dict]) -> str:
              "// Selector functions take the half name: outline(\"left\"), holes(\"right\"), ...", ""]
     names = ["outline", "holes", "bay", "well", "j3", "rb1", "ps1", "reset", "switch", "ctrl_rect", "box_rect",
              "test_pads", "keys", "has_ball", "ball_center", "housing_footprint", "housing_box", "case_screws",
-             "notch", "fpc_box", "cable_corridor", "hinge_x", "foot_magnets", "feet"]
+             "notch", "fpc_box", "cable_corridor", "hinge_x", "foot_dx", "foot_magnets", "feet"]
     for name in names:
         for half in HALVES:
             v = data[half][name]
             if name == "has_ball":
                 s = "true" if v else "false"
-            elif name == "hinge_x":
+            elif name in ("hinge_x", "foot_dx"):
                 s = fmt(v)
             elif name in ("reset", "switch", "ball_center"):
                 s = f"[{fmt(v[0])}, {fmt(v[1])}]"

@@ -90,22 +90,25 @@ foot_recess     = 0.5;
 // ---------------------------------------------------------------- lid
 // Two plates per half joined by a pin hinge along x = hinge_x (data.scad): the outer plate
 // (pinky side, carries the ball window and the four roof magnets) and the inner plate
-// (controller and thumb side). Closed it is the transport cover; folded by hinge_fold_deg it
-// goes under the half as a tenting stand, the outer plate roof-up against the floor magnets and
-// the inner plate as the leg. See docs/11-case.md section 7.
+// (controller and thumb side). Closed it is the transport cover; folded it goes under the half
+// shifted by foot_dx, the outer plate roof-up under the controller half on the floor magnets
+// and the inner plate as the kickstand beyond the inner edge. See docs/11-case.md section 7.
 cap_top_z       = 11.0;        // Choc V1 keycap top
 lid_clear       = 3.0;         // roof underside over the caps; also room for the hinge strip
 lid_roof_t      = 3.0;         // takes the 2.4 mm magnet pockets plus the 0.6 mm skin
 lid_lip_t       = 1.0;         // inner lip that holds the lid on the tray by friction
 lid_lip_depth   = 3.0;         // how far the lip reaches into the tray below the rim
 lid_fit         = 0.15;        // clearance between the lip and the inner wall face
+lid_lip_chamfer = 0.5;         // lead-in on the lower outer edge of the lip
+lid_lip_steps   = 5;
 lid_mode        = "window";    // "window" (ball looks through a hole smaller than itself) | "flat" (roof over the ball) | "dome"
 ball_window_d   = 16.0;        // through the roof at the ball centre; < ball_d keeps the ball in the cup
 lid_box_clear   = 0.3;         // lid skirt around the controller box walls
 
 // ---------------------------------------------------------------- lid hinge and tenting foot
-tent_deg        = 15;          // tilt of the half on the folded lid, inner edge up; the stop is cut for 2 x this
-hinge_fold_deg  = 2 * tent_deg; // fold shown by lid_folded / lid_foot; the stop faces meet at exactly 2 x tent_deg
+tent_deg        = 15;          // tilt of the half on the folded lid, inner edge up (input; the fold follows)
+hinge_fold_override = -1;      // > 0: fold shown by lid_folded instead of the solved one (collision test)
+foot_overhang   = 3.0;         // as a foot the hinge axis sits this far outside the inner tray wall (gen_case FOOT_OVERHANG)
 hinge_knuckle_d = 5.0;         // knuckle diameter = thickness of the hinge strip, flush with the roof top
 hinge_strip_w   = 6.0;         // the roof is thickened to hinge_knuckle_d this far on both sides of the line
 hinge_seg_len   = 10.0;        // target knuckle length; the count is odd so the outer plate owns both ends

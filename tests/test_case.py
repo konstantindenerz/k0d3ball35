@@ -111,17 +111,19 @@ def mesh_of(path):
 
 
 def circle_centres(v, z, tol=0.02, max_r=3.5):
-    """Centres of vertex clusters lying on the plane z (magnet pocket floors / ceilings)."""
+    """Centres of vertex clusters lying on the plane z (magnet pocket floors / ceilings). The
+    mean of the points within max_r + 0.5 of the running centre, iterated from a seed on the
+    rim, walks to the circle's centre even when a neighbouring circle is only a few mm away."""
     import numpy as np
 
     pts = v[np.abs(v[:, 2] - z) < tol][:, :2]
     centres = []
     while len(pts):
-        seed = pts[0]
-        near = pts[np.hypot(pts[:, 0] - seed[0], pts[:, 1] - seed[1]) < 2 * max_r + 1]
-        c = near.mean(axis=0)
-        near = pts[np.hypot(pts[:, 0] - c[0], pts[:, 1] - c[1]) < max_r + 0.5]
-        centres.append(tuple(near.mean(axis=0)))
+        c = pts[0]
+        for _ in range(12):
+            near = pts[np.hypot(pts[:, 0] - c[0], pts[:, 1] - c[1]) < max_r + 0.5]
+            c = near.mean(axis=0)
+        centres.append(tuple(c))
         pts = pts[np.hypot(pts[:, 0] - c[0], pts[:, 1] - c[1]) >= max_r + 0.5]
     return sorted((round(x, 1), round(y, 1)) for x, y in centres)
 
@@ -181,7 +183,18 @@ def test_data_matches_layout(data):
         magnets = data["foot_magnets"][half]
         assert len(magnets) == 4
         assert data["hinge_x"][half] == -13
-        assert all(x - 3.1 >= data["hinge_x"][half] + 6.0 + 0.5 for x, y in magnets), "under the hinge strip"
+        dx = data["foot_dx"][half]
+        assert abs(dx - (layout.outline.bounds[0] - 3.2 - 3.0 - data["hinge_x"][half])) < 1e-3   # 3 decimals
+        # in the lid roof: inside the outer plate, off the hinge strip and the ball window
+        for x, y in magnets:
+            lx = x - dx
+            assert lx - 3.1 >= data["hinge_x"][half] + 6.0 + 0.5, "under the hinge strip"
+            assert layout.outline.buffer(-3.0, join_style=2).contains(Point(lx, y).buffer(3.1)), (half, x, y)
+            if layout.has_ball:
+                assert Point(lx, y).distance(Point(BALL)) >= 8.0 + 3.1 + 1.0
+        # every rubber foot fully on or fully off the outer plate as a foot
+        plate_x1 = layout.outline.bounds[2] + 3.2 + dx
+        assert all(abs(x - plate_x1) >= 10.5 / 2 + 0.5 for x, y in data["feet"][half]), half
         inner = layout.outline.buffer(-3.0, join_style=2)
         keep = [well.buffer(2.0, join_style=2)]
         if layout.has_ball:
@@ -313,9 +326,18 @@ def test_stack_json(stack, cradle_stack):
         assert v["lid_top_z"] - v["hinge_knuckle_d"] >= 11.0 + 0.5, "hinge strip over the caps"
         assert v["hinge_segments"] % 2 == 1 and v["hinge_segments"] >= 5, name
         assert 7.0 <= v["hinge_seg"] <= 12.0, name
-        assert abs(v["hinge_fold_deg"] - 2 * v["tent_deg"]) < 1e-6, name
-        assert abs(v["foot_tilt_deg"] - v["tent_deg"]) < 2.0, name
-        assert v["foot_hinge_h"] > v["foot_outer_h"] > 5.0, name
+        # the fold follows from the tilt: the kickstand reaches the desk, the stop is half the fold
+        assert v["foot_tilt_deg"] == v["tent_deg"] == 15, name
+        assert abs(v["hinge_fold_deg"] - (v["tent_deg"] + v["foot_beta_deg"])) < 1e-3, name
+        assert 15 <= v["hinge_fold_deg"] <= 60, name
+        assert abs(v["hinge_stop_deg"] - v["hinge_fold_deg"] / 2) < 1e-3, name
+        assert v["foot_hinge_h"] > 20 and 30 <= v["foot_reach"] <= 70, name
+        assert v["foot_dx"] < -50, name
+    for name in ("left", "right"):
+        assert stack[name]["foot_free_end_h"] > 0.5, "the outer plate's free end clears the desk"
+    # the 25 mm fallback lid is 12 mm taller, so at 15 degrees its free end would hit the desk:
+    # that variant needs a steeper tent_deg for the foot (documented), the echo says so
+    assert stack["right-25mm"]["foot_free_end_h"] < 0
     assert stack["left"]["has_ball"] == 0 and stack["right"]["has_ball"] == 1
     r = stack["right"]
     # the ball looks through a window smaller than itself: it cannot leave the cup, its chord at
@@ -550,7 +572,7 @@ def test_render_lid(tmp_path, half, data):
     hx = values["hinge_x"] * sx
     away = v[np.abs(v[:, 0] - hx) > values["hinge_knuckle_d"] / 2 + 1.0]     # the knuckles are round
     pockets = circle_centres(away, values["lid_roof_under_z"] + 2.4)
-    expected = [(x * sx, y) for x, y in data["foot_magnets"][half]]
+    expected = [((x - values["foot_dx"]) * sx, y) for x, y in data["foot_magnets"][half]]
     assert len(pockets) == 4 and same_points(pockets, expected), (pockets, expected)
     assert circle_centres(away, values["lid_top_z"] - 0.3) == []
     top = v[np.abs(v[:, 2] - values["lid_top_z"]) < 0.02]
@@ -582,7 +604,7 @@ def test_render_lid_plates(tmp_path, half, data):
         out = tmp_path / f"{part}-{half}.stl"
         # one degree short of the stop the plates must not touch anywhere; at the stop the two
         # faces coincide, which is not a manifold union, so only the volume is checked there
-        extra = {"hinge_fold_deg": 29} if part == "lid_folded_free" else None
+        extra = {"hinge_fold_override": 20} if part == "lid_folded_free" else None
         values, log = run_scad(part.replace("_free", ""), half, out, extra)
         assert "WARNING" not in log and "ERROR" not in log, part
         meshes[part] = mesh_of(out)
@@ -613,9 +635,9 @@ def test_render_lid_plates(tmp_path, half, data):
         # the pin hole runs along the axis
         hole = v[np.abs(d - (values["hinge_pin_d"] + 0.2) / 2) < 0.02]
         assert len(hole) > 100, part
-        # the stop faces: planes through the axis leaning outward by tent_deg below it
+        # the stop faces: planes through the axis leaning outward by hinge_stop_deg below it
         m = meshes[part]
-        t = values["tent_deg"]
+        t = values["hinge_stop_deg"]
         want = np.array([-np.cos(np.radians(t)) * side * sx, 0, -np.sin(np.radians(t))])
         stop = m.area_faces[np.linalg.norm(m.face_normals - want, axis=1) < 0.01]
         assert stop.sum() > 60.0, (part, stop.sum())
@@ -635,12 +657,13 @@ def test_render_lid_as_foot(tmp_path, half, data):
     # the roof top of the outer plate shares the plane base_z with the tray underside: the roof
     # magnet pockets end magnet_skin below it, the tray pockets 2.4 above it, both at the same xy
     expected = [(x * sx, y) for x, y in data["foot_magnets"][half]]
-    away = v[np.abs(v[:, 0] - values["hinge_x"] * sx) > values["hinge_knuckle_d"] / 2 + 1.0]   # not the knuckles
+    axis_x = (values["hinge_x"] + values["foot_dx"]) * sx
+    away = v[np.abs(v[:, 0] - axis_x) > values["hinge_knuckle_d"] / 2 + 1.0]   # not the knuckles
     tray_pockets = circle_centres(away, values["base_z"] + 2.4)
     lid_pockets = circle_centres(away, values["base_z"] - values["lid_roof_t"] + 2.4)
     assert same_points(tray_pockets, expected) and same_points(lid_pockets, expected), (tray_pockets, lid_pockets)
-    # on the desk: both contact edges at z = 0, the tray underside tilted by foot_tilt_deg with
-    # the inner edge up (the inner plate is the leg)
+    # on the desk: the tray's outer bottom edge and the kickstand's lip edge at z = 0, the tray
+    # underside tilted by tent_deg with the inner edge up
     out = tmp_path / f"foot-{half}.stl"
     values, log = run_scad("lid_foot", half, out)
     assert "WARNING" not in log and "ERROR" not in log
@@ -651,11 +674,18 @@ def test_render_lid_as_foot(tmp_path, half, data):
     n, a = mesh.face_normals, mesh.area_faces
     base = a[np.linalg.norm(n - np.array([-np.sin(t) * sx, 0, -np.cos(t)]), axis=1) < 0.01].sum()
     assert base > 3000.0, "the tray underside is tilted by foot_tilt_deg"
-    # both plates stand on the desk: the outer plate at its outer edge, the leg's far edge about
-    # 6 mm inboard of the inner wall because the fold swings it under the half
     on_desk = v[v[:, 2] < 0.05]
-    xs = (on_desk[:, 0] - values["hinge_x"] * sx) * sx
-    assert xs.min() < -40 and xs.max() > 40, "both edges stand on the desk"
+    xs = on_desk[:, 0] * sx
+    assert xs.max() > values["bbox_max_x"] + 3.0, "the tray's outer edge stands on the desk"
+    assert xs.min() < values["bbox_min_x"] - 3.2 - 30.0, "the kickstand stands on the desk beyond the inner edge"
+    # the outer plate's free end (its lip bottom, rotated with the half) floats above the desk by
+    # foot_free_end_h
+    px = values["bbox_max_x"] + 3.2
+    xe = values["bbox_max_x"] - 0.45 + values["foot_dx"]       # lowest lip ring: 0.2 - 0.15 - 0.5 inside the PCB edge
+    zl = -(values["lid_top_z"] - values["rim_z"] + values["lid_lip_depth"])
+    xr = px + (xe - px) * np.cos(t) + zl * np.sin(t)
+    free = v[np.abs(v[:, 0] * sx - xr) < 2.0]
+    assert abs(free[:, 2].min() - values["foot_free_end_h"]) < 0.1, free[:, 2].min()
 
 
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")

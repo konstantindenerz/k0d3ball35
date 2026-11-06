@@ -11,7 +11,7 @@ PYTHON   ?= ../../.venv/bin/python
 CAM_ASM   = --camera=-10,30,0,55,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_SEC   = --camera=5,64,0,75,0,150,230 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_BOX   = --camera=-58,22,5,60,0,300,150 --imgsize=1400,1000 --colorscheme=Tomorrow
-CAM_FOOT  = --camera=-10,30,15,80,0,0,330 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_FOOT  = --camera=-70,30,10,78,0,25,460 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_FOLD  = --camera=-13,30,10,60,0,40,260 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_HINGE = --camera=-13,-9,14,70,0,0,60 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_BOT   = --camera=-10,30,-10,125,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow

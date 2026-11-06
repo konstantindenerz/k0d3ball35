@@ -486,9 +486,11 @@ Aspect 3:2. Lid under the half as a foot.
 ```prompt
 Three-quarter photo of a low-profile split keyboard half with a white 19 mm trackball standing
 on its own folded lid, the beige-grey lid's outer plate lying roof-up against the flat underside
-of the case, held there invisibly by magnets, its inner plate folded down at the hinge as a
-leg so the half tilts by about 15 degrees with the inner edge raised, both plate edges on the
-oak desk, a second lid-less half beside it lying flat, soft studio light.
+of the case under the controller half of the board, held there invisibly by magnets, its inner
+plate folded down at the hinge just beyond the inner edge as a kickstand pointing inward towards
+the other half, the outer edge of the case resting directly on the oak desk so the half tilts
+by about 15 degrees with the inner edge raised, a second lid-less half beside it lying flat,
+soft studio light.
 ```
 
 ## img-case-lid-folded
@@ -499,10 +501,12 @@ Aspect 3:2. The folded lid as a tenting stand under the right half, seen from th
 Low three-quarter photo from the inner edge of a right keyboard half in a beige-grey printed
 case with a glossy white 19 mm trackball, tilted by about 15 degrees with the inner edge up and
 standing on its own hinged lid: the lid's outer plate lies flat and roof-up against the case
-underside, the inner plate folds down from a straight knuckle hinge at about 30 degrees as a
-leg, both plates resting on their thin skirt edges on the oak desk, a small round hinge
-knuckle line visible 28 mm above the desk, no magnets or fasteners visible, soft daylight,
-shallow depth of field.
+underside under the controller half of the board, the hinge line sits just outside the inner
+edge of the case about 30 mm above the desk, and from it the inner plate folds down and inward
+at about 34 degrees as a kickstand pointing towards where the other half would stand, its thin
+skirt edge on the oak desk about 55 mm from the case, the outer bottom edge of the case resting
+on the desk, the free end of the outer plate floating a few millimetres above it, no magnets or
+fasteners visible, soft daylight, shallow depth of field.
 ```
 
 ## img-case-lid-hinge
