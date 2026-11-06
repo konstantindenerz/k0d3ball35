@@ -1,8 +1,9 @@
 /*
- * Right half (split central, carries the PMW3610 trackball sensor).
+ * Right half (split central, 15 finger + 2 thumb keys, carries the PMW3610
+ * trackball sensor for the 19.05 mm ball).
  *
- *   COL0..COL4 (pinky .. inner) -> pro_micro 4, 5, 6, 7, 8
- *   ROW0..ROW3 (top .. thumbs)  -> pro_micro 21, 20, 19, 18
+ * Row and column pins are shared with the left half and live in k0d3ball36.dtsi
+ * (COL0..COL4 = pro_micro 4..8, ROW0..ROW3 = pro_micro 21, 20, 19, 18). Sensor:
  *   TB_SCLK  pro_micro 15 = P1.13
  *   TB_SDIO  pro_micro 16 = P0.10  (3-wire SPI: MOSI and MISO on the same pin)
  *   TB_NCS   pro_micro 10 = P0.09
@@ -19,22 +20,6 @@
 
 &default_transform {
     col-offset = <5>;
-};
-
-&kscan0 {
-    row-gpios
-        = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-        , <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-        , <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-        , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-        ;
-    col-gpios
-        = <&pro_micro 4 GPIO_ACTIVE_HIGH>
-        , <&pro_micro 5 GPIO_ACTIVE_HIGH>
-        , <&pro_micro 6 GPIO_ACTIVE_HIGH>
-        , <&pro_micro 7 GPIO_ACTIVE_HIGH>
-        , <&pro_micro 8 GPIO_ACTIVE_HIGH>
-        ;
 };
 
 /* P0.09 / P0.10 are the NFC antenna pins; use them as plain GPIO. */
@@ -77,8 +62,15 @@
         motion-gpios = <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         zephyr,axis-x = <INPUT_REL_X>;
         zephyr,axis-y = <INPUT_REL_Y>;
-        /* 25 mm ball: start low, a small ball turns more per mm of thumb travel. */
-        res-cpi = <400>;
+        /* 19.05 mm ball. The sensor counts surface travel, and a rigid sphere moves
+         * its surface by the same mm at the sensor as under the thumb whatever its
+         * size, so counts per mm of thumb travel do not change. What changes is the
+         * stroke: the thumb runs off a smaller sphere sooner and the light ball does
+         * not coast after a flick, so each stroke moves less surface. To cover the
+         * same screen distance per stroke the 19 mm ball needs about 30 percent more
+         * CPI than the 25 mm setup (400). Start at 600 and tune, see
+         * issues/fw-cpi-tuning-19mm.md. */
+        res-cpi = <600>;
         smart-mode;
         /* Flip these if the cursor moves the wrong way after assembly. */
         // invert-x;
@@ -88,10 +80,12 @@
 
 /* Keys that keep the auto mouse layer alive while it is active (mouse buttons,
  * scroll and snipe modifiers on the right half). Positions follow the matrix
- * transform order in k0d3ball36.dtsi. */
+ * transform order in k0d3ball36.dtsi (35 keys): 6 7 = scroll/snipe layer keys,
+ * 16 17 18 = left/right/middle click, 26 27 = back/forward, 33 34 = the two
+ * right thumb keys. */
 &zip_temp_layer {
     require-prior-idle-ms = <150>;
-    excluded-positions = <6 7 16 17 18 33 34 35>;
+    excluded-positions = <6 7 16 17 18 26 27 33 34>;
 };
 
 / {

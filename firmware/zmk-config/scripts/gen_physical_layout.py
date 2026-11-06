@@ -2,9 +2,19 @@
 # SPDX-License-Identifier: MIT
 """Generate the ZMK physical layout (key_physical_attrs rows) for k0d3ball36.
 
-Geometry follows docs/01-design-spec.md section 5. Until the layout generator in
-hardware/layout/ exports exact positions, the approximate values from the spec are
-used. Run with --json to emit the keymap-editor layout instead of devicetree.
+Key centres come from the layout generator's exact output,
+hardware/layout/output/points-left.json and points-right.json (run
+`scripts/gen_layout.py` to refresh them). Both files use the same frame: x grows
+outward towards the pinky, y grows downward, origin = centre of the middle
+column's top key. The left half is mirrored for display, the right half is used
+as is, and the two halves are placed HALF_GAP_MM apart (inner column centre to
+the mirror axis).
+
+Keys are emitted in matrix-transform order (k0d3ball36.dtsi): three finger rows,
+each left pinky..inner then right inner..pinky, followed by the thumb keys (left
+outer, middle, inner, then right middle, outer). 35 keys in total.
+
+Run with --json to emit the keymap-editor layout instead of devicetree.
 
 Units: ZMK physical layouts use centi-keyunits. One keyunit is taken as 18 mm
 (the Choc column pitch), so a key is 100 wide and 94 high (17 mm).
@@ -13,55 +23,56 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
+import pathlib
+
+ROOT = pathlib.Path(__file__).resolve().parents[3]
+POINTS = ROOT / "hardware" / "layout" / "output"
 
 MM_PER_UNIT = 18.0
 KEY_W_MM, KEY_H_MM = 18.0, 17.0
-COL_PITCH_MM, ROW_PITCH_MM = 18.0, 17.0
-
-# column index 0 = pinky ... 4 = inner; y offsets in mm relative to the middle column
-STAGGER_MM = [10.44, 4.19, 0.0, 2.23, 4.46]
-# thumb keys on the left half: (x, y, rotation_deg) of the key centre in mm,
-# x measured from the middle column centre towards the inside of the board,
-# y measured from the top row centre downwards.
-THUMBS_MM = [
-    (22.0, 58.5, 0.0),   # thumb outer   -> matrix (3,2)
-    (41.0, 60.5, 10.0),  # thumb middle  -> matrix (3,3)
-    (59.5, 65.5, 20.0),  # thumb inner   -> matrix (3,4)
-]
 HALF_GAP_MM = 36.0  # distance from the inner column centre to the mirror axis
+EXPECTED_KEYS = 35
 
 
-def left_half_centres() -> list[tuple[float, float, float]]:
-    """Return (x, y, rot) centres in mm for the left half, in matrix-transform order.
+def load_points(half: str) -> dict:
+    path = POINTS / f"points-{half}.json"
+    if not path.exists():
+        raise SystemExit(f"{path} missing; run `.venv/bin/python scripts/gen_layout.py` first")
+    return json.loads(path.read_text())
 
-    Order: row 0 pinky..inner, row 1, row 2, then thumbs outer..inner.
-    x grows to the right (towards the centre of the keyboard), y grows downwards.
-    The middle-column top key centre is the origin.
+
+def display_keys(half: str) -> dict[tuple[int, int], tuple[float, float, float]]:
+    """Return {(row, col): (x, y, rot)} in the display frame (x to the right, y down).
+
+    Display x = 0 is the mirror axis between the halves. Rotation is clockwise
+    positive (ZMK convention); the layout files use KiCad's counter-clockwise
+    convention, so the right half flips the sign and the mirrored left half keeps it.
     """
-    keys = []
-    for row in range(3):
-        for col in range(5):
-            x = (col - 2) * COL_PITCH_MM
-            y = row * ROW_PITCH_MM + STAGGER_MM[col]
-            keys.append((x, y, 0.0))
-    for x, y, rot in THUMBS_MM:
-        keys.append((x, y, rot))
+    data = load_points(half)
+    inner_x = min(k["x"] for k in data["keys"] if k["kind"] == "finger")
+    shift = -inner_x + HALF_GAP_MM  # moves the inner column to HALF_GAP_MM from the axis
+    keys = {}
+    for k in data["keys"]:
+        x_out = k["x"] + shift  # distance from the axis, positive outward
+        if half == "left":
+            keys[(k["row"], k["col"])] = (-x_out, k["y"], float(k["rotation"]))
+        else:
+            keys[(k["row"], k["col"])] = (x_out, k["y"], -float(k["rotation"]))
     return keys
 
 
 def both_halves() -> list[tuple[float, float, float]]:
-    """Centres for all 36 keys in matrix-transform order (rows interleaved L/R)."""
-    left = left_half_centres()
-    axis = 2 * COL_PITCH_MM + HALF_GAP_MM  # x of the mirror axis
-    right = [(2 * axis - x, y, -rot) for (x, y, rot) in left]
-    # right half columns are mirrored, so pinky is the right-most key: reverse each row
+    """Centres for all keys in matrix-transform order."""
+    left = display_keys("left")
+    right = display_keys("right")
     ordered: list[tuple[float, float, float]] = []
     for row in range(3):
-        ordered += left[row * 5:(row + 1) * 5]
-        ordered += right[row * 5:(row + 1) * 5][::-1]
-    ordered += left[15:18]
-    ordered += right[15:18][::-1]
+        ordered += [left[(row, c)] for c in range(5)]
+        ordered += [right[(row, c)] for c in range(4, -1, -1)]
+    thumbs_left = sorted((rc for rc in left if rc[0] == 3), key=lambda rc: rc[1])
+    thumbs_right = sorted((rc for rc in right if rc[0] == 3), key=lambda rc: -rc[1])
+    ordered += [left[rc] for rc in thumbs_left]
+    ordered += [right[rc] for rc in thumbs_right]
     return ordered
 
 
@@ -107,7 +118,7 @@ def main() -> None:
     ap.add_argument("--json", action="store_true", help="emit keymap-editor JSON")
     args = ap.parse_args()
     keys = both_halves()
-    assert len(keys) == 36
+    assert len(keys) == EXPECTED_KEYS, f"expected {EXPECTED_KEYS} keys, got {len(keys)}"
     if args.json:
         print(json.dumps(to_json(keys), indent=2))
     else:
