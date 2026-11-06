@@ -2,7 +2,7 @@
   (layer "F.Cu")
   (descr "1.5 mm round test pad on both faces")
   (tags "k0d3ball35")
-  (property "Reference" "REF**" (at 2.2 0 0) (layer "F.SilkS") (uuid "f34cd78f-d272-583e-8972-690cfad0346b") (effects (font (size 1 1) (thickness 0.15))))
+  (property "Reference" "REF**" (at 0 -1.7 0) (layer "F.SilkS") (uuid "f34cd78f-d272-583e-8972-690cfad0346b") (effects (font (size 1 1) (thickness 0.15))))
   (property "Value" "TestPad_1.5mm" (at 0 2 0) (layer "F.Fab") (uuid "9930ec83-290e-581b-a2e8-d5ef98d55de5") (effects (font (size 1 1) (thickness 0.15))))
   (property "Footprint" "k0d3ball35:TestPad_1.5mm" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "3eea67fb-914d-52d8-905c-287554a0885c") (effects (font (size 1.27 1.27))))
   (property "Datasheet" "" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "938b0f73-7b58-5773-8bff-1f748f4c7a5e") (effects (font (size 1.27 1.27))))

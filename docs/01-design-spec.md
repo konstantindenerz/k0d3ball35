@@ -196,8 +196,9 @@ the PCB. Minimum clearance between the 28 mm cradle circle and any keycap: 1.0 m
 generator). Ball top about 17.1 mm above the PCB top (`hardware/trackball-cradle/stack.json`).
 
 Controller block: a rectangle at the inner edge from above the controller down to the thumb
-cluster. Controller centre (-58, +14), USB connector towards the top edge, component side up, long
-axis parallel to the columns, 1.5 mm USB overhang. Power switch, reset button, battery pads, JST
+cluster. Controller hole-pattern centre (-58, +11.7), USB connector towards the top edge, component side up, long
+axis parallel to the columns, the USB-C shell 1.5 mm past the PCB edge (the controller board
+overhangs the edge by 0.9 mm, the block's top edge is derived from that). Power switch, reset button, battery pads, JST
 and the test-pad row live in this block; the battery bay (21 x 28 mm, section 4) sits on the back
 under the controller. A "thumb bridge" fills the slot between the index/inner bottom keys and the
 thumb keys.

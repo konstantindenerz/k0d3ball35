@@ -32,7 +32,7 @@ octagon with 15 mm apothem; JLCPCB mills it without a note.
 ## Sensor PCB order settings
 
 Same as above except: 26 x 25 mm, 1.6 mm, ENIG strongly preferred (the 16-pin lead-frame sensor and
-the 0.5 mm connector), quantity 5. Files in `hardware/sensor-pcb/gerbers/`.
+the 0.5 mm connector), quantity 5. Files in `hardware/sensor-pcb/gerbers/`, the zip in `hardware/sensor-pcb/fab/`.
 
 Optional assembly: the PMW3610DM-SUDU is JLCPCB part C42442560 (extended part), so economic PCBA can
 place the sensor, LDO and capacitors. The lens is clipped on by hand afterwards. For five boards the
@@ -61,10 +61,11 @@ The sensor board has its own `hardware/sensor-pcb/export.sh` with the same outpu
       internal cutout, the octagonal notch on the right board only, five mounting holes per board,
       J1 only on the right board, no missing layers
 - [ ] Drill files (count them in `hardware/<half>-pcb/gerbers/*.drl` of the current export): per
-      key one 3.40 mm and two 1.70 mm NPTH (switch posts) and two 3.05 mm NPTH (socket bosses), so
-      18 / 36 / 36 on the left and 17 / 34 / 34 on the right; 2.20 mm x 5 (case holes); 0.85 mm x 2
-      (power switch); PTH 1.00 mm x 26 (controller and battery pads); 0.40 mm for the diode joiner
-      pads; 0.30 mm vias. Nothing of 2.20 mm beyond the five case holes: there are no cradle holes
+      key one 3.40 mm and two 1.70 mm NPTH (switch posts) and three 3.05 mm NPTH (socket bosses,
+      the reversible footprint has the mirrored third hole), so 18 / 36 / 54 on the left and
+      17 / 34 / 51 on the right; 2.20 mm x 5 (case holes); 0.85 mm x 2 (power switch); PTH 1.00 mm
+      x 26 (controller and battery pads); 0.40 mm x 3 per key for the diode joiner pads; 0.30 mm
+      vias. `tests/test_gerbers.py` counts all of this against the boards. Nothing of 2.20 mm beyond the five case holes: there are no cradle holes
 - [ ] Ticket `test-fab-gerber-viewer` closed (independent viewer check)
 - [ ] Ticket `hw-gnd-stitching-review` closed (pours and auto-placed vias looked at in KiCad)
 - [ ] Ticket `hw-main-pcb-review-r1` closed (manual review of both boards in the KiCad GUI)

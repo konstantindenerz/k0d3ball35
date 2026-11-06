@@ -278,7 +278,8 @@ def battery_pads() -> Footprint:
     gfx = [Text("+", -1.27, -1.8, "F.SilkS", 0.8), Text("-", 1.27, -1.8, "F.SilkS", 0.8),
            Text("+", -1.27, -1.8, "B.SilkS", 0.8), Text("-", 1.27, -1.8, "B.SilkS", 0.8)]
     gfx += rect_lines(0, 0, 4.6, 2.6, "F.CrtYd", 0.05) + rect_lines(0, 0, 4.6, 2.6, "B.CrtYd", 0.05)
-    return Footprint("BatteryPads_2x1.8mm_P2.0mm", "Battery solder pads, B+ square pad, 2.54 mm pitch", "through_hole", pads, gfx, "F.SilkS", (0, 1.9))
+    # reference above the polarity marks: below the pads it would collide with the test pad labels
+    return Footprint("BatteryPads_2x1.8mm_P2.0mm", "Battery solder pads, B+ square pad, 2.54 mm pitch", "through_hole", pads, gfx, "F.SilkS", (0, -3.0))
 
 
 def jst_ph_sm4_reversible() -> Footprint:
@@ -326,7 +327,8 @@ def evqp7a_reversible() -> Footprint:
 def test_pad() -> Footprint:
     pads = both_faces([Pad("1", "smd", "circle", 0, 0, 1.5, 1.5, ("F.Cu", "F.Mask"))], mirror=False)
     gfx = [Circle(0, 0, 1.0, "F.CrtYd", 0.05), Circle(0, 0, 1.0, "B.CrtYd", 0.05)]
-    return Footprint("TestPad_1.5mm", "1.5 mm round test pad on both faces", "smd", pads, gfx, "F.SilkS", (2.2, 0))
+    # reference above the pad: the pads sit on a 2.5 mm pitch, a label beside them would be clipped by the neighbour's mask
+    return Footprint("TestPad_1.5mm", "1.5 mm round test pad on both faces", "smd", pads, gfx, "F.SilkS", (0, -1.7))
 
 
 def mounting_hole() -> Footprint:

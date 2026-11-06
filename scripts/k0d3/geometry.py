@@ -295,7 +295,11 @@ def build_outline(cfg: dict, keys: Iterable[Key], ball_center: tuple[float, floa
     thumb_top = min(k.y for k in thumbs) - 2.0
     tp = cfg["test_pads"]
     block_bottom = max(cfg["battery_pads"]["center"]["y"] + 6.0, tp["start"]["y"] + 3.0, thumb_top)
-    parts.append(box(cx - c["size"]["x"] / 2 - 4.5, cy - c["size"]["y"] / 2 - cm, inner["x"], block_bottom))
+    # Top edge of the block: the USB-C shell must stick out of the PCB by usb_overhang so the case
+    # wall can be flush with it. Shell end = controller board top edge - usb_shell.
+    board_top = cy + c.get("pcb_offset_y", 0.0) - c["size"]["y"] / 2
+    block_top = board_top - c.get("usb_shell", 0.0) + c["usb_overhang"]
+    parts.append(box(cx - c["size"]["x"] / 2 - 4.5, block_top, inner["x"], block_bottom))
     # Thumb bridge: fills the slot between the index/inner bottom keys and the thumb keys
     # (FPC connector and routes live here). On the ball half it runs to the ball axis so
     # the notch cuts a clean edge.
@@ -345,13 +349,21 @@ def check_layout(layout: Layout) -> list[str]:
             if caps[a].intersects(caps[b]) and caps[a].intersection(caps[b]).area > 0.01:
                 problems.append(f"keycaps overlap: {a} / {b}")
     c = cfg["controller"]
-    ctrl = box(c["center"]["x"] - c["size"]["x"] / 2, c["center"]["y"] - c["size"]["y"] / 2,
-               c["center"]["x"] + c["size"]["x"] / 2, c["center"]["y"] + c["size"]["y"] / 2)
+    off = c.get("pcb_offset_y", 0.0)
+    ctrl = box(c["center"]["x"] - c["size"]["x"] / 2, c["center"]["y"] + off - c["size"]["y"] / 2,
+               c["center"]["x"] + c["size"]["x"] / 2, c["center"]["y"] + off + c["size"]["y"] / 2)
     for ref, poly in caps.items():
         if poly.intersects(ctrl):
             problems.append(f"controller overlaps {ref}")
-    if not layout.outline.contains(ctrl):
-        problems.append("controller not inside the PCB outline")
+    # the controller board may overhang the top edge (USB side) but nothing else
+    from shapely.geometry import LineString
+    top_edge = layout.outline.intersection(LineString([(c["center"]["x"], -500), (c["center"]["x"], 500)])).bounds[1]
+    outside = ctrl.difference(layout.outline)
+    if not outside.is_empty and outside.bounds[3] > top_edge + 0.05:
+        problems.append("controller not inside the PCB outline (only the USB end may overhang the top edge)")
+    shell_end = ctrl.bounds[1] - c.get("usb_shell", 0.0)
+    if abs((top_edge - shell_end) - c["usb_overhang"]) > 0.05:
+        problems.append(f"USB-C shell overhang is {top_edge - shell_end:.2f} mm, spec {c['usb_overhang']} mm")
     for ref, poly in caps.items():
         if not layout.outline.buffer(cfg["outline"]["margin"] + 0.05).contains(poly):  # noqa
             problems.append(f"keycap {ref} sticks out of the PCB outline")

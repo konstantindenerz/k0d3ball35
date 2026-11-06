@@ -104,9 +104,9 @@ notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 
 | Part | Position | Notes | Halves |
 |------|----------|-------|--------|
-| Controller U1 | centre (-58, 14), USB at the top edge | nice!nano v2 / SuperMini, component side up, on 2.5 mm low-profile sockets, nothing underneath | both |
+| Controller U1 | hole-pattern centre (-58, 11.7), USB-C shell 1.5 mm past the top edge | nice!nano v2 / SuperMini, component side up, on 2.5 mm low-profile sockets, nothing underneath | both |
 | Battery bay | centre (-58, 11), 21 x 28 mm, on the back | 702025 cell under the PCB in a 9 mm deep well of the case floor, lead end towards +y; dashed outline on the back silkscreen; `battery` block in `points-*.json` | both |
-| Power switch PS1 | (-68.5, 30), rotated 90 | MSK12C02, bottom side, actuator through the inner edge | both |
+| Power switch PS1 | (-68.5, 30), rotated 270 | MSK12C02, bottom side, actuator through the inner edge (270 puts the footprint's +y actuator at -x) | both |
 | Reset button RB1 | (-66, 38) | EVQ-P7A, bottom side | both |
 | JST J3 | (-56, 42) | default battery connection, 6 mm tall, bottom side, inside the battery well | both |
 | Battery pads J2 | (-57, 50.5) | 2.54 mm pitch, B+ is the square pad, solder alternative to J3 | both |

@@ -2,7 +2,7 @@
   (layer "F.Cu")
   (descr "Battery solder pads, B+ square pad, 2.54 mm pitch")
   (tags "k0d3ball35")
-  (property "Reference" "REF**" (at 0 1.9 0) (layer "F.SilkS") (uuid "73b2b2c6-a76e-56f0-ac22-9ec5121ca5b4") (effects (font (size 1 1) (thickness 0.15))))
+  (property "Reference" "REF**" (at 0 -3 0) (layer "F.SilkS") (uuid "73b2b2c6-a76e-56f0-ac22-9ec5121ca5b4") (effects (font (size 1 1) (thickness 0.15))))
   (property "Value" "BatteryPads_2x1.8mm_P2.0mm" (at 0 2 0) (layer "F.Fab") (uuid "7589dc34-b2b9-5441-a7d4-2d0780f2136d") (effects (font (size 1 1) (thickness 0.15))))
   (property "Footprint" "k0d3ball35:BatteryPads_2x1.8mm_P2.0mm" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "d3547b5d-5704-5170-8c65-3e9d0b5963df") (effects (font (size 1.27 1.27))))
   (property "Datasheet" "" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "a587bbf2-ac0c-52bc-927f-9906f89fae2e") (effects (font (size 1.27 1.27))))

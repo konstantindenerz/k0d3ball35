@@ -61,10 +61,12 @@ trackball:
     case_screw_spacing: 20.0    # two M2 x 10 from below through floor and sensor board into the posts, on the y axis
 
 controller:                     # nice!nano v2 / SuperMini, Pro Micro pinout, on the lowest sockets (2.5 mm class,
-  center: { x: -58.0, y: 14.0 } # Mill-Max 315 or conthrough): nothing lies between the controller and the PCB any more
-  rotation: 0                   # USB connector towards the top (away from the user)
-  size: { x: 18.0, y: 33.5 }
-  usb_overhang: 1.5             # USB-C shell past the PCB edge
+  center: { x: -58.0, y: 11.7 } # Mill-Max 315 or conthrough): nothing lies between the controller and the PCB any more.
+  rotation: 0                   # USB connector towards the top (away from the user). The centre is the hole pattern's
+  size: { x: 18.0, y: 33.5 }    # centre; the board itself sits 0.6 mm further up (pcb_offset_y).
+  pcb_offset_y: -0.6            # controller board centre relative to the hole pattern centre
+  usb_shell: 0.6                # USB-C shell past the controller's own board edge (34.1 mm overall vs 33.5 mm board)
+  usb_overhang: 1.5             # USB-C shell past the main PCB edge: the controller block's top edge is derived from this
   pin_pitch: 2.54
   row_spacing: 15.24            # 2 x 7.62
   socket_height: 2.5            # design value for the stack (controller PCB underside above the main PCB top)
@@ -82,7 +84,7 @@ battery:
   edge_clearance: 1.5           # minimum distance from the bay to the PCB edge
   leads: "+y"                   # lead end towards J3 / J2
 
-power_switch: { center: { x: -68.5, y: 30.0 }, rotation: 90 }   # MSK12C02, bottom side, actuator through the inner edge
+power_switch: { center: { x: -68.5, y: 30.0 }, rotation: 270 }  # MSK12C02, bottom side; 270 puts the actuator (local +y) at -x, through the inner edge
 reset_button: { center: { x: -66.0, y: 38.0 }, rotation: 0 }    # EVQP7A, bottom side, inner corner below the power switch
 battery_pads: { center: { x: -57.0, y: 50.5 }, rotation: 0 }    # 2 x 1.7 mm PTH, 2.54 mm pitch, B+ / B-, below the JST (solder alternative)
 battery_jst:  { center: { x: -56.0, y: 42.0 }, rotation: 0 }    # S2B-PH-SM4-TB, 6 mm tall, bottom side, default (sits in the battery well)
@@ -143,7 +145,7 @@ halves:
       # back; ROW3 leaves hole 20 on the front through the gap between the controller and the
       # inner key column and ends at the cathode of the middle thumb diode.
       - { net: COL4, layer: B.Cu, width: 0.25,
-          points: ["U1:11", [-64.3, 26.7], [-64.3, 29.8], [-41.0, 29.8], "SW24:bus"] }
+          points: ["U1:11", [-63.5, 23.1], [-63.5, 29.8], [-41.0, 29.8], "SW24:bus"] }   # sideways first, clear of hole 12 below
       - { net: ROW3, layer: F.Cu, width: 0.25,
           points: ["U1:20", [-47.5, 18.5], [-47.5, 52.5], [-45.5, 56.5], [-45.3, 64.5], "D33:1"] }
       - { net: COL4, layer: B.Cu, width: 0.25,   # below the battery pads, between TP4 and TP5, to the inner thumb key
