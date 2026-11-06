@@ -44,6 +44,23 @@ def offset(points: list[list[float]], by: float) -> list[list[float]]:
     return _ring(Polygon(points).buffer(by, join_style=2, mitre_limit=3.0).simplify(0.1))
 
 
+def feet(outline: list[list[float]], inset: float = 7.0) -> list[list[float]]:
+    """Four rubber feet: the points of the case floor (inset so a 10 mm foot stays inside) that
+    lie closest to the four corners of the bounding box."""
+    from shapely.geometry import Point, Polygon
+    from shapely.ops import nearest_points
+
+    poly = Polygon(outline).buffer(-inset, join_style=2)
+    if poly.geom_type != "Polygon":
+        poly = max(poly.geoms, key=lambda g: g.area)
+    minx, miny, maxx, maxy = Polygon(outline).bounds
+    out = []
+    for cx, cy in ((minx, miny), (maxx, miny), (minx, maxy), (maxx, maxy)):
+        p = nearest_points(poly, Point(cx, cy))[0]
+        out.append([round(p.x, 1), round(p.y, 1)])
+    return out
+
+
 def half_data(half: str, cfg: dict, stack: dict) -> dict:
     points = json.loads((REPO / f"hardware/layout/output/points-{half}.json").read_text())
     tb = points.get("trackball")
@@ -60,6 +77,7 @@ def half_data(half: str, cfg: dict, stack: dict) -> dict:
         "outline": simplify(points["outline"]),
         "outline_case": offset(points["outline"], 3.0),      # case wall outer edge
         "outline_frame_hole": offset(points["outline"], -2.5),  # top frame opening
+        "feet": feet(offset(points["outline"], 3.0)),
         "bounds": points["bounds"],
         "ball": ball,
         "fpc": fpc["center"] if fpc else None,

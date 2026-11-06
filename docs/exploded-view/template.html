@@ -254,7 +254,7 @@ function build(half) {
       g.add(wall);
       ring.rotation.x = -Math.PI / 2; ring.position.set(bx, S.rim_z, bz); g.add(ring);
     }
-    const bumpers = [[B.min_x + 12, B.min_y + 8], [B.max_x - 10, B.min_y + 16], [B.min_x + 14, B.max_y - 18], [B.max_x - 14, B.max_y - 12]];
+    const bumpers = ball ? [...H.feet, [bx, bz]] : H.feet;   // fifth foot under the pocket floor
     for (const [x, z] of bumpers) g.add(cyl(5, 1.5, M.bumper, x, floorTop - 2.75, z));
   }
   // --- battery in the controller box (702025, right half) ---
