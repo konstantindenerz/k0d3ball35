@@ -10,7 +10,8 @@ the prompt as documentation of the intended content.
 
 Style anchor for all photographic prompts: a low-profile split keyboard in two halves, each in a
 boxy, angular matte beige-grey 3D printed case whose stepped outline follows the column stagger,
-with a slightly raised rectangular controller box at the inner edge, white and light-grey
+with a slightly raised rectangular controller box at the inner edge whose roof plate carries a
+narrow labyrinth wordmark engraved into it, white and light-grey
 low-profile keycaps, three bright orange thumb keycaps on the left half and two on the right, a
 glossy white 19 mm trackball sitting low in a round pocket of the case directly beside the right
 thumb keys (ball top only a little above the keycaps), no cables, on an oiled oak desk with a silver laptop in the background, soft daylight from the left,
@@ -44,7 +45,8 @@ column-staggered keys with the pinky column noticeably lower, angular stepped ca
 left half with three fanned thumb keys rotated 0, 10 and 20 degrees, the right half with only the
 two outer thumb keys and a white 19 mm trackball in a round pocket directly beside them below the
 middle and ring finger columns, white keycaps with orange thumb caps, matte grey boxy cases with a
-raised controller box at each inner edge, even soft light, photorealistic.
+raised controller box at each inner edge, a narrow labyrinth wordmark engraved into the roof
+plate of each controller box, even soft light, photorealistic.
 ```
 
 ## img-layout-top
@@ -433,6 +435,21 @@ angular notch, the case wall around the cup stopping just below the cup rim, a f
 cable curving from the PCB underside down into the housing, dimension lines for the 11.6 mm
 floor depth and the 17 mm ball height, clean CAD line-art style, white background.
 ```
+
+## img-case-logo-cap
+
+Aspect 1:2. The controller box cap seen from above, wordmark engraved.
+
+```prompt
+Straight top-down CAD render of a small rectangular 3D printed roof plate, 28 by 57 mm, matte
+beige-grey, with a countersunk screw hole at each short end along one long edge. Engraved 0.6 mm
+into its face is a tall narrow labyrinth wordmark: a rectangular frame with a short foot at each
+end, filled with long parallel vertical strokes of even width that connect into the letters k, o,
+d and e turned on their side. The grooves read as shadowed channels in the surface, not as
+printed lines. Clean technical style, white background, soft even light, no reflections.
+```
+
+---
 
 ## img-case-controller-box-section
 

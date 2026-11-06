@@ -2,8 +2,8 @@
 
 The case is the last phase of r2: two printed parts per half plus a removable lid. The CAD
 lives in `hardware/case/` (OpenSCAD, parametric, both halves from one set of sources); this
-document explains what the parts are, the heights they are built on and how they go
-together. Tickets: [mech-case](../issues/mech-case.md),
+document explains what the parts are, the heights they are built on, how they go
+together and how the wordmark is engraved into them. Tickets: [mech-case](../issues/mech-case.md),
 [mech-case-ball-pocket](../issues/mech-case-ball-pocket.md),
 [mech-case-lid](../issues/mech-case-lid.md). Build notes and the parameter list are in
 [hardware/case/README.md](../hardware/case/README.md).
@@ -18,6 +18,8 @@ together. Tickets: [mech-case](../issues/mech-case.md),
 | Box cap | `box-cap-left.stl`, `box-cap-right.stl` | roof of the controller box: a plate in a rebate plus an L-shaped skirt towards the keys and the thumb keys, two M2 screws into corner bosses |
 | Lid | `lid-left.stl`, `lid-right.stl` | transport cover over keys and ball, held on top by an inner lip; under the half it is a foot held by four magnets in the roof |
 | Pocket test | `pocket-test-right.stl` | the 50 x 50 mm corner of the right tray around the ball, for the first test print with the cradle |
+
+The tray and the box cap carry the owner wordmark as an engraved relief (section 9).
 
 The layout facts (outline, holes, bay, courtyards, pocket, controller block) are generated
 from `hardware/layout/k0d3ball35.yaml` by `scripts/gen_case.py` into `hardware/case/data.scad`;
@@ -75,7 +77,8 @@ bridge. The other two walls hang from the separate cap and stand on the PCB top.
 screws go into corner bosses on the outer wall (heat-set inserts, same as the standoffs).
 The USB-C opening is 11 x 5.8 mm in the USB wall, the LED window 3 x 3 mm in the outer wall
 8 mm from the USB end, the slide switch lever has a 7 x 3 mm slot in the outer wall directly
-under the PCB and the reset button a 3 mm pin hole in the floor of the well.
+under the PCB and the reset button a 3 mm pin hole in the floor of the well. The cap plate
+carries the wordmark (section 9).
 
 ## 5. Assembly order
 
@@ -109,6 +112,9 @@ Tray flat on the bed with the cavities open upwards; the only bridges are the US
 the switch slot, the LED window and the four foot magnet pockets from below. Cap and lid
 print roof down; the lid's roof magnet pockets open towards the roof underside and print as
 plain holes. No supports anywhere, 0.2 mm layers (0.12 mm for the pocket test), 3 perimeters. Print
+The engraved wordmark on the cap plate and the case underside is one more set of bridges, all
+of them one groove wide (1.0 mm on the cap, 0.9 mm on the floor) and 0.6 mm tall, on the face
+that lies on the bed. Print
 `pocket-test-right.stl` first and check it with the cradle and a scrap PCB with the notch:
 0.3 mm all round, the module drops in and lifts out vertically with the board in place, and the
 FFC reaches J1 over the board edge without a crease.
@@ -134,10 +140,41 @@ lifts it flat by 13 mm (left) or 19 mm (right); the rubber feet stay usable with
 roof that rises towards the inner edge, so the lid-as-foot tilts the half by that angle
 while the cover position is unchanged.
 
-## 8. Open points
+## 8. Wordmark
+
+![Box cap with the engraved wordmark](images/img-case-logo-cap.png)
+
+The `kode` wordmark is drawn on a strict cell grid, one stroke per cell. `scripts/gen_logo.py`
+recovers that grid from `docs/images/logo.png`, completes the frame foot that the supplied crop
+cut off and writes the ink as 34 cell rectangles into `hardware/case/logo_data.scad` (18 x 35
+cells, cell aspect 1.52). `logo.scad` scales them to millimetres and subtracts them; nothing
+about the artwork is hard-coded, so a redrawn logo only means re-running the generator.
+
+| Where | Size | Stroke | Parameters |
+|-------|------|--------|------------|
+| Box cap plate, centred at (-59.525, 21.9) | 18.0 x 52.5 mm | 1.0 mm | `logo_cell`, `logo_stretch` |
+| Case underside, centred at (0, 25.5), turned 90 degrees | 52.5 x 18.0 mm | 0.9 mm | `logo_floor_cell`, `logo_floor_rot` |
+
+The relief is engraved, not raised: both faces lie on the bed when the part is printed, where
+raised lines would need support. `logo_depth` is 0.6 mm, three layers at 0.2, and no groove
+bridges further than one cell. `logo_invert = true` engraves the field instead, leaving the
+lines standing 0.6 mm proud - it looks more like a relief but puts only the thin strokes on the
+bed. For a two-colour cap, keep the default and put a filament change at 0.6 mm: the wordmark
+then comes out flush in the second colour.
+
+On the cap the wordmark keeps 5.0 mm to the long edges, 2.45 mm to the ends and 1.5 mm to both
+screw holes; on the floor it keeps at least 1.1 mm to the nearest foot recess. `case.scad`
+mirrors the left half as a whole, so `logo.scad` mirrors the wordmark back - it reads the same
+way round on both halves, which `tests/test_case.py` checks on the rendered meshes.
+
+Set `logo_on_cap = false` / `logo_on_floor = false` for a plain case.
+
+## 9. Open points
 
 - LED window position is a guess at the nice!nano LED; verify on the controller.
 - `box_inner_x` = -45.5: 0.75 mm to the inner column caps, 1.5 mm to the controller.
 - `lid_fit` (0.15 mm between lip and wall) is set for a 0.4 mm nozzle; adjust after the
   first lid print.
 - First print: pocket test, then the right tray, then the lids.
+- The supplied wordmark is cropped at the top; the frame foot is mirrored in to close it. If
+  the owner supplies the uncropped original, drop `close_frame` in `scripts/gen_logo.py`.

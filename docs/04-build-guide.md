@@ -411,13 +411,15 @@ hardware allows, so do not improvise.
 5. Lower the PCB into the tray, cup through the notch, onto the five standoffs. Keycaps off:
    their skirts overhang the screw heads by 1.5 mm. Five M2 x 5 or x 6 machine screws from the
    top, snug.
-6. Controller onto its sockets, box cap on, two M2 screws into the bosses. USB-C in its opening,
-   the slide switch lever in its slot, the reset button over its pin hole in the floor.
+6. Controller onto its sockets, box cap on, two M2 screws into the bosses - the engraved
+   wordmark faces up. USB-C in its opening, the slide switch lever in its slot, the reset button
+   over its pin hole in the floor.
 7. Keycaps on (chapter 13).
 8. Right half: fold the FFC over the board edge into J1 on the key side and close the lock
    (chapter 11, step 7). This is the last connection of the build and the only one you can reach
    with everything assembled.
-9. Ball into the cup, four rubber feet onto the underside, lid on.
+9. Ball into the cup, four rubber feet onto the underside (clear of the wordmark engraved in
+   the middle of the floor), lid on.
 
 Service, in the other direction: the trackball module comes out with the keycaps and the PCB in
 place - open J1's lock, pull the cable, undo the two screws from below, lift the module out.

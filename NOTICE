@@ -7,6 +7,13 @@ see LICENSE-HARDWARE).
 The following projects inspired or are used by k0d3ball35. None of their files are redistributed
 in this repository unless stated.
 
+Owner wordmark
+  docs/images/logo.png and everything generated from it (hardware/case/logo_data.scad, the
+  engraving on the case) is the project owner's mark. It is not covered by the MIT or
+  CERN-OHL-P licences of this repository: a fork may keep the design files but has to replace
+  the artwork with its own (set logo_on_cap and logo_on_floor to false, or drop in another
+  logo.png and re-run scripts/gen_logo.py).
+
 Keyball (Yowkees)
   https://github.com/Yowkees/keyball - GPL-3.0 (repository), GPL-2.0-or-later (firmware)
   Inspiration for the hand geometry and the build guide structure. The column stagger ratios and
