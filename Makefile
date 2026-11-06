@@ -23,7 +23,7 @@ BUILD      := build
 SCHS := $(wildcard $(HALF_SCHS) $(SENSOR_SCH))
 PCBS := $(wildcard $(HALF_PCBS) $(SENSOR_PCB))
 
-.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case clean help
+.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case exploded clean help
 
 all: layout board erc drc gerbers
 
@@ -90,6 +90,9 @@ case-logo: ## Regenerate hardware/case/logo_data.scad from docs/images/logo.png
 
 case: ## Render the printed case: STLs, floor DXFs, previews and stack.json (needs OpenSCAD)
 	$(MAKE) -C hardware/case all PYTHON=../../$(PY)
+
+exploded: ## Rebuild docs/exploded-view/index.html (embeds the case STLs; run after `make case`)
+	$(PY) docs/exploded-view/build.py
 
 docs-check: ## Run only the documentation and ticket checks
 	$(PY) -m pytest -q tests/test_docs.py tests/test_issues.py tests/test_license.py
