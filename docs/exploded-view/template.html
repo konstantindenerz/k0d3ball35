@@ -72,7 +72,7 @@
     <div class="labels" id="labels"></div>
     <div class="hud">
       <h1 id="title">k0d3ball35</h1>
-      <p>Drag to orbit, wheel or pinch to zoom. Heights are real and the case parts are the printed tray, controller box cap and lid from hardware/case. The lid holds on top by an inner lip; magnets only hold it as a foot.</p>
+      <p>Drag to orbit (all the way under the half), wheel or pinch to zoom. Heights are real and the case parts are the printed tray, controller box cap and lid from hardware/case. The lid holds on top by an inner lip; magnets only hold it as a foot.</p>
       <span class="tag" id="viewTag">assembled</span>
     </div>
   </div>
@@ -90,6 +90,7 @@
       <input type="range" id="explode" min="0" max="1" step="0.01" value="0" aria-label="Explode amount">
       <div class="actions">
         <button class="btn primary" id="play">Animate</button>
+        <button class="btn" id="under">From below</button>
         <button class="btn" id="reset">Reset view</button>
       </div>
     </div>
@@ -228,6 +229,8 @@ const camera = new THREE.PerspectiveCamera(38, 1, 1, 2000);
 scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8370, 1.15));
 const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(80, 160, 120); scene.add(sun);
 const fill = new THREE.DirectionalLight(0xffffff, .5); fill.position.set(-120, 60, -80); scene.add(fill);
+// from below: the case underside carries the engraved wordmark and the magnet pockets
+const under = new THREE.DirectionalLight(0xffffff, .85); under.position.set(40, -140, 90); scene.add(under);
 
 const root = new THREE.Group();          // mirrored (scale.x = -1) for the left half
 scene.add(root);
@@ -469,7 +472,7 @@ canvas.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, y: e.clie
 canvas.addEventListener('pointermove', (e) => {
   if (!drag) return;
   sph.theta -= (e.clientX - drag.x) * 0.006;
-  sph.phi = THREE.MathUtils.clamp(sph.phi - (e.clientY - drag.y) * 0.006, 0.15, 1.5);
+  sph.phi = THREE.MathUtils.clamp(sph.phi - (e.clientY - drag.y) * 0.006, 0.15, Math.PI - 0.15);
   drag = { x: e.clientX, y: e.clientY };
 });
 canvas.addEventListener('pointerup', () => { drag = null; });
@@ -503,6 +506,10 @@ playBtn.addEventListener('click', () => {
   anim = { from: explode, to, t0: performance.now(), dur: 1600 };
 });
 document.getElementById('reset').addEventListener('click', () => { Object.assign(sph, home); autoRotate.checked = true; });
+document.getElementById('under').addEventListener('click', () => {
+  Object.assign(sph, { r: home.r, theta: 0.55, phi: Math.PI - 0.45 });
+  autoRotate.checked = false;
+});
 function applyLidMode() {
   if (!lidLayer) return;
   const mode = document.querySelector('input[name=lid]:checked').value;
