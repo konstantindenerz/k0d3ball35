@@ -268,6 +268,10 @@ Image prompt: *Hands-on macro photo of someone pressing a small black optical se
 in a green PCB from the back side, a pair of tweezers holding a clear plastic lens next to it, soft
 workshop lighting, shallow depth of field.*
 
+The case side of this is in `docs/11-case.md` section 3: the two floor holes are counterbored so
+2.0 mm of floor remain under the housing, and a 12 mm wide channel runs from J1 to the housing
+wall so the FFC drops into the slot without a sharp bend.
+
 ## 5. Test procedure
 
 | Step | Expected |

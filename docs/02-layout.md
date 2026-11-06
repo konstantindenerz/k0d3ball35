@@ -20,7 +20,7 @@ user. The origin is the centre of the middle-column top key. This is KiCad's scr
 so the PCB generator adds only a mirror and a page offset. Both halves use the same frame, which
 is handedness-neutral: the left BOARD (and its case and lid) is the mirror image of the frame,
 x -> -x, so seen from the top the left board has the controller block at its right-hand edge;
-the frame, `points-*.json` and `outline-*.dxf` stay unmirrored. Since r2 the halves are two different PCBs: everything outside the
+the frame, `points-*.json` and `outline-*.dxf` stay unmirrored. The case generator `scripts/gen_case.py` consumes `load_layout()` directly (not the JSON) and mirrors the left half itself; the controller block rectangle it uses is x -71.5 to -45.5, y -4.75 to 50.6 (stopping 1 mm above the SW33 keycap), see `docs/11-case.md`. Since r2 the halves are two different PCBs: everything outside the
 `halves:` section of the yaml is shared, the thumb list, the ball pocket, the FPC connector and the
 hand routes are per half.
 

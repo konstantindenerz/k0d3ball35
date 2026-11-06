@@ -229,6 +229,22 @@ Ten GND stitching vias per half (nine shared positions plus one per half) tie th
 together, and a 0.45 mm wide track/via keep-out ring runs along the board edge so the autorouter
 keeps the 0.3 mm copper-to-edge clearance.
 
+### 5.1 Case interface
+
+The printed case (`hardware/case/`, `docs/11-case.md`) reads the layout through `load_layout()`
+and derives everything from it; the numbers below are the contract between PCB and case
+(z = 0 is the PCB top, mirrored in x for the left half):
+
+| Item | Value |
+|------|-------|
+| Wall top (rim) | +5.0 mm, beside the keycap skirts |
+| Pocket cavity above the PCB plane | notch octagon + 0.2 mm, union with the 28 mm cradle circle; 2 mm wall around it |
+| Case floor under the battery bay, J3, RB1 and under the cradle housing | -11.6 mm (the 9 mm well plus 1 mm) |
+| Floor under the key area | -4.6 mm (3.0 mm for sockets and diodes) |
+| PCB fastening | M2 machine screws from the top into heat-set inserts in 6 mm standoffs on the five mounting holes |
+| Controller box | walls to +8.7 mm, separate cap with its roof underside at +6.7 mm (controller top +5.7 plus 1 mm) |
+| Cradle screws | two M2 x 10 from below at (5, 54) and (5, 74), counterbored so 2.0 mm of floor remain |
+
 ## 6. Firmware contract
 
 ZMK `main` (Zephyr 4.1 based), shield name `k0d3ball35`, builds `k0d3ball35_left` and

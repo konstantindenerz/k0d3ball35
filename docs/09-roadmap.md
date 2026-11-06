@@ -64,7 +64,10 @@ for transport (the cradle has no retainer, the lid is what keeps the ball in a b
 under the half with magnets as a flat or tenting foot. Depends on the final PCB outlines
 (`outline-left.dxf`, `outline-right.dxf`) and the cradle floor footprint
 (`hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`).
-Tickets: `mech-case`, `mech-case-ball-pocket`, `mech-case-ball-dome`, `mech-case-lid`.
+Status 2026-11-06: case CAD done in `hardware/case/` (tray, controller cap, lid per half, pocket
+test part; `docs/11-case.md`). Next: pocket test print, then the right tray and both lids.
+
+Tickets: `mech-case`, `mech-case-ball-pocket`, `mech-case-lid` (`mech-case-ball-dome` closed as superseded).
 
 ## r2.2 - firmware polish
 
