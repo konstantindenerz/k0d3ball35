@@ -146,6 +146,15 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
         out.append(f"  (gr_poly (pts {ppts}) (stroke (width 0.1) (type dash)) (fill none) (layer \"Cmts.User\") (uuid {quote(uid('cmts', 'pocket'))}))")
         out.append(f"  (gr_text \"ball pocket (case)\" (at {num(bx)} {num(by + tb['cradle_diameter'] / 2 + 3.5)} 0) (layer \"Cmts.User\") "
                    f"(uuid {quote(uid('cmts', 'label'))}) (effects (font (size 1.0 1.0) (thickness 0.15))))")
+    # battery bay on the back silkscreen: the cell lies under the PCB here, in the case well
+    bat = layout.cfg["battery"]
+    bay = layout.battery_bay()
+    bpts = " ".join(f"(xy {num(ox + x)} {num(oy + y)})" for x, y in list(bay.exterior.coords)[:-1])
+    out.append(f"  (gr_poly (pts {bpts}) (stroke (width 0.15) (type dash)) (fill none) (layer \"B.SilkS\") (uuid {quote(uid('silk', 'bay'))}))")
+    bminx, bminy, bmaxx, bmaxy = bay.bounds
+    for i, line in enumerate((f"{bat['cell']} cell", f"{bat['capacity_mah']} mAh", f"leads {bat['leads']}")):   # short lines: they sit between the two hole rows
+        out.append(f"  (gr_text {quote(line)} (at {num(ox + (bminx + bmaxx) / 2)} {num(oy + bmaxy - 4.5 + i * 1.5)} 0) (layer \"B.SilkS\") "
+                   f"(uuid {quote(uid('silk', 'B.SilkS', 'bay', i))}) (effects (font (size 0.8 0.8) (thickness 0.12)) (justify mirror)))")
     # silkscreen texts (front only): between the controller footprint and the reset/battery row
     silk = layout.cfg["silkscreen"]
     c = layout.cfg["controller"]
