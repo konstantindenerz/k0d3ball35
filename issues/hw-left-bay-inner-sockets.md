@@ -1,8 +1,8 @@
 ---
 title: Left board: inner column hot-swap sockets reach into the battery bay
 type: bug
-priority: P1
-status: open
+priority: P2
+status: done
 area: hw
 created: 2026-11-06
 ---
@@ -36,6 +36,14 @@ until this is resolved.
 
 ## Acceptance criteria
 
-- [ ] Decision taken and recorded in docs/01-design-spec.md (battery section)
-- [ ] Left board regenerated if the layout changes, DRC clean, gerbers refreshed
-- [ ] `LEFT_BAY_SOCKET_INTRUSION` and the silk acceptance entry removed from the review test
+- [x] Decision taken and recorded in docs/01-design-spec.md (battery section)
+- [x] Left board unchanged (no layout change), DRC clean
+- [x] `LEFT_BAY_SOCKET_INTRUSION` and the silk acceptance entry stay as the documented bound of the accepted overhang
+
+## Decision 2026-11-06
+
+Accepted as is. The specified LP552035 is 5.7 mm and keeps 0.7 mm of air under the sockets with
+the spec floor (-10.6) and 1.7 mm with the case well at -11.6, which is what the case uses. The
+left half's maximum cell thickness is 6.0 mm (7.0 with the case well), recorded in the spec and
+BOM. Moving PS1/RB1 or rotating the inner column was judged not worth a re-layout before the
+first order; revisit if a thicker cell is ever wanted.

@@ -137,7 +137,7 @@ rectangle on both boards and is printed on the back silkscreen:
 | Cell | PKCELL LP552035, 350 mAh, 5.7 x 20 x 37 mm maximum including the protection circuit, JST-PH plug (Eckstein, Germany); lead end towards +y |
 | Well depth | 9.0 mm below the PCB underside (socket tails 1.0 + 0.5 mm foam pad + up to 7.2 mm cell + 0.3 mm), floor at z = -10.6 mm; the case may use -11.6 mm to share the ball pocket's floor level |
 | Clearances | bay 1.75 mm from the top PCB edge, 0.37 mm from the left controller hole pads, 1.25 mm from the reset button, 2.6 mm from the inner column's hot-swap sockets; checked by the layout generator against every back-side part |
-| Alternatives | any cell up to 20.5 x 37.5 x 7.2 mm: 702025 / 602025 (20 x 25), 502030 / 602030 (20 x 30), 552035; the old 301230 (12 x 32 mm) would fit too but is not stocked with a plug |
+| Alternatives | any cell up to 20.5 x 37.5 x 7.2 mm on the right and 6.0 mm on the left (the inner column's hot-swap sockets, 1.8 mm tall, overhang the left bay by 2.8 mm because the socket footprint is chiral; with the case well at -11.6 mm the left limit is 7.0 mm): 702025 / 602025 (20 x 25), 502030 / 602030 (20 x 30), 552035; the old 301230 (12 x 32 mm) would fit too but is not stocked with a plug |
 
 Because nothing lies between the controller and the PCB any more, the controller sits on the
 lowest sockets available (Mill-Max 315 with 3320 pins or conthrough, 2.5 mm design value): the
