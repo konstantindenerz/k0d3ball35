@@ -88,8 +88,9 @@ Right PCB connector J1 pin order (fixed):
 | 5 | TB_NCS |
 | 6 | TB_MOT |
 
-J1 sits on the bottom side of the right PCB at (-8.0, +46.5) between the index/middle bottom
-keys and the thumb bridge; the cable exits towards +y (towards the user) into the ball pocket.
+J1 sits on the bottom side of the right PCB at (0.0, +45.5) under the middle column's bottom key,
+1 mm above the cradle housing; the cable exits towards +y (towards the user) and drops straight
+into the slot of the cradle housing.
 The left PCB has no J1 and no sensor nets.
 
 Connector family: Hirose FH12-6S-0.5SH (0.5 mm pitch, 6 contacts, bottom contact, ZIF slider) or a

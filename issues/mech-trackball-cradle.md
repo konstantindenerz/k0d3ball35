@@ -31,4 +31,6 @@ Depends on hw-sensor-stack-height for the final sensor orientation.
 
 2026-11-06: retainer (claw ring, pegs, rim holes) removed by decision: the rim stays 1 mm below the equator, the ball is held by gravity, the removable case lid (`mech-case-lid`) covers it in transport. `stack.json` lost `claw_top_z` / `retainer_ball_play` and gained `rim_below_equator`.
 
-2026-11-06: `mount = "pocket"` added for r2: the module stands on the case floor beside the right PCB (housing 30 x 29 mm plus two screw ears, cable slot towards the keys), 19.05 mm default, ball top +17.1 mm, 24.1 mm wide above the PCB (fits the 15 mm notch apothem); 25 mm pocket needs a 16.5 mm apothem. Test print still pending.
+2026-11-06: `mount = "pocket"` added for r2: the module stands on the case floor beside the right PCB (housing 30 x 29 mm, cable slot towards the keys), 19.05 mm default, ball top +17.1 mm, 24.1 mm wide above the PCB (fits the 15 mm notch apothem); 25 mm pocket needs a 16.5 mm apothem. Test print still pending.
+
+2026-11-06: screw ears dropped. The two sensor posts are drilled through and take the case screws (M2 x 10 from below through floor and sensor board, 20 mm apart on the y axis, `case_screw_sp` in `stack.json`); the floor footprint is the bare 30 x 29 mm housing, so the case pocket below the PCB plane is a 35 x 34 mm rounded rectangle (`mech-case-ball-pocket`).

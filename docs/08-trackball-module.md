@@ -190,8 +190,14 @@ option. The r1 25 mm ball stood 12 mm proud, which is why the ball size was redu
   depth below the ball contact point is 5.8 + 1.6 + 2.25 (leads, connector) = 9.65 mm with the
   sensor looking straight up. That is the floor depth of the pocket: 11.6 mm below the PCB top.
 * The sensor board lies in the housing with its lens side up against the housing face and is
-  screwed to two M2 posts from below. The two holes are 20.0 mm apart on the board's long axis,
+  clamped to two M2 posts from below. The two holes are 20.0 mm apart on the board's long axis,
   symmetric to the optical centre.
+* The posts double as the case fastening: their 1.6 mm pilot holes run through to the housing
+  underside and two M2 x 10 self-tapping screws come up from below through the case floor
+  (2 mm), the 2.25 mm component gap and the board into the posts (`case_screw_sp` = 20 mm in
+  `stack.json`). The housing therefore has no screw ears; its floor footprint is the bare
+  30 x 29 mm box (`footprint_x` / `footprint_y`), and the case pocket below the PCB plane is a
+  35 x 34 mm rounded rectangle around it (`issues/mech-case-ball-pocket.md`).
 * The FPC connector (top right, 9 x 5 mm) and the passives (max height 1.0 mm) face the floor;
   the 2.25 mm gap between board and floor is where the FFC runs out through the slot in the
   key-facing wall of the housing.
@@ -250,8 +256,10 @@ different cradle. What changes:
    housing), connect the other end to J1, power the right half, read register 0x00 (product ID
    0x3E). ZMK logs the product ID at boot when `CONFIG_INPUT_LOG_LEVEL_DBG` is enabled;
    TP3/TP4/TP5 allow probing SPI with a logic analyser.
-8. Slide the board lens-first into the cradle housing from below, cable through the slot, fasten
-   with two M2 screws from below, stand the module in the pocket, drop in the ball, test tracking.
+8. Slide the board lens-first into the cradle housing from below, cable through the slot, stand
+   the module in the pocket and fasten board and module together with the two M2 x 10 case screws
+   from below the floor (short M2 x 5 screws for a bench test without the case), drop in the
+   ball, test tracking.
 
 Image prompt: *Hands-on macro photo of someone pressing a small black optical sensor through a cutout
 in a green PCB from the back side, a pair of tweezers holding a clear plastic lens next to it, soft
@@ -282,6 +290,7 @@ workshop lighting, shallow depth of field.*
 * **Reverse-cable safe pinout** (hw, P3): a palindromic power pinout (VCC on 1 and 6, GND on 2 and 5)
   would make the cable orientation irrelevant for power; costs two signal pins, so it needs an 8-pin
   connector. Consider for a later revision.
-* **Case pocket** (mech, P1): the pocket well, its floor depth and the two case-screw holes come
-  from `points-right.json` and `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`.
+* **Case pocket** (mech, P1): the pocket well, its floor depth and the two case-screw holes
+  (20 mm apart on the y axis, under the sensor posts) come from `points-right.json` and
+  `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`.
   `issues/mech-case-ball-pocket.md`

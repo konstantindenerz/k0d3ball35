@@ -4,7 +4,9 @@
 r2 mounts the module in a case pocket beside the right PCB (``mount = "pocket"``) with a
 19.05 mm ball; the 25 mm pocket and the r1 cutout mount stay as variants. The cradle has no
 retainer: the rim stays ``rim_drop`` below the equator and the case lid keeps the ball in
-for transport. The OpenSCAD dependent tests are skipped when no OpenSCAD binary is available.
+for transport. The housing has no screw ears: the two case screws (M2 x 10) come up through
+the case floor and the sensor board into the sensor posts, so the floor footprint is the bare
+housing. The OpenSCAD dependent tests are skipped when no OpenSCAD binary is available.
 """
 import json
 import re
@@ -26,6 +28,9 @@ LENS_H, SENSOR_PCB_T = 3.4, 1.6
 PCB_T = 1.6
 RIM_DROP = 1.0   # params.scad rim_drop: cup rim this far below the ball equator
 CLAW_KEYS = {"claw_top_z", "retainer_ball_play"}
+HOUSING_X, HOUSING_Y = 30.0, 29.0   # sensor board 26 x 25 plus 2 mm walls
+CASE_SCREW_SP = 20.0                # sensor_hole_sp: the case screws go into the sensor posts
+EAR_RE = re.compile(r"\bears?\b", re.I)
 
 
 def openscad():
@@ -77,6 +82,22 @@ def test_sources_present():
     assert not list((CRADLE / "stl").glob("retainer*"))
 
 
+def test_no_screw_ears():
+    """The case screws go through the sensor posts; the housing has no ears and no ear parameters."""
+    params = (CRADLE / "params.scad").read_text()
+    scad = SCAD.read_text()
+    for name in ("ear_r", "ear_x", "ear_w"):
+        assert not re.search(rf"^{name}\s*=", params, re.M), name
+        assert name not in scad, name
+    assert re.search(r"^case_screw_d\s*=\s*2\.0", params, re.M)
+    assert re.search(r"^sensor_hole_sp\s*=\s*20", params, re.M)
+    readme = (CRADLE / "README.md").read_text()
+    for text, name in ((params, "params.scad"), (scad, "cradle.scad"), (readme, "README.md")):
+        assert not EAR_RE.search(text), name
+    assert "43 x 29" not in readme and "36 mm apart" not in readme
+    assert "M2 x 10" in readme
+
+
 def test_stack_json_values(stack):
     assert {"19mm-pocket", "25mm-pocket", "25mm-cutout"} <= set(stack)
     for name, v in stack.items():
@@ -96,9 +117,15 @@ def test_stack_json_values(stack):
             assert v["housing_top_z"] <= -PCB_T - 0.3 + 1e-6, name
             # everything above the PCB fits into the notch with clearance
             assert v["envelope_d_above_pcb"] / 2 < v["notch_apothem"] - 0.3, name
+            # no ears: the floor footprint is the housing, the case screws sit in the sensor posts
+            assert v["housing_x"] == HOUSING_X and v["housing_y"] == HOUSING_Y, name
+            assert v["footprint_x"] == v["housing_x"] and v["footprint_y"] == v["housing_y"], name
+            assert v["case_screw_sp"] == CASE_SCREW_SP, name
+            assert v["case_screw_sp"] < v["housing_y"] - 2 * 2.5, name   # posts stay inside the walls
         else:
-            # cup fits through the PCB cutout
+            # cup fits through the PCB cutout; the case screw spacing is a pocket-mount value
             assert v["cup_outer_d"] < v["pcb_cutout_d"], name
+            assert "case_screw_sp" not in v, name
 
 
 def test_default_variant_matches_layout(stack, trackball_cfg):
@@ -135,10 +162,55 @@ def test_render_19mm_pocket_stl(tmp_path):
     # nothing printed above the rim (no claws), rim 1 mm below the ball centre
     assert v[:, 2].max() <= values["rim_z"] + 1e-3
     assert abs(values["ball_centre_z"] - values["rim_z"] - RIM_DROP) < 1e-6
-    # housing footprint on the floor: sensor board plus walls plus the two ears
+    # housing footprint on the floor: sensor board plus walls, nothing else (no ears)
     on_floor = v[v[:, 2] < values["floor_z"] + 0.5]
-    assert abs(on_floor[:, 0].max() - values["footprint_x"] / 2) < 0.6
-    assert abs(on_floor[:, 1].max() - values["footprint_y"] / 2) < 0.6
+    assert abs(on_floor[:, 0].max() - values["housing_x"] / 2) < 0.6
+    assert abs(on_floor[:, 1].max() - values["housing_y"] / 2) < 0.6
+    assert abs(on_floor[:, 0]).max() <= HOUSING_X / 2 + 0.5
+    assert abs(on_floor[:, 1]).max() <= HOUSING_Y / 2 + 0.5
+    assert values["footprint_x"] == values["housing_x"]
+    # the case screw path is open from the floor to the posts: a ray at (0, +-10) from below hits
+    # the pilot hole, i.e. the mesh has vertices of the 1.6 mm pilot right above the board plane
+    for sy in (-1, 1):
+        near = v[(abs(v[:, 0]) < 1.0) & (abs(v[:, 1] - sy * CASE_SCREW_SP / 2) < 1.0)
+                 & (v[:, 2] > values["sensor_pcb_plane_z"] - 0.1) & (v[:, 2] < values["sensor_pcb_plane_z"] + 1.0)]
+        assert len(near) > 0, sy
+        r = ((near[:, 0]) ** 2 + (near[:, 1] - sy * CASE_SCREW_SP / 2) ** 2) ** 0.5
+        assert abs(r.max() - 0.8) < 0.1, r.max()   # flange_pilot_d / 2
+
+
+def _dxf_loops(path):
+    ezdxf = pytest.importorskip("ezdxf")
+    doc = ezdxf.readfile(str(path))
+    loops = []
+    for e in doc.modelspace():
+        if e.dxftype() == "LWPOLYLINE":
+            loops.append([(p[0], p[1]) for p in e.get_points()])
+        elif e.dxftype() == "CIRCLE":
+            c, r = e.dxf.center, e.dxf.radius
+            loops.append([(c.x + r, c.y), (c.x - r, c.y), (c.x, c.y + r), (c.x, c.y - r)])
+    return loops
+
+
+def test_floor_dxf_is_housing_with_two_screw_holes():
+    """dxf/floor-19mm-pocket.dxf: 31 x 30 mm outline (0.5 mm clearance) and two 2.2 mm holes 20 mm apart."""
+    loops = _dxf_loops(CRADLE / "dxf" / "floor-19mm-pocket.dxf")
+    assert len(loops) == 3, len(loops)
+    boxes = []
+    for pts in loops:
+        xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+        boxes.append((min(xs), max(xs), min(ys), max(ys)))
+    boxes.sort(key=lambda b: b[1] - b[0], reverse=True)
+    outer, *holes = boxes
+    assert abs(outer[1] - outer[0] - (HOUSING_X + 1.0)) < 0.05
+    assert abs(outer[3] - outer[2] - (HOUSING_Y + 1.0)) < 0.05
+    assert abs(outer[0] + outer[1]) < 0.05 and abs(outer[2] + outer[3]) < 0.05
+    centres = sorted(((b[0] + b[1]) / 2, (b[2] + b[3]) / 2) for b in holes)
+    for (cx, cy), b in zip(centres, sorted(holes, key=lambda b: (b[2] + b[3]) / 2)):
+        assert abs(cx) < 0.05
+        assert abs(b[1] - b[0] - 2.2) < 0.1, "M2 clearance hole"
+    assert abs(centres[0][1] + CASE_SCREW_SP / 2) < 0.05
+    assert abs(centres[1][1] - CASE_SCREW_SP / 2) < 0.05
 
 
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")

@@ -77,8 +77,8 @@ Both halves can take either cell; the ball half needs the larger one because the
 | | Ball premium option | PandaKB TB19, 19 mm phenolic resin trackball | https://pandakb.com/shop/parts/pandakb-tb19-19mm-split-keyboard-trackball/ | 11.90 USD | | Sold specifically for split keyboards; phenolic tracks very well on PixArt sensors |
 | | Ball fallback | 25 mm ball (Perixx PERIPRO-305, Elecom M-B25) with the 25 mm pocket cradle | https://eu.perixx.com/collections/all, eBay DE | 12 to 20 EUR | | Needs the 25 mm cradle variant and a PCB with the wider notch (`issues/hw-25mm-cradle-fallback.md`) |
 | 3 (+3) | Bearing ball | 2.0 mm ZrO2 (zirconia) precision ball, G10 | AliExpress "2mm zirconia ceramic ball" | cents each | EU precision ball suppliers | Static seats in the cradle; 2.5 mm also fits the parametric cradle |
-| 2 | Screw | M2 x 6 mm pan head, self-tapping, steel or nylon | hardware store, Mouser DE | | | Cradle ears to the case floor, from below |
-| 2 | Screw | M2 x 5 mm self-tapping | | | | Sensor PCB to the cradle posts, from below |
+| 2 | Screw | M2 x 10 mm pan head, self-tapping, steel | hardware store, Mouser DE | | | Case screws: from below through the case floor, the component gap and the sensor PCB into the cradle's sensor posts, 20 mm apart; they clamp the sensor board and hold the cradle |
+| 2 (optional) | Screw | M2 x 5 mm self-tapping | | | | Bench test only: holds the sensor PCB in the cradle posts before the case exists; replaced by the M2 x 10 case screws |
 
 ## 8. Finishing
 

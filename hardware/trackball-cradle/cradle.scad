@@ -8,12 +8,13 @@
 // Two ways to mount it (params.scad, `mount`):
 //   "pocket" (r2 default): the module stands on the case floor in a pocket beside the main
 //            PCB. The sensor board sits inside the housing and is screwed to two M2 posts
-//            from below, the housing walls reach the floor, two ears take the case screws,
-//            and the PCB edge only has an octagonal notch around the cup.
+//            from below; the same two screws (M2 x 10) come up through the case floor, so the
+//            posts double as the case fastening. The housing walls reach the floor and the
+//            PCB edge only has an octagonal notch around the cup.
 //   "cutout" (r1): the cup drops through a round cutout of the main PCB and a round flange
 //            under the PCB is pulled up with three M2 screws from the top.
 //
-//   part = "cradle"       the printed cup + housing (+ flange or ears)
+//   part = "cradle"       the printed cup + housing (+ flange in the cutout mount)
 //   part = "assembly"     cradle + ball + sensor dummy + PCB / floor dummies
 //   part = "section"      half model for section previews
 //   part = "cutout2d"     2D outline of the required PCB clearance, cutout mount (export as DXF)
@@ -59,7 +60,6 @@ board_z      = zc - L_pcb;                                          // sensor PC
 hous_top     = pocket ? min(zc - R_in + 1.0, -pcb_t - pcb_clear) : zc - R_in + 1.0;
 skirt_z      = pocket ? floor_z : -pcb_t - flange_t;                // bottom of the cylindrical cup skirt
 slot_w       = cable_slot_w > 0 ? cable_slot_w : hous_x - 2 * corner_post;
-ear_x        = hous_x / 2 + ear_r - 0.5;                            // ear centres on the +x / -x sides
 // largest diameter of anything above the PCB underside (cup, bearing bosses):
 // must stay inside the layout's cradle clearance circle (trackball.cradle_diameter)
 boss_reach   = (R_in - 0.5 + boss_len) * cos(bearing_elev) + boss_r * sin(bearing_elev);
@@ -86,8 +86,9 @@ echo(str("STACK housing_radial_extent_x=", radial_ext));
 echo(str("STACK housing_x=", hous_x));
 echo(str("STACK housing_y=", hous_y));
 echo(str("STACK housing_top_z=", hous_top));
-echo(str("STACK footprint_x=", pocket ? 2 * (ear_x + ear_r) : flange_d));
+echo(str("STACK footprint_x=", pocket ? hous_x : flange_d));
 echo(str("STACK footprint_y=", pocket ? hous_y : flange_d));
+if (pocket) echo(str("STACK case_screw_sp=", sensor_hole_sp));   // case screws through the sensor posts, local y axis
 echo(str("STACK cup_outer_d=", 2 * R_out));
 echo(str("STACK envelope_d_above_pcb=", envelope_d));
 echo(str("STACK notch_apothem=", notch_apothem));
@@ -118,13 +119,9 @@ module cup_outer() {
 
 module housing_outer() {
     if (pocket) {
-        // walls around the sensor board, from the case floor up to just under the PCB
+        // walls around the sensor board, from the case floor up to just under the PCB;
+        // nothing else touches the floor, the case screws go into the sensor posts
         translate([-hous_x / 2, -hous_y / 2, floor_z]) cube([hous_x, hous_y, hous_top - floor_z]);
-        // two screw ears on the floor, +x and -x
-        for (sx = [-1, 1]) hull() {
-            translate([sx * ear_x, 0, floor_z]) cylinder(r = ear_r, h = flange_t);
-            translate([sx * (hous_x / 2 - 1) - 1, -ear_r, floor_z]) cube([2, 2 * ear_r, flange_t]);
-        }
     } else {
         sensor_frame() {
             // from the sensor PCB plane up into the cup wall
@@ -167,8 +164,10 @@ module cradle_cuts() {
         translate([-bw / 2, -bl / 2, floor_z - 1]) cube([bw, bl, board_z - floor_z + 1.01]);
         // FFC slot through the key-facing (-y) wall, from the floor up to the board plane
         translate([-slot_w / 2, -hous_y / 2 - 1, floor_z - 1]) cube([slot_w, hw + 2, board_z - floor_z + 1.01]);
-        // pilot holes in the ears
-        for (sx = [-1, 1]) translate([sx * ear_x, 0, floor_z - 1]) cylinder(d = flange_pilot_d, h = flange_t + 2);
+        // case screw path: the post pilot holes continue straight down to the housing underside, so
+        // the M2 x 10 screws pass the case floor, the component gap and the board into the posts
+        for (sy = [-1, 1]) translate([0, sy * sensor_hole_sp / 2, floor_z - 1])
+            cylinder(d = flange_pilot_d, h = board_z - floor_z + 1.5);
         // PCB keep-out: nothing above the PCB underside outside the notch (with clearance)
         difference() {
             translate([0, 0, -pcb_t - pcb_clear]) cylinder(d = 200, h = 100);
@@ -227,8 +226,11 @@ module cutout2d() {   // cutout mount: PCB clearance incl. the flange holes
     for (az = flange_hole_az) rotate([0, 0, az]) translate([flange_hole_bcd / 2, 0]) circle(d = 2.2);
 }
 
-module floor2d() {    // pocket mount: footprint on the case floor incl. the ear screw holes, 0.5 mm clearance
-    offset(r = 0.5) projection(cut = true) translate([0, 0, -(floor_z + flange_t / 2)]) cradle();
+module floor2d() {    // pocket mount: housing outline on the case floor with 0.5 mm clearance and the two case screw holes
+    difference() {
+        offset(r = 0.5) square([hous_x, hous_y], center = true);
+        for (sy = [-1, 1]) translate([0, sy * sensor_hole_sp / 2]) circle(d = case_screw_d + 0.2);
+    }
 }
 
 // ------------------------------------------------------------------ dispatch

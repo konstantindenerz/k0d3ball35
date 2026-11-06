@@ -117,7 +117,8 @@ Aspect 1:1. Trackball cradle cross-section.
 Technical cross-section drawing of a trackball module in a case pocket: a 19 mm ball resting on
 three small 2 mm ceramic balls set in a printed cup, the cup standing on a rectangular housing that
 reaches down to the case floor beside a 1.6 mm PCB (the PCB ends with a small gap next to the cup),
-two screw ears on the floor, a small sensor board with a lens inside the housing under the ball
+two long screws coming up through the floor and the sensor board into the housing, a small
+sensor board with a lens inside the housing under the ball
 with a dimension arrow "2.4 mm" between lens and ball surface, a second arrow "17 mm" from the PCB
 top to the ball top, the ball's top a little above the keycap height, white background, thin lines,
 orange accent on the dimensions, sans-serif labels.
@@ -129,11 +130,11 @@ Aspect 4:3. Exploded view of the trackball module.
 
 ```prompt
 Exploded technical rendering on white, vertically stacked with thin guide lines: a white 19 mm
-ball, a beige printed cup whose rim ends just below the ball's equator on a rectangular housing with two
-screw ears and three small ceramic balls shown slightly lifted out of their seats, a small green
-sensor board with a black lens and a flat flex cable sliding into the housing from below, two M2
-screws for the board and two for the case floor, a beige case floor with a round pocket, soft
-studio lighting, clean.
+ball, a beige printed cup whose rim ends just below the ball's equator on a plain rectangular housing
+and three small ceramic balls shown slightly lifted out of their seats, a small green sensor board
+with a black lens and a flat flex cable sliding into the housing from below, two long M2 screws
+that pass the case floor and the board into the housing, a beige case floor with a rounded
+rectangular pocket and two screw holes, soft studio lighting, clean.
 ```
 
 ## img-exploded-half
@@ -284,8 +285,9 @@ Aspect 2:1. Two cradle sizes.
 
 ```prompt
 Rendering on white of two beige 3D printed trackball cradles side by side, the left one holding a
-19 mm white ball, the right one a 25 mm white ball, both standing on the same rectangular housing
-with two screw ears and a cable slot, a small ruler for scale, soft studio light.
+19 mm white ball, the right one a 25 mm white ball, both standing on the same plain rectangular
+housing with a cable slot and two screw holes underneath, a small ruler for scale, soft studio
+light.
 ```
 
 ## img-case-concept

@@ -70,14 +70,19 @@ ball stood 12 mm proud.
 
 - The housing is a 30 x 29 mm box (sensor board 26 x 25 plus 2 mm walls) that runs from the
   floor up to 0.3 mm under the PCB underside. The sensor board slides in from below with its
-  lens against the housing face at z = -7.75 and is fastened with two M2 screws into the
-  same two posts as before. Its component side (FPC connector, passives, sensor leads)
-  faces the floor; the 2.25 mm gap between board and floor takes the solder and the FFC.
+  lens against the housing face at z = -7.75 and is clamped to the same two M2 posts as
+  before. Its component side (FPC connector, passives, sensor leads) faces the floor; the
+  2.25 mm gap between board and floor takes the solder and the FFC.
 - The key-facing (-y) wall is open below the board plane (a 24 mm wide slot), the FFC leaves
   through it towards connector J1 on the PCB underside.
-- Two ears with 1.6 mm pilot holes sit on the floor at +x and -x (overall footprint
-  43 x 29 mm, see `dxf/floor-19mm-pocket.dxf` with 0.5 mm clearance added). M2 self-tapping
-  screws come up through the case floor into the ears; the PCB is not touched.
+- The two sensor posts double as the case fastening: their 1.6 mm pilot holes run straight
+  down to the housing underside, and two M2 x 10 self-tapping screws come up from below
+  through the case floor (2 mm), the 2.25 mm component gap and the sensor board (1.6 mm)
+  into the posts (`case_screw_sp` = 20 mm on the y axis through the ball centre, about 4 mm
+  of thread in each post). The board stays clamped to the posts as before, the housing walls
+  stand on the floor, and there are no lugs or extra holes: the floor footprint is the bare
+  30 x 29 mm housing (`dxf/floor-19mm-pocket.dxf`: 31 x 30 mm outline with 0.5 mm clearance
+  and two 2.2 mm holes). The PCB is not touched.
 - Above the PCB underside nothing is wider than 24.1 mm for the 19 mm ball, so the module
   passes through the PCB's octagonal notch (apothem 15 mm = layout `cradle_diameter` 28 / 2
   plus 1 mm) with margin. A keep-out cut in the model enforces this; the 25 mm pocket
@@ -118,8 +123,10 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
   ball centre (+5, +64), octagonal notch with apothem 15 mm around it, no copper or parts
   needed around the notch. The cradle never touches the PCB.
 - Case (`issues/mech-case-ball-pocket.md`): pocket wall circle 32 mm around the ball centre
-  above the PCB plane, floor at -11.6 mm under the module with the footprint from
-  `dxf/floor-19mm-pocket.dxf`, two M2 holes 36 mm apart on the x axis.
+  above the PCB plane, below the PCB plane a rounded rectangle of 35 x 34 mm around the
+  housing (0.5 mm clearance plus a 2 mm wall) that merges into the cavity under the PCB,
+  floor at -11.6 mm under the module with the footprint from `dxf/floor-19mm-pocket.dxf`,
+  two M2 holes 20 mm apart on the y axis (`case_screw_sp` in `stack.json`).
 - Sensor daughterboard (`hardware/sensor-pcb`): 26 x 25 mm, two M2 holes 20 mm apart along
   the 25 mm axis, the sensor optical centre at the board centre, the LM18-LSI lens and the
   sensor body cutout running along the 26 mm side. The board is screwed with its lens side
@@ -133,8 +140,8 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 
 - Material: PETG or PLA, any colour.
 - Layer height 0.12 mm, 3 perimeters, 30 percent infill, no supports.
-- Cradle: print upright (ears down), the cup interior and the lens cavity are closed at
-  45 degree or steeper angles. The three bearing bosses print as small overhangs on the
+- Cradle: print upright (housing down, open side on the bed), the cup interior and the lens
+  cavity are closed at 45 degree or steeper angles. The three bearing bosses print as small overhangs on the
   outside, fine at 0.12 mm. The cable slot is a bridge of 24 mm at the board plane; it
   prints fine at 0.12 mm, add a support blocker only if your printer sags.
 - Deburr the rim with a fingernail or a fine file: it is the only printed edge near the ball
@@ -148,12 +155,14 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 2. Peel the protective films off the sensor and clip the LM18-LSI lens onto the PMW3610.
 3. Plug the FFC into the sensor board first (the connector is unreachable once the board is
    in the housing), then slide the board lens-first into the housing from below, cable out
-   through the slot, and fasten it with two M2x5 self-tapping screws from the floor side.
-   The lens must sit flat in its pocket and the aperture must be centred in the 9 mm hole
-   when you look into the cup.
-4. Stand the module on the case floor in the pocket, ears on the x axis, slot towards the
-   keys; fasten with two M2x6 self-tapping screws from underneath the case (or M2x6 machine
-   screws into heat-set inserts if you set `flange_pilot_d = 3.2`).
+   through the slot. For a bench test without the case hold it with two short M2 x 5
+   self-tapping screws; they come out again in the next step. The lens must sit flat in its
+   pocket and the aperture must be centred in the 9 mm hole when you look into the cup.
+4. Stand the module on the case floor in the pocket, screw holes on the y axis, slot towards
+   the keys; fasten with two M2 x 10 self-tapping screws from underneath the case, up
+   through the floor, the component gap and the sensor board into the posts (or M2 x 10
+   machine screws into heat-set inserts if you set `flange_pilot_d = 3.2`). Snug, not
+   tight: the screws clamp the board and hold the module at the same time.
 5. Route the FFC to J1 on the PCB underside, insert, close the lock.
 6. Drop the ball in. It must spin freely in every direction without touching the rim.
 
@@ -169,6 +178,9 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
   the 9 mm hole and check that it is flush with the cup surface at the bottom (the ball
   rests 0.4 mm above the cup surface, so 2.0 mm gauge plus 0.4 mm design gap gives the
   2.4 mm the datasheet asks for). Anything between 2.2 and 2.6 mm total is inside the window.
+- Case screws: with the module standing on a 2 mm test floor, an M2 x 10 screw from below
+  must reach at least 3 mm into the post (it passes 2 mm floor, 2.25 mm gap and 1.6 mm board
+  first); the sensor board must sit flat on the posts and not bow when the screws are snug.
 - Notch clearance: lay the printed module next to a 1.6 mm board with the octagonal notch
   (print the notch from `hardware/layout/output/outline-right.dxf`): at least 0.3 mm all
   round between the cup and the notch edge.
@@ -194,16 +206,17 @@ Technical cross-section illustration of a 3D printed trackball module standing i
 pocket beside a keyboard PCB: a 19 mm white ball sitting in a thin blue cup, three small
 ceramic bearings at 35 degrees below the equator, the cup rim ending just below the ball's
 equator with nothing above it, below the cup a rectangular housing reaching down to the case floor
-with a green sensor PCB inside and a grey lens block looking up at the ball, two small screw
-ears on the floor, the 1.6 mm green PCB ending 1 mm away from the cup with an angular notch,
+with a green sensor PCB inside and a grey lens block looking up at the ball, two long screws
+coming up through the floor and the sensor board into the housing, the 1.6 mm green PCB ending
+1 mm away from the cup with an angular notch,
 dimension lines for 2.4 mm lens distance and 17 mm ball height, clean CAD line-art style,
 white background.
 ```
 
 ```prompt
 Exploded assembly drawing of a trackball module: from top to bottom a 19 mm white ball, a
-cup with three tiny ceramic balls on a
-rectangular housing with two screw ears, a 26 x 25 mm sensor board with a lens sliding in
-from below, two M2 screws, a flat ribbon cable leaving sideways through a slot, two longer
-screws coming up through a beige case floor, isometric, pastel colours, labelled parts.
+cup with three tiny ceramic balls on a plain
+rectangular housing, a 26 x 25 mm sensor board with a lens sliding in from below, a flat
+ribbon cable leaving sideways through a slot, two long M2 screws coming up through a beige
+case floor and the sensor board into the housing, isometric, pastel colours, labelled parts.
 ```

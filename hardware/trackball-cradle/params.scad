@@ -9,7 +9,8 @@
 // ---------------------------------------------------------------- mounting
 // "pocket": r2 default. The module stands on the case floor in a pocket BESIDE the PCB
 //           (the PCB edge has an octagonal notch around it). The housing walls reach down
-//           to the floor and two ears screw the module to the case; the PCB is not touched.
+//           to the floor; the two case screws come up through the floor and the sensor board
+//           into the sensor posts, so the footprint is the bare housing; the PCB is not touched.
 // "cutout": r1 design. The cup drops through a round cutout of the PCB, a round flange
 //           under the PCB is pulled up with three M2 screws from the top.
 mount           = "pocket";
@@ -47,12 +48,17 @@ pcb_t           = 1.6;     // main PCB thickness
 depth_below_pcb = 10.0;    // case floor (pocket) / lowest point of the module (cutout) below the main PCB underside
 pcb_clear       = 0.3;     // pocket mount: nothing of the module closer than this to the PCB underside
 notch_apothem   = 15.0;    // pocket mount: PCB notch, regular octagon apothem (layout trackball.cradle_diameter / 2 + 1)
-ear_r           = 3.5;     // pocket mount: radius of the two case-screw ears at the floor, on the +x / -x sides
+// Case screws through the sensor posts (pocket mount): the two M2 posts that hold the sensor
+// board are drilled through to the housing underside. One M2 x 10 self-tapping screw per post
+// comes up from below through the case floor (2 mm), the component gap (2.25 mm) and the sensor
+// board (1.6 mm) into the post; about 4 mm of thread end up in the post. The screw spacing is
+// sensor_hole_sp (20 mm) on the local y axis through the ball centre; no extra holes or lugs.
+case_screw_d    = 2.0;     // pocket mount: case screw diameter (M2); the floor DXF gets d + 0.2 clearance holes
 cable_slot_w    = -1;      // pocket mount: width of the FFC slot in the key-facing (-y) wall; -1 = wall width minus 2 corner posts
 corner_post     = 3.0;     // pocket mount: material left at the two -y corners beside the cable slot
 pcb_cutout_d    = ball_d + 5;   // cutout mount: main PCB cutout (30 for 25 mm)
 flange_d        = ball_d + 15;  // cutout mount: flange under the PCB (40 for 25 mm)
-flange_t        = 2.0;          // flange thickness (cutout) / ear and floor-plate thickness (pocket)
+flange_t        = 2.0;          // cutout mount: flange thickness
 flange_hole_bcd = ball_d + 11;  // cutout mount: bolt circle of the three M2 flange screws (36 for 25 mm)
 flange_hole_az  = [90, 210, 330];
 flange_pilot_d  = 1.6;     // pilot hole for M2 self-tapping screws (use 3.2 for heat-set inserts)

@@ -54,7 +54,8 @@ def main():
         print(f"{name:12s} ball top +{v['ball_top_above_pcb_top']:.1f} mm, "
               f"lowest point {min(v['lowest_plastic_z'], v['lowest_sensor_board_z']):.1f} mm, "
               f"envelope above PCB {v['envelope_d_above_pcb']:.1f} mm, "
-              f"footprint {v['footprint_x']:.0f} x {v['footprint_y']:.0f} mm")
+              f"footprint {v['footprint_x']:.0f} x {v['footprint_y']:.0f} mm"
+              + (f", case screws {v['case_screw_sp']:.0f} mm apart" if "case_screw_sp" in v else ""))
 
 
 if __name__ == "__main__":

@@ -80,8 +80,8 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 1 (+1) | 19.05 mm (3/4 inch) POM trackball, or the PandaKB TB19 phenolic ball | right half | 11 |
 | 3 (+3) | 2.0 mm ZrO2 ceramic bearing balls | cradle | 11 |
 | 1 | printed cradle (`hardware/trackball-cradle/stl/cradle-19mm-pocket.stl`) | right half, case pocket; no retainer, the case lid keeps the ball in for transport | 11 |
-| 2 | M2 x 6 self-tapping screws (or M2 x 6 machine screws + heat-set inserts) | cradle ears to the case floor | 11 |
-| 2 | M2 x 5 self-tapping screws | sensor board to cradle | 11 |
+| 2 | M2 x 10 self-tapping screws (or M2 x 10 machine screws + heat-set inserts) | case screws: from below through the case floor and the sensor board into the cradle posts | 11 |
+| 2 (optional) | M2 x 5 self-tapping screws | bench test: sensor board in the cradle posts before the case exists | 11 |
 | 35 (+2) | Kailh Choc V1 switch (PG1350) | | 12 |
 | 35 | Choc 1u keycaps (MBK), 5 in an accent colour for the thumbs | | 12 |
 | 8 | bumpers (GLIPLUS pads or 3M SJ5302) | underside | 15 |
@@ -319,14 +319,15 @@ Checkpoint: no shorts, 1.8 V present, lens clipped on straight with the aperture
 
 ## 11. Trackball cradle
 
-Print `cradle-19mm-pocket.stl` upright (ears down), 0.12 mm layers, 3 perimeters, 30 percent
+Print `cradle-19mm-pocket.stl` upright (housing down), 0.12 mm layers, 3 perimeters, 30 percent
 infill, no supports, PETG or PLA. There is no retainer to print: the cup rim ends 1 mm below the
 ball equator and the ball is held by gravity; the removable case lid (`issues/mech-case-lid.md`)
 covers it for transport. Deburr the rim, it is the only printed edge near the ball. Full details
 and the test-fit list are in the
 [cradle README](../hardware/trackball-cradle/README.md). The module stands on the case floor in
-the pocket beside the right PCB; until the case exists, a scrap of 10 mm material with two M2 holes
-36 mm apart works as a test floor.
+the pocket beside the right PCB. Its 30 x 29 mm housing has no screw ears: the two case screws go
+up through the floor and the sensor board into the cradle's sensor posts, 20 mm apart. Until the
+case exists, a scrap of 2 mm material with two 2.2 mm holes 20 mm apart works as a test floor.
 
 ![Pressing the ceramic bearings into the cup](images/img-build-step-cradle.png)
 
@@ -341,8 +342,9 @@ the pocket beside the right PCB; until the case exists, a scrap of 10 mm materia
    order between the two boards is intentionally mirrored, see
    [trackball module, section 2.2](08-trackball-module.md).
 4. Slide the sensor board **lens first** into the housing from below, aperture in the 9 mm hole,
-   cable out through the slot in the key-facing wall. Fasten with two M2 x 5 self-tapping screws
-   from below. Tighten until snug, then stop: the plastic threads strip easily.
+   cable out through the slot in the key-facing wall. For the bench test hold it with two M2 x 5
+   self-tapping screws from below; they come out again in step 6. Tighten until snug, then stop:
+   the plastic threads strip easily.
 5. Lens distance check (ball out): a 2.0 mm feeler gauge laid on the lens aperture through the
    9 mm hole must be flush with the cup surface at the bottom. The ball rests 0.4 mm above the cup
    surface, which gives the 2.4 mm the datasheet asks for; 2.2 to 2.6 mm is acceptable. Too high
@@ -350,10 +352,12 @@ the pocket beside the right PCB; until the case exists, a scrap of 10 mm materia
 
 ![Checking the lens-to-ball distance with a feeler gauge](images/img-build-step-lens-gauge.png)
 
-6. Stand the module in the case pocket (ears on the outer/inner axis, cable slot towards the
-   keys) and fasten it with two M2 x 6 self-tapping screws from underneath the case floor (or
-   M2 x 6 machine screws into heat-set inserts). Snug, not tight. The cup must sit centred in
-   the PCB's octagonal notch with a visible gap all round.
+6. Stand the module in the case pocket (screw holes on the user-facing axis, cable slot towards
+   the keys), take the short bench-test screws out and fasten it with two M2 x 10 self-tapping
+   screws from underneath the case floor: each screw passes the 2 mm floor, the 2.25 mm gap and
+   the sensor board and bites about 4 mm into the post (or M2 x 10 machine screws into heat-set
+   inserts). Snug, not tight: the same screws clamp the board, it must not bow. The cup must sit
+   centred in the PCB's octagonal notch with a visible gap all round.
 7. Route the FFC under the PCB to connector J1 on the right PCB's bottom face, insert with the
    contacts towards the PCB, close the lock.
 8. Right half on USB: the cursor must move when you roll a finger on the cup's bearings. Then

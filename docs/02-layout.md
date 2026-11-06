@@ -90,10 +90,10 @@ the thumb row. Cells (3,0) and (3,1) do not exist; (3,4) exists only on the left
 | Ball diameter | 19.05 mm (3/4 inch POM); the cradle also exists for 25 mm, which needs a wider notch |
 | Cradle clearance circle | 28 mm diameter (`trackball.cradle_diameter`); the printed cradle is 24.1 mm wide above the PCB plane |
 | PCB notch | regular octagon, apothem 15.0 mm (cradle radius + 1.0 mm `notch_clearance`), vertices in `points-right.json` under `trackball.notch` |
-| Case pocket | 32 mm circle (`pocket_diameter`, cradle + 2 mm wall) above the PCB plane; the sensor housing footprint on the floor is 43 x 29 mm including the screw ears |
+| Case pocket | 32 mm circle (`pocket_diameter`, cradle + 2 mm wall) above the PCB plane; below it a 35 x 34 mm rounded rectangle (3 mm corner radius) around the 30 x 29 mm housing footprint, which has no screw ears: the two M2 x 10 case screws come up through the floor and the sensor board into the cradle's sensor posts, 20 mm apart on the y axis |
 | Sensor board | 26 x 25 mm centred under the ball on the case floor, 11.6 mm below the PCB top (`trackball.sensor_board`) |
 | Keycap clearance | at least 1.0 mm between the 28 mm circle and any keycap (checked by the generator) |
-| Mounting | cradle screwed to the case floor; no cradle holes on the PCB |
+| Mounting | cradle screwed to the case floor through its sensor posts (two M2 x 10 from below, 20 mm apart); no cradle holes on the PCB |
 
 The ball centre was moved until the 28 mm circle cleared the outer thumb cap, the ring and the
 pinky bottom keys by 1 mm each and the circle stays at least `notch_clearance` away from the rest
@@ -110,7 +110,7 @@ notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 | JST J3 | (-56, 42) | optional, 6 mm tall, bottom side | both |
 | Battery pads J2 | (-57, 50.5) | 2.54 mm pitch, B+ is the square pad | both |
 | Test pads TP1.. | row from (-66, 57.5), 2.5 mm pitch along x | right: D0, D1, D2, D3, D9; left: the same plus D10, D14, D15, D16 | both |
-| FPC J1 | (-8, 46.5) | FH12-6S, bottom side, cable exits towards the pocket | right only |
+| FPC J1 | (0, 45.5) | FH12-6S, bottom side under the middle column, 1 mm above the cradle housing; the cable drops straight into the housing slot | right only |
 
 No solder jumpers: RAW, GND, RST and VCC are wired straight to the controller holes.
 

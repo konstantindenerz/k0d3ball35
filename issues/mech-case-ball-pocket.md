@@ -22,9 +22,10 @@ phase has to provide that pocket. All numbers come from `hardware/layout/output/
 | PCB notch | regular octagon, apothem 15.0 mm, vertices in `trackball.notch` |
 | Pocket wall above the PCB plane | circle 32 mm (`pocket_diameter`): 28 mm cradle clearance + 2 mm wall |
 | Floor under the module | -11.6 mm (sensor board component side down; a floor of 1.6 mm below the PCB underside is NOT enough, the pocket is a deep well like the r1 cutout zone was) |
-| Housing footprint on the floor | 30 x 29 mm box plus two screw ears on the x axis: 43 x 29 mm overall, 0.5 mm clearance in `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`. The box corners reach outside the 32 mm circle below the PCB plane, so the well is the union of the circle and the rectangle |
-| Case screws | 2x M2 self-tapping from below through the floor into the ears, 36 mm apart on the x axis through the ball centre |
-| Sensor board | 26 x 25 mm (`trackball.sensor_board`), lies inside the housing; the FFC leaves the housing through the slot in its key-facing wall and runs under the PCB to J1 at (-8, +46.5) |
+| Housing footprint on the floor | 30 x 29 mm box, no ears (`footprint_x` / `footprint_y` in `stack.json`); `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf` is that outline with 0.5 mm clearance (31 x 30 mm) plus the two screw holes |
+| Case screws | 2x M2 x 10 self-tapping from below through the case floor (2 mm), the 2.25 mm component gap and the sensor board into the cradle's sensor posts; 20 mm apart on the y axis through the ball centre (`case_screw_sp`), 2.2 mm clearance holes in the floor. The same screws clamp the sensor board, there are no separate cradle-to-case screws |
+| Pocket at floor level | rounded rectangle 35 x 34 mm with 3 mm corner radius around the housing (30 x 29 + 2 x 0.5 mm clearance + 2 mm wall) centred on the ball, from the floor up to the PCB underside; it merges into the general cavity under the PCB on the key side. The 32 mm circle applies only above the PCB plane |
+| Sensor board | 26 x 25 mm (`trackball.sensor_board`), lies inside the housing; the FFC leaves the housing through the slot in its key-facing wall and drops straight up to J1 at (0, +45.5), 1 mm from the housing wall |
 | Cup | 23.1 mm outer diameter, rim at +6.6 mm (1 mm below the equator), nothing above the rim; ball top +17.1 mm |
 | Clearance | nothing of the cradle is closer than 0.3 mm to the PCB underside; the case must not add anything between the housing top (-1.9 mm) and the PCB |
 
@@ -37,7 +38,7 @@ transport, by the removable case lid (`mech-case-lid`), so the pocket itself nee
 ## Acceptance criteria
 
 - [ ] Parametric pocket in `hardware/case/` built from `points-right.json` (notch polygon, pocket circle, sensor board rectangle) and `floor-19mm-pocket.dxf`
-- [ ] Floor depth -11.6 mm under the module, two M2 holes, drainage for dust optional
+- [ ] Floor depth -11.6 mm under the module, two 2.2 mm holes 20 mm apart on the y axis for the M2 x 10 case screws, drainage for dust optional
 - [ ] Test print of the pocket corner alone with the cradle and a scrap PCB with the notch: 0.3 mm gap all round, FFC routes to J1 without a sharp bend
 - [ ] 25 mm fallback documented as a parameter (notch apothem 16.5 mm, pocket 35 mm) but not printed
 - [ ] Image prompt for the pocket detail in `docs/images/PROMPTS.md`
