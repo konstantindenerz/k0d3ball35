@@ -30,10 +30,10 @@ One cart; everything ships from the same warehouse.
 
 | Done | Qty | Part | Mouser number | Status | You do |
 |------|-----|------|---------------|--------|--------|
-| [ ] | 2 | FPC connector, 6 pin 0.5 mm, bottom contact | 798-FH12-6S-0.5SH55 | open | one for the right PCB (J1), one for the sensor PCB |
+| [ ] | 2 | FPC connector, 6 pin 0.5 mm, bottom contact | 798-FH12-6S-0.5SH55 | open | one for the right PCB (J1, key side), one for the sensor PCB |
 | [ ] | 2 | Battery connector JST PH 2.0 side entry | 306-S2B-PH-SM4-TB | open | |
 | [ ] | 2 | Reset button, side actuated | 667-EVQ-P7A01P | open | |
-| [ ] | 1 (+1), optional | FFC cable 6 pos 0.5 mm, type A (same-side contacts), 40 to 50 mm | Molex 15166 series, 6 circuits | open | pick the 40 or 50 mm length; or take the AliExpress cable below |
+| [ ] | 1 (+1), optional | FFC cable 6 pos 0.5 mm, **type B** (opposite-side contacts), 30 to 40 mm | Molex 15166 series, 6 circuits, type B | open | type B is mandatory, a type A cable does not connect (`docs/08-trackball-module.md` 2.2); or take the AliExpress cable below |
 | [ ] | 2, optional | LDO 1.8 V SOT-23 | Torex XC6206P182MR | open | only if the LCSC lines are not ordered with the PCBs |
 
 ## 3. EU shops (open)
@@ -60,7 +60,7 @@ One cart; everything ships from the same warehouse.
 | Done | Qty | Part | Spec | Status | You do |
 |------|-----|------|------|--------|--------|
 | [ ] | 1 (+1) | Sensor and lens kit | PMW3610DM-SUDU + LM18-LSI, https://www.aliexpress.com/item/1005006208592770.html | open | measure the lens flange and clips on arrival (`issues/mech-lm18-lens-outline-measurement.md`) |
-| [ ] | 2 | FFC cable (alternative to Mouser) | 6 pin 0.5 mm, 40 mm, type A same-side contacts | open | only one of the two cable lines is needed |
+| [ ] | 2 | FFC cable (alternative to Mouser) | 6 pin 0.5 mm, 30 to 40 mm, **type B** opposite-side contacts | open | only one of the two cable lines is needed; check the two ends against the light before ordering a batch |
 
 ## 6. JLCPCB and LCSC (open)
 

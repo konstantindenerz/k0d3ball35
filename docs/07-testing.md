@@ -21,9 +21,9 @@ another step has not produced yet skip with a reason instead of failing.
 | `tests/test_firmware_pins.py` | devicetree pins of both overlays equal the single spec table, 35 bindings per layer, transform row 3 per half |
 | `tests/test_cradle.py` | pocket cradle renders in OpenSCAD, STL watertight, stands on the floor and stays inside the 15 mm notch apothem, 19 mm default matches the layout, stack heights within the datasheet window |
 | `tests/test_bom.py` | BOM quantities cover the parts placed on both PCBs (35 switches and diodes, one FPC connector), every BOM line has a source; section 6 carries every LCSC code of the sensor fab BOM with at least the exported quantity |
-| `tests/test_pcb_review.py` | automated part of the board review: socket pads versus the kiswitch reference, FH12 on the right only, controller hole nets and labels, USB overhang, battery bay, mounting holes, power switch at the inner edge, diode orientation, silkscreen, test pads, edge clearance, octagonal notch, filled GND pours without slivers or islands |
+| `tests/test_pcb_review.py` | automated part of the board review: socket pads versus the kiswitch reference, FH12 on the right only, controller hole nets and labels, USB overhang, battery bay, mounting holes, power switch at the inner edge, diode orientation, silkscreen, test pads, edge clearance, pocket notch with its square corner, J1 on the key side, filled GND pours without unanchored islands |
 | `tests/test_gerbers.py` | independent parse of the three gerber zips with gerbonara: file set and naming, two copper layers, extents, closed outlines, drill hit counts against the boards, the notch, battery bay silkscreen, no copper outside the outline; renders `build/gerber-check/*.png` for a visual pass |
-| `tests/test_ffc_pin_order.py` | the sensor board's FPC pin order is the mirror of the right PCB's for a same-side-contact (type A) cable, both connectors bottom contact on the component side |
+| `tests/test_ffc_pin_order.py` | the sensor board's FPC pin order matches the right PCB's pin for pin, which is what an opposite-side-contact (type B) cable needs: both connectors are bottom contact, but J1 sits on the key side of the right PCB and the sensor's under its own board |
 | `tests/test_sensor_pcb_vs_cradle.py` | sensor board against the cradle: outline, hole spacing, optical centre, sensor cutout and lens envelope (LM18-LSI datasheet) inside the cavity, parts on the floor side below the component gap, connector in front of the cable slot; OpenSCAD render when available |
 | `tests/test_firmware_build_config.py` | firmware build configuration: the GitHub workflow against ZMK's reusable build-user-config, the build matrix against the shield files, the pinned ZMK revision, Kconfig symbols and the devicetree/keymap references a build would resolve |
 | `tests/test_case.py` | case geometry, generated data, renders |
@@ -92,7 +92,7 @@ misbehave.
 | 4.3 Idle current | Leave the ball still for 10 s, then move it | first movement wakes the sensor within a few milliseconds, no visible lag |
 | 4.4 CPI sanity | Roll the ball by one full turn along x (circumference 59.8 mm at 19.05 mm) | cursor travel in pixels roughly equals CPI x 2.36; adjust `res-cpi` to taste |
 
-If 4.1 shows a product id of 0x00 or 0xff, check the FPC cable orientation (ticket
+If 4.1 shows a product id of 0x00 or 0xff, check the cable type (type B) and its orientation (ticket
 `hw-ffc-pin-order-verification`) and the 1.8 V rail on the sensor board.
 
 ### 5. Bluetooth and sleep

@@ -68,25 +68,34 @@ ball stood 12 mm proud.
 
 ### Pocket mount (r2)
 
-- The housing is a 30 x 29 mm box (sensor board 26 x 25 plus 2 mm walls) that runs from the
-  floor up to 0.3 mm under the PCB underside. The sensor board slides in from below with its
+- The housing is a 29 x 29 mm box (sensor board 26 x 25 plus walls of 1.5 mm on x and 2 mm on
+  y) that runs from the floor up to 0.3 mm under the PCB underside. On x it is 1 mm narrower
+  than the notch is wide across its flats, so it clears the PCB edge by 0.5 mm while the module
+  is lowered into its pocket. The sensor board slides in from below with its
   lens against the housing face at z = -7.75 and is clamped to the same two M2 posts as
   before. Its component side (FPC connector, passives, sensor leads) faces the floor; the
   2.25 mm gap between board and floor takes the solder and the FFC.
-- The key-facing (-y) wall is open below the board plane (a 24 mm wide slot), the FFC leaves
-  through it towards connector J1 on the PCB underside.
+- The key-facing (-y) wall is open below the board plane (a 23 mm wide slot), the FFC leaves the
+  sensor connector through it. From the board plane up, the same wall carries a 6 mm wide channel
+  in line with the connector (`cable_ch_x`, `cable_ch_w`): the cable turns up there, climbs the
+  2.95 mm gap between the cup and the PCB notch and folds over the board edge into J1 on the key
+  side of the main PCB. Nothing of the cable runs under the PCB any more.
 - The two sensor posts double as the case fastening: their 1.6 mm pilot holes run straight
   down to the housing underside, and two M2 x 10 self-tapping screws come up from below
   through the case floor (2 mm), the 2.25 mm component gap and the sensor board (1.6 mm)
   into the posts (`case_screw_sp` = 20 mm on the y axis through the ball centre, about 4 mm
   of thread in each post). The board stays clamped to the posts as before, the housing walls
   stand on the floor, and there are no lugs or extra holes: the floor footprint is the bare
-  30 x 29 mm housing (`dxf/floor-19mm-pocket.dxf`: 31 x 30 mm outline with 0.5 mm clearance
+  29 x 29 mm housing (`dxf/floor-19mm-pocket.dxf`: 30 x 30 mm outline with 0.5 mm clearance
   and two 2.2 mm holes). The PCB is not touched.
 - Above the PCB underside nothing is wider than 24.1 mm for the 19 mm ball, so the module
-  passes through the PCB's octagonal notch (apothem 15 mm = layout `cradle_diameter` 28 / 2
+  passes through the PCB's notch (apothem 15 mm = layout `cradle_diameter` 28 / 2
   plus 1 mm) with margin. A keep-out cut in the model enforces this; the 25 mm pocket
   variant needs `notch_apothem = 16.5`, which is a different PCB.
+- The notch's corner towards the keys and the inner column is square, not a 45 degree facet:
+  otherwise the board would overhang the housing by 5.86 mm and the module could neither be
+  lowered into the pocket nor taken out with the PCB fitted
+  (`issues/mech-cradle-notch-relief.md`).
 - `part = "floor2d"` exports the floor footprint for the case design.
 
 ### Tilted sensor, evaluated and not recommended
@@ -120,10 +129,10 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 ### Interfaces that other parts of the project rely on
 
 - Right PCB (`docs/01-design-spec.md` section 5, `hardware/layout/output/points-right.json`):
-  ball centre (+5, +64), octagonal notch with apothem 15 mm around it, no copper or parts
+  ball centre (+5, +64), notch with apothem 15 mm around it (square corner towards the keys), no copper or parts
   needed around the notch. The cradle never touches the PCB.
 - Case (`issues/mech-case-ball-pocket.md`): pocket wall circle 32 mm around the ball centre
-  above the PCB plane, below the PCB plane a rounded rectangle of 35 x 34 mm around the
+  above the PCB plane, below the PCB plane a rounded rectangle of 34 x 34 mm around the
   housing (0.5 mm clearance plus a 2 mm wall) that merges into the cavity under the PCB,
   floor at -11.6 mm under the module with the footprint from `dxf/floor-19mm-pocket.dxf`,
   two M2 holes 20 mm apart on the y axis (`case_screw_sp` in `stack.json`).
@@ -142,8 +151,9 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 - Layer height 0.12 mm, 3 perimeters, 30 percent infill, no supports.
 - Cradle: print upright (housing down, open side on the bed), the cup interior and the lens
   cavity are closed at 45 degree or steeper angles. The three bearing bosses print as small overhangs on the
-  outside, fine at 0.12 mm. The cable slot is a bridge of 24 mm at the board plane; it
-  prints fine at 0.12 mm, add a support blocker only if your printer sags.
+  outside, fine at 0.12 mm. The cable slot bridges the key-facing wall at the board plane in two
+  spans of about 8 mm (the vertical cable channel interrupts it in the middle); both print fine at
+  0.12 mm, add a support blocker only if your printer sags.
 - Deburr the rim with a fingernail or a fine file: it is the only printed edge near the ball
   and a stray strand of filament there is what makes a ball scrape.
 
@@ -153,18 +163,22 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
    at each seat rim. Let it cure, then roll the trackball in the cup: it must spin without
    a click or scrape.
 2. Peel the protective films off the sensor and clip the LM18-LSI lens onto the PMW3610.
-3. Plug the FFC into the sensor board first (the connector is unreachable once the board is
-   in the housing), then slide the board lens-first into the housing from below, cable out
-   through the slot. For a bench test without the case hold it with two short M2 x 5
-   self-tapping screws; they come out again in the next step. The lens must sit flat in its
-   pocket and the aperture must be centred in the 9 mm hole when you look into the cup.
+3. Plug the type B FFC into the sensor board first (the connector is unreachable once the board
+   is in the housing), then slide the board lens-first into the housing from below, cable out
+   through the slot and up the channel in the key-facing wall. For a bench test without the case
+   hold it with two short M2 x 5 self-tapping screws; they come out again in the next step. The
+   lens must sit flat in its pocket and the aperture must be centred in the 9 mm hole when you
+   look into the cup.
 4. Stand the module on the case floor in the pocket, screw holes on the y axis, slot towards
    the keys; fasten with two M2 x 10 self-tapping screws from underneath the case, up
    through the floor, the component gap and the sensor board into the posts (or M2 x 10
    machine screws into heat-set inserts if you set `flange_pilot_d = 3.2`). Snug, not
    tight: the screws clamp the board and hold the module at the same time.
-5. Route the FFC to J1 on the PCB underside, insert, close the lock.
+5. Fold the cable over the PCB edge into J1 on the key side, contacts down, close the lock.
 6. Drop the ball in. It must spin freely in every direction without touching the rim.
+
+For service the order reverses: open the lock, pull the cable out of J1, undo the two screws from
+below and lift the module out of the pocket. Keycaps and PCB stay where they are.
 
 ## Test-fit checklist (do this before ordering PCBs)
 
@@ -181,9 +195,14 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 - Case screws: with the module standing on a 2 mm test floor, an M2 x 10 screw from below
   must reach at least 3 mm into the post (it passes 2 mm floor, 2.25 mm gap and 1.6 mm board
   first); the sensor board must sit flat on the posts and not bow when the screws are snug.
-- Notch clearance: lay the printed module next to a 1.6 mm board with the octagonal notch
-  (print the notch from `hardware/layout/output/outline-right.dxf`): at least 0.3 mm all
-  round between the cup and the notch edge.
+- Notch clearance: lay the printed module next to a 1.6 mm board with the notch (print the
+  outline from `hardware/layout/output/outline-right.dxf`): at least 0.3 mm all round between
+  the cup and the notch edge.
+- Cartridge check: with that scrap board held at the PCB plane, lower the module into the pocket
+  and lift it out again vertically. Nothing may catch: the housing clears the board edge by
+  0.5 mm, which is what the square notch corner is for.
+- Cable path: the FFC must run from the sensor connector through the slot, up the channel and
+  over the board edge into J1 without a crease; the free gap beside the cup is 2.95 mm.
 - Thumb clearance: check that the thumb reaches the ball at its equator from the inner side
   without touching the rim.
 - Flash the firmware and watch the cursor: a 19 mm ball at 600 cpi should move the cursor

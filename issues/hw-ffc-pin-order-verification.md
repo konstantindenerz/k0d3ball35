@@ -11,17 +11,20 @@ created: 2026-11-05
 
 ## Context
 
-Both FPC connectors are bottom-contact and sit on the top side of their boards. With a same-side
-(type A) 0.5 mm cable the pin order either maps 1 to 1 or mirrored depending on how the two connectors
-face each other. The main PCB pin order is fixed in the design spec (3V3, GND, SCLK, SDIO, NCS, MOT).
-The sensor PCB chooses its order to match. A mistake here swaps 3V3 and MOT and may kill the sensor.
+Both FPC connectors are bottom-contact parts, but since r2.2 they look at the cable from opposite
+faces: J1 sits on the key side of the right PCB with the cable on top of the board, the sensor
+connector hangs under the sensor board. The cable must therefore be a **type B** FFC (contacts on
+opposite faces at its two ends) and the pin order runs straight through, 1 to 1. The main PCB
+order is fixed in the design spec (3V3, GND, SCLK, SDIO, NCS, MOT); the sensor PCB matches it.
+A wrong cable type connects nothing at one end, a wrong order would swap 3V3 and MOT.
 
 ## Acceptance criteria
 
 - [x] Pin order on both boards drawn in one diagram with the cable in between, in `docs/08-trackball-module.md`
 - [ ] Physical check with a cable and two connectors on breakout boards, or a continuity test on the first PCBs before the sensor is connected
 - [x] `tests/test_ffc_pin_order.py` cross-checks main PCB connector nets against the sensor PCB connector nets
-  (reads the pads of both boards, models the type A cable, pairs the pads and compares the nets)
+  (reads the pads of both boards, models the type B cable, pairs the pads and compares the nets)
+- [ ] The first cable must be type B: check the two ends against the light before plugging anything in
 
 ## Notes
 
@@ -36,7 +39,7 @@ both connectors are bottom contact on the component sides and a type A cable rev
 series with MOTION) and R2 (NCS pull-up) keep a wrongly inserted cable non-destructive. Still to do: the physical
 check with the first cable and connectors before ordering main PCBs in quantity.
 
-### Desk check 2026-11-06
+### Desk check 2026-11-06 (r2, superseded by r2.2 below)
 
 Pads read from `hardware/right-pcb/k0d3ball35-right.kicad_pcb` and `hardware/sensor-pcb/k0d3ball35-sensor.kicad_pcb`
 (board frames, KiCad y points down, i.e. towards the user on the right PCB):
@@ -88,10 +91,43 @@ mark moved along, which is exactly what KiCad's own flip produces. The cross-con
 which end Hirose calls contact 1: both boards use the same pad geometry, so a relabelling would renumber both ends
 together and the net pairing above would be unchanged.
 
+### Desk check 2026-11-06, r2.2 (current)
+
+J1 moved to the key side of the right PCB (`hw-j1-top-side`): footprint
+`FPC_0.5mm_6P_FH12-6S_top`, placed on F.Cu at (117.4, 105.5) in the board frame, rotation 0, pad
+set on F.Cu and **not** mirrored, so pad 1 is at -x (board x 116.15) and the cable mouth faces +y,
+towards the notch. The sensor board is unchanged.
+
+| | Right PCB J1 | Sensor PCB J1 |
+|---|---|---|
+| Face of the part | key side (top) | component side, facing the case floor |
+| Cable contact face there | down, towards the PCB | up, towards the PCB |
+| Pad 1 offset from the connector centre | -1.25 mm | +1.25 mm in its own frame |
+| Board x to world X | X = x | X = -x (board turned over) |
+| Pad 1 in world X | -1.25 mm | -1.25 mm |
+
+The two contact faces are opposite, so the cable needs its contact windows on opposite faces:
+type B. No twist and no fold back on itself, so each conductor keeps its lateral offset and
+right pad i meets sensor pad i:
+
+| Right J1 pin | Right net | Sensor J1 pin | Sensor net | Match |
+|---|---|---|---|---|
+| 1 | VCC | 1 | VCC | yes |
+| 2 | GND | 2 | GND | yes |
+| 3 | TB_SCLK | 3 | SCLK | yes |
+| 4 | TB_SDIO | 4 | SDIO | yes |
+| 5 | TB_NCS | 5 | NCS | yes |
+| 6 | TB_MOT | 6 | MOT_J (R3 1 k to MOTION) | yes |
+
+A type A cable, a cable swapped end for end or one put in upside down all present insulation to
+the contacts at one end: nothing connects, nothing is powered the wrong way round. VCC and MOT
+still sit at opposite cable edges on both boards, so even a mis-made cable stays non-destructive
+thanks to R3 and R2.
+
 ### Bench procedure (open item)
 
 1. Solder J1 on one right PCB and J1 on one sensor PCB; do not fit U1 (PMW3610) or the regulator U2 yet, or lift them if already fitted.
-2. Plug a 0.5 mm, 6-way, type A FFC (contacts on the same face at both ends) into both connectors exactly as in the pocket: contact face towards each PCB, no twist, sensor board component side down with its cable edge towards the right PCB.
+2. Plug a 0.5 mm, 6-way, **type B** FFC (contacts on opposite faces at its two ends) into both connectors exactly as in the pocket: on the right PCB the cable lies on the key side with its contacts down, on the sensor board it runs under the board with its contacts up, no twist.
 3. Set the multimeter to continuity and probe TP1 (VCC) on the sensor board against the right PCB's VCC net (controller 3V3 socket pin or the J1 pad 1 fillet); expect a beep.
-4. Repeat for GND (there is no GND test point: probe a metal-fitting pad of the sensor J1, which is on GND, against the right PCB GND), then TP3 SCLK, TP4 SDIO, TP5 NCS and TP6 MOT against the controller holes D15, D16, D10 and D14 of the right PCB; each must beep only against its own net and stay open against the other five.
+4. Repeat for GND (there is no GND test point: probe a metal-fitting pad of the sensor J1, which is on GND, against the right PCB GND), then TP3 SCLK, TP4 SDIO, TP5 NCS and TP6 MOT against the controller holes D15, D16, D10 and D14 of the right PCB; each must beep only against its own net and stay open against the other five. With a type B cable the pairing is pin for pin, so pad 1 meets pad 1.
 5. If any pair is swapped, stop and open a defect ticket before fitting the sensor; only after six clean passes fit U1 and U2 and power the board.

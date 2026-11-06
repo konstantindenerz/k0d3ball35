@@ -51,10 +51,11 @@ is handedness-neutral; the left half is mirrored once at the top level of `case.
   x = -45.5 and thumb side at y = 50.6) that stands 0.3 mm above the PCB top; two M2 screws.
 - Pocket (right half): above the PCB plane the cavity is the PCB notch octagon (apothem 15)
   plus 0.2 and the 28 mm cradle circle, with a 2 mm wall around it; at floor level the
-  housing well is 31 x 30 (housing 30 x 29 plus 0.5) in a 35 x 34 block with 3 mm corners,
+  housing well is 30 x 30 (housing 29 x 29 plus 0.5) in a 34 x 34 block with 3 mm corners,
   floor at -11.6, two 2.2 mm holes 20 mm apart on the y axis with a 0.5 mm counterbore from
   below so 2.0 mm of floor remain as the cradle assumes. A 12 mm wide channel from J1 to the
-  housing wall takes the FFC down into the housing slot.
+  housing wall is where the cradle's own cable channel brings the FFC up; the tray only keeps the
+  lid lip off J1 and the cable corridor on the key side (`fpc_clear`).
 - Foot magnets: four 6.2 mm pockets from below in the 9.5 mm floor under the key area, one
   near each corner of the outline (8 mm inside the PCB edge, placed by `gen_case.py` clear of
   the wells, the FFC channel, the standoffs and the feet). The lid roof carries the matching

@@ -65,44 +65,59 @@ Parts and their purpose (also in `fab/k0d3ball35-sensor-r1-bom.csv` with LCSC nu
 The datasheet asks for the CP, CN and VCP capacitors to be X7R, 6.3 V or better, and placed as
 close to the pins as possible with short traces. The layout keeps them within 3 mm.
 
-### 2.2 Connector pin order and why it is mirrored
+### 2.2 Connector pin order, cable type and why J1 sits on the key side
 
 Right PCB connector J1 (fixed by `docs/01-design-spec.md`):
 
 | Pin | 1 | 2 | 3 | 4 | 5 | 6 |
 |-----|---|---|---|---|---|---|
 | Right PCB (J1) | VCC | GND | SCLK | SDIO | NCS | MOT |
-| Sensor board | MOT | NCS | SDIO | SCLK | GND | VCC |
+| Sensor board | VCC | GND | SCLK | SDIO | NCS | MOT |
 
-Reasoning. A bottom-contact FPC connector has its contacts between the cable and the PCB. A
-"type A" FFC has its exposed contacts on the same face at both ends. Lay the cable flat with the
-contacts facing up: both ends must plug into connectors whose contacts face down, i.e. connectors
-mounted on the underside of their boards, which means the two boards lie side by side facing the
-same way and the two connectors look at each other end to end. The conductor on the left edge of
-the cable reaches pin 1 of one connector and pin 6 of the other. That is exactly the r2
-arrangement: J1 sits on the underside of the right PCB, the sensor board lies on the case floor
-6 mm lower with its component side (and connector) facing the floor, and the cable runs flat from
-J1 into the pocket, under the sensor board and into its connector, with the pin order reversed.
-Only a twist in the cable or a type B (opposite-side contacts) cable would make it 1:1.
+Reasoning. Both connectors are bottom-contact parts: the cable's exposed contacts have to face
+the board the connector is soldered to. The sensor board hangs its connector under itself (the
+component side faces the case floor), so there the contacts point **up**. J1 sits on the key side
+of the right PCB with the cable lying on top of the board, so there they point **down**. The
+cable therefore needs its contacts on opposite faces at its two ends, which is exactly a
+**type B** FFC. A type A cable (same face at both ends, the usual default) does not work here:
+one end would present its insulation to the contacts and simply not connect.
+
+Since the cable is not twisted and not folded back on itself, every conductor keeps its side of
+the cable from end to end, so the two connectors are wired alike: pin 1 to pin 1. The right PCB's
+J1 is a front-face part, whose pad set is not mirrored, and the sensor board's is a flipped
+part - the two pin-1 pads end up at the same place across the cable. `tests/test_ffc_pin_order.py`
+derives this from the two board files and fails if either side is edited in isolation.
+
+Why J1 moved to the key side in r2.2: underneath the board its lock sat in the 3 mm gap between
+the PCB and the case floor, unreachable once the PCB was screwed down, and the cable had 1 mm of
+horizontal run to drop 8 mm into the cradle - two creases right at the connector lip. On the key
+side the cable climbs the 3 mm gap between the cradle cup and the PCB notch, folds over the board
+edge with a 1.5 mm radius and goes straight into the mouth, which ends 0.5 mm short of the edge.
+It is the last connection of the build and the first one to undo for service.
 
 ```
- right PCB, component side DOWN            FFC, contacts up         sensor board on the floor, component side DOWN
- ═══════════════════════════════╗                                   ╔═══════════════════════
-   J1 [1 2 3 4 5 6]             ║ drops 6 mm into the pocket        ║  [6 5 4 3 2 1] <- connector on the underside
-                                ╚═══════════════════════════════════╝
- ────────────────────────────────── case floor at -11.6 mm ─────────────────────────────────────
+                  ball
+                 (     )        FFC, contacts DOWN on top of the board
+ keys             \___/     ___________
+ ────────────────────────────            PCB top, J1 [1 2 3 4 5 6] mouth towards the notch
+ ═══════════════════════════╗  |  ╔════════════════════════════ right PCB (1.6 mm)
+                            ║  |  ║ cup
+   cradle wall channel ->   ║  |  ║            the cable turns up inside the key-facing
+                            ║ /   ║            wall of the cradle housing
+ sensor board, component side DOWN, connector contacts UP
+ ───────────────────────────────────── case floor at -11.6 mm ─────────────────────────────
 ```
 
-Cross-check: torabo-tsuki-lp uses the same connector family; its keyboard side is wired
-1 GND, 2 SCLK, 3 SDIO, 4 MOTION, 5 CS, 6 VCC and its sensor module 1 3.3V, 2 CS, 3 MOTION, 4 SDIO,
-5 SCLK, 6 GND, i.e. mirrored, and its author notes explicitly that a same-side FFC reverses the pin
-order at the opposing connector.
+Cross-check: torabo-tsuki-lp puts both connectors on the undersides of its two boards and uses a
+type A cable, which mirrors the pin order (its keyboard side is wired 1 GND, 2 SCLK, 3 SDIO,
+4 MOTION, 5 CS, 6 VCC against 1 3.3V, 2 CS, 3 MOTION, 4 SDIO, 5 SCLK, 6 GND on its module). Same
+physics, one board turned the other way round.
 
-Safety net: if a cable with the wrong contact side is used, VCC lands on MOTION and GND on NCS.
-R3 (1 k) limits the current into the MOTION output to about 3 mA, the other swapped lines are
-inputs, and the sensor's VDDIO pin only sees the controller's weak pull-up. Nothing is destroyed;
-the trackball simply does not work until the cable is replaced. Test point TP6 (MOT) and TP1 (VCC)
-make the check easy with a multimeter.
+Safety net: a type A cable, a cable put in upside down or a cable swapped end for end all end up
+with the contacts facing away from the connector's own contacts at one end, so nothing connects
+and nothing is powered the wrong way. R3 (1 k) in series with MOTION stays anyway: it costs
+nothing and covers a cable with its contact window on the wrong face. Test points TP6 (MOT) and
+TP1 (VCC) make the check easy with a multimeter.
 
 ### 2.3 Layout
 
@@ -196,11 +211,20 @@ option. The r1 25 mm ball stood 12 mm proud, which is why the ball size was redu
   underside and two M2 x 10 self-tapping screws come up from below through the case floor
   (2 mm), the 2.25 mm component gap and the board into the posts (`case_screw_sp` = 20 mm in
   `stack.json`). The housing therefore has no screw ears; its floor footprint is the bare
-  30 x 29 mm box (`footprint_x` / `footprint_y`), and the case pocket below the PCB plane is a
-  35 x 34 mm rounded rectangle around it (`issues/mech-case-ball-pocket.md`).
+  29 x 29 mm box (`footprint_x` / `footprint_y`), and the case pocket below the PCB plane is a
+  34 x 34 mm rounded rectangle around it (`issues/mech-case-ball-pocket.md`). The housing is 1 mm
+  narrower than the notch is wide across its flats, so it clears the board edge by 0.5 mm while
+  the module is lowered into the pocket.
 * The FPC connector (top right, 9 x 5 mm) and the passives (max height 1.0 mm) face the floor;
   the 2.25 mm gap between board and floor is where the FFC runs out through the slot in the
-  key-facing wall of the housing.
+  key-facing wall of the housing. From the board plane up, the same wall carries a 6 mm wide
+  channel in line with that connector: the cable turns up there and climbs past the PCB plane in
+  the gap between the cup and the notch (`cable_channel_x` / `cable_channel_w` in the cradle's
+  `stack.json`; the tests check it against J1's position on both boards).
+* The corner of the module that faces the keys and the inner column would be covered by the PCB
+  if the notch were a plain octagon: the facet overhung the housing by 5.86 mm and the sensor
+  board by 3.03 mm. That corner of the notch is square instead, so the whole module drops in and
+  lifts out vertically with the PCB fitted (`issues/mech-cradle-notch-relief.md`).
 * A tilted sensor (looking at the ball from the side, as torabo-tsuki and Rollino do) was
   evaluated in r1 and does not pay off with a 26 mm wide board: see the cradle README. The 19 mm
   ball brought the 6 mm that the tilt would have promised.
@@ -255,22 +279,26 @@ different cradle. What changes:
 5. Clip the LM18-LSI lens onto the sensor body (its guide posts engage the body). Do not touch
    the optical surfaces; hold the lens by its flange.
 6. Check with a multimeter: no short between VCC and GND, no short between 1V8 and GND.
-7. Plug the FFC into the sensor board now (the connector is unreachable once the board is in the
-   housing), connect the other end to J1, power the right half, read register 0x00 (product ID
-   0x3E). ZMK logs the product ID at boot when `CONFIG_INPUT_LOG_LEVEL_DBG` is enabled;
-   TP3/TP4/TP5 allow probing SPI with a logic analyser.
-8. Slide the board lens-first into the cradle housing from below, cable through the slot, stand
-   the module in the pocket and fasten board and module together with the two M2 x 10 case screws
-   from below the floor (short M2 x 5 screws for a bench test without the case), drop in the
-   ball, test tracking.
+7. Plug the type B FFC into the sensor board now (the connector is unreachable once the board is
+   in the housing), connect the other end to J1, power the right half, read register 0x00
+   (product ID 0x3E). ZMK logs the product ID at boot when `CONFIG_INPUT_LOG_LEVEL_DBG` is
+   enabled; TP3/TP4/TP5 allow probing SPI with a logic analyser.
+8. Slide the board lens-first into the cradle housing from below, cable out through the slot and
+   up the channel in the key-facing wall, stand the module in the pocket and fasten board and
+   module together with the two M2 x 10 case screws from below the floor (short M2 x 5 screws for
+   a bench test without the case).
+9. Fold the cable over the board edge into J1 on the key side, close the lock, drop in the ball
+   and test tracking. For service the order reverses: open the lock, pull the cable out of J1,
+   undo the two screws from below and lift the whole module out of the pocket - the PCB and the
+   keycaps stay where they are.
 
 Image prompt: *Hands-on macro photo of someone pressing a small black optical sensor through a cutout
 in a green PCB from the back side, a pair of tweezers holding a clear plastic lens next to it, soft
 workshop lighting, shallow depth of field.*
 
 The case side of this is in `docs/11-case.md` section 3: the two floor holes are counterbored so
-2.0 mm of floor remain under the housing, and a 12 mm wide channel runs from J1 to the housing
-wall so the FFC drops into the slot without a sharp bend.
+2.0 mm of floor remain under the housing, and the lid's lip keeps clear of J1 and of the cable
+corridor on the key side of the board.
 
 ## 5. Test procedure
 
@@ -289,14 +317,19 @@ wall so the FFC drops into the slot without a sharp bend.
   flange, 10.29 x 6.55 body). Measure a physical lens for the flange offset along the pin row and
   the clip positions, then shrink the cradle's `lens_l` / `lens_w` assembly dummy (21.5 x 11.5).
   `issues/mech-lm18-lens-outline-measurement.md`
-* **FFC orientation check** (hw, P1): verify the mirrored pin order with the first physical cable
-  and connectors before ordering PCBs in quantity; the analysis is solid but cheap to confirm.
-  `issues/hw-ffc-pin-order-verification.md`
+* **FFC type and orientation check** (hw, P1): the cable must be type B (contacts on opposite
+  faces at its two ends) and the pin order is straight through. Confirm both with the first
+  physical cable and connectors before ordering PCBs in quantity; the analysis is solid but cheap
+  to check. `issues/hw-ffc-pin-order-verification.md`
 * **Ball surface** (hw, P1): POM balls vary; test two or three from the pack and the PandaKB
   phenolic ball on the sensor before choosing a colour. `issues/hw-ball-colour-tracking-test.md`
 * **Reverse-cable safe pinout** (hw, P3): a palindromic power pinout (VCC on 1 and 6, GND on 2 and 5)
   would make the cable orientation irrelevant for power; costs two signal pins, so it needs an 8-pin
-  connector. Consider for a later revision.
+  connector. Consider for a later revision. Less urgent since r2.2: a wrong cable now presents
+  insulation to the contacts instead of swapping power pins.
+* **Cable tidiness** (mech, P3): the FFC is visible for about 5 mm in the gap between the cup and
+  the pocket wall. A small printed tab on the pocket wall could cover it.
+  `issues/mech-ffc-cover-tab.md`
 * **Case pocket** (mech, P1): the pocket well, its floor depth and the two case-screw holes
   (20 mm apart on the y axis, under the sensor posts) come from `points-right.json` and
   `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`.

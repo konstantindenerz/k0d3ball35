@@ -10,7 +10,7 @@ Do these before paying for anything:
    the README (`hw-two-pcbs-r2`). The left board is being mirrored from the right one
    (`hw-left-pcb-mirror`, P0); the order waits for that ticket.
 2. Done (automated part): independent gerber parse of all three zips in `tests/test_gerbers.py`
-   (layers, drills, outlines, the octagonal notch, no copper in the notch). Open: upload
+   (layers, drills, outlines, the pocket notch, no copper in the notch). Open: upload
    `hardware/left-pcb/k0d3ball35-left-gerbers.zip`, `hardware/right-pcb/k0d3ball35-right-gerbers.zip`
    and `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip` to the JLCPCB preview. Ticket
    `test-fab-gerber-viewer`.

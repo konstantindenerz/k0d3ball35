@@ -1,7 +1,7 @@
 # Fabrication
 
 Three boards go to the fab house: the left PCB (18 keys), the right PCB (17 keys, FPC connector,
-octagonal notch for the ball pocket) and the small PMW3610 sensor PCB. All are plain two-layer
+notch for the ball pocket) and the small PMW3610 sensor PCB. All are plain two-layer
 boards. Since r2 the two main boards are different designs; order each as its own 5-piece batch.
 
 ## Main PCB order settings (JLCPCB, left and right)
@@ -59,7 +59,7 @@ The sensor board has its own `hardware/sensor-pcb/export.sh` with the same outpu
 - [ ] `make erc` and `make drc` report zero errors for both halves (DRC runs with schematic parity)
 - [ ] `make test` green (geometry, netlist, KiCad gates)
 - [ ] Open both zips in a gerber viewer (JLCPCB's upload preview is enough): outline closed, no
-      internal cutout, the octagonal notch on the right board only, five mounting holes per board,
+      internal cutout, the pocket notch on the right board only, five mounting holes per board,
       J1 only on the right board, no missing layers
 - [ ] The left board outline is the mirror image of the right one: seen from the top the controller
       block sits at the right-hand edge on the left board and at the left-hand edge on the right

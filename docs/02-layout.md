@@ -91,11 +91,12 @@ the thumb row. Cells (3,0) and (3,1) do not exist; (3,4) exists only on the left
 | Ball centre | (+5.0, +64.0), below the middle/ring columns, outboard of the outer thumb key |
 | Ball diameter | 19.05 mm (3/4 inch POM); the cradle also exists for 25 mm, which needs a wider notch |
 | Cradle clearance circle | 28 mm diameter (`trackball.cradle_diameter`); the printed cradle is 24.1 mm wide above the PCB plane |
-| PCB notch | regular octagon, apothem 15.0 mm (cradle radius + 1.0 mm `notch_clearance`), vertices in `points-right.json` under `trackball.notch` |
-| Case pocket | 32 mm circle (`pocket_diameter`, cradle + 2 mm wall) above the PCB plane; below it a 35 x 34 mm rounded rectangle (3 mm corner radius) around the 30 x 29 mm housing footprint, which has no screw ears: the two M2 x 10 case screws come up through the floor and the sensor board into the cradle's sensor posts, 20 mm apart on the y axis |
+| PCB notch | octagon, apothem 15.0 mm (cradle radius + 1.0 mm `notch_clearance`), with the corner towards the keys and the inner column squared off so the module can be lowered into the pocket past the board edge; vertices in `points-right.json` under `trackball.notch` |
+| Case pocket | 32 mm circle (`pocket_diameter`, cradle + 2 mm wall) above the PCB plane; below it a 34 x 34 mm rounded rectangle (3 mm corner radius) around the 29 x 29 mm housing footprint, which has no screw ears: the two M2 x 10 case screws come up through the floor and the sensor board into the cradle's sensor posts, 20 mm apart on the y axis |
 | Sensor board | 26 x 25 mm centred under the ball on the case floor, 11.6 mm below the PCB top (`trackball.sensor_board`) |
 | Keycap clearance | at least 1.0 mm between the 28 mm circle and any keycap (checked by the generator) |
 | Mounting | cradle screwed to the case floor through its sensor posts (two M2 x 10 from below, 20 mm apart); no cradle holes on the PCB |
+| Insertion corridor | the housing and the sensor board inside it must not be covered by the board: `Layout.insertion_corridor()` keeps 0.50 mm to the outline all round, which is what makes the module a cartridge (in and out with the PCB fitted) |
 
 The ball centre was moved until the 28 mm circle cleared the outer thumb cap, the ring and the
 pinky bottom keys by 1 mm each and the circle stays at least `notch_clearance` away from the rest
@@ -113,7 +114,7 @@ notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 | JST J3 | (-56, 44) | default battery connection, 6 mm tall, bottom side, below the bay inside the same well | both |
 | Battery pads J2 | (-57, 50.5) | 2.54 mm pitch, B+ is the square pad, solder alternative to J3 | both |
 | Test pads TP1.. | row from (-66, 57.5), 2.5 mm pitch along x | right: D0, D1, D2, D3, D9; left: the same plus D10, D14, D15, D16 | both |
-| FPC J1 | (0, 45.5) | FH12-6S, bottom side under the middle column, 1 mm above the cradle housing; the cable drops straight into the housing slot | right only |
+| FPC J1 | (-2.6, 45.5) | FH12-6S, **key side**, below the middle column's bottom key; the cable climbs beside the cup, folds over the notch edge into the mouth (0.5 mm from the edge) and the lock stays reachable when assembled | right only |
 
 No solder jumpers: RAW, GND, RST and VCC are wired straight to the controller holes.
 
@@ -141,7 +142,7 @@ the socket pads), joined with 90 degree steps that follow the column stagger, th
 controller block at the inner edge (from above the controller down to the thumb cluster) and the
 thumb bridge between the index/inner bottom keys and the thumb keys. Corners are not rounded
 (`corner_radius: 0`, mitre joins; the fab's 1 mm router radius is accepted). On the right half the
-octagonal pocket notch is subtracted. The left board outline is the mirror image of this
+pocket notch is subtracted. The left board outline is the mirror image of this
 (controller block at +x, thumb arc leaning the other way). Sizes (bounding boxes): left 121.0 x 86.7 mm, right
 117.8 x 80.4 mm; the ball pocket adds about 3 mm of case height beside the right PCB.
 
@@ -164,7 +165,7 @@ Clean technical top-view diagram of the two halves of a 35-key split keyboard on
 background: each half has five columns of three keys in a column-staggered grid (middle column
 highest, pinky column lowest) with an angular stepped board outline following the stagger, the
 left half with three thumb keys fanning out at 0, 10 and 20 degrees below the inner column, the
-right half with only the two outer thumb keys and a 19 mm trackball circle in an octagonal notch at
+right half with only the two outer thumb keys and a 19 mm trackball circle in a notch at
 the lower right beside the thumb keys, a Pro Micro sized controller rectangle in a rectangular block
 at the inner edge of each half, five small mounting hole circles per half, dimension lines showing
 18 mm column pitch and 17 mm row pitch, thin grey lines, labels in a sans-serif font, 16:10.

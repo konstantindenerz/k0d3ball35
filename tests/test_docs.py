@@ -143,3 +143,45 @@ def test_image_prompts_use_prompt_blocks(repo_root: Path, tracked_files: list[Pa
     assert not offenders, "image references without a file or prompt id:\n" + "\n".join(offenders)
     if pending:
         pytest.skip("renders not exported yet:\n" + "\n".join(pending))
+
+
+# ----- assembly order ---------------------------------------------------------------------
+# The hardware allows exactly one order (issues/doc-assembly-order-mismatch.md): the trackball
+# module and the cell go in before the PCB, the cell because the battery well is covered by the
+# board, and J1 on the key side is the last connection. Both documents that spell the order out
+# have to agree, so this test walks the same phases through each numbered list.
+ORDER_PHASES = [
+    ("heat-set inserts", r"insert"),
+    ("magnets", r"magnet"),
+    ("trackball module into the pocket", r"module .{0,40}into (its|the) pocket"),
+    ("cell onto the PCB", r"cell onto the back of the pcb"),
+    ("PCB into the tray", r"pcb into the tray"),
+    ("controller and box cap", r"controller on"),
+    ("keycaps", r"keycaps on"),
+    ("FFC into J1", r"ffc over the board edge into j1"),
+    ("ball", r"ball in(to)?\b"),
+]
+STEP_RE = re.compile(r"^\s*(\d+)\. ", re.M)
+
+
+def _numbered_steps(text: str, heading: str, end: str) -> list[str]:
+    start = text.index(heading)
+    block = text[start:text.index(end, start)].lower()
+    bounds = [m.start() for m in STEP_RE.finditer(block)] + [len(block)]
+    return [block[a:b] for a, b in zip(bounds, bounds[1:])]
+
+
+@pytest.mark.parametrize("doc, heading, end", [
+    ("docs/11-case.md", "## 5. Assembly order", "## 6."),
+    ("docs/04-build-guide.md", "## 12. Case and closing up", "## 13."),
+])
+def test_assembly_order_is_the_same_in_both_documents(repo_root: Path, doc: str, heading: str, end: str):
+    steps = _numbered_steps((repo_root / doc).read_text(encoding="utf-8"), heading, end)
+    assert len(steps) >= 8, f"{doc}: only {len(steps)} numbered steps in the assembly order"
+    found = []
+    for name, pattern in ORDER_PHASES:
+        where = [i for i, step in enumerate(steps) if re.search(pattern, step)]
+        assert where, f"{doc}: no assembly step for {name}"
+        found.append((name, where[0]))
+    wrong = [(a, b) for (a, ia), (b, ib) in zip(found, found[1:]) if ia > ib]
+    assert not wrong, f"{doc}: {wrong} come in the wrong order (steps {found})"

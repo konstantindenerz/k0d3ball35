@@ -24,11 +24,12 @@ belongs in `issues/`.
 9. Smoke test before closing
 10. Sensor board and lens
 11. Trackball cradle
-12. Switches and keycaps
-13. Pairing and trackball tuning
-14. Troubleshooting
-15. Maintenance
-16. Printable checklist
+12. Case and closing up
+13. Switches and keycaps
+14. Pairing and trackball tuning
+15. Troubleshooting
+16. Maintenance
+17. Printable checklist
 
 ---
 
@@ -70,8 +71,8 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 48 | matching header pins (only with machined sockets) | controller | 5 |
 | 2 | MSK-12C02 slide switch | bottom face, inner edge | 6 |
 | 2 | EVQ-P7A01P tact switch | bottom face, below the controller | 6 |
-| 2 | Hirose FH12-6S-0.5SH (or LCSC clone) 6-pin 0.5 mm FPC connector | one on the right PCB (bottom face), one on the sensor board | 6, 10 |
-| 1 (+1) | 6-conductor 0.5 mm FFC, type A (contacts on the same face at both ends), 30 to 50 mm | right half | 11 |
+| 2 | Hirose FH12-6S-0.5SH (or LCSC clone) 6-pin 0.5 mm FPC connector | one on the right PCB (key side), one on the sensor board | 6, 10 |
+| 1 (+1) | 6-conductor 0.5 mm FFC, **type B** (contacts on OPPOSITE faces at the two ends), 30 to 40 mm | right half | 11 |
 | 2 | JST S2B-PH-SM4-TB battery connector | bottom face, below the controller, inside the battery well | 7 |
 | 2 | LiPo PKCELL LP552035, 350 mAh, protected, JST-PH plug | one per half, battery bay on the bottom face under the controller | 7 |
 | 2 | foam or Kapton pad, about 20 x 27 x 0.5 mm, plus double-sided tape | between PCB underside and cell | 7 |
@@ -103,7 +104,7 @@ notch at its lower outer corner and the FPC footprint), the sensor kit has both 
 ## 2. Identify the halves
 
 Each PCB has its name and revision in silkscreen on the top face below the controller outline:
-`k0d3ball35 r2  LEFT half` or `RIGHT half`. The right PCB is the one with the octagonal notch
+`k0d3ball35 r2  LEFT half` or `RIGHT half`. The right PCB is the one with the notch
 beside the thumb keys and the FPC connector footprint J1 between the index/middle bottom keys and
 the thumb keys; it has two thumb positions. The left PCB has three thumb positions and no notch.
 
@@ -192,7 +193,9 @@ edge, square pad at top-left, bottom face inside the battery bay smooth.
 
 ## 6. Power switch, reset button, FPC connector
 
-All on the **bottom face**. The FPC connector exists only on the right PCB.
+Power switch and reset button go on the **bottom face**. The FPC connector exists only on the
+right PCB and sits on the **key side** (top face) since r2.2, so its lock can be reached with the
+keyboard assembled.
 
 ![Power switch, reset button and FPC connector on the bottom face](images/img-build-step-power-switch.png)
 
@@ -209,11 +212,12 @@ Reset button EVQ-P7A01P (RB1, below the power switch near the inner corner):
 
 4. Place it on its four pads; it is symmetric. Solder diagonally opposite pads first.
 
-FPC connector FH12-6S-0.5SH (J1, right PCB only, between the index/middle bottom keys and the
-thumb keys):
+FPC connector FH12-6S-0.5SH (J1, right PCB only, **top face**, between the middle column's bottom
+key and the notch around the ball pocket):
 
-5. Open the flip lock. The connector goes on with the lock (cable entry) facing the ball pocket,
-   i.e. towards the user; the six contacts point towards the keys. The silkscreen `1` marks pin 1.
+5. Open the flip lock. The connector goes on the key side with its cable mouth towards the notch
+   (+y, the board edge 0.5 mm away) and the contacts and the lock towards the keys. The silkscreen
+   `1` marks pin 1, at the inner (-x) end of the contact row.
 6. Use the fine tip. Tin one anchor tab, place the connector, reflow the tab, check that all six
    leads sit exactly on their pads under magnification, solder the second tab, then drag-solder the
    six leads with flux. Remove any bridge with wick; check again with the loupe.
@@ -223,8 +227,8 @@ thumb keys):
 Test pads in a row at the bottom of the controller block carry D0, D1, D2, D3 and D9 on both halves
 (plus D10, D14, D15 and D16 on the left, where the sensor pins have no connector); nothing to solder.
 
-Checkpoint: switch clicks between two positions, button clicks, FPC lock opens and closes, no
-shorts between FPC pins.
+Checkpoint: switch clicks between two positions, button clicks, FPC lock opens and closes with a
+keycap fitted on the middle column's bottom key (1.05 mm clear), no shorts between FPC pins.
 
 ## 7. Battery
 
@@ -251,6 +255,10 @@ pads J2 remain for cells with bare leads.
    covers the socket tails), then the cell onto the pad with double-sided tape, lead end towards
    J3. Nothing but the pad may lie between the cell and the PCB; the leads must not run under
    the cell.
+
+The cell stays on the board from here on: with the case, the battery well is completely covered
+by the PCB, so the cell goes into its well together with the board and cannot be added or swapped
+afterwards without taking the keycaps and the five PCB screws out (chapter 12).
 
 Checkpoint: correct polarity at RAW/GND, switch really cuts the supply, cell fixed inside the bay
 on both halves, leads not under strain.
@@ -329,7 +337,7 @@ ball equator and the ball is held by gravity; the removable case lid (`issues/me
 covers it for transport. Deburr the rim, it is the only printed edge near the ball. Full details
 and the test-fit list are in the
 [cradle README](../hardware/trackball-cradle/README.md). The module stands on the case floor in
-the pocket beside the right PCB. Its 30 x 29 mm housing has no screw ears: the two case screws go
+the pocket beside the right PCB. Its 29 x 29 mm housing has no screw ears: the two case screws go
 up through the floor and the sensor board into the cradle's sensor posts, 20 mm apart. Until the
 case exists, a scrap of 2 mm material with two 2.2 mm holes 20 mm apart works as a test floor.
 
@@ -340,13 +348,15 @@ case exists, a scrap of 2 mm material with two 2.2 mm holes 20 mm apart works as
    cyanoacrylate at the rim of each seat (never under the ball). Let it cure 10 minutes.
 2. Roll the trackball in the cup: it must spin without a click or scrape. A scraping ball means a
    bearing is not fully seated.
-3. Plug the FFC into the sensor board connector **now**, contacts facing the connector's contacts
-   (the exposed metal of the cable towards the PCB on a bottom-contact connector), stiffener up,
-   close the flip lock. The connector is unreachable once the board is in the housing. The pin
-   order between the two boards is intentionally mirrored, see
-   [trackball module, section 2.2](08-trackball-module.md).
+3. Plug the **type B** FFC into the sensor board connector **now**: the exposed metal of this end
+   faces the board (up, towards the connector's contacts), the stiffener faces the floor, close the
+   flip lock. The connector is unreachable once the board is in the housing. The cable's other end
+   has its contacts on the opposite face, which is what J1 on the key side needs; the pin order
+   runs straight through, see [trackball module, section 2.2](08-trackball-module.md). A type A
+   cable (contacts on the same face at both ends) will not connect.
 4. Slide the sensor board **lens first** into the housing from below, aperture in the 9 mm hole,
-   cable out through the slot in the key-facing wall. For the bench test hold it with two M2 x 5
+   cable out through the slot in the key-facing wall and up its 6 mm channel in the same wall. For
+   the bench test hold it with two M2 x 5
    self-tapping screws from below; they come out again in step 6. Tighten until snug, then stop:
    the plastic threads strip easily.
 5. Lens distance check (ball out): a 2.0 mm feeler gauge laid on the lens aperture through the
@@ -356,14 +366,18 @@ case exists, a scrap of 2 mm material with two 2.2 mm holes 20 mm apart works as
 
 ![Checking the lens-to-ball distance with a feeler gauge](images/img-build-step-lens-gauge.png)
 
-6. Stand the module in the case pocket (screw holes on the user-facing axis, cable slot towards
-   the keys), take the short bench-test screws out and fasten it with two M2 x 10 self-tapping
-   screws from underneath the case floor: each screw passes the 2 mm floor, the 2.25 mm gap and
-   the sensor board and bites about 4 mm into the post (or M2 x 10 machine screws into heat-set
-   inserts). Snug, not tight: the same screws clamp the board, it must not bow. The cup must sit
-   centred in the PCB's octagonal notch with a visible gap all round.
-7. Route the FFC under the PCB to connector J1 on the right PCB's bottom face, insert with the
-   contacts towards the PCB, close the lock.
+6. Lower the module into the case pocket (screw holes on the user-facing axis, cable slot and
+   channel towards the keys), take the short bench-test screws out and fasten it with two M2 x 10
+   self-tapping screws from underneath the case floor: each screw passes the 2 mm floor, the
+   2.25 mm gap and the sensor board and bites about 4 mm into the post (or M2 x 10 machine screws
+   into heat-set inserts). Snug, not tight: the same screws clamp the board, it must not bow. The
+   cup must sit centred in the notch with a visible gap all round. It goes straight down and comes
+   straight up: the housing is 0.5 mm narrower than the well all round, which is why this works
+   with the PCB already fitted.
+7. Bring the cable up the gap between the cup and the notch, fold it over the board edge with a
+   gentle radius and push it into J1 on the **key side** of the right PCB, exposed metal **down**
+   towards the board, then close the lock. No crease: the fold wants about 1.5 mm of radius, and
+   the mouth sits 0.5 mm from the board edge.
 8. Right half on USB: the cursor must move when you roll a finger on the cup's bearings. Then
    drop the ball in. Nothing holds it: it must spin freely in every direction and a strip of
    paper must pass between the ball and the rim all the way round.
@@ -372,10 +386,47 @@ case exists, a scrap of 2 mm material with two 2.2 mm holes 20 mm apart works as
 
 ![Trackball module mounted beside the right half](images/img-build-step-ball.png)
 
-Checkpoint: ball spins freely, lens distance within 2.2 to 2.6 mm, cup clear of the notch, cursor
-moves, ball retained.
+Checkpoint: ball spins freely, lens distance within 2.2 to 2.6 mm, cup clear of the notch, cable
+folded without a crease, cursor moves, ball retained.
 
-## 12. Switches and keycaps
+## 12. Case and closing up
+
+Printed parts, heights and the parameter list are in [printed case](11-case.md) and
+[hardware/case/README.md](../hardware/case/README.md). Three parts per half: tray, controller box
+cap and lid. This chapter is the order in which they go together; it is the only order the
+hardware allows, so do not improvise.
+
+![Exploded view of one half](images/img-case-exploded.png)
+
+1. Press the seven M2 heat-set inserts into the tray with a soldering iron at about 200 C (five
+   standoffs, two bosses in the controller box). Let them cool before anything else goes in.
+2. Glue the eight 6 x 2 mm magnets: four from below into the tray floor (north down), four into
+   the lid roof from its underside (south up). Check the snap with a loose magnet before the glue
+   sets - the lid has to hold under the half as a foot.
+3. Right half: lower the finished trackball module (chapter 11) into its pocket and fasten it with
+   the two M2 x 10 screws from below. It drops straight in and lifts straight out, also later with
+   the PCB fitted, so this step can be repeated at any time.
+4. Cell onto the back of the PCB in the dashed bay and into J3 (chapter 7). The battery well is
+   completely covered by the board, so the cell has to travel with the PCB.
+5. Lower the PCB into the tray, cup through the notch, onto the five standoffs. Keycaps off:
+   their skirts overhang the screw heads by 1.5 mm. Five M2 x 5 or x 6 machine screws from the
+   top, snug.
+6. Controller onto its sockets, box cap on, two M2 screws into the bosses. USB-C in its opening,
+   the slide switch lever in its slot, the reset button over its pin hole in the floor.
+7. Keycaps on (chapter 13).
+8. Right half: fold the FFC over the board edge into J1 on the key side and close the lock
+   (chapter 11, step 7). This is the last connection of the build and the only one you can reach
+   with everything assembled.
+9. Ball into the cup, four rubber feet onto the underside, lid on.
+
+Service, in the other direction: the trackball module comes out with the keycaps and the PCB in
+place - open J1's lock, pull the cable, undo the two screws from below, lift the module out.
+Anything else (cell, controller, a switch) means keycaps off and the five PCB screws out.
+
+Checkpoint: both halves closed, no part under strain, lid holds on top and under the half, USB-C
+and the switch reachable, ball spins freely.
+
+## 13. Switches and keycaps
 
 ![Switches and keycaps going in](images/img-build-step-switches.png)
 
@@ -392,7 +443,7 @@ moves, ball retained.
 
 Checkpoint: 35 keys register, no switch sits high or tilted.
 
-## 13. Pairing and trackball tuning
+## 14. Pairing and trackball tuning
 
 1. Both halves on. The halves find each other within seconds. Connect the right half to the host
    by USB or by Bluetooth: on the System layer (hold both outer thumb keys), select profile 0 with
@@ -411,7 +462,7 @@ Checkpoint: 35 keys register, no switch sits high or tilted.
 Checkpoint: cursor direction and speed feel right, clicks work on the mouse layer, both halves
 reconnect after a power cycle.
 
-## 14. Troubleshooting
+## 15. Troubleshooting
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
@@ -422,20 +473,22 @@ reconnect after a power cycle.
 | halves do not talk | pairing data stale | `settings_reset` on both, then the real firmware, power both on within a minute |
 | half dies when USB is unplugged | battery not connected or reversed, slide switch not in the B+ line | chapter 7 step 5 |
 | controller gets warm, battery reads reversed | cell polarity reversed | disconnect immediately, swap the leads, replace the controller if the charger IC died |
-| cursor does not move | no 3.3 V on FPC pin 1, cable in backwards or not latched, lens films still on | check VCC at the sensor board, reseat the cable with contacts towards the connector, peel the films |
+| cursor does not move | no 3.3 V on FPC pin 1, wrong cable type (needs type B, contacts on opposite faces), cable in backwards or not latched, lens films still on | check VCC at the sensor board, hold the cable up to the light and confirm the two ends expose opposite faces, reseat it (contacts down in J1, up at the sensor board), peel the films |
 | cursor jitters at rest or tracks on one axis only | lens not seated, lens distance out of range, dirty ball | reseat the lens, feeler gauge check (chapter 11), clean the ball |
 | cursor moves the wrong way | axis config | `invert-x` / `invert-y`, `&zip_xy_swap_mapper` |
 | mouse layer opens while typing | timing | raise `require-prior-idle-ms`, check `excluded-positions` |
 | short battery life on the right half | `force-awake` on, slide switch not in the battery line, sensor always tracking | disable `force-awake`, confirm 0 V at RAW with the switch off, make sure nothing (lid, pocket wall) presses the ball onto the bearings |
 | ball falls out when the half is carried | by design, there is no retainer | put the case lid on for transport (`issues/mech-case-lid.md`) or carry the half without the ball; a bayonet ring is the fallback described in the cradle README |
 | ball rubs on the PCB notch | cradle not centred in the pocket | loosen the two floor screws, centre the cup in the notch, retighten |
+| module will not go into the pocket | wrong print or a scrap board with the old octagonal notch; the corner towards the keys must be square | reprint the tray and check the notch against `hardware/layout/output/outline-right.dxf` |
+| FFC creases at the board edge | too little radius in the fold, or the cable is too long and bows in the pocket | 30 to 40 mm cable, let it arc above the board before pressing it down, deburr the board edge |
 | switch will not go in | socket tilted, bent switch pin | reflow the socket flat, straighten the pin |
 
 Measurements that settle most arguments: cell 3.6 to 4.2 V; RAW equals cell voltage with the
 switch on, 0 V off; VCC 3.3 V with the controller running; sensor 1V8 pad 1.75 to 1.85 V; diode
 forward 0.5 to 0.7 V.
 
-## 15. Maintenance
+## 16. Maintenance
 
 * **Ball.** Lift the ball out (nothing holds it), wipe it with a lint-free cloth and a little
   isopropyl alcohol, brush the three bearings with a dry brush. Every few weeks, more with dry skin.
@@ -450,7 +503,7 @@ forward 0.5 to 0.7 V.
 * **Firmware.** Before updating to a newer ZMK revision, read the release notes; if the split
   protocol changed, flash `settings_reset` on both halves and pair again.
 
-## 16. Printable checklist
+## 17. Printable checklist
 
 ```
 k0d3ball35 build checklist                       half: [ ] right (17 keys)  [ ] left (18 keys)
@@ -465,9 +518,11 @@ k0d3ball35 build checklist                       half: [ ] right (17 keys)  [ ] 
 [ ] 8  settings_reset flashed, then left / right firmware
 [ ] 9  35 positions register, no ghosting, battery level visible in Studio
 [ ] 10 sensor board: no shorts, 1.8 V present, lens clipped on
-[ ] 11 cradle: bearings glued, FFC plugged before the board goes in, lens gauge 2.2-2.6 mm,
-       module screwed to the floor, cup centred in the notch, ball retained
-[ ] 12 switches and keycaps in, every key tested
-[ ] 13 cursor direction and speed set, halves reconnect after power cycle
-[ ] 15 bumpers on, ball cleaning routine noted
+[ ] 11 cradle: bearings glued, type B FFC plugged before the board goes in, lens gauge
+       2.2-2.6 mm, module screwed to the floor, cup centred in the notch, ball retained
+[ ] 12 case: inserts and magnets in, module in the pocket, cell on the PCB, PCB on its five
+       screws, controller box closed, FFC in J1 on the key side, feet and lid
+[ ] 13 switches and keycaps in, every key tested
+[ ] 14 cursor direction and speed set, halves reconnect after power cycle
+[ ] 16 bumpers on, ball cleaning routine noted
 ```

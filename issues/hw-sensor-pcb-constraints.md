@@ -20,7 +20,7 @@ free within a 40 mm circle around the ball centre for the flange.
 
 - [x] hardware/sensor-pcb outline, holes and lens orientation match the cradle parameters
 - [x] Right PCB octagonal notch has an apothem of 15 mm (cradle clearance circle 28 mm + 1 mm) and no copper or parts inside it or within the edge clearance (`tests/test_pcb_review.py::test_octagonal_notch`)
-- [x] The printed cradle is 24.1 mm wide above the PCB plane (docs/02-layout.md), inside the 30 mm notch; housing 30 x 29 and the sensor board sit below the PCB plane and are checked against the board in `tests/test_sensor_pcb_vs_cradle.py`
+- [x] The printed cradle is 24.1 mm wide above the PCB plane (docs/02-layout.md), inside the 30 mm notch; housing 29 x 29 and the sensor board sit below the PCB plane and are checked against the board in `tests/test_sensor_pcb_vs_cradle.py`
 
 ## Notes
 
@@ -43,7 +43,7 @@ centre at (110, 110), cradle local x = lens / pin-row axis (26 mm side), local y
 | Component gap | tallest parts on the component side: J1 FH12 2.0 mm (Hirose: standard flip-lock height 2.0), U1 package on the pin side 1.65 (9.05 - 7.40), U2 SOT-23 max 1.45, 0603 max 0.95, test points 0 | floor -11.6, board underside -9.35 (`sensor_pcb_plane_z` -7.75 - 1.6): 2.25 mm; `sensor_pins_h` 2.25 | holds, 0.25 mm left under J1 |
 | Sides | U1 is the only footprint on B.Cu; the other 24 footprints are on F.Cu | lens side up against the housing face, component side towards the floor | match |
 | FPC connector | J1 at (117.6, 102.45) rot 180 on F.Cu; body 7.1 mm (FH12-06S C) spans 4.05..11.15 mm from the centre line; cable mouth at y 98.05, 0.55 mm from the top edge (y 97.5, one end of the hole axis); courtyard 113.05..122.15 x 97.55..105.45 inside the board | cable slot in the -y wall 24 mm wide (`housing_x - 2 * corner_post`, x +-12), from the floor to the board plane (3.85 mm) | inside the slot with 0.85 mm to the slot edge; the mouth faces the slotted wall, so the FFC runs out through the slot in the 2.25 mm gap |
-| Housing | - | 30 x 29 mm outer, walls 2.0 (1.8 beside the board cavity) | STL cross-sections of `build/cradle-19mm-pocket.stl`: board cavity walls at x +-13.2 / y +-12.7, slot edges x +-12, lens cavity x +-12 / y +-11.5, ceiling at board plane + 3.8, post columns r 2.5 at (0, +-10) |
+| Housing | - | 29 x 29 mm outer, walls 2.0 (1.8 beside the board cavity) | STL cross-sections of `build/cradle-19mm-pocket.stl`: board cavity walls at x +-13.2 / y +-12.7, slot edges x +-12, lens cavity x +-12 / y +-11.5, ceiling at board plane + 3.8, post columns r 2.5 at (0, +-10) |
 
 Z stack cross-check against the datasheets: `lens_z` 2.4 is the typical of 2.2..2.6, `lens_h` 3.4 equals
 "gap between PCB and base plate" (figure 4), and `sensor_pcb_plane_dist` 15.325 = 19.05 / 2 + 2.4 + 3.4.

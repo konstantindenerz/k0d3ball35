@@ -57,7 +57,7 @@ Technical diagram, white background, both halves of a split keyboard drawn as ro
 4.2, 0, 2.2, 4.5 mm lower than the middle column), angular stepped board outlines following the
 stagger, the left half with three thumb keys in an arc below the inner columns rotated 0, 10 and
 20 degrees, the right half with the two outer thumb keys and a dashed circle of 28 mm inside an
-octagonal notch beside them labelled "ball pocket", thin grey lines, orange highlight on the thumb
+notch beside them labelled "ball pocket", thin grey lines, orange highlight on the thumb
 keys, dimension arrows with millimetre labels, sans-serif font.
 ```
 
@@ -143,7 +143,7 @@ Aspect 3:4. Exploded view of the right half.
 
 ```prompt
 Exploded view rendering on white of the right half of a split keyboard: from top, 17 white and
-orange low-profile keycaps, 17 low-profile switches, the angular main PCB with an octagonal notch
+orange low-profile keycaps, 17 low-profile switches, the angular main PCB with a notch
 at its lower outer edge, hot-swap sockets and diodes on the underside, a controller on socket
 strips, a flat battery, a trackball cradle with a 19 mm ball standing beside the PCB notch, a beige
 boxy printed case bottom with a round pocket, all parts aligned vertically with thin guide lines,
@@ -166,10 +166,12 @@ soft shadows.
 Aspect 2:1. FFC cable orientation diagram.
 
 ```prompt
-Technical diagram, white background, two PCBs drawn in side view connected by a flat flex cable
-with contacts on one side, both flip-lock connectors on the top side of their boards, the cable's
-contact side marked in orange, pin 1 marked on each connector with a triangle, labels "main PCB",
-"sensor PCB", "contacts face down into both connectors", sans-serif.
+Technical diagram, white background, two PCBs drawn in side view connected by a flat flex cable,
+the upper board's flip-lock connector on its top face and the lower board's underneath it, the
+cable climbing from the lower board and folding over the upper board's edge, its exposed contacts
+marked in orange on the lower face at the top end and on the upper face at the bottom end, pin 1
+marked on each connector with a triangle, labels "main PCB, key side", "sensor PCB", "type B:
+contacts on opposite faces", sans-serif.
 ```
 
 ## img-parts-flatlay
@@ -178,7 +180,7 @@ Aspect 3:2. All parts before assembly.
 
 ```prompt
 Flat lay photo on light grey paper, neatly arranged: two different bare black keyboard PCBs with
-angular stepped outlines (one with an octagonal notch), a tiny sensor PCB, two small wireless
+angular stepped outlines (one with a pocket notch), a tiny sensor PCB, two small wireless
 controller boards, 35 low-profile switches in rows, 30 white and 5 orange keycaps, a strip of SMD
 diodes on tape, hot-swap sockets, two small flat LiPo batteries, a white 19 mm ball, three tiny
 ceramic balls in a dish, a flat flex cable, M2 screws, top-down, soft light.
@@ -221,9 +223,10 @@ background, shallow depth of field.
 Aspect 3:2. Inserting the flex cable.
 
 ```prompt
-Macro photo of fingers lifting the brown flip lock of a tiny 6-pin flat flex connector on a
-keyboard PCB and sliding in a white flat flex cable with its blue stiffener facing up, a second
-identical connector on a small sensor board next to it, bright even light.
+Macro photo of fingers lifting the brown flip lock of a tiny 6-pin flat flex connector on the top
+face of a keyboard PCB, right beside the notch of a trackball pocket, and sliding in a white flat
+flex cable that curves up out of the pocket and folds over the board edge, a second identical
+connector on a small sensor board below, bright even light.
 ```
 
 ## img-build-step-cradle

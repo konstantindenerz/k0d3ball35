@@ -88,15 +88,18 @@ Right PCB connector J1 pin order (fixed):
 | 5 | TB_NCS |
 | 6 | TB_MOT |
 
-J1 sits on the bottom side of the right PCB at (0.0, +45.5) under the middle column's bottom key,
-1 mm above the cradle housing; the cable exits towards +y (towards the user) and drops straight
-into the slot of the cradle housing.
+J1 sits on the **key side** of the right PCB at (-2.6, +45.5), below the middle column's bottom
+key and 1.05 mm clear of its keycap, with the cable mouth 0.5 mm short of the notch edge. The
+cable climbs the gap between the cradle cup and the notch, folds over the board edge and goes
+into the mouth from +y, so the lock stays reachable with the keyboard assembled and the trackball
+module can be unplugged and lifted out without touching the PCB (`issues/hw-j1-top-side.md`).
 The left PCB has no J1 and no sensor nets.
 
 Connector family: Hirose FH12-6S-0.5SH (0.5 mm pitch, 6 contacts, bottom contact, ZIF slider) or a
-pin-compatible LCSC equivalent; the same footprint is used on both boards. Cable: 0.5 mm pitch, 6 conductor, same-side contacts
-(type A), 30 to 50 mm long. The sensor board's connector pin order is chosen so that this cable
-works when both connectors sit on the component side of their boards.
+pin-compatible LCSC equivalent; the same pad geometry is used on both boards (the right PCB uses the
+front-face variant of the footprint). Cable: 0.5 mm pitch, 6 conductor, **opposite-side contacts
+(type B)**, 30 to 40 mm long. The two connectors look at the cable from opposite faces, which is
+what makes type B the right cable and the pin order straight through.
 
 Sensor board (`hardware/sensor-pcb/`): PMW3610DM-SUDU, LM18-LSI lens, VDD 1.8 V generated on the board from
 3.3 V, VDDIO 3.3 V, 100 nF plus 1 uF decoupling, no level shifting. Outline 26 x 25 mm (17 mm sensor body cutout
@@ -105,10 +108,10 @@ exactly between them at the board centre; the lens runs along the 26 mm side. Co
 connector, passives); the back carries the "BALL SIDE" silkscreen, the sensor body (protrudes 0.7 mm) and the lens.
 In the pocket mount the board lies on the case floor with the component side down and the lens looking up.
 
-Sensor-board connector pin order is MIRRORED relative to the main board: 1 TB_MOT, 2 TB_NCS, 3 TB_SDIO, 4 TB_SCLK,
-5 GND, 6 VCC. Both FH12-6S connectors are bottom contact on the component sides of their boards and a type A
-same-side FFC reverses the order between them. R3 (1 k in series with MOTION) and R2 (NCS pull-up) make a
-wrongly inserted cable non-destructive.
+Sensor-board connector pin order is the SAME as on the main board: 1 VCC, 2 GND, 3 SCLK, 4 SDIO, 5 NCS,
+6 MOT. Both FH12-6S connectors are bottom contact, but the main board's sits on the key side and the sensor
+board's under its own board, so the type B cable joins pin 1 to pin 1 (`docs/08-trackball-module.md`
+section 2.2). R3 (1 k in series with MOTION) and R2 (NCS pull-up) make a wrong cable non-destructive.
 
 Optical stack (datasheet lens-to-surface 2.2 to 2.6 mm, 2.4 mm typical):
 
@@ -195,7 +198,9 @@ Exact values come out of the layout generator and are tabulated in `docs/02-layo
 Ball pocket (right half only): ball centre (+5.0, +64.0), outboard of the outer thumb key and
 below the middle/ring columns. The ball does not pass through the PCB. The PCB edge has a regular
 octagonal notch with apothem 15.0 mm around the ball centre (cradle clearance radius 14 mm plus
-1.0 mm), the case pocket around the cradle is a 32 mm circle (28 mm cradle clearance plus a 2 mm
+1.0 mm), with the corner towards the keys and the inner column squared off so the module can be
+lowered into its pocket past the board edge (`issues/mech-cradle-notch-relief.md`). The case
+pocket around the cradle is a 32 mm circle (28 mm cradle clearance plus a 2 mm
 wall), and the 26 x 25 mm sensor board lies centred under the ball on the case floor, 11.6 mm below
 the PCB top. The cradle is screwed to the case floor, not to the PCB; there are no cradle holes on
 the PCB. Minimum clearance between the 28 mm cradle circle and any keycap: 1.0 mm (checked by the
@@ -238,7 +243,7 @@ and derives everything from it; the numbers below are the contract between PCB a
 | Item | Value |
 |------|-------|
 | Wall top (rim) | +5.0 mm, beside the keycap skirts |
-| Pocket cavity above the PCB plane | notch octagon + 0.2 mm, union with the 28 mm cradle circle; 2 mm wall around it |
+| Pocket cavity above the PCB plane | notch (octagon with the square corner) + 0.2 mm, union with the 28 mm cradle circle; 2 mm wall around it |
 | Case floor under the battery bay, J3, RB1 and under the cradle housing | -11.6 mm (the 9 mm well plus 1 mm) |
 | Floor under the key area | -4.6 mm (3.0 mm for sockets and diodes) |
 | PCB fastening | M2 machine screws from the top into heat-set inserts in 6 mm standoffs on the five mounting holes |

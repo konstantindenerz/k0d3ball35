@@ -52,13 +52,15 @@ over the ball; it renders but is not part of the default build.
 
 The cradle stands on the case floor in a well beside the right PCB
 (`docs/08-trackball-module.md`, `hardware/trackball-cradle/README.md`): the housing well is
-31 x 30 mm (housing 30 x 29 plus 0.5 mm) in a 35 x 34 mm block, floor at -11.6, two 2.2 mm
+30 x 30 mm (housing 29 x 29 plus 0.5 mm) in a 34 x 34 mm block, floor at -11.6, two 2.2 mm
 holes 20 mm apart on the y axis for the M2 x 10 case screws from below, counterbored so the
 cradle sees the 2.0 mm floor it assumes. Above the PCB plane the cavity is the PCB notch
-octagon (apothem 15 mm) plus 0.2 mm, so the printed wall continues the PCB edge around the
-cup with a 2 mm wall. The rim stops at +5.0, 1.6 mm below the cup rim, and the thumb reaches
-the ball at its equator from the key side. A 12 mm channel from J1 down to the housing wall
-takes the FFC. The 25 mm fallback ball is a parameter set
+(apothem 15 mm, square corner towards the keys) plus 0.2 mm, so the printed wall continues the
+PCB edge around the cup with a 2 mm wall. The rim stops at +5.0, 1.6 mm below the cup rim, and
+the thumb reaches the ball at its equator from the key side. The FFC needs nothing from the
+tray: it climbs the 2.95 mm gap between the cup and the notch inside the cradle's own wall
+channel and folds over the board edge into J1 on the key side; only the lid's lip keeps clear of
+J1 and of that corridor (`fpc_clear`). The 25 mm fallback ball is a parameter set
 (`-D ball_d=25 -D notch_apothem=16.5 -D pocket_d=35 -D ball_top_z=23.05`) and needs a
 different PCB notch; it is documented, not printed.
 
@@ -77,14 +79,29 @@ under the PCB and the reset button a 3 mm pin hole in the floor of the well.
 
 ## 5. Assembly order
 
+This order is the only one the hardware allows, and the build guide
+(`docs/04-build-guide.md`, chapter 12) follows it step by step.
+
 1. Press the seven M2 heat-set inserts (five standoffs, two bosses) with a soldering iron at
    about 200 C. Do this before anything else goes into the tray.
 2. Glue the magnets (four in the tray floor, four in the lid roof), see section 7.
-3. PCB in, keycaps off, five M2 x 5 or x 6 machine screws from the top, keycaps on.
-4. Controller on, cap on, two M2 screws.
-5. Right half: cradle into the pocket (slot towards J1), FFC through the channel into J1,
-   two M2 x 10 from below, ball in.
-6. Battery into the well, JST into J3, rubber feet on.
+3. Right half: trackball module into the pocket (bearings in, sensor board and cable already
+   inside the cradle, cable slot and wall channel towards the keys), then the two M2 x 10 case
+   screws from below. Do it now because the module is easier to handle and to gauge while the
+   tray is empty - it can also go in, or come out, after the PCB is screwed down: it clears the
+   board edge by 0.5 mm all round and only moves vertically (section 3).
+4. Cell onto the back of the PCB in the dashed bay, plug into J3. The battery well is fully
+   covered by the board, so the cell travels with the PCB and cannot go in afterwards.
+5. PCB into the tray over the cup, keycaps off, five M2 x 5 or x 6 machine screws from the top.
+6. Controller on, box cap on, two M2 screws. Keycaps on.
+7. Right half: fold the FFC over the board edge into J1 on the key side, close the lock. Last
+   connection of the build, and the only one you can reach with everything assembled.
+8. Ball in, rubber feet on, lid on.
+
+Service: the trackball module comes out without touching keycaps or PCB. Open J1's lock, pull
+the cable out, undo the two screws from below and lift the module out of the pocket. Everything
+else (cell, controller, switches) needs the five PCB screws out, which means the keycaps come off
+first: their skirts overhang the screw heads by 1.5 mm.
 
 ## 6. Printing
 
@@ -93,7 +110,8 @@ the switch slot, the LED window and the four foot magnet pockets from below. Cap
 print roof down; the lid's roof magnet pockets open towards the roof underside and print as
 plain holes. No supports anywhere, 0.2 mm layers (0.12 mm for the pocket test), 3 perimeters. Print
 `pocket-test-right.stl` first and check it with the cradle and a scrap PCB with the notch:
-0.3 mm all round, the FFC must reach J1 without a sharp bend.
+0.3 mm all round, the module drops in and lifts out vertically with the board in place, and the
+FFC reaches J1 over the board edge without a crease.
 
 ## 7. Lid and magnets
 

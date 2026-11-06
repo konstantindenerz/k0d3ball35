@@ -14,7 +14,7 @@ Quantities marked "+n" include recommended spares. Sensor-board passives are 060
 | Qty | Part | Spec | Source | Price | Notes |
 |-----|------|------|--------|-------|-------|
 | 1 (min. order 5) | Left PCB `k0d3ball35-left` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 121 x 87 mm | JLCPCB, gerbers in `hardware/left-pcb/` | 15 to 25 EUR per 5 | 18 keys, no sensor connector |
-| 1 (min. order 5) | Right PCB `k0d3ball35-right` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 118 x 80 mm | JLCPCB, gerbers in `hardware/right-pcb/` | 15 to 25 EUR per 5 | 17 keys, FPC connector, octagonal notch for the ball pocket |
+| 1 (min. order 5) | Right PCB `k0d3ball35-right` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 118 x 80 mm | JLCPCB, gerbers in `hardware/right-pcb/` | 15 to 25 EUR per 5 | 17 keys, FPC connector on the key side, notch for the ball pocket |
 | 1 (min. order 5) | Sensor PCB `k0d3ball35-sensor` | 2 layer, 1.6 mm, ENIG, 26 x 25 mm | JLCPCB, zip `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip` | 2 to 5 EUR per 5 | Order all three in the same cart to share shipping |
 | | Shipping and import VAT | | | 20 to 40 EUR | |
 
@@ -73,8 +73,8 @@ Quantities and LCSC codes follow the fab export `hardware/sensor-pcb/fab/k0d3bal
 | 1 | Capacitor C8 | 10 uF 0603 X7R 16 V | LCSC | | C19702 | VCP |
 | 2 | Resistor R1, R2 | 10 k 0603 | LCSC | | C25804 | NRESET and NCS pull-ups |
 | 1 | Resistor R3 | 1 k 0603 | LCSC | | C21190 | MOTION series protection |
-| 2 | FPC connector J1 | Hirose FH12-6S-0.5SH(55), 6 pin, 0.5 mm, bottom contact, ZIF slider | Mouser DE 798-FH12-6S-0.5SH55 | about 1 EUR each | C2764370 | One on the right PCB (J1), one on the sensor PCB, same footprint; the left PCB has none. The LCSC code is a pin-compatible equivalent for a JLCPCB assembly run |
-| 1 (+1) | FFC cable | 6 conductor, 0.5 mm pitch, 40 mm, same-side contacts (type A) | AliExpress, Mouser DE (Molex 15166 series) | about 0.50 EUR | | 30 to 50 mm works |
+| 2 | FPC connector J1 | Hirose FH12-6S-0.5SH(55), 6 pin, 0.5 mm, bottom contact, ZIF slider | Mouser DE 798-FH12-6S-0.5SH55 | about 1 EUR each | C2764370 | One on the right PCB (J1, key side), one on the sensor PCB (component side), same pad geometry; the left PCB has none. The LCSC code is a pin-compatible equivalent for a JLCPCB assembly run |
+| 1 (+1) | FFC cable | 6 conductor, 0.5 mm pitch, 30 mm, **opposite-side contacts (type B)** | AliExpress, Mouser DE (Molex 15166 series) | about 0.50 EUR | | 30 to 40 mm works. Type B is mandatory: the two connectors look at the cable from opposite faces, a type A cable connects nothing |
 
 ## 7. Trackball and bearings
 
