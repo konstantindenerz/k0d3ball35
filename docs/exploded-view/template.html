@@ -351,6 +351,12 @@ function build(half) {
   {
     const g = layer('Top frame (concept)', 44, '#D8CDBB', { x: B.min_x + 20, y: 9, z: B.min_y + 4 });
     g.add(slab(outlineShape(H.outline, [{ points: H.outline_frame_hole }]), 3.0, 8.0, M.plate));
+    // Controller box: the frame is closed over the controller block (controller, power switch,
+    // reset, JST) and raised like the reference build; the keys stay open. Inner column caps end
+    // at x = -44.75, the box ends 1.2 mm before them.
+    const bxz0 = B.min_y, bxz1 = D.jst.y + 5.0, bxx0 = B.min_x, bxx1 = -46.0;
+    const boxTop = 11.0, boxBottom = 5.0;
+    g.add(box(bxx1 - bxx0, boxTop - boxBottom, bxz1 - bxz0, M.plate, (bxx0 + bxx1) / 2, (boxTop + boxBottom) / 2, (bxz0 + bxz1) / 2));
   }
   // --- pocket rim marker ---
   if (ball) {
@@ -415,6 +421,7 @@ function buildDims() {
     ['Keys', `${H.keys.length} (${H.keys.filter((k) => k.kind === 'thumb').length} thumb)`],
     ['PCB thickness', `${PCB_T.toFixed(1)} mm`],
     ['Controller top', `+${(3.5 + 1.0 + 1.2).toFixed(1)} mm`],
+    ['Controller box top', '+11.0 mm'],
     ['Keycap top', '+8.9 mm'],
     ['Mounting holes', `${H.holes.length} x M2`],
     ['Test pads', H.test_pads.labels.join(' ')],
