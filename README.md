@@ -97,6 +97,7 @@ issues/               markdown tickets and the generated index
 | [08 Trackball module](docs/08-trackball-module.md) | sensor board, lens distance, pocket mount, 19 versus 25 mm |
 | [09 Roadmap](docs/09-roadmap.md) | verification before ordering, case, dongle, sensor variants |
 | [10 Lessons from Keyball](docs/10-lessons-from-keyball.md) | holykeebs and Yowkees designs, known weaknesses and our response |
+| [12 Order checklist](docs/12-order-checklist.md) | shop-by-shop parts list, what is ordered, JLCPCB and LCSC lines, printed parts, what waits for hardware |
 | [Image prompts](docs/images/PROMPTS.md) | every picture as a generation prompt |
 
 ## Exploded view

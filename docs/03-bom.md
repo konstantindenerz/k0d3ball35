@@ -86,12 +86,15 @@ Quantities and LCSC codes follow the fab export `hardware/sensor-pcb/fab/k0d3bal
 | 3 (+3) | Bearing ball | 2.0 mm ZrO2 (zirconia) precision ball, G10 | AliExpress "2mm zirconia ceramic ball" | cents each | EU precision ball suppliers | Static seats in the cradle; 2.5 mm also fits the parametric cradle |
 | 2 | Screw | M2 x 10 mm pan head, self-tapping, steel | hardware store, Mouser DE | | | Case screws: from below through the case floor, the component gap and the sensor PCB into the cradle's sensor posts, 20 mm apart; they clamp the sensor board and hold the cradle |
 | 2 (optional) | Screw | M2 x 5 mm self-tapping | | | | Bench test only: holds the sensor PCB in the cradle posts before the case exists; replaced by the M2 x 10 case screws |
+| 14 (pack of 50) | Heat-set threaded insert | brass, M2, 3 mm long, about 3.5 mm OD, for a 3.2 mm hole | Amazon DE, AliExpress | 5 to 8 EUR per pack | | Default of the case (`hardware/case/params.scad`): five PCB standoffs and two controller-cap bosses per half, 7 per half |
+| 14 (pack) | Screw | M2 x 5 (or x 6) machine screw, pan or button head, head max 3.5 mm dia | Amazon DE, hardware store | 3 to 5 EUR per pack | | 7 per half into the inserts. Alternative: self-tapping into a 1.6 mm pilot with `-D pcb_screws="pilot"` in `hardware/case/params.scad` |
 
 ## 8. Finishing
 
 | Qty | Part | Spec | Source | Price | Notes |
 |-----|------|------|--------|-------|-------|
 | 8 | Bumper | GLIPLUS anti-slip pads or 3M SJ5302 clear bumpers | Amazon, 3M distributors | 3 to 8 EUR | The reference build uses GLIPLUS pads; they stop the halves from sliding completely |
+| 24 (pack of 20 to 30) | Magnet | 6 x 2 mm neodymium disc, N35 or better | Amazon DE | 5 to 8 EUR per pack | 12 per half for the lid (`issues/mech-case-lid.md`); half of them sit in the tray, half in the lid |
 | 1 | Flux pen, solder wick, 0.5 mm solder | | | | Needed for the FPC connectors |
 
 ## 9. Totals
@@ -114,13 +117,10 @@ exchange the boards lost the jumpers, the dead D0 and the empty ball cutout on t
 
 ## 10. Order plan
 
-Order in this sequence so the mechanical risk is retired before money goes into PCBs:
-
-1. **Week 0:** a pack of 3/4 inch POM balls (and the PandaKB TB19 if you want the premium feel),
-   2 mm ceramic balls, PMW3610 + LM18-LSI kit, FPC connectors and cable. Print the pocket cradle
-   from `hardware/trackball-cradle/` and check the lens-to-ball distance with the bare sensor
-   board outline.
-2. **Week 0, same day:** controllers, batteries, sockets, switches, keycaps from the EU shops.
-3. **After the cradle test fit:** PCBs from JLCPCB (left, right and sensor in one cart, ENIG), LDO and
-   passives from LCSC in the same order.
-4. **When the PCBs arrive:** follow the [build guide](04-build-guide.md).
+The shop-by-shop checklist with quantities, part numbers and what is already ordered lives in
+[docs/12-order-checklist.md](12-order-checklist.md). Sequencing: the PCBs no longer wait for the
+cradle test print. The sensor height is set by `hardware/trackball-cradle/params.scad`, the right
+board's notch by the layout and its tests, and the only outcome that would change a PCB (25 mm ball
+instead of 19 mm) cannot be tested without the sensor PCB, so gating the order on the print was
+circular. Order the PCBs, the LCSC passives and the small parts in the same week, print the cradle
+in parallel, and follow the [build guide](04-build-guide.md) when the boards arrive.
