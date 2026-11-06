@@ -157,10 +157,6 @@ function cyl(r, h, mat, x, y, z, rt = r, open = false) {
   return m;
 }
 // grow or shrink a layout polygon radially about its centroid (placeholder shells only)
-function grown(points, bounds, by) {
-  const cx = (bounds.min_x + bounds.max_x) / 2, cz = (bounds.min_y + bounds.max_y) / 2;
-  return points.map(([x, y]) => { const dx = x - cx, dz = y - cz, l = Math.hypot(dx, dz) || 1; return [x + dx / l * by, y + dz / l * by]; });
-}
 // local key offset (lx, ly) rotated by the KiCad rotation (positive = counter-clockwise on screen)
 function keyLocal(k, lx, ly) {
   const t = THREE.MathUtils.degToRad(k.rot);
@@ -241,9 +237,9 @@ function build(half) {
   {
     const g = layer('Case bottom (concept)', -34, '#D8CDBB', { x: B.min_x + 10, y: -14, z: B.max_y - 10 });
     const floorTop = FLOOR_Z - 0.2;
-    const floorShape = outlineShape(grown(H.outline, B, 3.0));
+    const floorShape = outlineShape(H.outline_case);
     g.add(slab(floorShape, 2.0, floorTop, M.case));
-    const outer = outlineShape(grown(H.outline, B, 3.0), [{ points: H.outline }]);
+    const outer = outlineShape(H.outline_case, [{ points: H.outline }]);
     g.add(slab(outer, 5.0 - floorTop, 5.0, M.caseGhost));   // walls: 5 mm above the PCB down to the floor
     if (ball) {
       // pocket: floor disk, wall ring (2 mm) from the floor to the cup rim, the PCB-side open where the PCB meets the notch
@@ -286,7 +282,7 @@ function build(half) {
     }
     for (const a of [60, 180, 300]) {                                                                    // 2 mm ZrO2 bearings, 35 deg below the equator
       const t = THREE.MathUtils.degToRad(a), r = (ball.d / 2 + 1) * Math.cos(THREE.MathUtils.degToRad(35));
-      g.add(new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), M.bearing)).position.set(bx + r * Math.cos(t), S.bearing_contact_z - 0.5, bz + r * Math.sin(t));
+      { const m = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), M.bearing); m.position.set(bx + r * Math.cos(t), S.bearing_contact_z - 0.5, bz + r * Math.sin(t)); g.add(m); }
     }
   }
   // --- bottom-side parts ---
@@ -349,12 +345,12 @@ function build(half) {
   // --- ball ---
   if (ball) {
     const g = layer(`Trackball ${ball.d} mm`, 28, '#FFFFFF', { x: bx + 20, y: S.ball_centre_z + 6, z: bz - 6 });
-    g.add(new THREE.Mesh(new THREE.SphereGeometry(ball.d / 2, 64, 48), M.ball)).position.set(bx, S.ball_centre_z, bz);
+    { const m = new THREE.Mesh(new THREE.SphereGeometry(ball.d / 2, 64, 48), M.ball); m.position.set(bx, S.ball_centre_z, bz); g.add(m); }
   }
   // --- plate / top frame placeholder ---
   {
     const g = layer('Top frame (concept)', 44, '#D8CDBB', { x: B.min_x + 20, y: 9, z: B.min_y + 4 });
-    g.add(slab(outlineShape(H.outline, [{ points: grown(H.outline, B, -2.5) }]), 3.0, 8.0, M.plate));
+    g.add(slab(outlineShape(H.outline, [{ points: H.outline_frame_hole }]), 3.0, 8.0, M.plate));
   }
   // --- pocket rim marker ---
   if (ball) {

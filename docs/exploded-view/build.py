@@ -23,14 +23,25 @@ STACK_KEYS = ("ball_centre_z", "ball_top_above_pcb_top", "cup_outer_d", "lowest_
               "housing_x", "housing_y", "housing_top_z", "footprint_x", "footprint_y", "envelope_d_above_pcb", "notch_apothem")
 
 
-def simplify(points: list[list[float]], tol: float = 0.25) -> list[list[float]]:
-    try:
-        from shapely.geometry import Polygon
+def _ring(poly) -> list[list[float]]:
+    if poly.geom_type != "Polygon":
+        poly = max(poly.geoms, key=lambda g: g.area)
+    return [[round(x, 2), round(y, 2)] for x, y in list(poly.exterior.coords)[:-1]]
 
-        poly = Polygon(points).simplify(tol)
-        return [[round(x, 2), round(y, 2)] for x, y in list(poly.exterior.coords)[:-1]]
-    except Exception:  # shapely missing: keep every point
-        return [[round(x, 2), round(y, 2)] for x, y in points]
+
+def simplify(points: list[list[float]], tol: float = 0.25) -> list[list[float]]:
+    from shapely.geometry import Polygon
+
+    return _ring(Polygon(points).simplify(tol))
+
+
+def offset(points: list[list[float]], by: float) -> list[list[float]]:
+    """Proper polygon offset with mitre joins (a radial offset from the bounding-box centre
+    produces self-intersecting rings on the concave outlines, which the page then
+    triangulates wrongly)."""
+    from shapely.geometry import Polygon
+
+    return _ring(Polygon(points).buffer(by, join_style=2, mitre_limit=3.0).simplify(0.1))
 
 
 def half_data(half: str, cfg: dict, stack: dict) -> dict:
@@ -46,6 +57,8 @@ def half_data(half: str, cfg: dict, stack: dict) -> dict:
         "half": half,
         "keys": [{"ref": f"SW{k['row']}{k['col']}", "x": k["x"], "y": k["y"], "rot": k["rotation"], "kind": k["kind"]} for k in points["keys"]],
         "outline": simplify(points["outline"]),
+        "outline_case": offset(points["outline"], 3.0),      # case wall outer edge
+        "outline_frame_hole": offset(points["outline"], -2.5),  # top frame opening
         "bounds": points["bounds"],
         "ball": ball,
         "fpc": fpc["center"] if fpc else None,
