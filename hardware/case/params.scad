@@ -61,11 +61,12 @@ led_window      = [3, 3];      // width along the wall, height; in the inner (-x
 led_offset_y    = 8.0;         // from the controller board's USB end
 led_z           = 3.5;         // bottom of the window
 
-// ---------------------------------------------------------------- magnets, pads, feet
-pad_size        = [9, 7];      // pad along the edge, pad depth beyond the outer wall face
+// ---------------------------------------------------------------- magnets and feet
+// Magnets only hold the lid-as-foot: four in the tray floor (from below) and four in the lid
+// roof (from the roof underside, closed by magnet_skin on top). The lid on top holds by its lip.
 magnet_d        = 6.2;         // 6 x 2 mm neodymium discs
 magnet_h        = 2.2;
-magnet_skin     = 0.6;
+magnet_skin     = 0.6;         // roof left above the lid magnets (lid_roof_t - magnet_h - magnet_pocket_extra)
 magnet_pocket_extra = 0.2;     // pocket depth = magnet_h + this (glue film)
 foot_d          = 10.5;        // rubber feet recess
 foot_recess     = 0.5;
@@ -73,7 +74,10 @@ foot_recess     = 0.5;
 // ---------------------------------------------------------------- lid
 cap_top_z       = 11.0;        // Choc V1 keycap top
 lid_clear       = 1.0;
-lid_roof_t      = 2.0;
+lid_roof_t      = 3.0;         // takes the 2.4 mm magnet pockets plus the 0.6 mm skin
+lid_lip_t       = 1.0;         // inner lip that holds the lid on the tray by friction
+lid_lip_depth   = 3.0;         // how far the lip reaches into the tray below the rim
+lid_fit         = 0.15;        // clearance between the lip and the inner wall face
 lid_mode        = "flat";      // "flat" | "dome" (dome only matters for the ball half)
 tent_wedge_deg  = 0;           // > 0 adds a wedge to the lid roof so the lid-as-foot tents the half
 lid_box_clear   = 0.3;         // lid skirt around the controller box walls

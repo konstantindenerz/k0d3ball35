@@ -14,8 +14,10 @@
       "box_roof_under_z": 6.7,
       "box_top_z": 8.7,
       "lid_roof_under_z": 12.0,
-      "lid_top_z": 14.0,
-      "lid_lift": 9.0,
+      "lid_top_z": 15.0,
+      "lid_roof_t": 3.0,
+      "lid_lip_depth": 3.0,
+      "lid_lift": 13.0,
       "has_ball": 0.0,
       "ball_top_z": 17.1,
       "cradle_rim_z": 6.575,
@@ -30,7 +32,7 @@
       "box_y0": -4.75,
       "box_x1": -45.5,
       "box_y1": 50.6,
-      "magnet_pads": 4.0
+      "foot_magnets": 4.0
     },
     "right": {
       "floor_z_key": -4.6,
@@ -45,8 +47,10 @@
       "box_roof_under_z": 6.7,
       "box_top_z": 8.7,
       "lid_roof_under_z": 18.1,
-      "lid_top_z": 20.1,
-      "lid_lift": 15.1,
+      "lid_top_z": 21.1,
+      "lid_roof_t": 3.0,
+      "lid_lip_depth": 3.0,
+      "lid_lift": 19.1,
       "has_ball": 1.0,
       "ball_top_z": 17.1,
       "cradle_rim_z": 6.575,
@@ -61,7 +65,7 @@
       "box_y0": -4.75,
       "box_x1": -45.5,
       "box_y1": 50.6,
-      "magnet_pads": 4.0
+      "foot_magnets": 4.0
     },
     "right-25mm": {
       "floor_z_key": -4.6,
@@ -76,8 +80,10 @@
       "box_roof_under_z": 6.7,
       "box_top_z": 8.7,
       "lid_roof_under_z": 24.05,
-      "lid_top_z": 26.05,
-      "lid_lift": 21.05,
+      "lid_top_z": 27.05,
+      "lid_roof_t": 3.0,
+      "lid_lip_depth": 3.0,
+      "lid_lift": 25.05,
       "has_ball": 1.0,
       "ball_top_z": 23.05,
       "cradle_rim_z": 9.55,
@@ -92,7 +98,7 @@
       "box_y0": -4.75,
       "box_x1": -45.5,
       "box_y1": 50.6,
-      "magnet_pads": 4.0
+      "foot_magnets": 4.0
     }
   }
 }

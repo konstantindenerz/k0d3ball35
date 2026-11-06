@@ -23,7 +23,9 @@ echo(str("STACK box_roof_under_z=", box_roof_under_z));
 echo(str("STACK box_top_z=", box_top_z));
 echo(str("STACK lid_roof_under_z=", lid_roof_under_z));
 echo(str("STACK lid_top_z=", lid_top_z));
-echo(str("STACK lid_lift=", lid_top_z - rim_z));
+echo(str("STACK lid_roof_t=", lid_roof_t));
+echo(str("STACK lid_lip_depth=", lid_lip_depth));
+echo(str("STACK lid_lift=", lid_top_z - rim_z + lid_lip_depth));
 echo(str("STACK has_ball=", has_ball(half) ? 1 : 0));
 echo(str("STACK ball_top_z=", ball_top_z));
 echo(str("STACK cradle_rim_z=", cradle_rim_z()));
@@ -38,7 +40,7 @@ echo(str("STACK box_x0=", box_r()[0]));
 echo(str("STACK box_y0=", box_r()[1]));
 echo(str("STACK box_x1=", box_inner_x));
 echo(str("STACK box_y1=", box_r()[3]));
-echo(str("STACK magnet_pads=", len(magnet_pads(half))));
+echo(str("STACK foot_magnets=", len(foot_magnets(half))));
 
 module assembly() {
     tray();
@@ -87,8 +89,9 @@ module dispatch() {
     else assert(false, str("unknown part ", part));
 }
 
-// the lid upside down with its skirt face against the tray underside (foot position)
-module lid_as_foot() translate([0, 0, base_z + rim_z]) mirror([0, 0, 1]) lid();
+// the lid the same way up with its roof top against the tray underside (foot position); the
+// four roof magnets meet the four floor magnets
+module lid_as_foot() translate([0, 0, base_z - lid_top_z]) lid();
 
 if (half == "left" && mirror_left) mirror([1, 0, 0]) dispatch();
 else dispatch();

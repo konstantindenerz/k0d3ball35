@@ -83,9 +83,9 @@ fpc_box_left = [];
 fpc_box_right = [[4.5, 42.5], [4.5, 48.5], [-4.5, 48.5], [-4.5, 42.5]];
 function fpc_box(h) = h == "left" ? fpc_box_left : fpc_box_right;
 
-magnet_pads_left = [[-22.85, -6.52, 0, -1], [40.85, 1.69, 0, -1], [40.85, 53.19, 0, 1], [-70.524, 72.784, -0.94, 0.342]];
-magnet_pads_right = [[-22.85, -6.52, 0, -1], [40.85, 1.69, 0, -1], [40.85, 53.19, 0, 1], [-66, 60.5, 0, 1]];
-function magnet_pads(h) = h == "left" ? magnet_pads_left : magnet_pads_right;
+foot_magnets_left = [[-36.96, 3.71], [38.35, 9.69], [38.35, 45.19], [-63.862, 67.699]];
+foot_magnets_right = [[-36.96, 3.71], [38.35, 9.69], [38.35, 45.19], [-45.885, 53.555]];
+function foot_magnets(h) = h == "left" ? foot_magnets_left : foot_magnets_right;
 
 feet_left = [[27, 10.8], [27, 44.5], [-9, 40], [-27, 8], [-32, 61], [-58, 1], [-58, 34]];
 feet_right = [[27, 10.8], [27, 44.5], [-9, 40], [-27, 8], [-32, 61], [-58, 1], [-58, 34]];

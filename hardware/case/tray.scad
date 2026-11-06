@@ -18,21 +18,10 @@ module screw_holes() {
         translate([hp[0], hp[1], -pcb_t - screw_hole_depth]) cylinder(d = screw_hole_d, h = screw_hole_depth + 1);
 }
 
-module magnet_pockets_top() {
-    for (p = magnet_pads(half)) {
-        c = magnet_center(p);
-        translate([c[0], c[1], rim_z - magnet_h - magnet_pocket_extra]) cylinder(d = magnet_d, h = magnet_h + magnet_pocket_extra + 1);
-        // embossed dot on the wall top beside the pocket: north pole up here
-        m = mark_center(p);
-        translate([m[0], m[1], rim_z - 0.4]) cylinder(d = 1.2, h = 1);
-    }
-}
-
+// foot magnets: pockets from below in the thick floor under the key area, north pole down
 module magnet_pockets_bottom() {
-    for (p = magnet_pads(half)) {
-        c = magnet_center(p);
+    for (c = foot_magnets(half))
         translate([c[0], c[1], base_z - 1]) cylinder(d = magnet_d, h = 1 + magnet_h + magnet_pocket_extra);
-    }
 }
 
 module tray_cuts() {
@@ -71,7 +60,6 @@ module tray_cuts() {
     // reset pin hole through the floor of the well
     rs = reset(half);
     translate([rs[0], rs[1], base_z - 1]) cylinder(d = reset_hole_d, h = well_floor_z - base_z + 2);
-    magnet_pockets_top();
     magnet_pockets_bottom();
     for (f = feet(half))
         translate([f[0], f[1], base_z - 1]) cylinder(d = foot_d, h = 1 + foot_recess);

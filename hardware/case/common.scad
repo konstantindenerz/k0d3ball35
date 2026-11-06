@@ -11,9 +11,6 @@ function bc() = ball_center(half);
 function ball_centre_z() = ball_top_z - ball_d / 2;
 function cradle_rim_z() = ball_centre_z() - 1.0;              // cradle rim_drop
 function cradle_cup_d() = ball_d + 2 * 0.4 + 2 * 1.6;          // ball_gap and cup wall of the cradle
-function magnet_offset() = pcb_clear + wall + pad_size[1] - magnet_skin - magnet_d / 2;
-function magnet_center(p) = [p[0] + p[2] * magnet_offset(), p[1] + p[3] * magnet_offset()];
-function mark_center(p) = [p[0] + p[2] * (pcb_clear + wall / 2), p[1] + p[3] * (pcb_clear + wall / 2)];
 
 // lid heights depend on the half: the ball half needs the roof above the ball
 lid_roof_under_z = (has_ball(half) && lid_mode == "flat") ? max(cap_top_z, ball_top_z) + lid_clear
@@ -34,13 +31,6 @@ function usb_x() = (ctrl_rect(half)[0] + ctrl_rect(half)[2]) / 2;
 // ---------------------------------------------------------------- 2D regions
 module pcb_2d() polygon(outline(half));
 module pcb_cavity_2d() offset(delta = pcb_clear) pcb_2d();
-
-module pad_2d(p) {
-    a = atan2(p[3], p[2]);
-    depth = pcb_clear + wall + pad_size[1];
-    translate([p[0], p[1]]) rotate(a) translate([-0.5, -pad_size[0] / 2]) square([depth + 0.5, pad_size[0]]);
-}
-module pads_2d() for (p = magnet_pads(half)) pad_2d(p);
 
 module octagon_2d(c, apothem) translate(c) rotate(22.5) circle(r = apothem / cos(22.5), $fn = 8);
 module notch_2d() octagon_2d(bc(), notch_apothem);
@@ -71,10 +61,9 @@ module box_walls_2d() intersection() {
     difference() { outer_2d(); pcb_cavity_2d(); }
 }
 
-// outer footprint below the PCB plane: wall around the cavity, magnet pads, pocket block
+// outer footprint below the PCB plane: wall around the cavity, pocket block
 module outer_2d() {
     offset(delta = wall) pcb_cavity_2d();
-    pads_2d();
     if (has_ball(half)) housing_footprint_2d();
 }
 // outer footprint from the PCB plane up: plus the round pocket wall

@@ -28,11 +28,11 @@ DEFAULT_OUT = REPO / "hardware" / "case" / "data.scad"
 BOX_INNER_X = -45.5      # key-side wall of the controller box (params.scad box_inner_x)
 BOX_CAP_CLEAR = 1.0      # controller box keeps this to every keycap
 WELL_GROW = 1.0          # well = bay + J3 + RB1 courtyards grown by this
-PAD_ALONG = 9.0          # magnet pad length along the PCB edge (params.scad pad_size[0])
-PAD_OUT = 7.0            # magnet pad depth beyond the wall (params.scad pad_size[1])
-PAD_MIN_EDGE = PAD_ALONG + 2.0
 WALL_GUESS = 3.2         # pcb_clear + wall, only for the sanity checks here
 FOOT_D = 10.5
+MAGNET_D = 6.2           # foot magnet pocket (params.scad magnet_d)
+MAGNET_INSET = 8.0       # foot magnet centres this far inside the PCB outline
+FFC_CHANNEL_W = 12.0     # params.scad ffc_channel_w
 CTRL_CLEAR = 1.0         # boss protrusions keep this to the controller board
 
 
@@ -97,60 +97,56 @@ def well_polygon(layout: Layout) -> Polygon:
     return Polygon(well.exterior).simplify(0.01)
 
 
-def outward_normal(poly: Polygon, a, b) -> tuple[float, float]:
-    dx, dy = b[0] - a[0], b[1] - a[1]
-    n = math.hypot(dx, dy)
-    nx, ny = dy / n, -dx / n
-    mid = ((a[0] + b[0]) / 2 + nx * 0.5, (a[1] + b[1]) / 2 + ny * 0.5)
-    if poly.contains(Point(mid)):
-        nx, ny = -nx, -ny
-    return nx, ny
-
-
-def pad_rect(anchor, normal, out0: float, out1: float) -> Polygon:
-    ax, ay = anchor
-    nx, ny = normal
-    tx, ty = -ny, nx
-    corners = []
-    for d, s in ((out0, -1), (out0, 1), (out1, 1), (out1, -1)):
-        corners.append((ax + nx * d + tx * s * PAD_ALONG / 2, ay + ny * d + ty * s * PAD_ALONG / 2))
-    return Polygon(corners)
-
-
-def magnet_pads(layout: Layout, box_r, keep_out: list[Polygon]) -> list[tuple[float, float, float, float]]:
-    """One pad per bounding-box corner: anchor on the nearest long enough outline edge plus the
-    outward unit normal. Pads never sit on a controller box wall or in the pocket."""
+def foot_magnets(layout: Layout, box_r, keep_out: list[Polygon]) -> list[tuple[float, float]]:
+    """Four 6 x 2 mm magnets in the tray floor for the lid-as-foot: one near each corner of the
+    outline's bounding box, MAGNET_INSET inside the PCB edge (the floor is 9.5 mm thick under the
+    key area). A candidate must clear the battery well, the pocket well and the FFC channel by
+    2 mm, the standoffs (insert hole plus 3) and the feet recesses by 1 mm, and the controller box
+    bosses. If the point nearest to a corner collides, the search walks along the inset contour
+    in both directions until a free point is found."""
     poly = layout.outline
+    inset = poly.buffer(-MAGNET_INSET, join_style=2)
+    assert inset.geom_type == "Polygon", inset.geom_type
+    ring_ls = LineString(inset.exterior.coords)
+    length = ring_ls.length
     minx, miny, maxx, maxy = poly.bounds
     corners = [(minx, miny), (maxx, miny), (maxx, maxy), (minx, maxy)]
-    coords = list(poly.exterior.coords)
-    edges = [(coords[i], coords[i + 1]) for i in range(len(coords) - 1)]
-    box_zone = box(*box_r).buffer(WALL_GUESS + 1.0, join_style=2)
-    pads = []
+    x0, y0, x1, y1 = box_r
+    bosses = [box(x0 - 0.2, y0 - 0.2, x0 + 3.3, y0 + 3.3), box(x0 - 0.2, y1 - 6.6, x0 + 3.3, y1)]
+    blocked = unary_union(keep_out + bosses)
+    holes = [Point(h["x"], h["y"]).buffer(3.0) for h in layout.cfg["mounting_holes"]]
+    foot_circles = [Point(f).buffer(FOOT_D / 2 + 1.0) for f in feet(layout, box_r)]
+    blocked = unary_union([blocked] + holes + foot_circles)
+    magnets = []
     for corner in corners:
-        best = None
-        for a, b in edges:
-            length = math.hypot(b[0] - a[0], b[1] - a[1])
-            if length < PAD_MIN_EDGE:
-                continue
-            seg = LineString([a, b])
-            t = seg.project(Point(corner))
-            t = min(max(t, PAD_ALONG / 2 + 1.0), length - PAD_ALONG / 2 - 1.0)
-            anchor = seg.interpolate(t)
-            anchor = (anchor.x, anchor.y)
-            normal = outward_normal(poly, a, b)
-            rect = pad_rect(anchor, normal, 0.01, WALL_GUESS + PAD_OUT)
-            if rect.intersects(box_zone) or any(rect.intersects(k) for k in keep_out):
-                continue
-            if rect.buffer(-0.02).intersects(poly):
-                continue
-            d = Point(corner).distance(Point(anchor))
-            if best is None or d < best[0]:
-                best = (d, anchor, normal)
-        assert best is not None, f"no magnet pad position near corner {corner}"
-        _, (ax, ay), (nx, ny) = best
-        pads.append((round(ax, 3), round(ay, 3), round(nx, 4), round(ny, 4)))
-    return pads
+        t0 = ring_ls.project(Point(corner))
+        found = None
+        step = 0.5
+        for k in range(int(length / step) + 1):
+            for sign in ((1, -1) if k else (1,)):
+                t = (t0 + sign * k * step) % length
+                c = ring_ls.interpolate(t)
+                disc = c.buffer(MAGNET_D / 2)
+                if disc.intersects(blocked):
+                    continue
+                if any(Point(m).distance(c) < MAGNET_D + 2.0 for m in magnets):
+                    continue
+                found = (round(c.x, 3), round(c.y, 3))
+                break
+            if found:
+                break
+        assert found is not None, f"no foot magnet position near corner {corner}"
+        magnets.append(found)
+    return magnets
+
+
+def ffc_channel(layout: Layout) -> Polygon:
+    """The FFC channel of common.scad: FFC_CHANNEL_W wide from the FPC connector courtyard down
+    to 1 mm inside the housing well."""
+    fb = layout.fpc_box().bounds
+    hb = layout.housing_box().bounds
+    cx = (fb[0] + fb[2]) / 2
+    return box(cx - FFC_CHANNEL_W / 2, fb[1], cx + FFC_CHANNEL_W / 2, hb[1] + 1.0)
 
 
 def feet(layout: Layout, box_r) -> list[tuple[float, float]]:
@@ -193,7 +189,9 @@ def half_data(layout: Layout) -> dict:
         d["case_screws"] = layout.case_screws()
         d["notch"] = ring(layout.notch_polygon())
         d["fpc_box"] = ring(layout.fpc_box())
-        keep = [layout.housing_footprint().buffer(1.0), layout.pocket_polygon().buffer(1.0)]
+        keep = [layout.housing_box().buffer(0.5, join_style=2).buffer(2.0, join_style=2),
+                ffc_channel(layout).buffer(2.0, join_style=2),
+                layout.notch_polygon().buffer(2.0, join_style=2)]
     else:
         d["ball_center"] = (0.0, 0.0)
         d["housing_footprint"] = []
@@ -202,7 +200,8 @@ def half_data(layout: Layout) -> dict:
         d["notch"] = []
         d["fpc_box"] = []
         keep = []
-    d["magnet_pads"] = magnet_pads(layout, br, keep)
+    keep.append(well.buffer(2.0, join_style=2))
+    d["foot_magnets"] = foot_magnets(layout, br, keep)
     d["feet"] = feet(layout, br)
     sanity(layout, d, well)
     return d
@@ -217,11 +216,17 @@ def sanity(layout: Layout, d: dict, well: Polygon) -> None:
             problems.append(f"mounting hole ({x}, {y}) inside the battery well (standoff needs floor)")
         if pocket_well is not None and pocket_well.buffer(3.0).intersects(p):
             problems.append(f"mounting hole ({x}, {y}) inside the pocket well")
-    pcb_wall = layout.outline.buffer(WALL_GUESS, join_style=2)
-    for ax, ay, nx, ny in d["magnet_pads"]:
-        rect = pad_rect((ax, ay), (nx, ny), WALL_GUESS, WALL_GUESS + PAD_OUT)
-        if rect.buffer(-0.05).intersects(pcb_wall):
-            problems.append(f"magnet pad at ({ax}, {ay}) overlaps the PCB plus wall")
+    keep_outs = [well.buffer(2.0, join_style=2)] + [Point(x, y).buffer(3.0) for x, y in d["holes"]]
+    if pocket_well is not None:
+        keep_outs += [pocket_well.buffer(2.0, join_style=2), ffc_channel(layout).buffer(2.0, join_style=2)]
+    if len(d["foot_magnets"]) != 4:
+        problems.append("four foot magnets expected")
+    for x, y in d["foot_magnets"]:
+        disc = Point(x, y).buffer(MAGNET_D / 2)
+        if not layout.outline.buffer(WALL_GUESS - 0.5, join_style=2).contains(disc):
+            problems.append(f"foot magnet at ({x}, {y}) outside the case floor")
+        if any(disc.intersects(k) for k in keep_outs):
+            problems.append(f"foot magnet at ({x}, {y}) in a well, channel or standoff")
     x0, y0, x1, y1 = d["box_rect"]
     ctrl = box(*d["ctrl_rect"]).buffer(CTRL_CLEAR, join_style=2)
     # boss protrusions into the box (see tray.scad boss_2d): 3.5 mm along the outer wall
@@ -258,7 +263,7 @@ def render(data: dict[str, dict]) -> str:
              "// Selector functions take the half name: outline(\"left\"), holes(\"right\"), ...", ""]
     names = ["outline", "holes", "bay", "well", "j3", "rb1", "ps1", "reset", "switch", "ctrl_rect", "box_rect",
              "test_pads", "keys", "has_ball", "ball_center", "housing_footprint", "housing_box", "case_screws",
-             "notch", "fpc_box", "magnet_pads", "feet"]
+             "notch", "fpc_box", "foot_magnets", "feet"]
     for name in names:
         for half in HALVES:
             v = data[half][name]
@@ -270,8 +275,6 @@ def render(data: dict[str, dict]) -> str:
                 s = "[" + ", ".join(fmt(c) for c in v) + "]"
             elif name == "keys":
                 s = "[" + ", ".join(f"[{fmt(x)}, {fmt(y)}, {fmt(r)}]" for x, y, r in v) + "]"
-            elif name == "magnet_pads":
-                s = "[" + ", ".join(f"[{fmt(x)}, {fmt(y)}, {fmt(nx)}, {fmt(ny)}]" for x, y, nx, ny in v) + "]"
             else:
                 s = pts(v)
             lines.append(f"{name}_{half} = {s};")
@@ -297,7 +300,7 @@ def main(argv: list[str]) -> None:
     data = build()
     for half in HALVES:
         d = data[half]
-        print(f"{half:5s} outline {len(d['outline'])} pts, box {d['box_rect']}, pads {[(p[0], p[1]) for p in d['magnet_pads']]}")
+        print(f"{half:5s} outline {len(d['outline'])} pts, box {d['box_rect']}, foot magnets {d['foot_magnets']}")
     print(f"wrote {out}")
 
 

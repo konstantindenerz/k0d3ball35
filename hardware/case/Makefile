@@ -11,7 +11,8 @@ PYTHON   ?= ../../.venv/bin/python
 CAM_ASM   = --camera=-10,30,0,55,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_SEC   = --camera=5,64,0,75,0,150,230 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_BOX   = --camera=-58,22,5,60,0,300,150 --imgsize=1400,1000 --colorscheme=Tomorrow
-CAM_FOOT  = --camera=-10,30,-10,70,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_FOOT  = --camera=-10,30,-10,78,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_BOT   = --camera=-10,30,-10,125,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
 SRC       = case.scad params.scad data.scad common.scad tray.scad lid.scad
 LEFT      = -D 'half="left"'
 RIGHT     = -D 'half="right"'
@@ -20,7 +21,8 @@ STL = stl/tray-left.stl stl/tray-right.stl stl/box-cap-left.stl stl/box-cap-righ
       stl/lid-left.stl stl/lid-right.stl stl/pocket-test-right.stl
 DXF = dxf/floor-left.dxf dxf/floor-right.dxf
 PNG = preview/assembly-left.png preview/assembly-right.png preview/section-right.png \
-      preview/lid-on-right.png preview/lid-foot-right.png preview/box-right.png
+      preview/lid-on-right.png preview/lid-foot-right.png preview/box-right.png \
+      preview/tray-bottom-right.png
 
 .PHONY: all data stls dxfs previews stack clean
 all: data stls dxfs previews stack
@@ -65,6 +67,8 @@ preview/lid-on-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="lid_on"' $(RIGHT) $(CAM_ASM) -o $@ case.scad
 preview/lid-foot-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="lid_foot"' $(RIGHT) $(CAM_FOOT) -o $@ case.scad
+preview/tray-bottom-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="tray"' $(RIGHT) $(CAM_BOT) -o $@ case.scad
 preview/box-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="assembly"' $(RIGHT) $(CAM_BOX) -o $@ case.scad
 
