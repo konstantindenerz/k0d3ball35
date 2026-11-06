@@ -498,7 +498,7 @@ def test_battery_bay_on_back_silkscreen(board, layout):
     assert any(p.symmetric_difference(bay).area < 1e-6 for p in dashed), "dashed bay rectangle on B.SilkS"
     assert tuple(round(v, 3) for v in bay.bounds) == (55.6, 57.0, 76.6, 98.0)
     texts = {g.text for g in board.gr_texts if g.layer == "B.SilkS" and bay.contains(Point(g.pts[0]))}
-    assert texts == {"702025 cell", "300 mAh", "leads +y"}
+    assert texts == {"LP552035 cell", "350 mAh", "leads +y"}
     assert bay.within(board.outline.buffer(-layout.cfg["battery"]["edge_clearance"] + 1e-6)), "bay keeps the edge clearance"
 
 
