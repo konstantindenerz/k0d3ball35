@@ -6,26 +6,29 @@ Tickets referenced here live in `issues/`. Priorities: P0 blocker, P1 must, P2 s
 
 Do these before paying for anything:
 
-1. Finish the r2 pipeline: both halves generated, routed, ERC/DRC clean, gerbers exported, renders
-   in the README. Ticket `hw-two-pcbs-r2`.
-2. Independent gerber check: upload `hardware/left-pcb/k0d3ball35-left-gerbers.zip`,
-   `hardware/right-pcb/k0d3ball35-right-gerbers.zip` and the sensor zip to the JLCPCB preview or
-   open them in gerbv; layers, drills, outlines, the octagonal notch on the right board, no copper
-   in the notch. Ticket `test-fab-gerber-viewer`.
-3. Manual review in the KiCad GUI with 3D models: socket orientation against a real socket, FH12
-   orientation on the right board, MSK12C02 actuator at the inner edge, USB overhang, mounting
-   holes, pours and auto-placed GND vias, hand routes of the thumb cluster on both boards. Tickets
-   `hw-main-pcb-review-r1`, `hw-gnd-stitching-review`.
-4. Cradle test print and sensor fit: print `hardware/trackball-cradle/stl/cradle-19mm-pocket.stl`
-   (there is no retainer), fit a sensor board (or a 26 x 25 mm dummy) and check the lens gap with
-   a feeler gauge; the ball must spin without touching the rim; check the cup against a printed
-   copy of the right outline's notch. Tickets
-   `hw-sensor-stack-height`, `mech-lm18-lens-outline-measurement`.
+1. Done: r2 pipeline, both halves generated, routed, ERC/DRC clean, gerbers exported, renders in
+   the README (`hw-two-pcbs-r2`). The left board is being mirrored from the right one
+   (`hw-left-pcb-mirror`, P0); the order waits for that ticket.
+2. Done (automated part): independent gerber parse of all three zips in `tests/test_gerbers.py`
+   (layers, drills, outlines, the octagonal notch, no copper in the notch). Open: upload
+   `hardware/left-pcb/k0d3ball35-left-gerbers.zip`, `hardware/right-pcb/k0d3ball35-right-gerbers.zip`
+   and `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip` to the JLCPCB preview. Ticket
+   `test-fab-gerber-viewer`.
+3. Mostly done: the two defects of the first review (power switch rotation, USB overhang) are fixed
+   and `tests/test_pcb_review.py` covers sockets, FH12, controller, battery bay, holes, notch,
+   silkscreen and GND pours. Open for the user: 3D viewer pass, 1:1 paper check with a real socket
+   and MSK12C02, routing eyeball. Tickets `hw-main-pcb-review-r1`, `hw-gnd-stitching-review`
+   (non-blocking).
+4. In parallel with the order (no longer a gate): cradle test print and sensor fit, print
+   `hardware/trackball-cradle/stl/cradle-19mm-pocket.stl` (there is no retainer), fit a sensor
+   board (or a 26 x 25 mm dummy), check the lens gap with a feeler gauge; the ball must spin
+   without touching the rim. Tickets `hw-sensor-stack-height`, `mech-lm18-lens-outline-measurement`.
 5. Ball sourcing and tracking: order a pack of 3/4 inch POM balls (and a PandaKB TB19) and a bag of
    2 mm ZrO2 balls now, test them on the sensor board as soon as it exists. Tickets
    `hw-19mm-ball-sourcing`, `hw-ball-colour-tracking-test`.
-6. FFC pin order with a physical cable and both connectors. Ticket `hw-ffc-pin-order-verification`.
-7. Then order: `hw-jlcpcb-order-r1`.
+6. FFC pin order with a physical cable and both connectors; the desk check is done and tested
+   (`tests/test_ffc_pin_order.py`). Ticket `hw-ffc-pin-order-verification`.
+7. Then order: `hw-jlcpcb-order-r1`, shop by shop per `docs/12-order-checklist.md`.
 
 ## r2 (current revision)
 
@@ -38,9 +41,9 @@ person needs to order parts, build the two halves and flash them.
 |------|-------|--------|
 | Feasibility, design spec r2, BOM | done | |
 | Layout generator per half, coordinate tables, stepped outline, pocket notch | done | `hw-two-pcbs-r2` |
-| Left and right PCB schematic, routing, DRC, gerbers | in progress | `hw-two-pcbs-r2`, `hw-main-pcb-review-r1` |
-| Sensor PCB | done (r1, unchanged) | `hw-sensor-pcb-r1` |
-| Cradle 19 mm pocket mount (25 mm pocket and r1 cutout as variants) | done, test print pending | `mech-trackball-cradle` |
+| Left and right PCB schematic, routing, DRC, gerbers | done (left mirror in progress) | `hw-two-pcbs-r2`, `hw-left-pcb-mirror`, `hw-main-pcb-review-r1` |
+| Sensor PCB | done (r1, lens envelope per datasheet) | `hw-sensor-pcb-r1` |
+| Cradle 19 mm pocket mount (25 mm pocket and r1 cutout as variants) | done, test print in parallel with the order | `mech-trackball-cradle` |
 | ZMK shield with 35 keys, keymap, CI build | in progress | `fw-zmk-shield`, `infra-ci-firmware` |
 | Build guide, firmware guide, fabrication guide | written for r2, to be verified on the first build | `doc-build-guide` |
 | Case pocket geometry handed to the case phase | specified | `mech-case-ball-pocket` |

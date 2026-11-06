@@ -18,10 +18,10 @@ Every picture is a prompt block.
 
 ## Acceptance criteria
 
-- [ ] All chapters written, each with an image prompt
-- [ ] Cross-references to BOM, firmware and testing docs resolve (checked by `tests/test_docs.py`)
-- [ ] Reviewed against the final r1 PCB silkscreen
+- [x] All chapters written, each with an image prompt (`docs/04-build-guide.md`, 16 chapters)
+- [x] Cross-references to BOM, firmware and testing docs resolve (checked by `tests/test_docs.py`)
+- [ ] Reviewed against the r2 PCB silkscreen on the first assembled boards
 
 ## Notes
 
-Blocked by hw-main-pcb-r1.
+Review on the first assembled r2 boards, see `hw-jlcpcb-order-r1`.

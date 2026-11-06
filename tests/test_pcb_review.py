@@ -683,3 +683,31 @@ def test_power_tracks_use_the_wide_class(board):
         if net in ("RAW", "BAT+"):
             assert width >= 0.4 - 1e-6, f"{net} track on {layer} at {a} is only {width} mm wide"
         assert width >= 0.15 - 1e-6
+
+
+def test_gnd_zones_have_no_slivers(board):
+    """Every filled GND polygon is a real pour, not a sliver, and is anchored by a GND via or
+    pad (so no isolated island survives the fill). Ticket hw-gnd-stitching-review."""
+    min_area = 2.0
+    anchors = {layer: [] for layer in ("F.Cu", "B.Cu")}
+    for net, x, y, _, _ in board.vias:
+        if net == "GND":
+            for layer in anchors:
+                anchors[layer].append(Point(x, y).buffer(0.05))
+    for fp in board.footprints.values():
+        for pad in fp.pads:
+            if pad.net == "GND" and pad.copper:
+                for layer in anchors:
+                    if pad.on(layer):
+                        anchors[layer].append(pad.poly())
+    for net, layer, polys in board.zones:
+        if net != "GND" or layer not in anchors:
+            continue
+        for raw in polys:
+            # KiCad joins holes to the outline with zero-width slits; buffer(0) repairs that
+            poly = raw.buffer(0) if not raw.is_valid else raw
+            assert not poly.is_empty, f"{board.half} {layer}: unrepairable GND fill polygon"
+            assert poly.area >= min_area, f"{board.half} {layer}: GND sliver of {poly.area:.2f} mm2 at {poly.centroid.coords[0]}"
+            grown = poly.buffer(0.05)
+            assert any(grown.intersects(a) for a in anchors[layer]), \
+                f"{board.half} {layer}: isolated GND island of {poly.area:.1f} mm2 at {poly.centroid.coords[0]}"

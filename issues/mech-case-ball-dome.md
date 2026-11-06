@@ -2,7 +2,7 @@
 title: Plan the ball dome and tenting in the case
 type: task
 priority: P2
-status: open
+status: wontfix
 area: mech
 created: 2026-11-05
 ---
@@ -20,4 +20,4 @@ r1: the ball top sat 23 mm above the PCB and the case would have needed a dome l
 
 ## Notes
 
-None yet.
+2026-11-06: superseded by mech-case-ball-pocket (rim) and mech-case-lid (tenting).

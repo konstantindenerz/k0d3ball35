@@ -18,10 +18,10 @@ ball diameter (19.05 mm pocket mount default since r2, 25 mm pocket as fallback,
 
 ## Acceptance criteria
 
-- [ ] OpenSCAD or CadQuery source in `hardware/trackball-cradle/` with ball diameter, bearing diameter, lens distance and wall thickness as parameters
+- [x] OpenSCAD source in `hardware/trackball-cradle/` (`cradle.scad`, `params.scad`) with ball diameter, bearing diameter, lens distance and wall thickness as parameters
 - [x] STL exported for 19.05 mm pocket, 25 mm pocket and 25 mm cutout; floor footprint DXF for the case
-- [ ] Printed test fit checklist in `docs/08-trackball-module.md` (ball spins freely, no wobble, sensor reads at the target distance)
-- [ ] The cradle is the first part to print, before any PCB order
+- [x] Printed test fit checklist (ball spins freely, no wobble, sensor reads at the target distance) in `hardware/trackball-cradle/README.md`, referenced from `docs/08-trackball-module.md`
+- [x] The cradle test print runs in parallel with the PCB order: the sensor height comes from `params.scad`, the notch is fixed by the layout and its tests, and the only PCB-changing outcome (25 mm ball) cannot be tested without the sensor PCB anyway (`hw-jlcpcb-order-r1`, `hw-sensor-stack-height`)
 
 ## Notes
 
