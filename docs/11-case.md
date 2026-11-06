@@ -14,9 +14,9 @@ together. Tickets: [mech-case](../issues/mech-case.md),
 
 | Part | STL | What it is |
 |------|-----|------------|
-| Tray | `tray-left.stl`, `tray-right.stl` | the case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, pocket for the cradle (right), five standoffs with M2 heat-set inserts, magnet pads, feet recesses |
+| Tray | `tray-left.stl`, `tray-right.stl` | the case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, pocket for the cradle (right), five standoffs with M2 heat-set inserts, four foot magnet pockets from below, feet recesses |
 | Box cap | `box-cap-left.stl`, `box-cap-right.stl` | roof of the controller box: a plate in a rebate plus an L-shaped skirt towards the keys and the thumb keys, two M2 screws into corner bosses |
-| Lid | `lid-left.stl`, `lid-right.stl` | transport cover over keys and ball, held by four magnets; flipped under the half it is a foot |
+| Lid | `lid-left.stl`, `lid-right.stl` | transport cover over keys and ball, held on top by an inner lip; under the half it is a foot held by four magnets in the roof |
 | Pocket test | `pocket-test-right.stl` | the 50 x 50 mm corner of the right tray around the ball, for the first test print with the cradle |
 
 The layout facts (outline, holes, bay, courtyards, pocket, controller block) are generated
@@ -39,9 +39,10 @@ z = 0 is the PCB top, from `hardware/case/stack.json`:
 | Controller box cap, under / top | +6.7 / +8.7 | +6.7 / +8.7 | controller top +5.7 plus 1 mm |
 | Keycap top | +11.0 | +11.0 | Choc V1 |
 | Ball top | - | +17.1 | cradle `ball_top_above_pcb_top` |
-| Lid roof, under / top | +12.0 / +14.0 | +18.1 / +20.1 | 1 mm over the tallest thing |
+| Lid roof, under / top | +12.0 / +15.0 | +18.1 / +21.1 | 1 mm over the tallest thing, 3 mm roof with the magnets inside |
+| Lid lip bottom | +2.0 | +2.0 | 3 mm below the rim, inside the wall |
 
-The two halves have different lid heights on purpose: a 20 mm lid over the left half would
+The two halves have different lid heights on purpose: a 21 mm lid over the left half would
 only add bulk. A `lid_mode = "dome"` variant keeps the right lid at 14 mm with a round turret
 over the ball; it renders but is not part of the default build.
 
@@ -78,7 +79,7 @@ under the PCB and the reset button a 3 mm pin hole in the floor of the well.
 
 1. Press the seven M2 heat-set inserts (five standoffs, two bosses) with a soldering iron at
    about 200 C. Do this before anything else goes into the tray.
-2. Glue the magnets, see section 7.
+2. Glue the magnets (four in the tray floor, four in the lid roof), see section 7.
 3. PCB in, keycaps off, five M2 x 5 or x 6 machine screws from the top, keycaps on.
 4. Controller on, cap on, two M2 screws.
 5. Right half: cradle into the pocket (slot towards J1), FFC through the channel into J1,
@@ -88,8 +89,9 @@ under the PCB and the reset button a 3 mm pin hole in the floor of the well.
 ## 6. Printing
 
 Tray flat on the bed with the cavities open upwards; the only bridges are the USB opening,
-the switch slot, the LED window and the magnet pockets from below. Cap and lid print roof
-down. No supports anywhere, 0.2 mm layers (0.12 mm for the pocket test), 3 perimeters. Print
+the switch slot, the LED window and the four foot magnet pockets from below. Cap and lid
+print roof down; the lid's roof magnet pockets open towards the roof underside and print as
+plain holes. No supports anywhere, 0.2 mm layers (0.12 mm for the pocket test), 3 perimeters. Print
 `pocket-test-right.stl` first and check it with the cradle and a scrap PCB with the notch:
 0.3 mm all round, the FFC must reach J1 without a sharp bend.
 
@@ -97,15 +99,20 @@ down. No supports anywhere, 0.2 mm layers (0.12 mm for the pocket test), 3 perim
 
 ![Lid on for transport](images/img-case-lid-transport.png)
 
-Four 6 x 2 mm magnets per part in 9 x 7 mm pads on the outer wall near the corners. Polarity:
-tray rim pockets north up, tray floor pockets north down, lid pockets south towards the
-open side; an embossed dot on the rim beside each pocket marks north up. One set of lid
-magnets then holds in both positions.
+On top the lid holds without magnets: a 1 mm lip on the inside of its skirt reaches 3 mm
+into the tray (0.15 mm to the wall) and holds by friction, the skirt sits on the rim flush
+with the outer wall. The lip stops at the controller box walls and at the pocket cup.
+
+Magnets only hold the foot position: four 6 x 2 mm discs from below in the tray floor near
+the corners (8 mm inside the PCB edge, in the thick floor under the keys) and four in the
+lid roof, pushed in from the roof underside with 0.6 mm of roof left on top, so nothing is
+visible from outside. Polarity: tray floor pockets north down, lid roof pockets south up.
+Glue them after printing, check the snap with a loose magnet before the glue sets.
 
 ![Lid as a foot](images/img-case-lid-foot.png)
 
-As a foot the lid lifts the half flat by 9 mm (left) or 15 mm (right); the rubber feet stay
-usable without it. Tenting is a parameter: `-D tent_wedge_deg=6` adds a wedge to the lid
+As a foot the lid goes under the half the same way up (roof against the tray underside) and
+lifts it flat by 13 mm (left) or 19 mm (right); the rubber feet stay usable without it. Tenting is a parameter: `-D tent_wedge_deg=6` adds a wedge to the lid
 roof that rises towards the inner edge, so the lid-as-foot tilts the half by that angle
 while the cover position is unchanged.
 
@@ -113,5 +120,6 @@ while the cover position is unchanged.
 
 - LED window position is a guess at the nice!nano LED; verify on the controller.
 - `box_inner_x` = -45.5: 0.75 mm to the inner column caps, 1.5 mm to the controller.
-- The magnet pads are visible tabs on the outer wall; placement may change with the look.
+- `lid_fit` (0.15 mm between lip and wall) is set for a 0.4 mm nozzle; adjust after the
+  first lid print.
 - First print: pocket test, then the right tray, then the lids.

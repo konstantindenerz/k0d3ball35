@@ -401,8 +401,8 @@ case, from bottom to top: a flat beige-grey tray with angular stepped walls, a d
 well under the controller end and a square pocket beside the thumb keys, a green PCB with an
 octagonal notch floating above it, a small cradle module with a white 19 mm ball dropping into
 the pocket from above and two long screws coming up through the floor, a flat beige roof plate
-with an L-shaped skirt over the controller end, and a translucent lid with four magnet pads
-hovering over everything, isometric, pastel colours, labelled parts, white background.
+with an L-shaped skirt over the controller end, and a translucent lid with smooth plain walls
+and a thin lip along the inside of its skirt hovering over everything, isometric, pastel colours, labelled parts, white background.
 ```
 
 ## img-case-tray-top
@@ -412,9 +412,9 @@ Aspect 3:2. Empty tray from above.
 ```prompt
 Top-down rendering of an empty beige-grey 3D printed keyboard case tray with an angular stepped
 outline, a flat key floor with five round standoffs, a deep rectangular battery well at the
-inner end, a square pocket with two screw holes at the outer lower corner, four small square
-magnet pads sticking out of the outer wall near the corners, a USB-C cutout and a tiny slot in
-the end wall, clean CAD line-art style, white background.
+inner end, a square pocket with two screw holes at the outer lower corner, smooth plain outer
+walls without any tabs, a USB-C cutout and a tiny slot in the end wall, clean CAD line-art
+style, white background.
 ```
 
 ## img-case-pocket-detail
@@ -452,8 +452,8 @@ Aspect 3:2. Lid on for transport.
 ```prompt
 Product photo of a right keyboard half in a beige-grey printed case with its matching lid
 snapped on top, the lid a plain angular shell 15 mm tall following the stepped outline with a
-taller flat roof, four small square tabs on the outer walls where the magnets sit, a controller
-box corner poking through a notch in the lid skirt, the half lying in an open canvas bag, soft
+taller flat roof, smooth plain outer walls flush with the case below, no tabs or fasteners
+visible, a controller box corner poking through a notch in the lid skirt, the half lying in an open canvas bag, soft
 daylight.
 ```
 
@@ -463,7 +463,7 @@ Aspect 3:2. Lid under the half as a foot.
 
 ```prompt
 Three-quarter photo of a low-profile split keyboard half with a white 19 mm trackball standing
-on its own flipped-over lid, the beige-grey lid roof on the oak desk and its skirt edge meeting
-the flat underside of the case, the half lifted by about 15 mm, a second lid-less half beside it
-lying flat, soft studio light.
+on its own lid, the beige-grey lid the same way up with its open side on the oak desk and its
+flat roof meeting the flat underside of the case, held there invisibly by magnets, the half
+lifted by about 19 mm, a second lid-less half beside it lying flat, soft studio light.
 ```

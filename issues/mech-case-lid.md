@@ -33,9 +33,9 @@ of the right half.
 ## Acceptance criteria
 
 - [x] Parametric CAD in `hardware/case/` sharing the layout data with `mech-case` (`lid.scad`); one lid model per half, the left one mirrored
-- [x] Magnet pockets in lid and case (6 x 2 mm discs in four 9 x 7 mm pads, same pockets on the rim and on the floor), polarity marked by an embossed dot on the rim so the lid snaps on in both positions
+- [x] Lid holds on top by a 1 mm inner lip (3 mm into the tray, `lid_fit` 0.15), no magnets and no visible pads; four 6 x 2 mm magnets in the tray floor and four in the lid roof (0.6 mm skin, invisible) hold the foot position
 - [x] Lid clears the ball top (+17.1 mm over the PCB top, roof under +18.1) and the controller box (+8.7, lid skirt notch to +9.0) with at least 1 mm; the ball cannot leave the cup with the lid on (`tests/test_case.py`)
-- [x] Works as a foot on both halves in CAD: flat lift 9 mm (left) / 15 mm (right), `tent_wedge_deg` adds a wedge for tenting; rubber feet stay usable without it. Rocking is checked on the print
+- [x] Works as a foot on both halves in CAD: flat lift 13 mm (left) / 19.1 mm (right), `tent_wedge_deg` adds a wedge for tenting; rubber feet stay usable without it. Rocking is checked on the print
 - [x] Both lids print without supports (roof down, no overhanging faces in the mesh); test print open
 - [x] Image prompts in `docs/images/PROMPTS.md` (`img-case-lid-transport`, `img-case-lid-foot`)
 
@@ -51,3 +51,14 @@ top +14.0; right roof under +18.1, top +20.1; skirt on the rim at +5.0 with a no
 controller box walls; four 6 x 2 mm magnets per part. `lid_mode="dome"` keeps the right lid
 at 14 mm with a turret over the ball (optional). Open: test fit and the rocking check as a
 foot. See `docs/11-case.md`.
+
+2026-11-06, later: the four 9 x 7 mm magnet pads on the outer wall are gone. Decision: the lid
+holds on top without magnets, by a 1.0 mm lip on the inside of the skirt that reaches 3.0 mm
+into the tray (`lid_lip_t`, `lid_lip_depth`, `lid_fit` = 0.15); the outer wall is smooth and
+the lid sits flush on the rim. Magnets only hold the foot position: four 6 x 2 mm discs from
+below in the tray floor near the corners (`foot_magnets` in `data.scad`, placed clear of the
+wells, the FFC channel, the standoffs and the feet) and four in the lid roof, inserted from
+the roof underside with 0.6 mm of roof above them (roof now 3.0 mm). The lid goes under the
+half the same way up, roof against the tray; lift 13.0 mm (left) / 19.1 mm (right). Polarity:
+floor north down, roof south up. 8 magnets per half, 16 in total. Open: `lid_fit` on the first
+print.

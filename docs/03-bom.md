@@ -95,7 +95,7 @@ Quantities and LCSC codes follow the fab export `hardware/sensor-pcb/fab/k0d3bal
 |-----|------|------|--------|-------|-------|
 | 14 | Bumper | 10 mm round rubber feet, about 1 mm thick, or 3M SJ5302 clear bumpers | Amazon, 3M distributors | 3 to 8 EUR | Seven 10.5 mm recesses per half in the tray floor (`hardware/case/README.md`); they stop the halves from sliding completely |
 | about 220 g | Filament | PLA or PETG, matte | | 5 EUR | about 110 g per half for tray, cap and lid (`docs/11-case.md`) |
-| 24 (pack of 20 to 30) | Magnet | 6 x 2 mm neodymium disc, N35 or better | Amazon DE | 5 to 8 EUR per pack | 12 per half for the lid (`issues/mech-case-lid.md`); half of them sit in the tray, half in the lid |
+| 16 (pack of 20) | Magnet | 6 x 2 mm neodymium disc, N35 or better | Amazon DE | 5 to 8 EUR per pack | 8 per half for the lid as a foot (`issues/mech-case-lid.md`): 4 in the tray floor, 4 in the lid roof |
 | 1 | Flux pen, solder wick, 0.5 mm solder | | | | Needed for the FPC connectors |
 
 ## 9. Totals
