@@ -3,8 +3,9 @@
 Parametric OpenSCAD model of the two-part case per half: a flat tray with angular walls that
 follow the stepped PCB outline, a raised controller box with a separate screwed cap, a
 battery well under the controller block, a pocket for the trackball cradle beside the right
-PCB, and a removable lid that covers keys and ball for transport (held by an inner lip) and
-sticks under the half as a foot (four magnets in the floor and in the lid roof). Tickets: `issues/mech-case.md`, `issues/mech-case-ball-pocket.md`,
+PCB, and a hinged two-plate lid that covers keys and ball for transport (held by an inner lip)
+and folds under the half as a tenting foot (four magnets in the floor and in the lid roof, a
+2 mm steel pin in the hinge). Tickets: `issues/mech-case.md`, `issues/mech-case-ball-pocket.md`,
 `issues/mech-case-lid.md`; design notes in `docs/11-case.md`.
 
 Files
@@ -18,12 +19,12 @@ Files
 | `common.scad` | 2D regions (PCB cavity, outer footprint, wells, pocket, box) |
 | `logo.scad` | the owner wordmark scaled to millimetres and the groove that engraves it |
 | `tray.scad` | tray, standoffs, bosses, controller box cap, pocket test part, dummies |
-| `lid.scad` | lid with inner lip and roof magnets (flat, optional tent wedge) and the dome variant |
+| `lid.scad` | hinged lid: outer and inner plate, inner lip, roof magnets, ball window, knuckle hinge with its stop, the folded foot and the dome variant |
 | `Makefile` | `make` builds data, STL, DXF, previews and `stack.json` |
 | `stack.py` | collects the echoed stack values into `stack.json` (left, right, right-25mm) |
-| `stl/` | printable parts per half, `pocket-test-right.stl` is the test print of the pocket |
+| `stl/` | printable parts per half: `lid-outer-*` and `lid-inner-*` are the two lid plates to print, `lid-*` the closed pair for the exploded view, `pocket-test-right.stl` the test print of the pocket |
 | `dxf/` | floor plan per half with every hole, for checking against the PCB drawings |
-| `preview/` | assembly, section through the ball, box close-up, lid on, lid as foot, tray from below |
+| `preview/` | assembly, section through the ball, box close-up, lid on, lid folded as foot, hinge close-up, tray from below |
 
 Requires OpenSCAD 2025 or newer with the Manifold backend (tested with 2026.10.11) and the
 repository venv for the data generator. `make case` at the top level builds everything,
@@ -62,13 +63,41 @@ is handedness-neutral; the left half is mirrored once at the top level of `case.
   housing wall is where the cradle's own cable channel brings the FFC up; the tray only keeps the
   lid lip off J1 and the cable corridor on the key side (`fpc_clear`).
 - Foot magnets: four 6.2 mm pockets from below in the 9.5 mm floor under the key area, one
-  near each corner of the outline (8 mm inside the PCB edge, placed by `gen_case.py` clear of
-  the wells, the FFC channel, the standoffs and the feet). The lid roof carries the matching
-  pockets. The outer wall is smooth, no pads.
+  near each corner of the outer lid plate (8 mm inside the PCB edge and the hinge line, placed
+  by `gen_case.py` clear of the wells, the FFC channel, J1 and the cable corridor, the standoffs
+  and the feet): right (-5, 1.48), (38.35, 9.69), (38.35, 45.19), (-5, 31.5); left the same
+  except (-5, 31.25). The outer lid plate's roof carries the matching pockets. The outer wall
+  is smooth, no pads.
 - Lid lip: a 1.0 mm lip on the inside of the lid skirt reaches 3.0 mm into the tray with
   `lid_fit` = 0.15 to the wall and holds the lid on top by friction; the lip stops at the
   controller box walls and the pocket cup. The keycaps end 1.6 mm inside the PCB edge, the
   lip 0.95 mm inside it, so 0.65 mm remain between lip and caps.
+- Lid plates: the lid is split along the hinge line x = -13 (`hinge_x` in `data.scad`, the
+  left half mirrored like everything else). The outer plate (pinky side) carries the ball
+  window on the right and all four roof magnets; the inner plate carries the controller box
+  notch (to +9.0) and the thumb cluster and is the leg of the foot. Roof underside +14.0
+  (`lid_clear` 3.0 over the caps), roof top +17.0 on both halves. Within 6 mm of the line
+  (`hinge_strip_w`) the roof is thickened downward to 5 mm (`hinge_knuckle_d`), underside
+  +12.0, 1 mm over the Choc caps.
+- Ball window (`lid_mode = "window"`, right half): a 16 mm hole (`ball_window_d`) through the
+  roof at the ball centre. The 19.05 mm ball looks through, its top (+17.1) is flush with the
+  roof top, the chord at the roof underside is 14.1 mm, and the ball cannot leave the cup
+  because the window is smaller than the ball. `"flat"` puts a roof over the ball as before
+  (used for the 25 mm fallback), `"dome"` a turret.
+- Hinge: 9 knuckles of 8.77 mm (`hinge_seg_len` target 10, odd count, 0.3 mm gaps) along y
+  from -9.72 to +71.6 (span 81.3 mm); the outer plate owns the even knuckles including both
+  ends. Axis at z = +14.5, knuckles flush with the roof top, radius 2.5; the groove in the
+  other plate has radius 2.8 (`hinge_clear` 0.3) and the strip next to a groove is cleared
+  so no thin lips remain. Pin: 2.0 mm steel rod (`hinge_pin_d`) in a 2.2 mm hole
+  (`hinge_pin_fit` 0.2), about 80 mm long (span minus the 1.5 mm blind end, `hinge_blind`),
+  inserted from the y-min end (away from the user); the y-max knuckle is blind so the pin
+  cannot walk out. `-D hinge_pin_d=1.75` fits a piece of filament. Above the axis the two
+  plates' vertical cut faces are 0.2 mm apart (`hinge_gap`).
+- Stop: below the axis each plate's cut face is a plane through the axis leaning outward by
+  `tent_deg` = 15, so closed there is a V slit at the skirt bottom (about 6.7 mm wide at the
+  front and back skirt, 1.3 mm under the strip) and when folded by `hinge_fold_deg` = 30 the
+  two faces meet flat on flat along the whole cut (skirt ends and strip underside) and carry
+  the load. Knuckle and groove are round and never take the stop load.
 - Feet: seven 10.5 mm recesses 0.5 deep (the five hole positions and two under the
   controller block).
 
@@ -85,9 +114,10 @@ From `stack.json` (`make stack`):
 | rim | +5.0 | +5.0 | +5.0 |
 | cap plate under / box top | +6.7 / +8.7 | +6.7 / +8.7 | +6.7 / +8.7 |
 | ball top | - | +17.1 | +23.05 |
-| lid roof under / lid top | +12.0 / +15.0 | +18.1 / +21.1 | +24.1 / +27.1 |
+| lid roof under / lid top | +14.0 / +17.0 | +14.0 / +17.0 | +26.1 / +29.1 (`lid_mode` flat) |
+| hinge strip under / hinge axis | +12.0 / +14.5 | +12.0 / +14.5 | +24.1 / +26.55 |
 | lid lip bottom | +2.0 | +2.0 | +2.0 |
-| lift as a foot | 13.0 | 19.1 | 25.1 |
+| foot: tilt / hinge axis / outer edge above the desk | 15.3 deg / 27.6 / 13.5 | 14.9 deg / 27.2 / 13.6 | 14.9 deg / 38.8 / 25.2 |
 
 ## Printing
 
@@ -97,9 +127,11 @@ From `stack.json` (`make stack`):
   the switch slot (7 mm), the LED window (3 mm) and the four foot magnet pockets from below
   (6 mm); the shelf over the corners of the pocket well is a short overhang of about 6 mm.
   The boss undersides are 45 degree chamfers.
-- Cap and lid: roof down, nothing overhangs. The lid's roof magnet pockets open towards the
-  roof underside, so they print as plain holes with the 0.6 mm skin on the bed; the lip's
-  lead-in chamfer is a stepped taper at the top of the print.
+- Cap and both lid plates: roof down, no supports. The outer plate's roof magnet pockets open
+  towards the roof underside, so they print as plain holes with the 0.6 mm skin on the bed;
+  the lip's lead-in chamfer is a stepped taper at the top of the print. On the lid plates the
+  horizontal 2.2 mm pin hole and the knuckle halves that protrude past the hinge line are the
+  only small overhangs; the knuckle grooves in the skirt ends are the only upward faces.
 - Wordmark: engraved 0.6 mm into the cap plate and into the case underside, both of which lie
   on the bed. The grooves are one cell wide (1.0 mm on the cap, 0.9 mm on the floor), so every
   bridge is shorter than a millimetre and the first layer is the connected field between them.
@@ -125,33 +157,44 @@ From `stack.json` (`make stack`):
 
 1. Press the seven inserts (five standoffs, two bosses).
 2. Glue the magnets: the four tray floor pockets north pole down (towards the desk), the four
-   lid roof pockets south pole up, pushed in from the roof underside until they sit on the
-   0.6 mm skin. Check with a loose magnet that the lid snaps under the tray before the glue
-   sets. The lid on top needs no magnets, the lip holds it.
-3. Drop the PCB in (keycaps off), screw it to the standoffs, put the keycaps on.
-4. Controller box: plug the controller, put the cap on (skirt towards the keys and the thumb
+   pockets in the outer lid plate's roof south pole up, pushed in from the roof underside until
+   they sit on the 0.6 mm skin. Check with a loose magnet that the lid snaps under the tray
+   before the glue sets. The lid on top needs no magnets, the lip holds it.
+3. Hinge: lay the two lid plates roof-up, align the knuckles and push the 2 mm rod in from
+   the y-min end (back edge, away from the user) until it bottoms in the blind knuckle;
+   optionally a drop of glue at the entry. The lid should fold to the stop without force.
+4. Drop the PCB in (keycaps off), screw it to the standoffs, put the keycaps on.
+5. Controller box: plug the controller, put the cap on (skirt towards the keys and the thumb
    keys), two M2 screws into the bosses.
-5. Right half: stand the cradle module in the pocket with its slot towards J1, route the
+6. Right half: stand the cradle module in the pocket with its slot towards J1, route the
    FFC through the channel into J1, fasten the two M2 x 10 from below. Drop the ball in.
-6. Battery into the well, JST into J3, stick the rubber feet on.
-7. Lid on for transport (press it down until the lip is in), lid under the half as a foot on
-   the desk (same way up, roof against the tray).
+7. Battery into the well, JST into J3, stick the rubber feet on.
+8. Lid on for transport (press it down until the lip is in). As a foot: fold the inner plate
+   down to the stop, lay the outer plate roof-up against the tray underside so the magnets
+   snap it on, and stand the half on the desk, inner edge up.
 
-## Lid as a foot
+## Lid, hinge and foot
 
-The lid goes under the half the same way up, roof top against the tray underside, and lifts
-it flat by 13.0 mm (left) or 19.1 mm (right): lid height above the rim plus the 3 mm lip.
-The four roof magnets meet the four floor magnets at the same xy; the magnets are invisible
-in both positions (0.6 mm skin on the roof, pockets from below in the tray).
-`-D tent_wedge_deg=6` makes the lid roof a wedge that rises towards the inner edge, so the
-lid-as-foot tents the half by that angle (the cover position is unchanged, the wedge only
-adds material on top). The rubber feet stay usable without the lid.
+Closed, the two plates are one cover: skirt on the rim, lip in the tray, the knuckles flush
+with the roof top, a 0.2 mm gap between the cut faces above the axis and the V slit of the
+stop below it. Folded, the lid is the stand: the outer plate lies roof-up against the tray
+underside (its four roof magnets meet the four floor magnets at the same xy, invisible in both
+positions thanks to the 0.6 mm skin on the roof and the pockets from below in the tray) and the
+inner plate hangs down by 30 degrees as the leg, the two cut faces pressed flat on flat. Both
+plates stand on their skirt-and-lip bottom edges. Result (`stack.json`): the half tilts by
+`foot_tilt_deg` 14.9 degrees (right; 15.3 left) with the inner edge up, the hinge axis is
+27.2 mm above the desk (`foot_hinge_h`), the tray's outer bottom edge 13.6 mm (`foot_outer_h`).
+`tent_deg` sets the tilt; the stop is cut for twice that angle (`hinge_fold_deg`). The rubber
+feet stay usable without the lid. Parts: `lid_outer` and `lid_inner` are the plates to print,
+`lid` the closed pair, `lid_folded` the folded pair; the previews `lid_foot` (tilted on the
+desk) and `lid_foot_flat` show the half on its lid.
 
 ## 25 mm fallback
 
 `-D ball_d=25 -D notch_apothem=16.5 -D pocket_d=35 -D ball_top_z=23.05` (a different PCB
-notch): the pocket cavity follows the octagon, the right lid roof rises to +24.1. Documented
-as a parameter, not printed.
+notch): the pocket cavity follows the octagon, and with `-D lid_mode="flat"` the right lid roof
+rises over the ball to +26.1 (top +29.1, hinge axis +26.55). Documented as a parameter, not
+printed.
 
 ## Open points
 
@@ -160,7 +203,10 @@ as a parameter, not printed.
 - `box_inner_x` = -45.5 leaves 0.75 mm between the cap skirt and the inner column keycaps and
   1.5 mm to the controller; a wider box would hit the caps.
 - `lid_fit` = 0.15 is a guess for a 0.4 mm nozzle; if the lid is loose or too tight on the
-  first print, change it (0.1 tighter, 0.2 looser) and reprint only the lid.
+  first print, change it (0.1 tighter, 0.2 looser) and reprint only the lid plates.
+- `hinge_clear` = 0.3 and `hinge_pin_fit` = 0.2 are guesses too: the knuckles must turn freely
+  in the grooves and the rod must push in by hand. Check on the first print that the folded
+  lid does not rock as a foot (the stop faces meet along the whole cut).
 - The pocket well corners outside the octagon are closed by a 1.6 mm shelf at the PCB
   underside level; if a printer sags there, cut the shelf back with `pocket_wall`.
 - The supplied wordmark is cropped at the top and `scripts/gen_logo.py` mirrors the frame foot

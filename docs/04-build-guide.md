@@ -392,8 +392,8 @@ folded without a crease, cursor moves, ball retained.
 ## 12. Case and closing up
 
 Printed parts, heights and the parameter list are in [printed case](11-case.md) and
-[hardware/case/README.md](../hardware/case/README.md). Three parts per half: tray, controller box
-cap and lid. This chapter is the order in which they go together; it is the only order the
+[hardware/case/README.md](../hardware/case/README.md). Four parts per half: tray, controller box
+cap and the two lid plates, which a 2 mm steel pin joins into the hinged lid. This chapter is the order in which they go together; it is the only order the
 hardware allows, so do not improvise.
 
 ![Exploded view of one half](images/img-case-exploded.png)
@@ -401,8 +401,10 @@ hardware allows, so do not improvise.
 1. Press the seven M2 heat-set inserts into the tray with a soldering iron at about 200 C (five
    standoffs, two bosses in the controller box). Let them cool before anything else goes in.
 2. Glue the eight 6 x 2 mm magnets: four from below into the tray floor (north down), four into
-   the lid roof from its underside (south up). Check the snap with a loose magnet before the glue
-   sets - the lid has to hold under the half as a foot.
+   the outer lid plate's roof from its underside (south up). Check the snap with a loose magnet
+   before the glue sets - the lid has to hold under the half as a foot. Then align the knuckles
+   of the two lid plates and push the 2 mm rod in from the back edge until it bottoms in the
+   blind end knuckle; a drop of glue at the entry if it is loose.
 3. Right half: lower the finished trackball module (chapter 11) into its pocket and fasten it with
    the two M2 x 10 screws from below. It drops straight in and lifts straight out, also later with
    the PCB fitted, so this step can be repeated at any time.
@@ -419,7 +421,8 @@ hardware allows, so do not improvise.
    (chapter 11, step 7). This is the last connection of the build and the only one you can reach
    with everything assembled.
 9. Ball into the cup, four rubber feet onto the underside (clear of the wordmark engraved in
-   the middle of the floor), lid on.
+   the middle of the floor), lid on. As a stand, fold the inner lid plate down to its stop and
+   let the outer plate snap roof-up under the half: it tilts by about 15 degrees, inner edge up.
 
 Service, in the other direction: the trackball module comes out with the keycaps and the PCB in
 place - open J1's lock, pull the cable, undo the two screws from below, lift the module out.

@@ -1,6 +1,6 @@
 # Printed case
 
-The case is the last phase of r2: two printed parts per half plus a removable lid. The CAD
+The case is the last phase of r2: two printed parts per half plus a hinged two-plate lid. The CAD
 lives in `hardware/case/` (OpenSCAD, parametric, both halves from one set of sources); this
 document explains what the parts are, the heights they are built on, how they go
 together and how the wordmark is engraved into them. Tickets: [mech-case](../issues/mech-case.md),
@@ -16,7 +16,9 @@ together and how the wordmark is engraved into them. Tickets: [mech-case](../iss
 |------|-----|------------|
 | Tray | `tray-left.stl`, `tray-right.stl` | the case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, pocket for the cradle (right), five standoffs with M2 heat-set inserts, four foot magnet pockets from below, feet recesses |
 | Box cap | `box-cap-left.stl`, `box-cap-right.stl` | roof of the controller box: a plate in a rebate plus an L-shaped skirt towards the keys and the thumb keys, two M2 screws into corner bosses |
-| Lid | `lid-left.stl`, `lid-right.stl` | transport cover over keys and ball, held on top by an inner lip; under the half it is a foot held by four magnets in the roof |
+| Lid, outer plate | `lid-outer-left.stl`, `lid-outer-right.stl` | pinky-side half of the transport cover: ball window (right), the four roof magnets, the even hinge knuckles including both ends |
+| Lid, inner plate | `lid-inner-left.stl`, `lid-inner-right.stl` | controller-notch and thumb-side half: the odd knuckles; folded down it is the leg of the tenting foot |
+| Lid, closed pair | `lid-left.stl`, `lid-right.stl` | both plates joined by a 2 mm steel pin, held on top by an inner lip; for the exploded view, not for printing |
 | Pocket test | `pocket-test-right.stl` | the 50 x 50 mm corner of the right tray around the ball, for the first test print with the cradle |
 
 The tray and the box cap carry the owner wordmark as an engraved relief (section 9).
@@ -43,12 +45,16 @@ z = 0 is the PCB top, from `hardware/case/stack.json`:
 | Controller box cap, under / top | +6.7 / +8.7 | +6.7 / +8.7 | controller top +5.7 plus 1 mm |
 | Keycap top | +11.0 | +11.0 | Choc V1 |
 | Ball top | - | +17.1 | cradle `ball_top_above_pcb_top` |
-| Lid roof, under / top | +12.0 / +15.0 | +18.1 / +21.1 | 1 mm over the tallest thing, 3 mm roof with the magnets inside |
+| Lid roof, under / top | +14.0 / +17.0 | +14.0 / +17.0 | 3 mm over the caps (`lid_clear`), 3 mm roof with the magnets inside; the ball looks through a window and its top is flush with the roof top |
+| Hinge strip underside | +12.0 | +12.0 | roof thickened to 5 mm within 6 mm of the hinge line, 1 mm over the caps |
+| Hinge axis | +14.5 | +14.5 | knuckles of 5 mm flush with the roof top |
 | Lid lip bottom | +2.0 | +2.0 | 3 mm below the rim, inside the wall |
 
-The two halves have different lid heights on purpose: a 21 mm lid over the left half would
-only add bulk. A `lid_mode = "dome"` variant keeps the right lid at 14 mm with a round turret
-over the ball; it renders but is not part of the default build.
+Both halves share one lid height because the right lid no longer rises over the ball: in the
+default `lid_mode = "window"` a 16 mm hole in the roof lets the 19.05 mm ball look through, and
+since the hole is smaller than the ball the ball stays in the cup. `lid_mode = "flat"` puts a
+roof over the ball as before (+26.1 under, +29.1 top for the 25 mm fallback), `"dome"` a round
+turret; both render but are not part of the default build.
 
 ## 3. Pocket
 
@@ -89,7 +95,8 @@ This order is the only one the hardware allows, and the build guide
 
 1. Press the seven M2 heat-set inserts (five standoffs, two bosses) with a soldering iron at
    about 200 C. Do this before anything else goes into the tray.
-2. Glue the magnets (four in the tray floor, four in the lid roof), see section 7.
+2. Glue the magnets (four in the tray floor, four in the outer lid plate's roof) and pin the two
+   lid plates together with the 2 mm rod, see section 7.
 3. Right half: trackball module into the pocket (bearings in, sensor board and cable already
    inside the cradle, cable slot and wall channel towards the keys), then the two M2 x 10 case
    screws from below. Do it now because the module is easier to handle and to gauge while the
@@ -111,9 +118,11 @@ first: their skirts overhang the screw heads by 1.5 mm.
 ## 6. Printing
 
 Tray flat on the bed with the cavities open upwards; the only bridges are the USB opening,
-the switch slot, the LED window and the four foot magnet pockets from below. Cap and lid
-print roof down; the lid's roof magnet pockets open towards the roof underside and print as
-plain holes. No supports anywhere, 0.2 mm layers (0.12 mm for the pocket test), 3 perimeters. Print
+the switch slot, the LED window and the four foot magnet pockets from below. Cap and both lid
+plates print roof down; the outer plate's roof magnet pockets open towards the roof underside
+and print as plain holes, the horizontal 2.2 mm pin hole and the knuckle halves that reach past
+the hinge line are the only small overhangs, the knuckle grooves in the skirt ends the only
+upward faces. No supports anywhere, 0.2 mm layers (0.12 mm for the pocket test), 3 perimeters.
 The engraved wordmark on the cap plate and the case underside is one more set of bridges, all
 of them one groove wide (1.0 mm on the cap, 0.9 mm on the floor) and 0.6 mm tall, on the face
 that lies on the bed. Print
@@ -121,26 +130,56 @@ that lies on the bed. Print
 0.3 mm all round, the module drops in and lifts out vertically with the board in place, and the
 FFC reaches J1 over the board edge without a crease.
 
-## 7. Lid and magnets
+## 7. Lid, hinge and magnets
 
 ![Lid on for transport](images/img-case-lid-transport.png)
 
-On top the lid holds without magnets: a 1 mm lip on the inside of its skirt reaches 3 mm
-into the tray (0.15 mm to the wall) and holds by friction, the skirt sits on the rim flush
-with the outer wall. The lip stops at the controller box walls and at the pocket cup.
+The lid is two plates per half, split along the hinge line x = -13 in the layout frame
+(`hinge_x`, generated by `scripts/gen_case.py`; the left half is mirrored like everything
+else). The outer plate on the pinky side carries the ball window and all four roof magnets, the
+inner plate the controller box notch and the thumb cluster. On top the lid holds without
+magnets: a 1 mm lip on the inside of its skirt reaches 3 mm into the tray (0.15 mm to the
+wall) and holds by friction, the skirt sits on the rim flush with the outer wall. The lip stops
+at the controller box walls and at the pocket cup. Over the right ball the roof has a 16 mm
+window: the ball top (+17.1) is flush with the roof top, the chord at the roof underside is
+14.1 mm, and the ball cannot leave the cup through a hole smaller than itself.
 
-Magnets only hold the foot position: four 6 x 2 mm discs from below in the tray floor near
-the corners (8 mm inside the PCB edge, in the thick floor under the keys) and four in the
-lid roof, pushed in from the roof underside with 0.6 mm of roof left on top, so nothing is
-visible from outside. Polarity: tray floor pockets north down, lid roof pockets south up.
-Glue them after printing, check the snap with a loose magnet before the glue sets.
+![Hinge close-up](images/img-case-lid-hinge.png)
 
-![Lid as a foot](images/img-case-lid-foot.png)
+The hinge runs the full depth of the lid along the line: 9 knuckles of 8.77 mm with 0.3 mm
+gaps from y = -9.72 to +71.6 (span 81.3 mm), the outer plate owning the even knuckles and so
+both ends. The knuckles are 5 mm round and flush with the roof top, the axis at +14.5; within
+6 mm of the line the roof is thickened downward to 5 mm (underside +12.0, 1 mm over the Choc
+caps) to carry them. A knuckle turns in a groove of the other plate with 0.3 mm radial
+clearance; the strip next to a groove is cleared so no thin lip remains. The pin is a 2 mm
+steel rod about 80 mm long in a 2.2 mm hole, pushed in from the back edge (y-min, away from
+the user); the last knuckle towards the user is blind, so the pin cannot walk out. A piece of
+1.75 mm filament works as a fallback (`-D hinge_pin_d=1.75`). Above the axis the two plates'
+vertical cut faces are 0.2 mm apart.
 
-As a foot the lid goes under the half the same way up (roof against the tray underside) and
-lifts it flat by 13 mm (left) or 19 mm (right); the rubber feet stay usable without it. Tenting is a parameter: `-D tent_wedge_deg=6` adds a wedge to the lid
-roof that rises towards the inner edge, so the lid-as-foot tilts the half by that angle
-while the cover position is unchanged.
+The stop is in the cut itself. Below the axis each plate's cut face is a plane through the
+axis leaning outward by `tent_deg` = 15 degrees, so closed there is a V slit at the skirt
+bottom (about 6.7 mm wide at the front and back skirt, 1.3 mm under the strip), and when the
+lid is folded by 30 degrees (`hinge_fold_deg`) the two faces meet flat on flat along the whole
+cut - skirt ends and strip underside - and carry the load. Knuckle and groove are round and
+never take it.
+
+Magnets only hold the foot position: four 6 x 2 mm discs from below in the tray floor, one
+near each corner of the outer plate's footprint (8 mm inside the PCB edge and the hinge line,
+in the thick floor under the keys, kept 2 mm clear of J1 and the cable corridor) and four in
+the outer plate's roof, pushed in from the roof underside with 0.6 mm of roof left on top, so
+nothing is visible from outside. Polarity: tray floor pockets north down, lid roof pockets
+south up. Eight per half, sixteen in total. Glue them after printing, check the snap with a
+loose magnet before the glue sets.
+
+![Lid folded as a tenting foot](images/img-case-lid-folded.png)
+
+As a foot the lid folds: the outer plate lies roof-up against the tray underside, its four
+magnets on the four floor magnets, and the inner plate hangs down by 30 degrees as the leg.
+Both plates stand on their skirt-and-lip bottom edges. The half tilts by about 15 degrees
+with the inner edge up (`foot_tilt_deg` 14.9 right, 15.3 left), the hinge axis is 27.2 mm
+above the desk and the tray's outer bottom edge 13.6 mm (`stack.json`). `tent_deg` sets the
+tilt and the stop is cut for twice that angle; the rubber feet stay usable without the lid.
 
 ## 8. Wordmark
 
@@ -180,8 +219,9 @@ Set `logo_on_cap = false` / `logo_on_floor = false` for a plain case.
 
 - LED window position is a guess at the nice!nano LED; verify on the controller.
 - `box_inner_x` = -45.5: 0.75 mm to the inner column caps, 1.5 mm to the controller.
-- `lid_fit` (0.15 mm between lip and wall) is set for a 0.4 mm nozzle; adjust after the
-  first lid print.
-- First print: pocket test, then the right tray, then the lids.
+- `lid_fit` (0.15 mm between lip and wall), `hinge_clear` (0.3 mm around a knuckle) and
+  `hinge_pin_fit` (0.2 mm around the rod) are set for a 0.4 mm nozzle; adjust after the first
+  lid print, and check that the folded lid does not rock as a foot.
+- First print: pocket test, then the right tray, then the four lid plates.
 - The supplied wordmark is cropped at the top; the frame foot is mirrored in to close it. If
   the owner supplies the uncropped original, drop `close_frame` in `scripts/gen_logo.py`.

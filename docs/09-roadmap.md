@@ -59,13 +59,13 @@ PCB outline, walls flush with the keycap skirts, a rectangular controller box at
 with the LED window, USB-C opening, power switch slot and reset hole (the controller top is only
 +5.7 mm now, so raising the box is a styling choice), a 9 mm deep battery well under the
 controller block on both halves for the LP552035 cell (`battery` block in `points-*.json`), a 32 mm
-pocket beside the right PCB for the ball with the sensor board on its floor, bumper recesses. A removable lid per half covers keys and ball
-for transport (the cradle has no retainer, the lid is what keeps the ball in a bag) and attaches
-under the half with magnets as a flat or tenting foot. Depends on the final PCB outlines
+pocket beside the right PCB for the ball with the sensor board on its floor, bumper recesses. A hinged two-plate lid per half covers keys and ball
+for transport (the cradle has no retainer, the lid is what keeps the ball in a bag) and folds
+under the half on magnets as a tenting foot. Depends on the final PCB outlines
 (`outline-left.dxf`, `outline-right.dxf`) and the cradle floor footprint
 (`hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`).
 Status 2026-11-06: case CAD done in `hardware/case/` (tray, controller cap, lid per half, pocket
-test part; `docs/11-case.md`). Next: pocket test print, then the right tray and both lids.
+test part; `docs/11-case.md`). Next: pocket test print, then the right tray and the lid plates.
 
 Tickets: `mech-case`, `mech-case-ball-pocket`, `mech-case-lid` (`mech-case-ball-dome` closed as superseded).
 

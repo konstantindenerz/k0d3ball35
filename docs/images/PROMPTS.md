@@ -471,10 +471,12 @@ Aspect 3:2. Lid on for transport.
 
 ```prompt
 Product photo of a right keyboard half in a beige-grey printed case with its matching lid
-snapped on top, the lid a plain angular shell 15 mm tall following the stepped outline with a
-taller flat roof, smooth plain outer walls flush with the case below, no tabs or fasteners
-visible, a controller box corner poking through a notch in the lid skirt, the half lying in an open canvas bag, soft
-daylight.
+snapped on top, the lid a plain angular shell 12 mm tall following the stepped outline with a
+flat roof, split front to back by a straight hinge line of short round knuckles flush with the
+roof, a round 16 mm window in the roof through which the top of a glossy white trackball shows
+flush with the surface, smooth plain outer walls flush with the case below, no tabs or
+fasteners visible, a controller box corner poking through a notch in the lid skirt, the half
+lying in an open canvas bag, soft daylight.
 ```
 
 ## img-case-lid-foot
@@ -483,7 +485,35 @@ Aspect 3:2. Lid under the half as a foot.
 
 ```prompt
 Three-quarter photo of a low-profile split keyboard half with a white 19 mm trackball standing
-on its own lid, the beige-grey lid the same way up with its open side on the oak desk and its
-flat roof meeting the flat underside of the case, held there invisibly by magnets, the half
-lifted by about 19 mm, a second lid-less half beside it lying flat, soft studio light.
+on its own folded lid, the beige-grey lid's outer plate lying roof-up against the flat underside
+of the case, held there invisibly by magnets, its inner plate folded down at the hinge as a
+leg so the half tilts by about 15 degrees with the inner edge raised, both plate edges on the
+oak desk, a second lid-less half beside it lying flat, soft studio light.
+```
+
+## img-case-lid-folded
+
+Aspect 3:2. The folded lid as a tenting stand under the right half, seen from the inner edge.
+
+```prompt
+Low three-quarter photo from the inner edge of a right keyboard half in a beige-grey printed
+case with a glossy white 19 mm trackball, tilted by about 15 degrees with the inner edge up and
+standing on its own hinged lid: the lid's outer plate lies flat and roof-up against the case
+underside, the inner plate folds down from a straight knuckle hinge at about 30 degrees as a
+leg, both plates resting on their thin skirt edges on the oak desk, a small round hinge
+knuckle line visible 28 mm above the desk, no magnets or fasteners visible, soft daylight,
+shallow depth of field.
+```
+
+## img-case-lid-hinge
+
+Aspect 4:3. Close-up of the hinge knuckles, the pin and the V slit.
+
+```prompt
+Macro photo of the hinge of a beige-grey 3D printed keyboard lid lying roof-up on an oak desk:
+nine short round knuckles of 5 mm diameter flush with the flat roof in one straight line,
+alternating between the two plates with hair-thin gaps, the end of a 2 mm bright steel rod just
+entering the first knuckle from the back edge, and below the knuckle line at the skirt end a
+narrow V-shaped slit between the two plates that widens towards the bottom edge, no other
+hardware, soft directional light, shallow depth of field.
 ```

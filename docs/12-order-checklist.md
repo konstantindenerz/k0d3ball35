@@ -53,7 +53,8 @@ One cart; everything ships from the same warehouse.
 | [ ] | 1 pack (50) | Heat-set threaded insert | brass, M2, 3 mm long, about 3.5 mm OD, for a 3.2 mm hole | open | 14 used: 5 PCB standoffs + 2 controller-cap bosses per half; Amazon DE or AliExpress |
 | [ ] | 1 pack (14 used) | PCB and cap screw | M2 x 5 (or x 6) machine screw, pan or button head, head max 3.5 mm dia | open | 7 per half; the alternative is self-tapping into a 1.6 mm pilot (`-D pcb_screws="pilot"` in `hardware/case/params.scad`) |
 | [ ] | 8 | Bumper | GLIPLUS pads or 3M SJ5302 | open | |
-| [ ] | 1 pack (20) | Magnet | 6 x 2 mm neodymium disc | open | 16 used: 4 in the tray floor and 4 in the lid roof per half (`issues/mech-case-lid.md`) |
+| [ ] | 1 pack (20) | Magnet | 6 x 2 mm neodymium disc | open | 16 used: 4 in the tray floor and 4 in the outer lid plate's roof per half (`issues/mech-case-lid.md`) |
+| [ ] | 2 | Hinge pin | 2 mm steel rod, about 80 mm (2 mm round bar or a 2 x 80 mm dowel pin, cut to length) | open | one per lid hinge; a piece of 1.75 mm filament is the fallback (`hardware/case/README.md`) |
 
 ## 5. AliExpress (open)
 
@@ -106,7 +107,7 @@ in the AliExpress kit; LCSC only matters for a later assembly run.
 | [ ] | Cradle, 25 mm fallback | `hardware/trackball-cradle/stl/cradle-25mm-pocket.stl` | orderable now | only if the 19 mm ball disappoints (`issues/hw-25mm-cradle-fallback.md`) |
 | [ ] | Case trays | `hardware/case/stl/tray-left.stl`, `hardware/case/stl/tray-right.stl` | being generated in `hardware/case/` | wait for the case ticket (`issues/mech-case.md`) |
 | [ ] | Controller caps | `hardware/case/stl/box-cap-left.stl`, `hardware/case/stl/box-cap-right.stl` | being generated | same |
-| [ ] | Lids | `hardware/case/stl/lid-left.stl`, `hardware/case/stl/lid-right.stl` | being generated | same (`issues/mech-case-lid.md`) |
+| [ ] | Lid plates | `hardware/case/stl/lid-outer-left.stl`, `lid-inner-left.stl`, `lid-outer-right.stl`, `lid-inner-right.stl` | being generated | same (`issues/mech-case-lid.md`); `lid-left.stl` / `lid-right.stl` are the closed pairs for the exploded view, not for printing |
 | [ ] | Pocket test piece | `hardware/case/stl/pocket-test-right.stl` | being generated | print first, test the cradle and the right PCB notch in it |
 
 Print service or own printer: a service (JLC3DP or Craftcloud, SLA resin or MJF nylon) gives the

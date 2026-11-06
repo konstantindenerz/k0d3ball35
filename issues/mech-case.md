@@ -36,7 +36,8 @@ bay 21 x 41 mm centred (-53.9, 17.5), floor at -10.6 mm or the pocket level -11.
 Blocked by hw-two-pcbs-r2 (final outlines) and mech-case-ball-pocket. Each half also gets a
 removable lid that covers keys and ball for transport and attaches under the half as a foot
 (`mech-case-lid`); the cradle has no ball retainer, so the lid is what keeps the ball in a bag.
-Provide magnet pockets on the case top rim and floor for it.
+The lid holds on top by an inner lip; the tray only provides the four magnet pockets in the
+floor for the foot position.
 
 2026-11-06: CAD done in `hardware/case/` (tray, box cap, dummies, previews, `stack.json`). Key
 numbers: wall 3.0, rim +5.0, key floor -4.6, well and pocket floor -11.6, underside -14.1 flat,
