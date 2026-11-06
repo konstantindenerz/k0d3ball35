@@ -1,7 +1,7 @@
 (footprint "MountingHole_2.2mm" (version 20240108) (generator "k0d3ball36") (generator_version "1.0")
   (layer "F.Cu")
   (descr "M2 mounting hole, 2.2 mm, no copper, 4.4 mm keep-out")
-  (tags "k0d3ball36 reversible")
+  (tags "k0d3ball36")
   (property "Reference" "REF**" (at 0 -3 0) (layer "F.Fab") (uuid "ad64f3d5-2992-5de5-b8b7-da3ab3d8bba6") (effects (font (size 1 1) (thickness 0.15))))
   (property "Value" "MountingHole_2.2mm" (at 0 2 0) (layer "F.Fab") (uuid "8adade86-a266-5319-963c-07346e4de610") (effects (font (size 1 1) (thickness 0.15))))
   (property "Footprint" "k0d3ball36:MountingHole_2.2mm" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "5d87fa85-e1da-5262-b992-b525b615ad0c") (effects (font (size 1.27 1.27))))

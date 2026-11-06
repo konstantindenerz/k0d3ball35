@@ -1,7 +1,7 @@
 (footprint "SW_SPDT_MSK12C02_reversible" (version 20240108) (generator "k0d3ball36") (generator_version "1.0")
   (layer "F.Cu")
   (descr "MSK-12C02 SPDT slide switch, actuator towards +y, pad sets on both faces")
-  (tags "k0d3ball36 reversible")
+  (tags "k0d3ball36")
   (property "Reference" "REF**" (at 0 -3.2 0) (layer "F.Fab") (uuid "aa385d14-2362-5b45-8e50-29cbdc8646a3") (effects (font (size 1 1) (thickness 0.15))))
   (property "Value" "SW_SPDT_MSK12C02_reversible" (at 0 2 0) (layer "F.Fab") (uuid "c2802640-5021-5f50-bc91-4cd296abc255") (effects (font (size 1 1) (thickness 0.15))))
   (property "Footprint" "k0d3ball36:SW_SPDT_MSK12C02_reversible" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "b6e69237-11e5-5b8c-b255-77b2837bd520") (effects (font (size 1.27 1.27))))

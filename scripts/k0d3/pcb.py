@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: CERN-OHL-P-2.0
-"""KiCad board generator for the k0d3ball36 main PCB (unrouted).
+"""KiCad board generator for the k0d3ball36 main PCBs (unrouted, one per half).
 
 Writes a KiCad 8 format .kicad_pcb with all footprints placed and nets assigned, the
-board outline, the trackball cutout, GND pours on both faces and silkscreen. Routing
+board outline (with the ball pocket notch on the right), GND pours on both faces and
+silkscreen. The case pocket and the ball are drawn on User.Comments for reference. Routing
 is done afterwards (scripts/route.py) and the file is round-tripped through pcbnew so
 the committed board is in the current KiCad format.
 """
@@ -13,7 +14,7 @@ from pathlib import Path
 
 from .footprints import all_footprints
 from .geometry import Layout
-from .netlist import HOLE_PIN_LEFT, HOLE_PIN_RIGHT, LIB, Component, net_classes, net_names
+from .netlist import HOLE_PIN, LIB, Component, net_classes, net_names
 from .schematic import sym_uuid
 from .sexpr import num, quote, uid
 
@@ -31,10 +32,10 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
     ox, oy = OFFSET
     nets = net_names(comps)
     net_index = {n: i + 1 for i, n in enumerate(nets)}
-    fps = all_footprints(HOLE_PIN_RIGHT, HOLE_PIN_LEFT)
+    fps = all_footprints(HOLE_PIN)
     out = [f"(kicad_pcb (version {PCB_VERSION}) (generator \"k0d3ball36\") (generator_version \"1.0\")",
            "  (general (thickness 1.6) (legacy_teardrops no))", "  (paper \"A3\")",
-           f"  (title_block (title {quote(layout.cfg['name'] + ' main PCB')}) (date \"2026-11-05\") (rev {quote(layout.cfg['revision'])}) (company \"k0d3ball36 project\"))",
+           f"  (title_block (title {quote(layout.cfg['name'] + ' ' + layout.half + ' half')}) (date \"2026-11-06\") (rev {quote(layout.cfg['revision'])}) (company \"k0d3ball36 project\"))",
            "  (layers"]
     for l in LAYERS:
         extra = f" {quote(l[3])}" if len(l) > 3 else ""
@@ -83,8 +84,8 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
         y1, y2 = oy + keys[0].y - 8.0, oy + keys[-1].y - 8.0
         n = net_index[f"COL{col}"]
         out.append(f"  (segment (locked yes) (start {num(x)} {num(y1)}) (end {num(x)} {num(y2)}) (width 0.25) (layer \"B.Cu\") (net {n}) (uuid {quote(uid('bus', col))}))")
-    # FPC connector: the 0.3 mm GND pad cannot be reached by the pour (its neighbours are
-    # 0.2 mm away), so give pad 2 of each face a short locked stub to a GND via.
+    # FPC connector (back face): the 0.3 mm GND pad cannot be reached by the pour (its
+    # neighbours are 0.2 mm away), so give pad 2 a short locked stub to a GND via.
     for c in comps:
         if c.kind != "fpc":
             continue
@@ -92,10 +93,15 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
         def frot(px, py):
             return (ox + c.x + px * _m.cos(th) + py * _m.sin(th), oy + c.y - px * _m.sin(th) + py * _m.cos(th))
         g = net_index["GND"]
-        for layer, sign in (("F.Cu", -1), ("B.Cu", 1)):
+        for layer, sign in (("B.Cu", 1),):
             a, b = frot(sign * 0.75, -1.85), frot(sign * 0.75, -3.9)
             out.append(f"  (segment (locked yes) (start {num(a[0])} {num(a[1])}) (end {num(b[0])} {num(b[1])}) (width 0.25) (layer {quote(layer)}) (net {g}) (uuid {quote(uid('fpcgnd', c.ref, layer))}))")
             out.append(f"  (via (locked yes) (at {num(b[0])} {num(b[1])}) (size 0.6) (drill 0.3) (layers \"F.Cu\" \"B.Cu\") (net {g}) (uuid {quote(uid('fpcvia', c.ref, layer))}))")
+    # Test pads have a copper disc on both faces; a via through the centre ties them together
+    # so the router only has to reach one face.
+    for c in comps:
+        if c.kind == "testpoint":
+            out.append(f"  (via (locked yes) (at {num(ox + c.x)} {num(oy + c.y)}) (size 0.6) (drill 0.3) (layers \"F.Cu\" \"B.Cu\") (net {net_index[c.pads['1']]}) (uuid {quote(uid('tpvia', c.ref))}))")
     # Hand-placed locked tracks from the layout file (thumb cluster)
     by_ref = {c.ref: c for c in comps}
     def resolve(pt):
@@ -108,6 +114,10 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
             return (ox + c.x + px * _m.cos(th) + py * _m.sin(th), oy + c.y - px * _m.sin(th) + py * _m.cos(th))
         if what == "joiner":
             return r(-2.2, -8.0)
+        if what == "pad2":                     # hot-swap socket pad 2, back face copy
+            return r(8.5, -3.8)
+        if what == "pad2f":                    # hot-swap socket pad 2, front face copy
+            return r(-8.5, -3.8)
         if c.kind == "mcu":                    # controller hole number
             h = int(what)
             return r(-7.62 if h <= 12 else 7.62, -13.97 + ((h - 1) % 12) * 2.54)
@@ -127,26 +137,25 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
     # board outline
     pts = " ".join(f"(xy {num(ox + x)} {num(oy + y)})" for x, y in list(layout.outline.exterior.coords)[:-1])
     out.append(f"  (gr_poly (pts {pts}) (stroke (width 0.05) (type default)) (fill none) (layer \"Edge.Cuts\") (uuid {quote(uid('edge', 'outline'))}))")
-    tb = layout.cfg["trackball"]
-    bx, by = ox + layout.ball_center[0], oy + layout.ball_center[1]
-    r = tb["pcb_cutout_diameter"] / 2
-    out.append(f"  (gr_circle (center {num(bx)} {num(by)}) (end {num(bx + r)} {num(by)}) (stroke (width 0.05) (type default)) (fill none) (layer \"Edge.Cuts\") (uuid {quote(uid('edge', 'ball'))}))")
-    # ball / cradle reference on the fab layers
-    out.append(f"  (gr_circle (center {num(bx)} {num(by)}) (end {num(bx + tb['ball_diameter'] / 2)} {num(by)}) (stroke (width 0.1) (type dash)) (fill none) (layer \"F.Fab\") (uuid {quote(uid('fab', 'ball'))}))")
-    out.append(f"  (gr_circle (center {num(bx)} {num(by)}) (end {num(bx + tb['cradle_diameter'] / 2)} {num(by)}) (stroke (width 0.1) (type dash)) (fill none) (layer \"F.Fab\") (uuid {quote(uid('fab', 'cradle'))}))")
-    # silkscreen texts: between the controller footprint and the reset/battery row
+    # ball pocket reference (case wall and ball) on User.Comments; the PCB itself only has the notch
+    if layout.has_ball:
+        tb = layout.cfg["trackball"]
+        bx, by = ox + layout.ball_center[0], oy + layout.ball_center[1]
+        out.append(f"  (gr_circle (center {num(bx)} {num(by)}) (end {num(bx + tb['ball_diameter'] / 2)} {num(by)}) (stroke (width 0.1) (type dash)) (fill none) (layer \"Cmts.User\") (uuid {quote(uid('cmts', 'ball'))}))")
+        ppts = " ".join(f"(xy {num(ox + x)} {num(oy + y)})" for x, y in list(layout.pocket_polygon().exterior.coords)[:-1])
+        out.append(f"  (gr_poly (pts {ppts}) (stroke (width 0.1) (type dash)) (fill none) (layer \"Cmts.User\") (uuid {quote(uid('cmts', 'pocket'))}))")
+        out.append(f"  (gr_text \"ball pocket (case)\" (at {num(bx)} {num(by + tb['cradle_diameter'] / 2 + 3.5)} 0) (layer \"Cmts.User\") "
+                   f"(uuid {quote(uid('cmts', 'label'))}) (effects (font (size 1.0 1.0) (thickness 0.15))))")
+    # silkscreen texts (front only): between the controller footprint and the reset/battery row
     silk = layout.cfg["silkscreen"]
     c = layout.cfg["controller"]
     tx, ty = ox + c["center"]["x"] + 6.0, oy + c["center"]["y"] + 19.0
-    for layer, side in (("F.SilkS", "RIGHT"), ("B.SilkS", "LEFT")):
-        mirror = " (justify mirror)" if layer.startswith("B.") else ""
-        for i, line in enumerate((f"{silk['title']} {silk['revision_text']}  CERN-OHL-P-2.0", f"{side} half - this side up")):
-            out.append(f"  (gr_text {quote(line)} (at {num(tx)} {num(ty + i * 1.6)} 0) (layer {quote(layer)}) "
-                       f"(uuid {quote(uid('silk', layer, i))}) (effects (font (size 0.8 0.8) (thickness 0.12)){mirror}))")
-    # Track/via keep-out rings along the board edge and around the trackball cutout, so the
+    for i, line in enumerate((f"{silk['title']} {silk['revision_text']}  CERN-OHL-P-2.0", f"{layout.half.upper()} half")):
+        out.append(f"  (gr_text {quote(line)} (at {num(tx)} {num(ty + i * 1.6)} 0) (layer \"F.SilkS\") "
+                   f"(uuid {quote(uid('silk', 'F.SilkS', i))}) (effects (font (size 0.8 0.8) (thickness 0.12))))")
+    # Track/via keep-out ring along the board edge (including the pocket notch), so the
     # autorouter respects the 0.3 mm copper-to-edge clearance. A ring with a hole is written
     # as one simple polygon with a hairline slit (KiCad normalises it).
-    from shapely.geometry import Point as _P
     def ring_polygon(outer, inner):
         ext = list(outer.exterior.coords)[:-1]
         inn = list(inner.exterior.coords)[:-1]
@@ -160,9 +169,8 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
         inner_path = inner_path[-1:] + inner_path[:-1]  # start at inn[j]
         path = ext[i:] + ext[:i] + [ext[i], inn[j]] + inner_path[1:] + [inn[j]]
         return path
-    edge_ring = ring_polygon(layout.outline, layout.outline.buffer(-0.35, 16))
-    cut_ring = ring_polygon(_P(layout.ball_center).buffer(r + 0.35, 64), _P(layout.ball_center).buffer(r, 64))
-    for name, poly in (("edge_keepout", edge_ring), ("cutout_keepout", cut_ring)):
+    edge_ring = ring_polygon(layout.outline, layout.outline.buffer(-0.35, join_style=2))
+    for name, poly in (("edge_keepout", edge_ring),):
         kpts = " ".join(f"(xy {num(ox + x)} {num(oy + y)})" for x, y in poly)
         out.append(f"  (zone (net 0) (net_name \"\") (layers \"F&B.Cu\") (uuid {quote(uid('zone', name))}) (name {quote(name)}) (hatch edge 0.5) (priority 10)"
                    f" (connect_pads (clearance 0)) (min_thickness 0.25) (filled_areas_thickness no)"
@@ -185,14 +193,14 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
 def write_library(out_dir: Path) -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     written = []
-    for name, fp in all_footprints(HOLE_PIN_RIGHT, HOLE_PIN_LEFT).items():
+    for name, fp in all_footprints(HOLE_PIN).items():
         p = out_dir / f"{name}.kicad_mod"
         p.write_text(fp.library_sexpr(LIB))
         written.append(p)
     return written
 
 
-def project_json(name: str, comps: list[Component]) -> str:
+def project_json(name: str, comps: list[Component], half: str) -> str:
     classes = net_classes()
     assignments = {}
     class_list = []
@@ -230,7 +238,7 @@ def project_json(name: str, comps: list[Component]) -> str:
         "pcbnew": {"page_layout_descr_file": ""},
         "schematic": {"drawing": {"default_line_thickness": 6.0, "default_text_size": 50.0, "pin_symbol_size": 25.0},
                       "legacy_lib_dir": "", "legacy_lib_list": []},
-        "sheets": [[uid("sheet", "root"), "Root"]],
+        "sheets": [[uid("sheet", "root", half), "Root"]],
         "text_variables": {},
     }
     return json.dumps(pro, indent=2) + "\n"

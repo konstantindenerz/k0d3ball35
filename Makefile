@@ -8,18 +8,20 @@ JAVA      ?= java
 FREEROUTING_JAR ?= $(BUILD)/freerouting.jar
 FREEROUTING_URL := https://github.com/freerouting/freerouting/releases/download/v2.5.0/freerouting-2.5.0.jar
 
+# The two main PCBs; `make route HALVES=right` builds one half only.
+HALVES    ?= left right
+
 LAYOUT     := hardware/layout/k0d3ball36.yaml
 LAYOUT_OUT := hardware/layout/output
-MAIN_DIR   := hardware/main-pcb
-MAIN_SCH   := $(MAIN_DIR)/k0d3ball36.kicad_sch
-MAIN_PCB   := $(MAIN_DIR)/k0d3ball36.kicad_pcb
+HALF_SCHS  := $(foreach h,$(HALVES),hardware/$(h)-pcb/k0d3ball36-$(h).kicad_sch)
+HALF_PCBS  := $(foreach h,$(HALVES),hardware/$(h)-pcb/k0d3ball36-$(h).kicad_pcb)
 SENSOR_DIR := hardware/sensor-pcb
 SENSOR_SCH := $(SENSOR_DIR)/k0d3ball36-sensor.kicad_sch
 SENSOR_PCB := $(SENSOR_DIR)/k0d3ball36-sensor.kicad_pcb
 BUILD      := build
 
-SCHS := $(wildcard $(MAIN_SCH) $(SENSOR_SCH))
-PCBS := $(wildcard $(MAIN_PCB) $(SENSOR_PCB))
+SCHS := $(wildcard $(HALF_SCHS) $(SENSOR_SCH))
+PCBS := $(wildcard $(HALF_PCBS) $(SENSOR_PCB))
 
 .PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check clean help
 
@@ -28,17 +30,17 @@ all: layout board erc drc gerbers
 help:
 	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
 
-layout: ## Generate points.json, outline.dxf and previews from the layout yaml
+layout: ## Generate points-<half>.json, outline-<half>.dxf and previews from the layout yaml
 	$(PY) scripts/gen_layout.py
 
-sch: ## Generate the main PCB schematic from the layout and the design spec
-	$(PY) scripts/gen_schematic.py
+sch: ## Generate the schematics of both halves from the layout and the design spec
+	$(PY) scripts/gen_schematic.py $(HALVES)
 
-pcb: ## Place footprints and assign nets on the main PCB
-	$(PY) scripts/gen_pcb.py
+pcb: ## Place footprints and assign nets on both main PCBs
+	$(PY) scripts/gen_pcb.py $(HALVES)
 
-route: ## Regenerate, autoroute (freerouting) and verify the main PCB; retries until DRC is clean
-	KICAD_CLI=$(KICAD_CLI) KPY=$(KPY) PY=$(PY) JAVA=$(JAVA) FREEROUTING_JAR=$(FREEROUTING_JAR) scripts/build_board.sh
+route: ## Regenerate, autoroute (freerouting) and verify the main PCBs; retries until DRC is clean
+	KICAD_CLI=$(KICAD_CLI) KPY=$(KPY) PY=$(PY) JAVA=$(JAVA) FREEROUTING_JAR=$(FREEROUTING_JAR) scripts/build_board.sh $(HALVES)
 
 board: route ## Alias for route
 
@@ -63,8 +65,8 @@ drc: ## Design rules check with schematic parity on every PCB
 	    -o $(BUILD)/$$(basename $$p .kicad_pcb).drc.json $$p || exit 1; \
 	done
 
-gerbers: ## Export gerbers, drill files, zip, STEP, renders, schematic PDF, BOM and position file
-	KICAD_CLI=$(KICAD_CLI) scripts/export.sh
+gerbers: ## Export gerbers, drill files, zip, STEP, renders, schematic PDF, BOM and position file per half
+	KICAD_CLI=$(KICAD_CLI) scripts/export.sh $(HALVES)
 
 firmware: ## Build ZMK firmware locally with docker (CI is the reference build)
 	@if command -v docker >/dev/null 2>&1; then \

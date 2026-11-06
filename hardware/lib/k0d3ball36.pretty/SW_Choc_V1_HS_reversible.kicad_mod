@@ -1,7 +1,7 @@
 (footprint "SW_Choc_V1_HS_reversible" (version 20240108) (generator "k0d3ball36") (generator_version "1.0")
   (layer "F.Cu")
   (descr "Kailh Choc V1 (PG1350) with CPG135001S30 hot-swap socket on either face, hot-swap only")
-  (tags "k0d3ball36 reversible")
+  (tags "k0d3ball36")
   (property "Reference" "REF**" (at 0 0 0) (layer "F.Fab") (uuid "538efdd6-1e98-57b3-be8b-adf9119e6896") (effects (font (size 1 1) (thickness 0.15))))
   (property "Value" "SW_Choc_V1_HS_reversible" (at 0 2 0) (layer "F.Fab") (uuid "1ee6b3e0-9315-5f99-ac76-45497291205b") (effects (font (size 1 1) (thickness 0.15))))
   (property "Footprint" "k0d3ball36:SW_Choc_V1_HS_reversible" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "091d22f1-8f00-5686-9bc3-f26ad7fd4efb") (effects (font (size 1.27 1.27))))

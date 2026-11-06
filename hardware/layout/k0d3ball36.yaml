@@ -88,7 +88,7 @@ stitching_vias:                 # GND vias tying the two pours together (free sp
   - [-27.0, 25.0]
   - [-45.0, 31.5]
   - [-28.0, 48.5]
-  - [24.0, 50.0]
+  - [28.5, 50.0]
   - [-64.5, 46.8]
   - [-70.0, 15.0]
   - [-33.0, 47.5]
@@ -110,19 +110,40 @@ halves:
     thumbs: [thumb_outer, thumb_middle, thumb_inner]
     mounting_holes: []
     stitching_vias:
-      - [-8.0, 64.0]
+      - [-15.0, 65.0]
     # Hand-placed tracks for the rotated thumb cluster (the autorouter does not reach pads of
     # footprints rotated by 10/20 degrees). Points are layout coordinates or pad references:
-    # "REF:joiner" = the switch's plated pin-1 joiner pad, "REF:1" = diode pad 1 (cathode).
+    # "REF:joiner" = the switch's plated pin-1 joiner pad, "REF:pad2" / "REF:pad2f" = the switch's
+    # socket pad 2 on the back / front face, "REF:bus" = bottom end of the column bus at this key,
+    # "REF:1" / "REF:2" = diode pad 1 (cathode) / pad 2 (anode).
     manual_routes:
       - { net: ROW3, layer: B.Cu, width: 0.25,
           points: ["D32:1", [-26.0, 63.0], [-35.0, 63.5], [-41.0, 64.6], "D33:1", [-46.5, 69.0], [-53.5, 69.3], [-59.5, 69.6], "D34:1"] }
       - { net: COL3, layer: B.Cu, width: 0.25,
           points: ["SW23:bus", [-20.6, 49.5], "SW33:joiner"] }
+      # Controller to the inner column and the thumb row: the router gives up on these two on the
+      # left, so they are fixed. COL4 leaves hole 11 under the controller's bottom holes on the
+      # back; ROW3 leaves hole 20 on the front through the gap between the controller and the
+      # inner key column and ends at the cathode of the middle thumb diode.
       - { net: COL4, layer: B.Cu, width: 0.25,
-          points: ["SW24:bus", [-38.6, 49.0], "SW34:joiner"] }
-      - { net: COL2, layer: B.Cu, width: 0.25,
-          points: ["SW22:bus", [-2.6, 35.5], [-6.5, 38.5], [-6.5, 47.0], "SW32:joiner"] }
+          points: ["U1:11", [-64.3, 26.7], [-64.3, 29.8], [-41.0, 29.8], "SW24:bus"] }
+      - { net: ROW3, layer: F.Cu, width: 0.25,
+          points: ["U1:20", [-47.5, 18.5], [-47.5, 52.5], [-45.5, 56.5], [-45.3, 64.5], "D33:1"] }
+      - { net: COL4, layer: B.Cu, width: 0.25,   # below the battery pads, between TP4 and TP5, to the inner thumb key
+          points: ["SW24:bus", [-38.6, 49.0], [-52.5, 52.8], [-60.75, 52.8], [-60.75, 56.5], "SW34:joiner"] }
+      # Inner thumb key (20 deg): its switch net crosses the ROW3 track, so it runs on the front
+      # from the diode to a via and on the back from there to socket pad 2; the front copy of pad 2
+      # is fed around the socket boss holes.
+      - { net: SW34, layer: F.Cu, width: 0.25, via_end: true,
+          points: ["D34:2", [-54.5, 66.5]] }
+      - { net: SW34, layer: B.Cu, width: 0.25,
+          points: [[-54.5, 66.5], "SW34:pad2"] }
+      - { net: SW34, layer: F.Cu, width: 0.25,
+          points: ["D34:2", [-63.5, 70.5], [-70.0, 69.0], "SW34:pad2f"] }
+      - { net: COL2, layer: B.Cu, width: 0.25,   # between SW22/SW23, past H3, left of the thumb notch
+          points: ["SW22:bus", [-2.6, 35.5], [-7.0, 38.0], [-7.0, 41.5], [-10.5, 42.3], [-12.5, 44.5], [-12.5, 50.5], "SW32:joiner"] }
+    test_pads:                      # nine pads on the left: one row below the battery pads, above the inner thumb key
+      start: { x: -69.5, y: 54.5 }
   right:
     thumbs: [thumb_middle, thumb_outer]
     trackball:
@@ -138,5 +159,5 @@ halves:
           points: ["D32:1", [-26.0, 63.0], [-35.0, 63.5], [-41.0, 64.6], "D33:1"] }
       - { net: COL3, layer: B.Cu, width: 0.25,
           points: ["SW23:bus", [-20.6, 49.5], "SW33:joiner"] }
-      - { net: COL2, layer: B.Cu, width: 0.25,   # around H3 and the FPC connector
-          points: ["SW22:bus", [-2.6, 35.5], [-12.0, 37.0], [-12.5, 50.5], "SW32:joiner"] }
+      - { net: COL2, layer: B.Cu, width: 0.25,   # between SW22/SW23, past H3, left of the FPC connector
+          points: ["SW22:bus", [-2.6, 35.5], [-7.0, 38.0], [-7.0, 41.5], [-10.5, 42.3], [-12.5, 44.5], [-12.5, 50.5], "SW32:joiner"] }

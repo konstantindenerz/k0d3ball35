@@ -1,19 +1,19 @@
 # SPDX-License-Identifier: CERN-OHL-P-2.0
-"""Reversible footprints for the k0d3ball36 main PCB.
+"""Footprints for the k0d3ball36 main PCBs.
 
-All footprints are described in the board frame of the RIGHT half (x outward, y towards
-the user, component side = F). The left half uses the same PCB flipped over, so every
-footprint provides pads for both faces:
+All footprints are described in the board frame with x outward, y towards the user and
+the component side = F (switches on top, sockets and small parts on the back). The
+footprints were designed for the reversible r1 board and keep their pads on both faces:
 
-* parts whose pin order is handed (hot-swap socket, FPC connector, slide switch, JST)
-  get a mirrored pad set on the back (x -> -x, same pad numbers);
-* symmetric parts (diode, jumpers, test pads, reset button) get the same pad positions
-  on both faces;
-* through-hole parts are naturally two-sided; the controller's power rows are made
-  reversible with solder jumpers (see netlist.JUMPERS).
+* parts whose pin order is handed (hot-swap socket, slide switch, JST)
+  have a mirrored pad set on the back (x -> -x, same pad numbers);
+* symmetric parts (diode, test pads, reset button) have the same pad positions on both
+  faces.
 
-Pad geometry comes from the KiCad standard library, kiswitch and marbastlib (all
-permissive licences, see NOTICE).
+Since r2 the two halves are separate boards, so only one face of each pad set is used;
+the second copy is harmless (same net on both faces) and keeps the freedom to mount a
+socket on either face. The FPC connector is the exception (back face only). Pad geometry comes from the KiCad standard library, kiswitch and
+marbastlib (all permissive licences, see NOTICE).
 """
 from __future__ import annotations
 
@@ -128,7 +128,7 @@ class Footprint:
 
     def library_sexpr(self, lib: str) -> str:
         out = [f"(footprint {quote(self.name)} (version {VERSION}) (generator {quote('k0d3ball36')}) (generator_version {quote('1.0')})",
-               f"  (layer \"F.Cu\")", f"  (descr {quote(self.descr)})", f"  (tags {quote('k0d3ball36 reversible')})",
+               f"  (layer \"F.Cu\")", f"  (descr {quote(self.descr)})", f"  (tags {quote('k0d3ball36')})",
                f"  (property \"Reference\" \"REF**\" (at {num(self.ref_offset[0])} {num(self.ref_offset[1])} 0) (layer {quote(self.ref_layer)}) (uuid {quote(uid(self.name, 'ref'))}) (effects (font (size 1 1) (thickness 0.15))))",
                f"  (property \"Value\" {quote(self.name)} (at 0 2 0) (layer \"F.Fab\") (uuid {quote(uid(self.name, 'val'))}) (effects (font (size 1 1) (thickness 0.15))))",
                f"  (property \"Footprint\" {quote(lib + ':' + self.name)} (at 0 0 0) (layer \"F.Fab\") (hide yes) (uuid {quote(uid(self.name, 'fp'))}) (effects (font (size 1.27 1.27))))",
@@ -235,7 +235,7 @@ def sod123_reversible() -> Footprint:
                      "smd", pads, gfx, "F.Fab", (0, -1.6))
 
 
-def nice_nano_tht(hole_pin_right: dict[int, str], hole_pin_left: dict[int, str]) -> Footprint:
+def nice_nano_tht(hole_pin: dict[int, str]) -> Footprint:
     pads = []
     for h in range(1, 25):
         col = -7.62 if h <= 12 else 7.62
@@ -251,34 +251,26 @@ def nice_nano_tht(hole_pin_right: dict[int, str], hole_pin_left: dict[int, str])
         col = -7.62 if h <= 12 else 7.62
         y = -13.97 + ((h - 1) % 12) * 2.54
         tx = col + (2.3 if h <= 12 else -2.3)
-        gfx.append(Text(hole_pin_right[h], tx, y, "F.SilkS", 0.6))
-        gfx.append(Text(hole_pin_left[h], tx, y, "B.SilkS", 0.6))
-    gfx += [Text("RIGHT: pins as printed on this side", 0, 16.6, "F.SilkS", 0.6),
-            Text("LEFT: pins as printed on this side", 0, 16.6, "B.SilkS", 0.6)]
+        gfx.append(Text(hole_pin[h], tx, y, "F.SilkS", 0.6))
     return Footprint("nice_nano_v2_THT", "nice!nano v2 / SuperMini nRF52840, 2x12 2.54 mm through holes, USB at the top, component side up",
                      "through_hole", pads, gfx, "F.SilkS", (0, -18.6))
 
 
-def solder_jumper_3() -> Footprint:
-    pads_f = [Pad("1", "smd", "rect", -1.3, 0, 1.0, 1.5, ("F.Cu", "F.Mask")),
-              Pad("2", "smd", "rect", 0, 0, 1.0, 1.5, ("F.Cu", "F.Mask")),
-              Pad("3", "smd", "rect", 1.3, 0, 1.0, 1.5, ("F.Cu", "F.Mask"))]
-    pads = both_faces(pads_f, mirror=False)
-    gfx_f = rect_lines(0, 0, 4.4, 2.3, "F.SilkS", 0.12) + rect_lines(0, 0, 4.6, 2.5, "F.CrtYd", 0.05)
-    gfx = both_face_graphics(gfx_f, mirror=False)
-    return Footprint("SolderJumper_3_bridged_both_sides", "3-pad solder jumper, pads on both faces; bridge 2-3 for the right half, 1-2 for the left half",
-                     "smd", pads, gfx, "F.SilkS", (-3.9, 0))
+def fpc_fh12_6_bottom() -> Footprint:
+    """Hirose FH12-6S-0.5SH on the back face only (the sensor cable enters from the pocket).
 
-
-def fpc_fh12_6_reversible() -> Footprint:
+    Pad geometry as seen from the front, so the pad set is the mirror image of the
+    connector's own drawing: pad 1 at +x. The 0.5 mm pitch leaves no room for a second
+    pad set on the front, which is why this is the one part without a two-face footprint.
+    """
     pads_f = [Pad(str(i + 1), "smd", "rect", -1.25 + i * 0.5, -1.85, 0.3, 1.3, F_SMD, zone_connect=2) for i in range(6)]
     pads_f += [Pad("", "smd", "rect", -3.15, 1.4, 1.8, 2.2, F_SMD), Pad("", "smd", "rect", 3.15, 1.4, 1.8, 2.2, F_SMD)]
-    pads = both_faces(pads_f, mirror=True)
+    pads = [p.mirrored() for p in pads_f]
     gfx_f = rect_lines(0, 0.6, 8.6, 4.8, "F.Fab", 0.1) + rect_lines(0, 0.6, 9.2, 5.6, "F.CrtYd", 0.05)
     gfx_f += [Line(-4.3, -1.8, -4.3, -2.6, "F.SilkS"), Line(-4.3, -2.6, -2.0, -2.6, "F.SilkS"), Text("1", -2.0, -3.3, "F.SilkS", 0.6)]
-    gfx = both_face_graphics(gfx_f, mirror=True)
-    return Footprint("FPC_0.5mm_6P_FH12-6S_reversible", "Hirose FH12-6S-0.5SH (0.5 mm, 6 contacts, bottom contact), pad sets on both faces",
-                     "smd", pads, gfx, "F.Fab", (0, 4.2))
+    gfx = [g for g in both_face_graphics(gfx_f, mirror=True) if g.layer.startswith("B.")]
+    return Footprint("FPC_0.5mm_6P_FH12-6S_bottom", "Hirose FH12-6S-0.5SH (0.5 mm, 6 contacts, bottom contact), back face only",
+                     "smd", pads, gfx, "B.Fab", (0, 4.2))
 
 
 def battery_pads() -> Footprint:
@@ -343,8 +335,8 @@ def mounting_hole() -> Footprint:
     return Footprint("MountingHole_2.2mm", "M2 mounting hole, 2.2 mm, no copper, 4.4 mm keep-out", "through_hole exclude_from_pos_files exclude_from_bom", pads, gfx, "F.Fab", (0, -3.0))
 
 
-def all_footprints(hole_pin_right: dict[int, str], hole_pin_left: dict[int, str]) -> dict[str, Footprint]:
-    fps = [choc_v1_hotswap_reversible(), sod123_reversible(), nice_nano_tht(hole_pin_right, hole_pin_left), solder_jumper_3(),
-           fpc_fh12_6_reversible(), battery_pads(), jst_ph_sm4_reversible(), msk12c02_reversible(), evqp7a_reversible(),
+def all_footprints(hole_pin: dict[int, str]) -> dict[str, Footprint]:
+    fps = [choc_v1_hotswap_reversible(), sod123_reversible(), nice_nano_tht(hole_pin),
+           fpc_fh12_6_bottom(), battery_pads(), jst_ph_sm4_reversible(), msk12c02_reversible(), evqp7a_reversible(),
            test_pad(), mounting_hole()]
     return {f.name: f for f in fps}

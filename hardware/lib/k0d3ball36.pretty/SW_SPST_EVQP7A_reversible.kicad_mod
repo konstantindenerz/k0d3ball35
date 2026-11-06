@@ -1,7 +1,7 @@
 (footprint "SW_SPST_EVQP7A_reversible" (version 20240108) (generator "k0d3ball36") (generator_version "1.0")
   (layer "F.Cu")
   (descr "Panasonic EVQ-P7A 3.5x2.9 mm tactile switch, pads on both faces")
-  (tags "k0d3ball36 reversible")
+  (tags "k0d3ball36")
   (property "Reference" "REF**" (at 0 -2.4 0) (layer "F.Fab") (uuid "cf55d94d-3264-565e-b318-c6eca0b808f7") (effects (font (size 1 1) (thickness 0.15))))
   (property "Value" "SW_SPST_EVQP7A_reversible" (at 0 2 0) (layer "F.Fab") (uuid "b8329f4d-13aa-525a-8cc1-210f6d665580") (effects (font (size 1 1) (thickness 0.15))))
   (property "Footprint" "k0d3ball36:SW_SPST_EVQP7A_reversible" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "51e6d148-b7be-5d78-b326-3f718da30436") (effects (font (size 1.27 1.27))))

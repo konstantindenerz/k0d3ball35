@@ -1,7 +1,7 @@
 (footprint "JST_PH_S2B-PH-SM4-TB_reversible" (version 20240108) (generator "k0d3ball36") (generator_version "1.0")
   (layer "F.Cu")
   (descr "JST PH 2.0 mm S2B-PH-SM4-TB, side entry, pad sets on both faces (optional, 6 mm tall)")
-  (tags "k0d3ball36 reversible")
+  (tags "k0d3ball36")
   (property "Reference" "REF**" (at 0 5.6 0) (layer "F.Fab") (uuid "9437a89b-aa2b-5128-9a6b-f25d2786ed90") (effects (font (size 1 1) (thickness 0.15))))
   (property "Value" "JST_PH_S2B-PH-SM4-TB_reversible" (at 0 2 0) (layer "F.Fab") (uuid "41e1fc2a-ac71-51ee-b22a-0ad54ae0c9a3") (effects (font (size 1 1) (thickness 0.15))))
   (property "Footprint" "k0d3ball36:JST_PH_S2B-PH-SM4-TB_reversible" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "1065e7a3-84aa-5260-9815-3faa8eb58fd0") (effects (font (size 1.27 1.27))))

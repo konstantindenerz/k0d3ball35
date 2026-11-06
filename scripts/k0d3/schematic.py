@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""KiCad schematic generator for the k0d3ball36 main PCB.
+"""KiCad schematic generator for the k0d3ball36 main PCBs (one sheet per half).
 
 Produces a single-sheet KiCad 8 format schematic (readable by KiCad 9/10) with all
 symbols embedded, so the file needs no external symbol library. Connections are made
@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .netlist import LIB, HOLE_PIN_LEFT, HOLE_PIN_RIGHT, Component
+from .netlist import HOLE_PIN, LIB, Component
 from .sexpr import num, quote, uid
 
 SCH_VERSION = "20231120"
@@ -70,9 +70,8 @@ def symbols() -> dict[str, Symbol]:
         box_symbol("SW_Choc", "SW", [("1", "1")], [("2", "2")], 5.08),
         box_symbol("D_1N4148W", "D", [("2", "A")], [("1", "K")], 5.08),
         box_symbol("nice_nano_v2", "U",
-                   [(str(h), f"{h} {HOLE_PIN_RIGHT[h]}/{HOLE_PIN_LEFT[h]}") for h in range(1, 13)],
-                   [(str(h), f"{h} {HOLE_PIN_RIGHT[h]}/{HOLE_PIN_LEFT[h]}") for h in range(13, 25)], 30.48),
-        box_symbol("SolderJumper_3", "JP", [("1", "1 left hole"), ("2", "2 net"), ("3", "3 right hole")], [], 12.7),
+                   [(str(h), f"{h} {HOLE_PIN[h]}") for h in range(1, 13)],
+                   [(str(h), f"{h} {HOLE_PIN[h]}") for h in range(13, 25)], 25.4),
         box_symbol("Conn_FPC_6", "J", [(str(i), f"{i}") for i in range(1, 7)], [], 7.62),
         box_symbol("Conn_Battery", "J", [("1", "B+"), ("2", "B-")], [], 7.62),
         box_symbol("SW_SPDT", "PS", [("1", "1"), ("2", "2 common"), ("3", "3")], [], 7.62),
@@ -83,9 +82,14 @@ def symbols() -> dict[str, Symbol]:
     return {s.name: s for s in syms}
 
 
-SYMBOL_FOR_KIND = {"switch": "SW_Choc", "diode": "D_1N4148W", "mcu": "nice_nano_v2", "jumper": "SolderJumper_3", "fpc": "Conn_FPC_6",
+SYMBOL_FOR_KIND = {"switch": "SW_Choc", "diode": "D_1N4148W", "mcu": "nice_nano_v2", "fpc": "Conn_FPC_6",
                    "battery": "Conn_Battery", "power_switch": "SW_SPDT", "reset": "SW_Push", "testpoint": "TestPoint",
-                   "hole": "MountingHole", "cradle_hole": "MountingHole"}
+                   "hole": "MountingHole"}
+
+HALF_COMMENT = {
+    "left": "Left half: 15 finger + 3 thumb keys, no trackball; sensor pins broken out as test pads",
+    "right": "Right half: 15 finger + 2 thumb keys, trackball sensor on the 6-pin FPC connector",
+}
 
 
 def sym_uuid(ref: str) -> str:
@@ -93,8 +97,9 @@ def sym_uuid(ref: str) -> str:
 
 
 class SchematicWriter:
-    def __init__(self, title: str, rev: str, sheet_uuid: str):
+    def __init__(self, title: str, rev: str, sheet_uuid: str, project: str, comment: str):
         self.title, self.rev, self.sheet_uuid = title, rev, sheet_uuid
+        self.project, self.comment = project, comment
         self.syms = symbols()
         self.body: list[str] = []
 
@@ -128,7 +133,7 @@ class SchematicWriter:
                  f"    (property \"Description\" {quote(comp.description)} (at {num(x)} {num(y)} 0) (effects (font (size 1.27 1.27)) hide))"]
         for p in sym.pins:
             lines.append(f"    (pin {quote(p.number)} (uuid {quote(uid(su, 'pin', p.number))}))")
-        lines.append(f"    (instances (project {quote('k0d3ball36')} (path {quote('/' + self.sheet_uuid)} (reference {quote(comp.ref)}) (unit 1))))")
+        lines.append(f"    (instances (project {quote(self.project)} (path {quote('/' + self.sheet_uuid)} (reference {quote(comp.ref)}) (unit 1))))")
         lines.append("  )")
         self.body.extend(lines)
         # wires + labels for every pin
@@ -184,7 +189,7 @@ class SchematicWriter:
                  f"    (property \"Description\" {quote(comp.description)} (at {num(x)} {num(y)} 0) (effects (font (size 1.27 1.27)) hide))"]
         for p in sym.pins:
             lines.append(f"    (pin {quote(p.number)} (uuid {quote(uid(su, 'pin', p.number))}))")
-        lines.append(f"    (instances (project {quote('k0d3ball36')} (path {quote('/' + self.sheet_uuid)} (reference {quote(comp.ref)}) (unit 1))))")
+        lines.append(f"    (instances (project {quote(self.project)} (path {quote('/' + self.sheet_uuid)} (reference {quote(comp.ref)}) (unit 1))))")
         lines.append("  )")
         self.body.extend(lines)
 
@@ -192,8 +197,8 @@ class SchematicWriter:
     def render(self) -> str:
         out = [f"(kicad_sch (version {SCH_VERSION}) (generator \"k0d3ball36\") (generator_version \"1.0\")",
                f"  (uuid {quote(self.sheet_uuid)})", "  (paper \"A2\")",
-               f"  (title_block (title {quote(self.title)}) (date \"2026-11-05\") (rev {quote(self.rev)}) (company \"k0d3ball36 project\")",
-               "    (comment 1 \"Reversible main PCB, right half shown; left half = same board flipped\")",
+               f"  (title_block (title {quote(self.title)}) (date \"2026-11-06\") (rev {quote(self.rev)}) (company \"k0d3ball36 project\")",
+               f"    (comment 1 {quote(self.comment)})",
                "    (comment 2 \"Licensed under CERN-OHL-P-2.0\"))",
                "  (lib_symbols"]
         out += [s.sexpr() for s in self.syms.values()]
@@ -209,37 +214,38 @@ def g(v: float) -> float:
     return round(round(v / 1.27) * 1.27, 2)
 
 
-def build_schematic(comps: list[Component], title: str, rev: str) -> str:
-    sheet_uuid = uid("sheet", "root")
-    w = SchematicWriter(title, rev, sheet_uuid)
+def build_schematic(comps: list[Component], half: str, rev: str) -> str:
+    """Schematic for one half; the project name must match the .kicad_pro basename."""
+    sheet_uuid = uid("sheet", "root", half)
+    project = f"{LIB}-{half}"
+    w = SchematicWriter(f"{LIB} {half} half", rev, sheet_uuid, project, HALF_COMMENT[half])
     by_ref = {c.ref: c for c in comps}
-    # matrix block: columns left to right = matrix col 0..4, rows top to bottom
+    # matrix block: columns left to right = matrix col 0..4, rows top to bottom; only the
+    # cells this half populates are drawn (row 3 = thumbs: cols 2,3,4 left / 2,3 right)
     x0, y0 = 40.64, 40.64
     col_pitch, row_pitch = 45.72, 20.32
-    w.text("Key matrix (COL2ROW: column -> switch -> diode -> row)", x0 - 10, y0 - 12, 2.5)
+    w.text(f"Key matrix, {half} half (COL2ROW: column -> switch -> diode -> row)", x0 - 10, y0 - 12, 2.5)
     for c in comps:
         if c.kind != "switch":
             continue
         d = by_ref[f"D{c.extra['row']}{c.extra['col']}"]
         w.place_key_cell(c, d, x0 + c.extra["col"] * col_pitch, y0 + c.extra["row"] * row_pitch)
     # controller
-    w.text("Controller (hole numbers; pin names right half / left half)", x0 - 10, 130, 2.5)
+    w.text("Controller (hole number and Pro Micro pin name, identical on both halves)", x0 - 10, 130, 2.5)
     w.place(by_ref["U1"], g(x0 + 60), g(170), G)
-    # jumpers
-    w.text("Power-row jumpers: bridge 2-3 on the right half, 1-2 on the left half", x0 + 120, 130, 2.0)
-    for i, ref in enumerate(["JP1", "JP2", "JP3"]):
-        w.place(by_ref[ref], g(x0 + 140), g(142) + i * 20.32, G)
     # peripherals
-    w.text("Power, reset, sensor connector, test pads", x0 + 190, 130, 2.5)
-    w.place(by_ref["PS1"], g(x0 + 210), g(145), G)
-    w.place(by_ref["J2"], g(x0 + 210), g(165), G)
-    w.place(by_ref["J3"], g(x0 + 210), g(182), G)
-    w.place(by_ref["RB1"], g(x0 + 210), g(200), G)
-    w.place(by_ref["J1"], g(x0 + 250), g(150), G)
-    for i, ref in enumerate(["TP1", "TP2", "TP3"]):
-        w.place(by_ref[ref], g(x0 + 250), g(180) + i * 12.7, G)
+    w.text("Power, reset, sensor connector, test pads", x0 + 150, 130, 2.5)
+    w.place(by_ref["PS1"], g(x0 + 170), g(145), G)
+    w.place(by_ref["J2"], g(x0 + 170), g(165), G)
+    w.place(by_ref["J3"], g(x0 + 170), g(182), G)
+    w.place(by_ref["RB1"], g(x0 + 170), g(200), G)
+    if "J1" in by_ref:
+        w.place(by_ref["J1"], g(x0 + 210), g(150), G)
+    tps = sorted((c for c in comps if c.kind == "testpoint"), key=lambda c: int(c.ref[2:]))
+    for i, tp in enumerate(tps):
+        w.place(tp, g(x0 + 250), g(140) + i * 12.7, G)
     # holes (no pins)
-    holes = [c for c in comps if c.kind in ("hole", "cradle_hole")]
+    holes = [c for c in comps if c.kind == "hole"]
     for i, h in enumerate(holes):
         w.place(h, g(x0 + 300) + (i % 5) * 15.24, g(150) + (i // 5) * 15.24, G)
     return w.render()

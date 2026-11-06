@@ -9,7 +9,8 @@ from pathlib import Path
 import pytest
 
 BOARDS = {
-    "main": ("hardware/main-pcb/k0d3ball36.kicad_sch", "hardware/main-pcb/k0d3ball36.kicad_pcb"),
+    "left": ("hardware/left-pcb/k0d3ball36-left.kicad_sch", "hardware/left-pcb/k0d3ball36-left.kicad_pcb"),
+    "right": ("hardware/right-pcb/k0d3ball36-right.kicad_sch", "hardware/right-pcb/k0d3ball36-right.kicad_pcb"),
     "sensor": ("hardware/sensor-pcb/k0d3ball36-sensor.kicad_sch", "hardware/sensor-pcb/k0d3ball36-sensor.kicad_pcb"),
 }
 

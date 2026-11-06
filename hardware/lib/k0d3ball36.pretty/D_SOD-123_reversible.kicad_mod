@@ -1,7 +1,7 @@
 (footprint "D_SOD-123_reversible" (version 20240108) (generator "k0d3ball36") (generator_version "1.0")
   (layer "F.Cu")
   (descr "1N4148W in SOD-123, pads on both faces joined by small plated holes, cathode = pad 1")
-  (tags "k0d3ball36 reversible")
+  (tags "k0d3ball36")
   (property "Reference" "REF**" (at 0 -1.6 0) (layer "F.Fab") (uuid "7be42044-df72-5b7a-8607-b638f478a6c7") (effects (font (size 1 1) (thickness 0.15))))
   (property "Value" "D_SOD-123_reversible" (at 0 2 0) (layer "F.Fab") (uuid "2b65d331-dd54-5828-8091-3d656df4023a") (effects (font (size 1 1) (thickness 0.15))))
   (property "Footprint" "k0d3ball36:D_SOD-123_reversible" (at 0 0 0) (layer "F.Fab") (hide yes) (uuid "c0649725-03fc-5203-8d89-d8a595dff1c1") (effects (font (size 1.27 1.27))))

@@ -46,7 +46,8 @@ jobs:
         with:
           name: gerbers
           path: |
-            hardware/main-pcb/gerbers/**
+            hardware/left-pcb/gerbers/**
+            hardware/right-pcb/gerbers/**
             hardware/sensor-pcb/gerbers/**
           if-no-files-found: ignore
 

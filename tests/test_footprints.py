@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""Reversible footprint checks and library consistency."""
+"""Footprint checks (two-face pad sets, hole clearances) and library consistency."""
 from __future__ import annotations
 
 import math
@@ -9,16 +9,17 @@ import pytest
 
 from k0d3.footprints import Pad, all_footprints
 from k0d3.geometry import REPO
-from k0d3.netlist import HOLE_PIN_LEFT, HOLE_PIN_RIGHT
+from k0d3.netlist import HOLE_PIN
 
 LIB_DIR = REPO / "hardware" / "lib" / "k0d3ball36.pretty"
-HANDED = {"SW_Choc_V1_HS_reversible", "FPC_0.5mm_6P_FH12-6S_reversible", "SW_SPDT_MSK12C02_reversible", "JST_PH_S2B-PH-SM4-TB_reversible"}
-SYMMETRIC = {"D_SOD-123_reversible", "SolderJumper_3_bridged_both_sides", "TestPad_1.5mm", "SW_SPST_EVQP7A_reversible"}
+HANDED = {"SW_Choc_V1_HS_reversible", "SW_SPDT_MSK12C02_reversible", "JST_PH_S2B-PH-SM4-TB_reversible"}
+BOTTOM_ONLY = {"FPC_0.5mm_6P_FH12-6S_bottom"}
+SYMMETRIC = {"D_SOD-123_reversible", "TestPad_1.5mm", "SW_SPST_EVQP7A_reversible"}
 
 
 @pytest.fixture(scope="module")
 def fps():
-    return all_footprints(HOLE_PIN_RIGHT, HOLE_PIN_LEFT)
+    return all_footprints(HOLE_PIN)
 
 
 def _on(pad: Pad, layer: str) -> bool:
@@ -33,7 +34,18 @@ def test_pad_numbers_on_both_faces(fps):
     for name, fp in fps.items():
         f = {p.number for p in fp.pads if p.number and _copper(p, "F.Cu")}
         b = {p.number for p in fp.pads if p.number and _copper(p, "B.Cu")}
+        if name in BOTTOM_ONLY:
+            assert not f and b, f"{name}: expected pads on the back face only"
+            continue
         assert f == b, f"{name}: F {f} vs B {b}"
+
+
+def test_fpc_bottom_only(fps):
+    fp = fps["FPC_0.5mm_6P_FH12-6S_bottom"]
+    assert all("B.Cu" in p.layers for p in fp.pads)
+    assert all(g.layer.startswith("B.") for g in fp.graphics)
+    signal = sorted((p for p in fp.pads if p.number), key=lambda p: p.x)
+    assert [p.number for p in signal] == ["6", "5", "4", "3", "2", "1"], "pad 1 at +x when seen from the front"
 
 
 def _match(fp, mirror: bool):
@@ -117,6 +129,15 @@ def test_controller_footprint(fps):
     assert [p.number for p in right] == [str(i) for i in range(13, 25)]
     assert all(math.isclose(b.y - a.y, 2.54, abs_tol=1e-6) for a, b in zip(left, left[1:]))
     assert math.isclose(right[0].x - left[0].x, 15.24, abs_tol=1e-6)
+    # one pin name per hole on the front silkscreen only, nothing on the back
+    from k0d3.footprints import Text
+    labels = [g for g in fp.graphics if isinstance(g, Text) and g.text in HOLE_PIN.values()]
+    assert len(labels) == 24 and all(g.layer == "F.SilkS" for g in labels)
+
+
+def test_no_jumper_footprint(fps):
+    assert not any("Jumper" in name for name in fps)
+    assert not (LIB_DIR / "SolderJumper_3_bridged_both_sides.kicad_mod").exists()
 
 
 # ----- library files ------------------------------------------------------------------

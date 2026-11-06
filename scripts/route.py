@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Autoroute the main PCB with freerouting and refill the zones.
+"""Autoroute one main PCB with freerouting and refill the zones.
 
 Runs with KiCad's bundled Python (needs the pcbnew module):
-  /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 scripts/route.py
+  /Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3 \
+      scripts/route.py [stage] [path/to/board.kicad_pcb]
+Default stage is "all", default board is the right half. Build artefacts (DSN, SES, router
+copies) are named after the board file in build/, so both halves can be routed in turn.
 
 Stages (each in its own process, the pcbnew Python wrapper misbehaves after a Specctra import):
   prepare  remove unlocked tracks, save; give duplicate pad numbers unique names in a copy and
@@ -24,7 +27,7 @@ from pathlib import Path
 import pcbnew
 
 REPO = Path(__file__).resolve().parents[1]
-PCB = REPO / "hardware" / "main-pcb" / "k0d3ball36.kicad_pcb"
+PCB = REPO / "hardware" / "right-pcb" / "k0d3ball36-right.kicad_pcb"
 BUILD = REPO / "build"
 
 
