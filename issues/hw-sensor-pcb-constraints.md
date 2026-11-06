@@ -2,7 +2,7 @@
 title: Sensor PCB must match the cradle geometry
 type: task
 priority: P1
-status: open
+status: done
 area: hw
 created: 2026-11-05
 ---
@@ -19,8 +19,8 @@ free within a 40 mm circle around the ball centre for the flange.
 ## Acceptance criteria
 
 - [x] hardware/sensor-pcb outline, holes and lens orientation match the cradle parameters
-- [ ] Main PCB has no bottom-side parts within 20 mm of the ball centre (only the socket of SW32 is close; check)
-- [ ] tests/test_geometry.py checks the 40 mm flange circle against bottom-side parts
+- [x] Right PCB octagonal notch has an apothem of 15 mm (cradle clearance circle 28 mm + 1 mm) and no copper or parts inside it or within the edge clearance (`tests/test_pcb_review.py::test_octagonal_notch`)
+- [x] The printed cradle is 24.1 mm wide above the PCB plane (docs/02-layout.md), inside the 30 mm notch; housing 30 x 29 and the sensor board sit below the PCB plane and are checked against the board in `tests/test_sensor_pcb_vs_cradle.py`
 
 ## Notes
 
@@ -55,6 +55,8 @@ datasheet PMS0039 R1.03 (https://github.com/ufan/pmw3610_breakout/blob/master/da
 Hirose FH12 catalogue (https://media.digikey.com/pdf/Data%20Sheets/Hirose%20PDFs/FH12.pdf);
 reference footprints https://github.com/bullwinkle3000/pmw3610-pcb and https://github.com/ufan/pmw3610_breakout.
 
-The second and third criteria describe the r1 cutout mount (flange under the main PCB). In the r2 pocket
-mount the module stands beside the right PCB and there is no flange; they stay open until the ticket is
-rewritten for the pocket geometry (`issues/mech-case-ball-pocket.md`).
+2026-11-06: criteria 2 and 3 originally described the r1 cutout mount (flange under the main PCB). In r2
+the module stands in a pocket beside the right PCB (`issues/mech-case-ball-pocket.md`) and there is no
+flange; the criteria were rewritten to the r2 facts that the tests check. The `Dwgs.User` placeholder
+mismatch in the table above is resolved: the footprint now carries the 12.90 x 8.25 flange and the
+10.29 x 6.55 body (`generate.py refresh-fp`).

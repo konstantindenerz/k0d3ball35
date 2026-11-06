@@ -346,16 +346,20 @@ def test_lens_and_sensor_fit_the_lens_cavity(board, params, stack):
     assert SENSOR_BELOW_PCB_LENS_SIDE < cav_h
 
 
-def test_lens_placeholder_on_dwgs_user_is_oversized_but_inside_cavity(board, params):
-    """The footprint's dashed Dwgs.User envelope (pre-datasheet guess) must at least fit the
-    cavity; it is wider than the post gap, which the real lens is not (see ticket notes)."""
+def test_lens_envelope_on_dwgs_user_matches_datasheet_flange(board, params):
+    """The footprint's first dashed Dwgs.User rect is the LM18-LSI base flange (12.90 x 8.25,
+    PMS0039 R1.03 figure 1) centred on the optical centre; it clears the cradle post columns.
+    The second rect is the upper body (10.29 x 6.55)."""
     u1 = board.footprints["U1"]
     env = u1.rects("Dwgs.User")
-    assert len(env) == 1
+    assert len(env) == 2
     x0, x1, y0, y1 = env[0]
-    assert x1 - u1.x <= (params["sensor_pcb_w"] - 2) / 2 and u1.x - x0 <= (params["sensor_pcb_w"] - 2) / 2
-    assert (y1 - y0) / 2 <= (params["sensor_pcb_l"] - 2) / 2
-    assert (y1 - y0) > LENS_BASE_W, "placeholder narrower than the datasheet flange"
+    assert abs((x1 - x0) - LENS_BASE_L) < 0.01 and abs((y1 - y0) - LENS_BASE_W) < 0.01, env[0]
+    assert abs((x0 + x1) / 2 - u1.x) < 0.01 and abs((y0 + y1) / 2 - u1.y) < 0.01
+    post_inner = params["sensor_hole_sp"] / 2 - 2.5
+    assert (y1 - y0) / 2 <= post_inner - 1.0, ((y1 - y0) / 2, post_inner)
+    bx0, bx1, by0, by1 = env[1]
+    assert abs((bx1 - bx0) - LENS_BODY_L) < 0.01 and abs((by1 - by0) - LENS_BODY_W) < 0.01, env[1]
 
 
 def test_all_components_on_the_floor_side_and_below_the_gap(board, params, stack):

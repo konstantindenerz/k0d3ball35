@@ -3941,15 +3941,26 @@
 			(uuid "dc38e339-d6f6-4437-b565-54418e1b0262")
 		)
 		(fp_rect
-			(start -11 8.5)
-			(end 5.96 -8.5)
+			(start -6.45 -4.125)
+			(end 6.45 4.125)
 			(stroke
 				(width 0.1)
 				(type dash)
 			)
 			(fill no)
 			(layer "Dwgs.User")
-			(uuid "30577999-8b2a-4ff2-8402-c4e8e6d0829d")
+			(uuid "47be8550-ce81-4b35-be3a-d24e334bc58c")
+		)
+		(fp_rect
+			(start -5.145 -3.275)
+			(end 5.145 3.275)
+			(stroke
+				(width 0.05)
+				(type dash)
+			)
+			(fill no)
+			(layer "Dwgs.User")
+			(uuid "86bc838c-de75-441a-a3ac-f527b69a5f5d")
 		)
 		(fp_rect
 			(start -11 4.3)

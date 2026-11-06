@@ -11,13 +11,16 @@ created: 2026-11-05
 
 ## Context
 
-The exact base plate dimensions of the LM18-LSI lens are not in the public datasheet. The sensor footprint
-carries an approximate envelope on `Dwgs.User` and the cradle lens pocket is sized from the same guess.
+The LM18-LSI datasheet (PMS0039 R1.03, figure 1) gives the base flange (12.90 x 8.25), the upper body
+(10.29 x 6.55) and the height (5.95), and the sensor footprint carries those on `Dwgs.User`. What the
+drawing does not fix well enough is the flange position along the pin row relative to the aperture and
+the clip positions; the cradle's `lens_l` / `lens_w` (assembly dummy only) are still over-estimates.
 
 ## Acceptance criteria
 
 - [ ] A physical lens measured with calipers (length, width, height, clip positions, aperture offset)
-- [ ] Footprint envelope in hardware/sensor-pcb/generate.py and the cradle pocket updated; pocket printed oversized until then
+- [x] Footprint envelope in hardware/sensor-pcb/generate.py updated from the datasheet (12.90 x 8.25 flange, 10.29 x 6.55 body, 2026-11-06)
+- [ ] Cradle `lens_l` / `lens_w` in hardware/trackball-cradle/params.scad (21.5 x 11.5, assembly dummy only) shrunk after the measurement; pocket printed oversized until then
 - [ ] Numbers recorded in docs/08-trackball-module.md
 
 ## Notes

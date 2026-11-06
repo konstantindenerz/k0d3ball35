@@ -2,7 +2,7 @@
 title: PMW3610 sensor daughterboard revision 1
 type: feature
 priority: P0
-status: in-progress
+status: done
 area: hw
 created: 2026-11-05
 ---
@@ -18,8 +18,8 @@ Own 22 x 25 mm sensor board: PMW3610DM-SUDU, LM18-LSI lens, 1.8 V LDO from 3.3 V
 ## Acceptance criteria
 
 - [x] Schematic and PCB in `hardware/sensor-pcb/`, ERC and DRC clean
-- [ ] Connector pin order matches hw-ffc-pin-order-verification
-- [ ] Lens footprint and the two lens pins placed per the LM18-LSI drawing; sensor inserted from the back as in Keyball
+- [x] Connector pin order matches hw-ffc-pin-order-verification (desk check in that ticket and `tests/test_ffc_pin_order.py`; the check with a physical cable stays there)
+- [x] Lens envelope per the LM18-LSI drawing: 12.90 x 8.25 flange and 10.29 x 6.55 body on `Dwgs.User`, no lens holes (the guide posts engage the sensor body); sensor inserted from the ball side as in Keyball
 - [x] Gerbers exported, BOM lines in `docs/03-bom.md`
 
 ## Notes
@@ -36,7 +36,11 @@ J1 inside the 24 mm cable slot.
 
 Lens: the LM18-LSI datasheet (PMS0039 R1.03, figure 1) gives a 12.90 x 8.25 mm base flange, a 10.29 x 6.55
 upper body and two 0.90 mm guide posts, 5.95 mm tall overall. The posts engage the sensor body, not the
-PCB, so the board needs no lens holes; the upper body passes the 16.96 x 8.60 cutout. The footprint's
-`Dwgs.User` envelope still shows the earlier 17 x 17 guess and should be replaced by 12.9 x 8.25 in
-`generate.py` before the lens item is ticked. The connector pin order needs the physical cable
-(hw-ffc-pin-order-verification).
+PCB, so the board needs no lens holes; the upper body passes the 16.96 x 8.60 cutout. The connector pin order
+with a physical cable remains in hw-ffc-pin-order-verification.
+
+2026-11-06 (later): `Dwgs.User` envelope replaced by the datasheet flange and body (`generate.py
+refresh-fp`, in place without re-routing; footprint library regenerated). `export.sh` rerun: ERC 0
+violations, DRC 0 violations, 0 unconnected, 0 schematic parity issues; copper gerbers unchanged apart
+from the timestamps. `tests/test_sensor_pcb_vs_cradle.py::test_lens_envelope_on_dwgs_user_matches_datasheet_flange`
+pins the envelope. Done.

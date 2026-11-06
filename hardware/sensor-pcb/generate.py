@@ -14,6 +14,8 @@ Subcommands
     route   export Specctra DSN, run freerouting, import the session back
     finish  add copper pours, silkscreen text, refill zones
     all     everything above in order
+    refresh-fp  rewrite the footprint library and swap U1's Dwgs.User lens envelope in the
+                routed board in place (no re-route), then run ERC/DRC
 
 The schematic is the source of truth for connectivity.  The PCB netlist is derived from the
 same NETS table below, and `kicad-cli pcb drc --schematic-parity` is used to prove both agree.
@@ -107,6 +109,13 @@ DESCRIPTIONS = {
 # line 20 mm apart, so the cradle can be symmetric around the ball axis.
 OX, OY = 110.0, 110.0
 BOARD_W, BOARD_H = 26.0, 25.0
+# LM18-LSI lens envelope (PMS0039 R1.03 figure 1): base flange 12.90 x 8.25 (the reference
+# surface that sits on the sensor-side face of the PCB), upper body 10.29 x 6.55.  The two
+# 0.90 mm guide posts engage the sensor body, not the PCB, so the footprint has no lens holes.
+# The flange position along the pin row is approximate until a lens has been measured
+# (issues/mech-lm18-lens-outline-measurement.md); it is drawn centred on the optical centre.
+LENS_FLANGE_L, LENS_FLANGE_W = 12.90, 8.25
+LENS_BODY_L, LENS_BODY_W = 10.29, 6.55
 X0, Y0 = OX - BOARD_W / 2, OY - BOARD_H / 2   # top-left corner
 X1, Y1 = X0 + BOARD_W, Y0 + BOARD_H
 
@@ -318,8 +327,9 @@ def write_pmw3610_footprint():
         f'(fp_rect (start {cx0:.3f} {cy0:.3f}) (end {cx1:.3f} {cy1:.3f}) (stroke (width 0.1) (type solid)) (fill no) (layer "Edge.Cuts") (uuid "{uid()}"))',
         f'(fp_rect (start {body_x0:.3f} -5.05) (end {body_x1:.3f} 5.05) (stroke (width 0.1) (type solid)) (fill no) (layer "F.Fab") (uuid "{uid()}"))',
         f'(fp_rect (start {body_x0-0.5:.3f} -6.6) (end {body_x1+0.5:.3f} 6.6) (stroke (width 0.05) (type solid)) (fill no) (layer "F.CrtYd") (uuid "{uid()}"))',
-        # lens envelope, approximate, for the cradle designer (verify against the real lens)
-        f'(fp_rect (start {p1x-14.18:.3f} -8.5) (end {p1x+2.78:.3f} 8.5) (stroke (width 0.1) (type dash)) (fill no) (layer "Dwgs.User") (uuid "{uid()}"))',
+        # lens envelope for the cradle designer: base flange first, upper body second (see LENS_*)
+        f'(fp_rect (start {-LENS_FLANGE_L/2:.3f} {-LENS_FLANGE_W/2:.3f}) (end {LENS_FLANGE_L/2:.3f} {LENS_FLANGE_W/2:.3f}) (stroke (width 0.1) (type dash)) (fill no) (layer "Dwgs.User") (uuid "{uid()}"))',
+        f'(fp_rect (start {-LENS_BODY_L/2:.3f} {-LENS_BODY_W/2:.3f}) (end {LENS_BODY_L/2:.3f} {LENS_BODY_W/2:.3f}) (stroke (width 0.05) (type dash)) (fill no) (layer "Dwgs.User") (uuid "{uid()}"))',
         f'(fp_circle (center 0 0) (end 0.5 0) (stroke (width 0.1) (type solid)) (fill no) (layer "F.Fab") (uuid "{uid()}"))',
         f'(fp_line (start -1 0) (end 1 0) (stroke (width 0.1) (type solid)) (layer "F.Fab") (uuid "{uid()}"))',
         f'(fp_line (start 0 -1) (end 0 1) (stroke (width 0.1) (type solid)) (layer "F.Fab") (uuid "{uid()}"))',
@@ -806,6 +816,43 @@ def route_until_clean(attempts=4):
     raise SystemExit("could not obtain a DRC-clean route")
 
 
+def refresh_footprint():
+    """Replace U1's Dwgs.User lens envelope in the routed board without touching copper.
+
+    Rewrites the footprint library file too, so the .kicad_mod and the board agree, then runs
+    ERC and DRC as gates.  The rects are symmetric around the optical centre, so the result is
+    the same for the flipped, rotated footprint as for the library part.
+    """
+    import pcbnew
+    write_pmw3610_footprint()
+    board = pcbnew.LoadBoard(PCB)
+    u1 = board.FindFootprintByReference("U1")
+    if u1 is None:
+        raise SystemExit("U1 not found in " + PCB)
+    old = [g for g in u1.GraphicalItems() if g.GetLayer() == pcbnew.Dwgs_User]
+    if not old:
+        raise SystemExit("U1 has no Dwgs.User envelope to replace")
+    # The swig bindings do not expose LINE_STYLE, so the dashed stroke is inherited by cloning
+    # the existing (dashed) envelope and only moving its corners.
+    template = old[0]
+    cx, cy = u1.GetPosition().x, u1.GetPosition().y
+    for (length, width), stroke in (((LENS_FLANGE_L, LENS_FLANGE_W), 0.1),
+                                    ((LENS_BODY_L, LENS_BODY_W), 0.05)):
+        rect = pcbnew.Cast_to_PCB_SHAPE(template.Duplicate())
+        rect.SetShape(pcbnew.SHAPE_T_RECT)
+        rect.SetStart(pcbnew.VECTOR2I(cx - pcbnew.FromMM(length / 2), cy - pcbnew.FromMM(width / 2)))
+        rect.SetEnd(pcbnew.VECTOR2I(cx + pcbnew.FromMM(length / 2), cy + pcbnew.FromMM(width / 2)))
+        rect.SetWidth(pcbnew.FromMM(stroke))
+        rect.SetFilled(False)
+        u1.Add(rect)
+    for item in old:
+        u1.Remove(item)
+    pcbnew.SaveBoard(PCB, board)
+    print("refreshed U1 Dwgs.User lens envelope in", PCB)
+    if not verify():
+        raise SystemExit("ERC/DRC not clean after the footprint refresh")
+
+
 def main():
     cmds = sys.argv[1:] or ["all"]
     if "all" in cmds:
@@ -814,7 +861,7 @@ def main():
         {"sym": write_symbol_lib, "fp": write_pmw3610_footprint,
          "sch": lambda: (write_project_files(), write_schematic()),
          "pcb": build_pcb, "route": route, "finish": finish, "verify": verify,
-         "autoroute": route_until_clean,
+         "autoroute": route_until_clean, "refresh-fp": refresh_footprint,
          "dump": lambda: dump_pads(__import__("pcbnew").LoadBoard(PCB))}[c]()
 
 

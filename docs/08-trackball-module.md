@@ -204,11 +204,14 @@ option. The r1 25 mm ball stood 12 mm proud, which is why the ball size was redu
 * A tilted sensor (looking at the ball from the side, as torabo-tsuki and Rollino do) was
   evaluated in r1 and does not pay off with a 26 mm wide board: see the cradle README. The 19 mm
   ball brought the 6 mm that the tilt would have promised.
-* Lens footprint: PixArt only gives the sensor body (16.2 x 10.1 mm, 3.96 mm tall) and marks a
-  "lens interference" zone of 2.3 mm beyond pin 1. The LM18-LSI base plate is larger than the
-  body; measure the physical lens before closing the cradle pocket
-  (`issues/mech-lm18-lens-outline-measurement.md`). The footprint carries a dashed 17 x 17 mm
-  placeholder on `Dwgs.User`.
+* Lens footprint: the LM18-LSI datasheet (PMS0039 R1.03, figure 1) gives a 12.90 x 8.25 mm base
+  flange (the reference surface that rests on the sensor-side face of the PCB), a 10.29 x 6.55 mm
+  upper body that passes the 16.96 x 8.60 mm sensor cutout, and two 0.90 mm guide posts that
+  engage the sensor body, not the PCB, so the board has no lens holes. The footprint carries both
+  rectangles dashed on `Dwgs.User`, centred on the optical centre; the flange clears the cradle post
+  columns by 3.4 mm per side. Still to measure on a physical lens: the flange position along the pin
+  row relative to the aperture, and the clip positions
+  (`issues/mech-lm18-lens-outline-measurement.md`).
 * The PCB does not need to be square to the ball axis in the horizontal plane; the optical centre
   must be on the ball axis within about 0.5 mm, Z within the 2.2 to 2.6 mm window.
 * No retainer. The cup rim ends 1 mm below the ball equator all round and there is no claw ring,
@@ -278,9 +281,9 @@ workshop lighting, shallow depth of field.*
 
 ## 6. Open questions (tickets)
 
-* **LM18-LSI outline** (mech, P1): the exact base plate dimensions of the lens are not in the
-  public datasheet. Measure a physical lens and update the `Dwgs.User` placeholder in the footprint
-  and the cradle pocket. Until then print the cradle pocket oversized.
+* **LM18-LSI outline** (mech, P1): the footprint envelope now follows the datasheet (12.90 x 8.25
+  flange, 10.29 x 6.55 body). Measure a physical lens for the flange offset along the pin row and
+  the clip positions, then shrink the cradle's `lens_l` / `lens_w` assembly dummy (21.5 x 11.5).
   `issues/mech-lm18-lens-outline-measurement.md`
 * **FFC orientation check** (hw, P1): verify the mirrored pin order with the first physical cable
   and connectors before ordering PCBs in quantity; the analysis is solid but cheap to confirm.
