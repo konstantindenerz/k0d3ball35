@@ -61,6 +61,21 @@ led_window      = [3, 3];      // width along the wall, height; in the inner (-x
 led_offset_y    = 8.0;         // from the controller board's USB end
 led_z           = 3.5;         // bottom of the window
 
+// ---------------------------------------------------------------- owner wordmark
+// Grid and rectangles in logo_data.scad (scripts/gen_logo.py). The relief is engraved, not
+// raised: the box cap and the tray both print with the engraved face on the bed. Grooves are
+// one cell wide, so nothing bridges further than logo_cell.
+logo_on_cap     = true;
+logo_on_floor   = true;
+logo_invert     = false;      // true: engrave the field instead, leaving the lines proud of it
+logo_depth      = 0.6;        // 3 layers at 0.2
+logo_cell       = 1.0;        // stroke width on the cap; the min printable feature
+logo_stretch    = 1.5;        // cell height / cell width (1.524 in the artwork)
+logo_cap_pos    = [-59.525, 21.9];   // centre of the cap plate
+logo_floor_cell = 0.9;        // stroke width on the case floor
+logo_floor_pos  = [0, 25.5];  // flat floor between the feet, under the key area
+logo_floor_rot  = 90;         // the wordmark lies along the board on the floor
+
 // ---------------------------------------------------------------- magnets and feet
 // Magnets only hold the lid-as-foot: four in the tray floor (from below) and four in the lid
 // roof (from the roof underside, closed by magnet_skin on top). The lid on top holds by its lip.

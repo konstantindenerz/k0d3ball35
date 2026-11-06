@@ -62,6 +62,9 @@ module tray_cuts() {
     magnet_pockets_bottom();
     for (f = feet(half))
         translate([f[0], f[1], base_z - 1]) cylinder(d = foot_d, h = 1 + foot_recess);
+    // wordmark engraved into the flat underside, cut upward so the grooves open to the bed
+    if (logo_on_floor)
+        logo_cut(logo_floor_pos, logo_floor_rot, logo_floor_cell, base_z + logo_depth, logo_depth);
 }
 
 // corner bosses for the cap screws: half in the wall, 3.5 mm into the box, 45 degree underside
@@ -130,6 +133,7 @@ module box_cap() {
         }
         for (a = boss_axes())
             translate([a[0], a[1], box_roof_under_z - 1]) cylinder(d = 2.4, h = box_roof_t + 2);
+        if (logo_on_cap) logo_cut(logo_cap_pos, 0, logo_cell, box_top_z, logo_depth);
     }
 }
 

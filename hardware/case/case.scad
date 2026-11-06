@@ -5,7 +5,9 @@
 
 include <params.scad>
 include <data.scad>
+include <logo_data.scad>
 include <common.scad>
+include <logo.scad>
 include <tray.scad>
 include <lid.scad>
 
@@ -41,6 +43,14 @@ echo(str("STACK box_y0=", box_r()[1]));
 echo(str("STACK box_x1=", box_inner_x));
 echo(str("STACK box_y1=", box_r()[3]));
 echo(str("STACK foot_magnets=", len(foot_magnets(half))));
+echo(str("STACK logo_on_cap=", logo_on_cap ? 1 : 0));
+echo(str("STACK logo_on_floor=", logo_on_floor ? 1 : 0));
+echo(str("STACK logo_depth=", logo_depth));
+echo(str("STACK logo_line_w=", min(logo_cell, logo_floor_cell)));
+echo(str("STACK logo_cap_x=", logo_size(logo_cell)[0]));
+echo(str("STACK logo_cap_y=", logo_size(logo_cell)[1]));
+echo(str("STACK logo_cap_area=", logo_on_cap ? logo_area(logo_cell) : 0));
+echo(str("STACK logo_floor_area=", logo_on_floor ? logo_area(logo_floor_cell) : 0));
 
 module assembly() {
     tray();

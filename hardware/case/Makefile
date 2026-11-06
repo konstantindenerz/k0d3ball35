@@ -13,7 +13,8 @@ CAM_SEC   = --camera=5,64,0,75,0,150,230 --imgsize=1400,1000 --colorscheme=Tomor
 CAM_BOX   = --camera=-58,22,5,60,0,300,150 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_FOOT  = --camera=-10,30,-10,78,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_BOT   = --camera=-10,30,-10,125,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
-SRC       = case.scad params.scad data.scad common.scad tray.scad lid.scad
+CAM_CAP   = --camera=-59.5,21.9,8.7,0,0,0,170 --imgsize=700,1200 --colorscheme=Tomorrow
+SRC       = case.scad params.scad data.scad logo_data.scad common.scad logo.scad tray.scad lid.scad
 LEFT      = -D 'half="left"'
 RIGHT     = -D 'half="right"'
 
@@ -22,10 +23,10 @@ STL = stl/tray-left.stl stl/tray-right.stl stl/box-cap-left.stl stl/box-cap-righ
 DXF = dxf/floor-left.dxf dxf/floor-right.dxf
 PNG = preview/assembly-left.png preview/assembly-right.png preview/section-right.png \
       preview/lid-on-right.png preview/lid-foot-right.png preview/box-right.png \
-      preview/tray-bottom-right.png
+      preview/tray-bottom-right.png preview/cap-logo-right.png
 
-.PHONY: all data stls dxfs previews stack clean
-all: data stls dxfs previews stack
+.PHONY: all data logo stls dxfs previews stack clean
+all: data logo stls dxfs previews stack
 stls: $(STL)
 dxfs: $(DXF)
 previews: $(PNG)
@@ -33,6 +34,10 @@ previews: $(PNG)
 data: data.scad
 data.scad: ../../scripts/gen_case.py ../../scripts/k0d3/geometry.py ../layout/k0d3ball35.yaml
 	cd ../.. && PYTHONPATH=scripts $(subst ../../,,$(PYTHON)) scripts/gen_case.py
+
+logo: logo_data.scad
+logo_data.scad: ../../scripts/gen_logo.py ../../docs/images/logo.png
+	cd ../.. && $(subst ../../,,$(PYTHON)) scripts/gen_logo.py
 
 stl dxf preview:
 	@mkdir -p $@
@@ -69,6 +74,8 @@ preview/lid-foot-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="lid_foot"' $(RIGHT) $(CAM_FOOT) -o $@ case.scad
 preview/tray-bottom-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="tray"' $(RIGHT) $(CAM_BOT) -o $@ case.scad
+preview/cap-logo-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="box_cap"' $(RIGHT) $(CAM_CAP) -o $@ case.scad
 preview/box-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="assembly"' $(RIGHT) $(CAM_BOX) -o $@ case.scad
 
