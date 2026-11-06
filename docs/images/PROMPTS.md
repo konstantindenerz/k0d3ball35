@@ -390,3 +390,80 @@ sockets, a thumb pressing the last switch into a rotated thumb position while a 
 PCB from below, a pile of white and light-grey low-profile keycaps and two orange ones next to it,
 oak desk, three-quarter view.
 ```
+
+## img-case-exploded
+
+Aspect 4:3. The right half's case parts pulled apart.
+
+```prompt
+Exploded assembly drawing of the right half of a low-profile split keyboard in its printed
+case, from bottom to top: a flat beige-grey tray with angular stepped walls, a deep rectangular
+well under the controller end and a square pocket beside the thumb keys, a green PCB with an
+octagonal notch floating above it, a small cradle module with a white 19 mm ball dropping into
+the pocket from above and two long screws coming up through the floor, a flat beige roof plate
+with an L-shaped skirt over the controller end, and a translucent lid with four magnet pads
+hovering over everything, isometric, pastel colours, labelled parts, white background.
+```
+
+## img-case-tray-top
+
+Aspect 3:2. Empty tray from above.
+
+```prompt
+Top-down rendering of an empty beige-grey 3D printed keyboard case tray with an angular stepped
+outline, a flat key floor with five round standoffs, a deep rectangular battery well at the
+inner end, a square pocket with two screw holes at the outer lower corner, four small square
+magnet pads sticking out of the outer wall near the corners, a USB-C cutout and a tiny slot in
+the end wall, clean CAD line-art style, white background.
+```
+
+## img-case-pocket-detail
+
+Aspect 4:3. Cross-section through the ball pocket.
+
+```prompt
+Technical cross-section illustration of a beige-grey printed keyboard case corner holding a
+trackball module beside the PCB: a 19 mm white ball in a thin blue cup, the cup standing on a
+rectangular housing that reaches down into a deep square well in the case floor, two long screws
+coming up through the floor into the housing, a green 1.6 mm PCB ending 1 mm from the cup with an
+angular notch, the case wall around the cup stopping just below the cup rim, a flat ribbon
+cable curving from the PCB underside down into the housing, dimension lines for the 11.6 mm
+floor depth and the 17 mm ball height, clean CAD line-art style, white background.
+```
+
+## img-case-controller-box-section
+
+Aspect 4:3. Cross-section through the controller box.
+
+```prompt
+Technical cross-section illustration of the raised controller box of a beige-grey printed
+keyboard case: a blue controller board on short sockets above a green PCB, a flat printed roof
+plate sitting in a rebate of the two outer walls with a thin skirt hanging down to the PCB on
+the key side, a small screw boss in the corner with a brass threaded insert, a USB-C plug
+entering through an opening in the end wall, a battery cell lying in a deep well under the PCB,
+dimension lines for the 5.7 mm controller top and the 8.7 mm box top, clean CAD line-art
+style, white background.
+```
+
+## img-case-lid-transport
+
+Aspect 3:2. Lid on for transport.
+
+```prompt
+Product photo of a right keyboard half in a beige-grey printed case with its matching lid
+snapped on top, the lid a plain angular shell 15 mm tall following the stepped outline with a
+taller flat roof, four small square tabs on the outer walls where the magnets sit, a controller
+box corner poking through a notch in the lid skirt, the half lying in an open canvas bag, soft
+daylight.
+```
+
+## img-case-lid-foot
+
+Aspect 3:2. Lid under the half as a foot.
+
+```prompt
+Three-quarter photo of a low-profile split keyboard half with a white 19 mm trackball standing
+on its own flipped-over lid, the beige-grey lid roof on the oak desk and its skirt edge meeting
+the flat underside of the case, the half lifted by about 15 mm, a second lid-less half beside it
+lying flat, soft studio light.
+```

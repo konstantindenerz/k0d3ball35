@@ -2,7 +2,7 @@
 title: Case pocket for the 19 mm ball beside the right PCB
 type: feature
 priority: P1
-status: open
+status: in-progress
 area: mech
 created: 2026-11-06
 ---
@@ -37,14 +37,22 @@ transport, by the removable case lid (`mech-case-lid`), so the pocket itself nee
 
 ## Acceptance criteria
 
-- [ ] Parametric pocket in `hardware/case/` built from `points-right.json` (notch polygon, pocket circle, sensor board rectangle) and `floor-19mm-pocket.dxf`
-- [ ] Floor depth -11.6 mm under the module, two 2.2 mm holes 20 mm apart on the y axis for the M2 x 10 case screws, drainage for dust optional
+- [x] Parametric pocket in `hardware/case/` built from the layout (notch polygon, housing box and footprint, case screws via `scripts/gen_case.py`), checked against `floor-19mm-pocket.dxf` in `tests/test_case.py`
+- [x] Floor depth -11.6 mm under the module, two 2.2 mm holes 20 mm apart on the y axis for the M2 x 10 case screws (counterbored, 2.0 mm floor remains), drainage for dust optional
 - [ ] Test print of the pocket corner alone with the cradle and a scrap PCB with the notch: 0.3 mm gap all round, FFC routes to J1 without a sharp bend
-- [ ] 25 mm fallback documented as a parameter (notch apothem 16.5 mm, pocket 35 mm) but not printed
-- [ ] Image prompt for the pocket detail in `docs/images/PROMPTS.md`
+- [x] 25 mm fallback documented as a parameter (notch apothem 16.5 mm, pocket 35 mm) but not printed
+- [x] Image prompt for the pocket detail in `docs/images/PROMPTS.md` (`img-case-pocket-detail`)
 
 ## Notes
 
 Mounting the cradle on top of the PCB was rejected (about 12 mm taller). The pocket keeps the sensor
 board on the case floor like the r1 cutout did while the PCB loses the cutout and the flange ring.
 The transport lid that keeps the ball in the open cup is `mech-case-lid`.
+
+2026-11-06: CAD done in `hardware/case/` (`part="pocket_test"` is the 50 x 50 mm corner for the
+test print, `stl/pocket-test-right.stl`). Pocket floor -11.6, housing well 31 x 30 in a 35 x 34
+block, case screws (5, 54) and (5, 74), cavity above the PCB plane is the notch octagon plus
+0.2 mm, rim +5.0 under the cup rim +6.575, FFC channel 12 mm wide from J1 to the housing wall.
+`tests/test_case.py` checks the floor DXF against the cradle's and the rendered mesh against
+`hardware/trackball-cradle/stack.json`. Open: the test print with the cradle and a scrap PCB.
+See `docs/11-case.md`.

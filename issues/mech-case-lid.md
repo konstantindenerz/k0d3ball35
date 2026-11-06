@@ -2,7 +2,7 @@
 title: Removable lid per half that doubles as a tenting foot
 type: feature
 priority: P2
-status: open
+status: in-progress
 area: mech
 created: 2026-11-06
 ---
@@ -32,12 +32,12 @@ of the right half.
 
 ## Acceptance criteria
 
-- [ ] Parametric CAD in `hardware/case/` sharing the outline DXFs and the pocket data with `mech-case`; one lid model per half, mirrored where the outline allows it
-- [ ] Magnet pockets in lid and case (e.g. 6 x 2 mm neodymium discs, same pockets on the case top rim and on the case floor), polarity marked so the lid snaps on in both positions; a mechanical snap or clip is acceptable instead if it holds as well
-- [ ] Lid clears the ball top (+17.1 mm over the PCB top) and the controller block (+7.5 mm) with at least 1 mm; the ball cannot leave the cup with the lid on
-- [ ] Works as a foot on both halves: attached under the half it either raises it flat or tents it by a documented angle, without rocking, and the rubber feet of the case stay usable without it
-- [ ] Both lids print without supports
-- [ ] Image prompts in `docs/images/PROMPTS.md` (lid on for transport, lid under the half as a foot)
+- [x] Parametric CAD in `hardware/case/` sharing the layout data with `mech-case` (`lid.scad`); one lid model per half, the left one mirrored
+- [x] Magnet pockets in lid and case (6 x 2 mm discs in four 9 x 7 mm pads, same pockets on the rim and on the floor), polarity marked by an embossed dot on the rim so the lid snaps on in both positions
+- [x] Lid clears the ball top (+17.1 mm over the PCB top, roof under +18.1) and the controller box (+8.7, lid skirt notch to +9.0) with at least 1 mm; the ball cannot leave the cup with the lid on (`tests/test_case.py`)
+- [x] Works as a foot on both halves in CAD: flat lift 9 mm (left) / 15 mm (right), `tent_wedge_deg` adds a wedge for tenting; rubber feet stay usable without it. Rocking is checked on the print
+- [x] Both lids print without supports (roof down, no overhanging faces in the mesh); test print open
+- [x] Image prompts in `docs/images/PROMPTS.md` (`img-case-lid-transport`, `img-case-lid-foot`)
 
 ## Notes
 
@@ -45,3 +45,9 @@ Depends on `mech-case` and `mech-case-ball-pocket`. The cradle has no retainer b
 cradle README; if the lid turns out impractical, the fallback is a shallow bayonet ring on the cup
 rim, not a change to the cup. The 25 mm fallback ball (+23.05 mm) only needs a taller lid over the
 pocket; keep the lid height a parameter.
+
+2026-11-06: CAD done in `hardware/case/lid.scad`. One height per half: left roof under +12.0,
+top +14.0; right roof under +18.1, top +20.1; skirt on the rim at +5.0 with a notch over the
+controller box walls; four 6 x 2 mm magnets per part. `lid_mode="dome"` keeps the right lid
+at 14 mm with a turret over the ball (optional). Open: test fit and the rocking check as a
+foot. See `docs/11-case.md`.

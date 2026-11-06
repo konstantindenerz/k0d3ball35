@@ -1,0 +1,117 @@
+# Printed case
+
+The case is the last phase of r2: two printed parts per half plus a removable lid. The CAD
+lives in `hardware/case/` (OpenSCAD, parametric, both halves from one set of sources); this
+document explains what the parts are, the heights they are built on and how they go
+together. Tickets: [mech-case](../issues/mech-case.md),
+[mech-case-ball-pocket](../issues/mech-case-ball-pocket.md),
+[mech-case-lid](../issues/mech-case-lid.md). Build notes and the parameter list are in
+[hardware/case/README.md](../hardware/case/README.md).
+
+![Exploded view of one half](images/img-case-exploded.png)
+
+## 1. Parts
+
+| Part | STL | What it is |
+|------|-----|------------|
+| Tray | `tray-left.stl`, `tray-right.stl` | the case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, pocket for the cradle (right), five standoffs with M2 heat-set inserts, magnet pads, feet recesses |
+| Box cap | `box-cap-left.stl`, `box-cap-right.stl` | roof of the controller box: a plate in a rebate plus an L-shaped skirt towards the keys and the thumb keys, two M2 screws into corner bosses |
+| Lid | `lid-left.stl`, `lid-right.stl` | transport cover over keys and ball, held by four magnets; flipped under the half it is a foot |
+| Pocket test | `pocket-test-right.stl` | the 50 x 50 mm corner of the right tray around the ball, for the first test print with the cradle |
+
+The layout facts (outline, holes, bay, courtyards, pocket, controller block) are generated
+from `hardware/layout/k0d3ball35.yaml` by `scripts/gen_case.py` into `hardware/case/data.scad`;
+every offset and height is a parameter in `params.scad`. `make case` renders everything.
+
+![Tray from above](images/img-case-tray-top.png)
+
+## 2. Heights
+
+z = 0 is the PCB top, from `hardware/case/stack.json`:
+
+| Level | left | right | Note |
+|-------|------|-------|------|
+| Underside | -14.1 | -14.1 | flat, 2.5 mm under the deepest well |
+| Battery well and pocket floor | -11.6 | -11.6 | same plane as the cradle's `floor_z` |
+| Key floor | -4.6 | -4.6 | hot-swap sockets 1.8 mm, diodes 1.1 mm, air |
+| PCB | -1.6 to 0 | -1.6 to 0 | on 3.0 mm standoffs |
+| Rim | +5.0 | +5.0 | flush with the keycap skirts, below the cup rim (+6.6) |
+| Controller box cap, under / top | +6.7 / +8.7 | +6.7 / +8.7 | controller top +5.7 plus 1 mm |
+| Keycap top | +11.0 | +11.0 | Choc V1 |
+| Ball top | - | +17.1 | cradle `ball_top_above_pcb_top` |
+| Lid roof, under / top | +12.0 / +14.0 | +18.1 / +20.1 | 1 mm over the tallest thing |
+
+The two halves have different lid heights on purpose: a 20 mm lid over the left half would
+only add bulk. A `lid_mode = "dome"` variant keeps the right lid at 14 mm with a round turret
+over the ball; it renders but is not part of the default build.
+
+## 3. Pocket
+
+![Section through the pocket](images/img-case-pocket-detail.png)
+
+The cradle stands on the case floor in a well beside the right PCB
+(`docs/08-trackball-module.md`, `hardware/trackball-cradle/README.md`): the housing well is
+31 x 30 mm (housing 30 x 29 plus 0.5 mm) in a 35 x 34 mm block, floor at -11.6, two 2.2 mm
+holes 20 mm apart on the y axis for the M2 x 10 case screws from below, counterbored so the
+cradle sees the 2.0 mm floor it assumes. Above the PCB plane the cavity is the PCB notch
+octagon (apothem 15 mm) plus 0.2 mm, so the printed wall continues the PCB edge around the
+cup with a 2 mm wall. The rim stops at +5.0, 1.6 mm below the cup rim, and the thumb reaches
+the ball at its equator from the key side. A 12 mm channel from J1 down to the housing wall
+takes the FFC. The 25 mm fallback ball is a parameter set
+(`-D ball_d=25 -D notch_apothem=16.5 -D pocket_d=35 -D ball_top_z=23.05`) and needs a
+different PCB notch; it is documented, not printed.
+
+## 4. Controller box
+
+![Section through the controller box](images/img-case-controller-box-section.png)
+
+The controller sits on 2.5 mm sockets, so its top is at +5.7 and the box roof needs +6.7.
+The tray only carries the two box walls that are outside the PCB (the outer wall and the
+USB wall, up to +8.7); a roof in the tray would block dropping the PCB in and be a 65 mm
+bridge. The other two walls hang from the separate cap and stand on the PCB top. Two M2
+screws go into corner bosses on the outer wall (heat-set inserts, same as the standoffs).
+The USB-C opening is 11 x 5.8 mm in the USB wall, the LED window 3 x 3 mm in the outer wall
+8 mm from the USB end, the slide switch lever has a 7 x 3 mm slot in the outer wall directly
+under the PCB and the reset button a 3 mm pin hole in the floor of the well.
+
+## 5. Assembly order
+
+1. Press the seven M2 heat-set inserts (five standoffs, two bosses) with a soldering iron at
+   about 200 C. Do this before anything else goes into the tray.
+2. Glue the magnets, see section 7.
+3. PCB in, keycaps off, five M2 x 5 or x 6 machine screws from the top, keycaps on.
+4. Controller on, cap on, two M2 screws.
+5. Right half: cradle into the pocket (slot towards J1), FFC through the channel into J1,
+   two M2 x 10 from below, ball in.
+6. Battery into the well, JST into J3, rubber feet on.
+
+## 6. Printing
+
+Tray flat on the bed with the cavities open upwards; the only bridges are the USB opening,
+the switch slot, the LED window and the magnet pockets from below. Cap and lid print roof
+down. No supports anywhere, 0.2 mm layers (0.12 mm for the pocket test), 3 perimeters. Print
+`pocket-test-right.stl` first and check it with the cradle and a scrap PCB with the notch:
+0.3 mm all round, the FFC must reach J1 without a sharp bend.
+
+## 7. Lid and magnets
+
+![Lid on for transport](images/img-case-lid-transport.png)
+
+Four 6 x 2 mm magnets per part in 9 x 7 mm pads on the outer wall near the corners. Polarity:
+tray rim pockets north up, tray floor pockets north down, lid pockets south towards the
+open side; an embossed dot on the rim beside each pocket marks north up. One set of lid
+magnets then holds in both positions.
+
+![Lid as a foot](images/img-case-lid-foot.png)
+
+As a foot the lid lifts the half flat by 9 mm (left) or 15 mm (right); the rubber feet stay
+usable without it. Tenting is a parameter: `-D tent_wedge_deg=6` adds a wedge to the lid
+roof that rises towards the inner edge, so the lid-as-foot tilts the half by that angle
+while the cover position is unchanged.
+
+## 8. Open points
+
+- LED window position is a guess at the nice!nano LED; verify on the controller.
+- `box_inner_x` = -45.5: 0.75 mm to the inner column caps, 1.5 mm to the controller.
+- The magnet pads are visible tabs on the outer wall; placement may change with the look.
+- First print: pocket test, then the right tray, then the lids.

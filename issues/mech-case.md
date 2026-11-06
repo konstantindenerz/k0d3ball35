@@ -2,7 +2,7 @@
 title: Boxy angular 3D printed case with raised controller box and ball pocket
 type: feature
 priority: P2
-status: open
+status: in-progress
 area: mech
 created: 2026-11-05
 ---
@@ -25,11 +25,11 @@ bay 21 x 41 mm centred (-53.9, 17.5), floor at -10.6 mm or the pocket level -11.
 
 ## Acceptance criteria
 
-- [ ] Parametric CAD in `hardware/case/` using the per-half layout outlines and the pocket data from `points-right.json`
-- [ ] Both halves printable without supports (pocket well and controller box included)
-- [ ] Controller block: lid clears the controller top (+5.7 mm: 2.5 mm sockets + 1.6 mm PCB + 1.6 mm USB-C shell) by 1 mm, LED window on the inner wall
-- [ ] Battery well under the controller block on both halves: 9.0 mm below the PCB underside over the bay rectangle plus J3, from `battery` in `points-*.json`
-- [ ] Image prompts for renders in `docs/images/PROMPTS.md` (`img-case-concept` already describes the look)
+- [x] Parametric CAD in `hardware/case/` using the per-half layout (`scripts/gen_case.py` writes `data.scad` from `k0d3.geometry`, both halves from one set of sources, left mirrored)
+- [x] Both halves printable without supports in CAD (`tests/test_case.py` sums the downward faces: only the USB, switch and LED openings, the magnet pockets and the boss chamfers remain); the test print is open
+- [x] Controller block: separate cap plate at +6.7 under / +8.7 top clears the controller top (+5.7) by 1 mm, LED window on the inner wall (position to verify on the controller)
+- [x] Battery well under the controller block on both halves: 10.0 mm below the PCB underside (-11.6, shared with the pocket floor) over the bay rectangle plus the J3 and RB1 courtyards
+- [x] Image prompts for renders in `docs/images/PROMPTS.md` (`img-case-exploded`, `img-case-tray-top`, `img-case-controller-box-section`)
 
 ## Notes
 
@@ -37,3 +37,10 @@ Blocked by hw-two-pcbs-r2 (final outlines) and mech-case-ball-pocket. Each half 
 removable lid that covers keys and ball for transport and attaches under the half as a foot
 (`mech-case-lid`); the cradle has no ball retainer, so the lid is what keeps the ball in a bag.
 Provide magnet pockets on the case top rim and floor for it.
+
+2026-11-06: CAD done in `hardware/case/` (tray, box cap, dummies, previews, `stack.json`). Key
+numbers: wall 3.0, rim +5.0, key floor -4.6, well and pocket floor -11.6, underside -14.1 flat,
+standoffs 6.0 mm with M2 heat-set inserts (3.2 mm holes, 4 mm deep; `-D pcb_screws="pilot"` for
+self-tapping), controller box walls to +8.7 with a separate cap on two M2 screws in corner
+bosses, USB 11 x 5.8, switch slot 7 x 3, reset pin hole 3 mm, LED window 3 x 3. Open: test
+print and fit of both trays. See `docs/11-case.md`.
