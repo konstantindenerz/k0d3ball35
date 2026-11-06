@@ -72,7 +72,7 @@
     <div class="labels" id="labels"></div>
     <div class="hud">
       <h1 id="title">k0d3ball35</h1>
-      <p>Drag to orbit (all the way under the half), wheel or pinch to zoom. Heights are real and the case parts are the printed tray, controller box cap and lid from hardware/case. The lid holds on top by an inner lip; magnets only hold it as a foot.</p>
+      <p>Drag to orbit (all the way under the half), wheel or pinch to zoom. Heights are real and the case parts are the printed tray, controller box cap and lid from hardware/case. The lid is two plates on a pin hinge: it holds on top by an inner lip and folds into a tenting foot under the half (magnets in the floor and the outer plate).</p>
       <span class="tag" id="viewTag">assembled</span>
     </div>
   </div>
@@ -369,8 +369,10 @@ function build(half) {
   // --- lid: cover on top (inner lip, no magnets) or foot under the tray (magnets in floor and roof) ---
   {
     const g = layer('Lid', 60, '#E8762E', { x: B.max_x - 20, y: H.case_stack.lid_top_z + 2, z: B.min_y + 10 }, true);
-    g.add(stlMesh(H.case.lid, M.lid));
+    const cover = stlMesh(H.case.lid, M.lid), folded = stlMesh(H.case.lid_folded, M.lid);
+    g.add(cover); g.add(folded);
     lidLayer = layers[layers.length - 1];
+    lidLayer.cover = cover; lidLayer.folded = folded;
     lidLayer.nolist = true;   // driven by the Lid radio, not the layer list
   }
 
@@ -515,14 +517,19 @@ function applyLidMode() {
   const mode = document.querySelector('input[name=lid]:checked').value;
   const cs = H.case_stack;
   lidLayer.group.visible = mode !== 'off';
-  if (mode === 'foot') {   // unflipped under the tray: roof top against the tray underside, lip hanging free
+  // foot: the plates folded by hinge_fold_deg, the outer plate roof-up against the tray underside
+  // (the page keeps the half level; on the desk the inner plate is the leg and tilts it)
+  lidLayer.cover.visible = mode !== 'foot'; lidLayer.folded.visible = mode === 'foot';
+  if (mode === 'foot') {
     lidLayer.baseY = cs.base_z - cs.lid_top_z; lidLayer.explode = -60;
     lidLayer.anchor.y = cs.base_z - 4;
   } else {
     lidLayer.baseY = 0; lidLayer.explode = 60;
     lidLayer.anchor.y = cs.lid_top_z + 2;
   }
-  lidLayer.name = mode === 'foot' ? `Lid as foot (lift ${(cs.lid_lift ?? (cs.lid_top_z - cs.rim_z)).toFixed(1)} mm)` : 'Lid (cover, inner lip)';
+  lidLayer.name = mode === 'foot'
+    ? `Lid folded as foot (hinge ${(cs.hinge_fold_deg ?? 30).toFixed(0)} deg, tilts the half by ${(cs.foot_tilt_deg ?? 15).toFixed(1)} deg)`
+    : 'Lid (two hinged plates, inner lip)';
   if (labelNodes[layers.indexOf(lidLayer)]) labelNodes[layers.indexOf(lidLayer)].el.textContent = lidLayer.name;
   setExplode(explode);
 }

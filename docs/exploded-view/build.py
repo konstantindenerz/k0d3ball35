@@ -4,7 +4,7 @@
 
 Reads hardware/layout/output/points-left.json and points-right.json,
 hardware/layout/k0d3ball35.yaml, hardware/trackball-cradle/stack.json (19 mm pocket
-variant), hardware/case/stack.json and the case STLs (tray, controller box cap, lid per
+variant), hardware/case/stack.json and the case STLs (tray, controller box cap, lid closed and folded per
 half), writes layout.json and inlines everything into the page so the HTML is self-contained.
 The STLs are embedded as base64 binary STL in the page's world frame (x, z up, y towards the
 user) and are not written to layout.json (they would triple its size).
@@ -67,9 +67,10 @@ def feet(outline: list[list[float]], inset: float = 7.0) -> list[list[float]]:
     return out
 
 
-CASE_PARTS = {"tray": "tray-{half}", "cap": "box-cap-{half}", "lid": "lid-{half}"}
+CASE_PARTS = {"tray": "tray-{half}", "cap": "box-cap-{half}", "lid": "lid-{half}", "lid_folded": "lid-folded-{half}"}
 CASE_STACK_KEYS = ("base_z", "floor_z_key", "well_floor_z", "pocket_floor_z", "rim_z", "standoff_h",
-                   "box_roof_under_z", "box_top_z", "lid_roof_under_z", "lid_top_z", "lid_lift", "lid_lip_depth")
+                   "box_roof_under_z", "box_top_z", "lid_roof_under_z", "lid_top_z", "lid_lip_depth",
+                   "hinge_x", "hinge_axis_z", "hinge_fold_deg", "tent_deg", "foot_tilt_deg", "foot_hinge_h")
 
 
 def case_meshes(half: str) -> dict[str, str]:
