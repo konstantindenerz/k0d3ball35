@@ -2,6 +2,7 @@ name: firmware
 
 on:
   push:
+    # path filters are not evaluated for tag pushes, so every tag builds and releases
     paths:
       - "firmware/zmk-config/**"
       - ".github/workflows/firmware.yml"
@@ -21,3 +22,25 @@ jobs:
       config_path: firmware/zmk-config/config
       build_matrix_path: firmware/zmk-config/build.yaml
       archive_name: k0d3ball35-firmware
+
+  release:
+    # attach the UF2 files to the GitHub release of a tag (created here if missing)
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: k0d3ball35-firmware
+          path: firmware-out
+      - name: Upload UF2 files to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -l firmware-out
+          if ! gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --generate-notes
+          fi
+          gh release upload "$GITHUB_REF_NAME" firmware-out/*.uf2 --repo "$GITHUB_REPOSITORY" --clobber

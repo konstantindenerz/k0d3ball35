@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 
-config SHIELD_K0D3BALL36_LEFT
+config SHIELD_K0D3BALL35_LEFT
     def_bool $(shields_list_contains,k0d3ball35_left)
 
-config SHIELD_K0D3BALL36_RIGHT
+config SHIELD_K0D3BALL35_RIGHT
     def_bool $(shields_list_contains,k0d3ball35_right)
