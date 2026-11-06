@@ -87,8 +87,8 @@ netlist). Nothing from that repository is included here; see section 7.
 | ZMK driver | ZMK main moved to Zephyr 4.1 in December 2025; Zephyr ships an upstream `pixart,pmw3610` input driver (`CONFIG_INPUT_PMW3610`, `res-cpi` 200 to 3200 in 200 steps, `smart-mode`, `force-awake`). No external module needed. badjeff's `pixart,pmw3610-alt` remains a fallback. | OK |
 | Split pointing | Mouse support in ZMK core since v0.2 (March 2025); `zmk,input-split` lets a peripheral forward sensor events, so a left-ball or dongle build is configuration only. The ball lives on the central half for r1, as in every shipping design. | OK |
 | ZMK Studio | GA since November 2024, proven together with split + pointing on roBa and torabo-tsuki-lp. RAM must be watched on nRF52840. | OK |
-| Battery life | PMW3610 0.60 mA tracking, 36 uA rest, 3 uA shutdown. nRF52840 central with BLE host and peripheral link 0.5 to 1.5 mA average. 300 mAh plain half: two to three months. 300 mAh ball half: 3 to 6 weeks of mixed use, days if `force-awake` is enabled. | OK with 300 mAh on both halves |
-| Battery placement | One 702025 (7 mm) per half under the PCB, directly below the controller, in a 9 mm well of the case floor; the back of the PCB is free there on both boards. Controller on 2.5 mm sockets, nothing underneath. JST and solder pads exist on every PCB. | OK |
+| Battery life | PMW3610 0.60 mA tracking, 36 uA rest, 3 uA shutdown. nRF52840 central with BLE host and peripheral link 0.5 to 1.5 mA average. 350 mAh plain half: two to three months. 350 mAh ball half: 4 to 7 weeks of mixed use, days if `force-awake` is enabled. | OK with 350 mAh on both halves |
+| Battery placement | One PKCELL LP552035 (350 mAh, 5.7 x 20 x 37 mm) per half under the PCB, below the controller, in a 9 mm well of the case floor; the back of the PCB is free there on both boards. Controller on 2.5 mm sockets, nothing underneath. JST and solder pads exist on every PCB. | OK |
 | Two PCBs instead of one reversible board | r1 tried a reversible board and paid for it with three solder jumpers, a sacrificed D0, a mirrored pin map on the left half and a dead 30 mm cutout on the left. r2 generates two boards from the same layout file; the controller wiring is identical, only the thumb row, the FPC connector and the pocket notch differ. Costs one more 5-piece PCB batch (about 15 EUR). | OK |
 | Components in the EU | Everything except the sensor chip and the ceramic balls is stocked by 42keebs, keycapsss, splitkb, keeb.supply, Kamami or Mouser DE. Sensor, lens and ceramic balls come from AliExpress or LCSC. | OK |
 | PCB fabrication | JLCPCB 2-layer, 1.6 mm, ENIG, 5 pcs main + 5 pcs sensor: roughly 60 to 90 EUR delivered including VAT. | OK |
@@ -145,7 +145,7 @@ Prices are EU retail including VAT, late 2025. Details and links in [the BOM](03
 | 35 hot-swap sockets | 6 |
 | 35 MBK keycaps | 20 |
 | Diodes, slide switches, reset buttons, battery connectors, passives | 8 |
-| 2 batteries (110 + 300 mAh) | 12 |
+| 2 batteries (350 mAh each) | 10 |
 | PMW3610 + lens, LDO, FPC connectors, cable | 12 |
 | 19.05 mm POM balls (pack) | 5 |
 | Ceramic balls, M2 hardware, bumpers | 8 |

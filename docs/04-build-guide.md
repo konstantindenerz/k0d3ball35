@@ -73,7 +73,7 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 2 | Hirose FH12-6S-0.5SH (or LCSC clone) 6-pin 0.5 mm FPC connector | one on the right PCB (bottom face), one on the sensor board | 6, 10 |
 | 1 (+1) | 6-conductor 0.5 mm FFC, type A (contacts on the same face at both ends), 30 to 50 mm | right half | 11 |
 | 2 | JST S2B-PH-SM4-TB battery connector | bottom face, below the controller, inside the battery well | 7 |
-| 2 | LiPo 702025, 300 mAh, protected, JST-PH plug | one per half, battery bay on the bottom face under the controller | 7 |
+| 2 | LiPo PKCELL LP552035, 350 mAh, protected, JST-PH plug | one per half, battery bay on the bottom face under the controller | 7 |
 | 2 | foam or Kapton pad, about 20 x 27 x 0.5 mm, plus double-sided tape | between PCB underside and cell | 7 |
 | 1 (+1) | PixArt PMW3610DM-SUDU + LM18-LSI lens | sensor board | 10 |
 | 1 set | sensor-board passives: XC6206P182MR, 0603 capacitors and resistors as listed in the BOM | sensor board | 10 |
@@ -228,7 +228,7 @@ shorts between FPC pins.
 
 ## 7. Battery
 
-Both halves are identical here: one 702025 cell (300 mAh) lies on the **bottom face** in the
+Both halves are identical here: one LP552035 cell (350 mAh, 20 x 37 mm) lies on the **bottom face** in the
 dashed battery bay printed right under the controller, lead end towards the JST connector J3, and
 plugs into J3. The case provides a 9 mm deep well under the controller block for it. The solder
 pads J2 remain for cells with bare leads.

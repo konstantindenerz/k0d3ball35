@@ -145,7 +145,7 @@ or countersunk screws from the back.
 * Edge clearance: the pours and all tracks reach exactly 0.300 mm from the edge, nothing closer;
   no copper or via inside the notch octagon or within 0.3 mm of it; the ball circle clears the PCB.
 * The only 2.2 mm holes are H1 to H5 (no cradle holes); every switch has the 3.40 / 1.70 / 3.05 holes.
-* The battery bay rectangle (frame x -68.5 to -47.5, y -3 to 25) contains nothing on the back but
+* The battery bay rectangle (frame x -64.4 to -43.4, y -3 to 38 since r2.1b) contains nothing on the back but
   the 24 controller socket tails; the JST J3 (6 mm tall) sits below the bay at y 42, inside the
   case well as specified. No back courtyard of PS1, RB1, J3, J2, any socket or diode intersects it.
 * J1 (right only): back face only, pin 1 (VCC) at +x seen from the front, i.e. on the pinky side,

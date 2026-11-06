@@ -55,7 +55,7 @@ Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 
   printed cradle that stands in a case pocket beside the PCB; PMW3610 sensor on a small
   daughterboard on the case floor, connected with a 6-pin flat cable; ball top 17 mm above the PCB
 - Fully wireless: nice!nano v2 (or SuperMini nRF52840) per half on 2.5 mm low-profile sockets,
-  Bluetooth split, one 702025 LiPo cell (300 mAh) per half in a bay under the PCB below the
+  Bluetooth split, one LP552035 LiPo cell (350 mAh) per half in a bay under the PCB below the
   controller (the same bay on both halves), the controller's charger, JST-PH connector, slide
   power switch, reset button
 - Two separate PCBs with identical controller wiring: no solder jumpers, no mirrored pin maps,

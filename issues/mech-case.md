@@ -19,8 +19,8 @@ controller block at the inner edge (room for the controller on 2.5 mm sockets, t
 slot, the reset hole, the USB-C opening and a window for the controller LED; raising the box is
 now a styling choice, the controller top is only +5.7 mm), a 9 mm deep battery well under the
 controller block on both halves (`battery` block in `points-left.json` / `points-right.json`:
-bay 21 x 28 mm centred (-58, 11), floor at -10.6 mm or the pocket level -11.6 mm, J3 at
-(-56, 42) inside the same well), a 32 mm pocket beside the right PCB for the trackball module
+bay 21 x 41 mm centred (-53.9, 17.5), floor at -10.6 mm or the pocket level -11.6 mm, J3 at
+(-56, 44) and RB1 at (-66, 41) below the bay inside the same well), a 32 mm pocket beside the right PCB for the trackball module
 (`mech-case-ball-pocket`), five M2 standoffs per half on the PCB holes, rubber feet.
 
 ## Acceptance criteria

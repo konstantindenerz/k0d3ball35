@@ -104,7 +104,7 @@ Aspect 3:1. Cross-section of one half.
 ```prompt
 Technical cross-section drawing, white background, from top to bottom: a low-profile keycap,
 a Choc switch 11 mm tall, a hot-swap socket under a 1.6 mm PCB, a controller board on 2.5 mm
-low-profile sockets with nothing underneath, below the PCB a flat 7 mm battery on a thin foam pad
+low-profile sockets with nothing underneath, below the PCB a flat 6 mm battery on a thin foam pad
 lying in a 9 mm deep well of the printed case floor, rubber bumpers under the floor, dimension
 arrows on the right with millimetre values, orange accent on the battery, sans-serif labels.
 ```
@@ -274,7 +274,7 @@ Aspect 16:9. Battery life chart.
 
 ```prompt
 Clean bar chart on white comparing estimated battery life in days for three cases: plain half
-with 300 mAh, trackball half with 300 mAh in normal mode, trackball half with 300 mAh with the
+with 350 mAh, trackball half with 350 mAh in normal mode, trackball half with 350 mAh with the
 sensor forced awake; bars in grey with the recommended configuration in orange, axis labels and
 values, sans-serif.
 ```
@@ -341,8 +341,8 @@ all soldered, tweezers at the edge of the frame, warm workshop light.
 Aspect 3:2. Battery in the bay under the controller.
 
 ```prompt
-Macro photo of the underside of a keyboard PCB: a flat 300 mAh lithium polymer pouch cell, about
-20 x 25 mm, stuck on a thin foam pad inside a dashed white silkscreen rectangle, its red and black
+Macro photo of the underside of a keyboard PCB: a flat 350 mAh lithium polymer pouch cell, about
+20 x 37 mm, stuck on a thin foam pad inside a dashed white silkscreen rectangle, its red and black
 leads ending in a tiny white JST plug inserted into a low side-entry connector next to the
 rectangle, a slide switch in the off position, a multimeter probe touching a nearby plated hole,
 shallow depth of field.

@@ -123,8 +123,8 @@ Optical stack (datasheet lens-to-surface 2.2 to 2.6 mm, 2.4 mm typical):
 
 | Half | Battery | Position | Expected runtime |
 |------|---------|----------|------------------|
-| left (peripheral) | 702025, 300 mAh, protected, JST-PH | battery bay under the PCB, below the controller | two to three months |
-| right (central, trackball) | 702025, 300 mAh, protected, JST-PH | battery bay under the PCB, below the controller | 3 to 6 weeks mixed use |
+| left (peripheral) | PKCELL LP552035, 350 mAh, protected, JST-PH | battery bay under the PCB, below the controller | two to three months |
+| right (central, trackball) | PKCELL LP552035, 350 mAh, protected, JST-PH | battery bay under the PCB, below the controller | 4 to 7 weeks mixed use |
 
 Both halves mount the cell the same way (decided 2026-11-06, `issues/hw-battery-bay-both-halves.md`):
 the cell lies **under the PCB**, directly below the controller, in a well of the case floor. The
@@ -133,11 +133,11 @@ rectangle on both boards and is printed on the back silkscreen:
 
 | Item | Value |
 |------|-------|
-| Bay (back of the PCB, layout frame) | centre (-58, +11), 21 x 28 mm, i.e. x -68.5 to -47.5, y -3 to +25 (`battery.bay` in the layout yaml) |
-| Cell | 702025, 20 x 25 x 7 mm nominal, 20.5 x 27 x 7.2 mm with protection circuit and leads; lead end towards +y |
-| Well depth | 9.0 mm below the PCB underside (socket tails 1.0 + 0.5 mm foam pad + 7.2 mm cell + 0.3 mm), floor at z = -10.6 mm; the case may use -11.6 mm to share the ball pocket's floor level |
-| Clearances | bay 1.75 mm from the inner and top PCB edges, 0.8 mm from the power switch courtyard, checked by the layout generator |
-| Alternatives | any cell with the 20 x 25 footprint and up to 7.2 mm thickness (602025, 502025, 402025); the old 301230 is too long for the bay |
+| Bay (back of the PCB, layout frame) | centre (-53.9, +17.5), 21 x 41 mm, i.e. x -64.4 to -43.4, y -3 to +38 (`battery.bay` in the layout yaml); it starts between the two controller hole rows and ends above the reset button |
+| Cell | PKCELL LP552035, 350 mAh, 5.7 x 20 x 37 mm maximum including the protection circuit, JST-PH plug (Eckstein, Germany); lead end towards +y |
+| Well depth | 9.0 mm below the PCB underside (socket tails 1.0 + 0.5 mm foam pad + up to 7.2 mm cell + 0.3 mm), floor at z = -10.6 mm; the case may use -11.6 mm to share the ball pocket's floor level |
+| Clearances | bay 1.75 mm from the top PCB edge, 0.37 mm from the left controller hole pads, 1.25 mm from the reset button, 2.6 mm from the inner column's hot-swap sockets; checked by the layout generator against every back-side part |
+| Alternatives | any cell up to 20.5 x 37.5 x 7.2 mm: 702025 / 602025 (20 x 25), 502030 / 602030 (20 x 30), 552035; the old 301230 (12 x 32 mm) would fit too but is not stocked with a plug |
 
 Because nothing lies between the controller and the PCB any more, the controller sits on the
 lowest sockets available (Mill-Max 315 with 3320 pins or conthrough, 2.5 mm design value): the
@@ -146,10 +146,10 @@ USB-C shell above it), 3.5 mm below the keycap tops. A raised controller box on 
 a styling choice, not a necessity.
 
 Both PCBs carry the same power parts in the controller block: JST-PH 2.0 connector J3
-(S2B-PH-SM4-TB, 6 mm tall, at (-56, +42), inside the battery well) as the default connection for
+(S2B-PH-SM4-TB, 6 mm tall, at (-56, +44), below the bay in the same well) as the default connection for
 the cell's plug, solder pads J2 for bare battery leads (2.54 mm pitch, B+ is the square pad, at
 (-57, +50.5)) as the alternative, MSK-12C02 slide switch PS1 in the B+ line at (-68.5, +30) with
-the actuator through the inner edge, reset button RB1 on RST at (-66, +38).
+the actuator through the inner edge, reset button RB1 on RST at (-66, +41) below the bay.
 
 RAW, GND, RST and VCC connect straight to their controller holes on both boards. There are no
 solder jumpers and no sacrificed pins: D0 is a free test pad. Sensor supply on the right half is
@@ -199,7 +199,7 @@ Controller block: a rectangle at the inner edge from above the controller down t
 cluster. Controller hole-pattern centre (-58, +11.7), USB connector towards the top edge, component side up, long
 axis parallel to the columns, the USB-C shell 1.5 mm past the PCB edge (the controller board
 overhangs the edge by 0.9 mm, the block's top edge is derived from that). Power switch, reset button, battery pads, JST
-and the test-pad row live in this block; the battery bay (21 x 28 mm, section 4) sits on the back
+and the test-pad row live in this block; the battery bay (21 x 41 mm, section 4) sits on the back
 under the controller. A "thumb bridge" fills the slot between the index/inner bottom keys and the
 thumb keys.
 

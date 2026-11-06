@@ -25,5 +25,5 @@ pads J2 (B+ square pad, 2.54 mm pitch).
 A Molex Pico-EZmate (1.9 mm tall) is the low-profile alternative if a connector is wanted.
 
 2026-11-06: resolved by `hw-battery-bay-both-halves`. Both halves now have a 9 mm deep battery
-well under the controller block, J3 at (-56, 42) lies inside it, so J3 is populated on both halves
-and the 702025's JST-PH plug is the default connection (build guide chapter 7, BOM section 4).
+well under the controller block, J3 at (-56, 44) lies inside it below the bay, so J3 is populated on both halves
+and the LP552035's JST-PH plug is the default connection (build guide chapter 7, BOM section 4).

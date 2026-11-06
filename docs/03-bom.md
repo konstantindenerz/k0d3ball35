@@ -42,15 +42,15 @@ Quantities marked "+n" include recommended spares. Sensor-board passives are 060
 | 35 (+10) | Diode | 1N4148W, SOD-123 | https://www.reichelt.de, Mouser DE | about 3 EUR per 100 | C81598 | One per key (18 left, 17 right), cathode towards the row |
 | 2 | Power switch | MSK-12C02, SMD SPDT slide, 7 x 3 x 1.5 mm | https://kamami.pl/en/switches-and-buttons/584809-msk-12c02-2-position-smd-slide-switch-horizontal-5906623474981.html | about 0.60 EUR each | C431540 | Alps SSSS811101 is the premium alternative, different footprint, not used here |
 | 2 | Reset button | Panasonic EVQ-P7A01P, side actuated SMD tact, 3.5 x 2.9 mm | Mouser DE 667-EVQ-P7A01P | about 0.40 EUR each | C122222 | Alps SKRPACE010 (C139797) is the drop-in alternative |
-| 2 | Battery connector | JST S2B-PH-SM4-TB, PH 2.0 mm, 2 pin, SMD side entry | Mouser DE 306-S2B-PH-SM4-TB | about 0.50 EUR each | C295747 | Default on both halves (the 702025 comes with a PH 2.0 plug); 6 mm tall, sits inside the battery well. Bare leads can go to the pads J2 instead |
+| 2 | Battery connector | JST S2B-PH-SM4-TB, PH 2.0 mm, 2 pin, SMD side entry | Mouser DE 306-S2B-PH-SM4-TB | about 0.50 EUR each | C295747 | Default on both halves (the LP552035 comes with a PH 2.0 plug); 6 mm tall, sits inside the battery well. Bare leads can go to the pads J2 instead |
 | 2 | Test pad set | printed on PCB | | | | No part to buy; no solder jumpers exist in r2 |
 
 ## 5. Batteries
 
 | Qty | Part | Spec | Source | Price | Notes |
 |-----|------|------|--------|-------|-------|
-| 2 | LiPo 702025 | 300 mAh, 20 x 25 x 7 mm (20.5 x 27 x 7.2 mm with protection circuit and leads), protected, JST-PH 2.0 plug | https://42keebs.eu/shop/parts/lithium-polymer-battery/ | about 7 EUR each | One per half, in the battery bay under the PCB below the controller; plugs into J3 |
-| | Alternatives | 602025 (250 mAh), 502025 (200 mAh), 402025 (150 mAh): same 20 x 25 footprint, thinner | https://www.lipobattery.us, AliExpress | | Any cell up to 20.5 x 27 x 7.2 mm fits the bay; the 301230 (32 mm long) does not. Batteries ship within the EU only from 42keebs |
+| 2 | LiPo PKCELL LP552035 | 350 mAh, 5.7 x 20 x 37 mm max. incl. protection circuit (S-8261), JST-PH 2.0 plug, 10 cm leads | https://eckstein-shop.de/LiPo-Akku-Lithium-Ion-Polymer-Batterie-37V-350mAh-mit-JST-PHR-2-Stecker-LP552035 | 4.97 EUR each | One per half, in the battery bay under the PCB below the controller; plugs into J3. Same cell at tinytronics.nl |
+| | Alternatives | 702025 / 602025 (300 / 250 mAh, 20 x 25 mm), 502030 / 602030 (250 / 300 mAh, 20 x 30 mm), 402025 (150 mAh, Eckstein LP402025) | 42keebs, Eckstein, Amazon | | Any cell up to 20.5 x 37.5 x 7.2 mm with a PH 2.0 plug fits the bay. Mouser does not ship lithium cells to Germany |
 
 Both halves use the same cell and the same bay, so there is one battery part to buy and one case
 well to print. The ball half still drains faster because the sensor adds about 0.6 mA while
@@ -95,7 +95,7 @@ tracking.
 | Controllers (nice!nano) and sockets | 48 |
 | Switches, sockets, keycaps | 53 |
 | Per-half electronics | 8 |
-| Batteries | 14 |
+| Batteries | 10 |
 | Sensor board parts, connectors, cable | 12 |
 | Ball, ceramic balls, hardware | 10 |
 | Finishing | 5 |
