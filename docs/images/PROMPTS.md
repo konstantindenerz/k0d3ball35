@@ -129,7 +129,7 @@ Aspect 4:3. Exploded view of the trackball module.
 
 ```prompt
 Exploded technical rendering on white, vertically stacked with thin guide lines: a white 19 mm
-ball, a thin retainer ring with three claws, a beige printed cup on a rectangular housing with two
+ball, a beige printed cup whose rim ends just below the ball's equator on a rectangular housing with two
 screw ears and three small ceramic balls shown slightly lifted out of their seats, a small green
 sensor board with a black lens and a flat flex cable sliding into the housing from below, two M2
 screws for the board and two for the case floor, a beige case floor with a round pocket, soft

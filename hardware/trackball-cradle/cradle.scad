@@ -1,7 +1,9 @@
 // k0d3ball35 trackball cradle
 //
 // A 3D printed holder for a 19.05 mm (or 25 mm) trackball with three static ceramic
-// bearings and a PMW3610 / LM18-LSI sensor daughterboard underneath.
+// bearings and a PMW3610 / LM18-LSI sensor daughterboard underneath. The cup rim stays
+// below the ball equator and there is no retainer: the ball rests in the cup by gravity,
+// a removable case lid covers it in transport (issues/mech-case-lid.md).
 //
 // Two ways to mount it (params.scad, `mount`):
 //   "pocket" (r2 default): the module stands on the case floor in a pocket beside the main
@@ -12,8 +14,7 @@
 //            under the PCB is pulled up with three M2 screws from the top.
 //
 //   part = "cradle"       the printed cup + housing (+ flange or ears)
-//   part = "retainer"     the printed claw ring that keeps the ball in
-//   part = "assembly"     cradle + retainer + ball + sensor dummy + PCB / floor dummies
+//   part = "assembly"     cradle + ball + sensor dummy + PCB / floor dummies
 //   part = "section"      half model for section previews
 //   part = "cutout2d"     2D outline of the required PCB clearance, cutout mount (export as DXF)
 //   part = "floor2d"      2D footprint of the module on the case floor, pocket mount (export as DXF)
@@ -53,19 +54,16 @@ seat_d       = bearing_d - 2 * bearing_fit;
 seat_depth   = bearing_d - ball_gap;   // from cup inner surface to seat bottom
 boss_len     = seat_depth + 1.4 + 0.5; // bearing boss length along its axis (starts at R_in - 0.5)
 boss_r       = (seat_d + 3.2) / 2;
-claw_top     = rim_z + retainer_t + claw_h;
-claw_r_top   = sqrt(R_in * R_in - pow(claw_top - zc, 2));           // claw inner radius at its top edge
-ball_play    = (claw_top - zc) - sqrt(max(0, R * R - claw_r_top * claw_r_top));  // vertical play before the ball is blocked
 radial_ext   = L_pcb * s + (hous_x / 2) * c;                        // outward reach of the housing (x), tilted case
 board_z      = zc - L_pcb;                                          // sensor PCB plane (lens side)
 hous_top     = pocket ? min(zc - R_in + 1.0, -pcb_t - pcb_clear) : zc - R_in + 1.0;
 skirt_z      = pocket ? floor_z : -pcb_t - flange_t;                // bottom of the cylindrical cup skirt
 slot_w       = cable_slot_w > 0 ? cable_slot_w : hous_x - 2 * corner_post;
 ear_x        = hous_x / 2 + ear_r - 0.5;                            // ear centres on the +x / -x sides
-// largest diameter of anything above the PCB underside (cup, bearing bosses, retainer):
+// largest diameter of anything above the PCB underside (cup, bearing bosses):
 // must stay inside the layout's cradle clearance circle (trackball.cradle_diameter)
 boss_reach   = (R_in - 0.5 + boss_len) * cos(bearing_elev) + boss_r * sin(bearing_elev);
-envelope_d   = 2 * max(R_out + 0.3, boss_reach);                    // +0.3: retainer claw chamfer block
+envelope_d   = 2 * max(R_out, boss_reach);
 
 // ------------------------------------------------------------------ reporting
 echo(str("STACK mount_pocket=", pocket ? 1 : 0));
@@ -76,8 +74,7 @@ echo(str("STACK ball_top_above_pcb_top=", zc + R));
 echo(str("STACK ball_bottom_z=", zc - R));
 echo(str("STACK bearing_contact_z=", zc - R * sin(bearing_elev)));
 echo(str("STACK rim_z=", rim_z));
-echo(str("STACK claw_top_z=", claw_top));
-echo(str("STACK retainer_ball_play=", ball_play));
+echo(str("STACK rim_below_equator=", zc - rim_z));
 echo(str("STACK lens_reference_plane_dist=", lens_z));
 echo(str("STACK sensor_pcb_plane_dist=", L_pcb));
 echo(str("STACK sensor_pcb_plane_z=", board_z));
@@ -191,39 +188,12 @@ module cradle_cuts() {
             translate([0, 0, -pcb_t - 0.01]) cylinder(d = pcb_cutout_d - 1.0, h = pcb_t + 0.02);
         }
     }
-    // retainer peg holes in the rim
-    for (az = retainer_claws) rotate([0, 0, az]) translate([(R_in + R_out) / 2, 0, rim_z - peg_h - 0.2])
-        cylinder(d = peg_d + 0.1, h = peg_h + 0.3);
 }
 
 module cradle() {
     difference() {
         union() { cup_outer(); housing_outer(); flange_outer(); }
         cradle_cuts();
-    }
-}
-
-// ------------------------------------------------------------------ retainer
-module retainer() {
-    difference() {
-        union() {
-            // base ring on the rim
-            translate([0, 0, rim_z]) cylinder(r = R_out, h = retainer_t);
-            // claws
-            for (az = retainer_claws) rotate([0, 0, az])
-                intersection() {
-                    translate([0, 0, rim_z]) cylinder(r = R_out, h = retainer_t + claw_h);
-                    translate([0, -claw_w / 2, rim_z]) cube([R_out + 1, claw_w, retainer_t + claw_h]);
-                }
-            // pegs
-            for (az = retainer_claws) rotate([0, 0, az]) translate([(R_in + R_out) / 2, 0, rim_z - peg_h])
-                cylinder(d = peg_d, h = peg_h + 0.01);
-        }
-        at_ball() sphere(r = R_in);                       // concentric with the ball, never touches it
-        translate([0, 0, rim_z - 1]) cylinder(r = R_in + 0.2, h = retainer_t + 1.01);  // ring bore
-        // chamfer the claw tips so the thumb does not catch
-        for (az = retainer_claws) rotate([0, 0, az])
-            translate([R_out + 0.3, -claw_w, claw_top]) rotate([0, -45, 0]) cube([3, 2 * claw_w, 3]);
     }
 }
 
@@ -263,14 +233,13 @@ module floor2d() {    // pocket mount: footprint on the case floor incl. the ear
 
 // ------------------------------------------------------------------ dispatch
 if (part == "cradle")        cradle();
-else if (part == "retainer") retainer();
 else if (part == "sensor_dummy") sensor_dummy();
 else if (part == "cutout2d") cutout2d();
 else if (part == "floor2d")  floor2d();
 else if (part == "section") {           // half model for section previews
     difference() {
-        union() { cradle(); color("orange") retainer(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
+        union() { cradle(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
         translate([-100, 0, -100]) cube([200, 100, 200]);
     }
 }
-else { cradle(); color("orange") retainer(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
+else { cradle(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }

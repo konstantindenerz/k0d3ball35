@@ -274,12 +274,7 @@ function build(half) {
     g.add(cyl(S.cup_outer_d / 2, S.rim_z - S.housing_top_z, M.cradle, bx, (S.rim_z + S.housing_top_z) / 2, bz));         // cup skirt
     const bowl = new THREE.Mesh(new THREE.SphereGeometry(ball.d / 2 + 1.2, 48, 24, 0, Math.PI * 2, Math.PI / 2 + 0.25, Math.PI / 2 - 0.25), M.cradle);
     bowl.position.set(bx, S.ball_centre_z, bz); g.add(bowl);
-    const ring = new THREE.Mesh(new THREE.TorusGeometry(ball.d / 2 + 1.3, 1.0, 12, 64), M.cradle);   // retainer ring
-    ring.rotation.x = Math.PI / 2; ring.position.set(bx, S.rim_z + 1.2, bz); g.add(ring);
-    for (const a of [30, 150, 270]) {                                                                    // retainer claws
-      const t = THREE.MathUtils.degToRad(a), r = ball.d / 2 + 1.6;
-      g.add(box(2.0, S.claw_top_z - S.rim_z, 6.0, M.cradle, bx + r * Math.cos(t), (S.claw_top_z + S.rim_z) / 2, bz + r * Math.sin(t), -a));
-    }
+    // no retainer: the cup rim stays 1 mm below the equator, the later lid keeps the ball in transport
     for (const a of [60, 180, 300]) {                                                                    // 2 mm ZrO2 bearings, 35 deg below the equator
       const t = THREE.MathUtils.degToRad(a), r = (ball.d / 2 + 1) * Math.cos(THREE.MathUtils.degToRad(35));
       { const m = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), M.bearing); m.position.set(bx + r * Math.cos(t), S.bearing_contact_z - 0.5, bz + r * Math.sin(t)); g.add(m); }
@@ -360,9 +355,9 @@ function build(half) {
   }
   // --- pocket rim marker ---
   if (ball) {
-    const g = layer('Pocket rim (future case)', 54, '#E8762E', { x: bx, y: S.claw_top_z + 4, z: bz + 10 });
-    const rim = new THREE.Mesh(new THREE.CylinderGeometry(ball.pocket_d / 2 + 2, ball.pocket_d / 2 + 2, S.claw_top_z + 1.6, 32, 1, true), M.rim);
-    rim.position.set(bx, (S.claw_top_z - 1.6) / 2, bz); g.add(rim);
+    const g = layer('Pocket rim (future case)', 54, '#E8762E', { x: bx, y: S.rim_z + 6, z: bz + 10 });
+    const rim = new THREE.Mesh(new THREE.CylinderGeometry(ball.pocket_d / 2 + 2, ball.pocket_d / 2 + 2, S.rim_z + 1.6, 32, 1, true), M.rim);
+    rim.position.set(bx, (S.rim_z - 1.6) / 2, bz); g.add(rim);
   }
 
   buildLabels();

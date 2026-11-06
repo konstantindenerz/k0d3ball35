@@ -173,10 +173,10 @@ From `hardware/trackball-cradle/stack.json` (z = 0 is the main PCB top, floor at
 | housing top (0.3 mm under the PCB underside) | -1.9 mm | -1.9 mm |
 | ball bottom | -1.95 mm | -1.95 mm |
 | ball centre | +7.6 mm | +10.6 mm |
-| cup rim | +6.6 mm | +9.6 mm |
+| cup rim (1 mm below the equator, nothing above it) | +6.6 mm | +9.6 mm |
 | ball top | **+17.1 mm** | +23.05 mm |
 | cup outer diameter | 23.1 mm | 29.0 mm |
-| largest diameter above the PCB (bearing bosses) | 24.1 mm | 29.6 mm |
+| largest diameter above the PCB (bearing bosses) | 24.1 mm | 29.0 mm |
 | PCB notch apothem needed | 15.0 mm (r2 boards) | 16.5 mm (different PCB) |
 
 Choc V1 caps top out at about 11 mm, so the 19 mm ball stands 6 mm proud of the keys, roughly what
@@ -205,6 +205,11 @@ option. The r1 25 mm ball stood 12 mm proud, which is why the ball size was redu
   placeholder on `Dwgs.User`.
 * The PCB does not need to be square to the ball axis in the horizontal plane; the optical centre
   must be on the ball axis within about 0.5 mm, Z within the 2.2 to 2.6 mm window.
+* No retainer. The cup rim ends 1 mm below the ball equator all round and there is no claw ring,
+  lip or peg above it: the ball rests on the three bearings by gravity, the thumb reaches it at
+  its widest point from every side, and it lifts straight out for cleaning. In transport the
+  removable case lid covers keys and ball (`issues/mech-case-lid.md`); a bare half without its
+  lid should travel without the ball.
 
 ### 3.3 Why 19.05 mm, and the 25 mm fallback
 

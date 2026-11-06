@@ -57,18 +57,13 @@ flange_hole_bcd = ball_d + 11;  // cutout mount: bolt circle of the three M2 fla
 flange_hole_az  = [90, 210, 330];
 flange_pilot_d  = 1.6;     // pilot hole for M2 self-tapping screws (use 3.2 for heat-set inserts)
 
-// ---------------------------------------------------------------- cup & retainer
+// ---------------------------------------------------------------- cup
+// There is no retainer: the rim stays below the equator all round and the ball is held by
+// gravity alone. A removable case lid (issues/mech-case-lid.md) covers the ball in transport.
 wall            = 1.6;     // cup wall thickness
-rim_drop        = 1.0;     // cup rim this far below the equator (finger clearance)
+rim_drop        = 1.0;     // cup rim this far below the equator (finger clearance, ball lifts out freely)
 housing_wall    = 2.0;     // walls around the sensor board / lens cavity
-retainer_t      = 1.2;     // retainer base ring thickness
-retainer_claws  = [30, 150, 270];  // claw azimuths; keep the thumb approach side free
-claw_w          = 6;       // claw width (tangential)
-claw_h          = 4.8;     // claw height above the base ring
-claw_grip       = 0.7;     // radial overlap of the claw tip over the ball silhouette
-peg_d           = 1.8;     // retainer pegs (press fit into rim holes of peg_d + 0.1)
-peg_h           = 3;
 
 // ---------------------------------------------------------------- rendering
 $fn             = 96;
-part            = "assembly";  // cradle | retainer | assembly | section | cutout2d | floor2d | sensor_dummy
+part            = "assembly";  // cradle | assembly | section | cutout2d | floor2d | sensor_dummy

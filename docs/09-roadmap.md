@@ -17,8 +17,9 @@ Do these before paying for anything:
    holes, pours and auto-placed GND vias, hand routes of the thumb cluster on both boards. Tickets
    `hw-main-pcb-review-r1`, `hw-gnd-stitching-review`.
 4. Cradle test print and sensor fit: print `hardware/trackball-cradle/stl/cradle-19mm-pocket.stl`
-   plus the retainer, fit a sensor board (or a 26 x 25 mm dummy) and check the lens gap with a
-   feeler gauge; check the cup against a printed copy of the right outline's notch. Tickets
+   (there is no retainer), fit a sensor board (or a 26 x 25 mm dummy) and check the lens gap with
+   a feeler gauge; the ball must spin without touching the rim; check the cup against a printed
+   copy of the right outline's notch. Tickets
    `hw-sensor-stack-height`, `mech-lm18-lens-outline-measurement`.
 5. Ball sourcing and tracking: order a pack of 3/4 inch POM balls (and a PandaKB TB19) and a bag of
    2 mm ZrO2 balls now, test them on the sensor board as soon as it exists. Tickets
@@ -54,10 +55,12 @@ Boxy, angular printed case in the style of the reference build: flat tray follow
 PCB outline, walls flush with the keycap skirts, a raised rectangular controller box at the inner
 edge with the LED window, USB-C opening, power switch slot and reset hole, a 32 mm pocket beside
 the right PCB for the ball with the sensor board on its floor, room for the 702025 cell in the
-controller box of the right half, bumper recesses. Optional tenting feet. Depends on the final PCB
-outlines (`outline-left.dxf`, `outline-right.dxf`) and the cradle floor footprint
+controller box of the right half, bumper recesses. A removable lid per half covers keys and ball
+for transport (the cradle has no retainer, the lid is what keeps the ball in a bag) and attaches
+under the half with magnets as a flat or tenting foot. Depends on the final PCB outlines
+(`outline-left.dxf`, `outline-right.dxf`) and the cradle floor footprint
 (`hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`).
-Tickets: `mech-case`, `mech-case-ball-pocket`, `mech-case-ball-dome`.
+Tickets: `mech-case`, `mech-case-ball-pocket`, `mech-case-ball-dome`, `mech-case-lid`.
 
 ## r2.2 - firmware polish
 

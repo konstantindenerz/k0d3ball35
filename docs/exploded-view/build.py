@@ -19,7 +19,7 @@ REPO = HERE.parents[1]
 HALVES = ("left", "right")
 TEST_PADS = {"left": ["D0", "D1", "D2", "D3", "D9", "D10", "D14", "D15", "D16"], "right": ["D0", "D1", "D2", "D3", "D9"]}
 STACK_KEYS = ("ball_centre_z", "ball_top_above_pcb_top", "cup_outer_d", "lowest_plastic_z", "lowest_sensor_board_z",
-              "lens_reference_plane_dist", "bearing_contact_z", "rim_z", "claw_top_z", "floor_z", "sensor_pcb_plane_z",
+              "lens_reference_plane_dist", "bearing_contact_z", "rim_z", "floor_z", "sensor_pcb_plane_z",
               "housing_x", "housing_y", "housing_top_z", "footprint_x", "footprint_y", "envelope_d_above_pcb", "notch_apothem")
 
 
@@ -65,7 +65,7 @@ def half_data(half: str, cfg: dict, stack: dict) -> dict:
         "holes": points["mounting_holes"],
         "test_pads": {"start": cfg["test_pads"]["start"], "pitch": cfg["test_pads"]["pitch"], "labels": TEST_PADS[half]},
         "battery": "702025" if ball else "301230",
-        "stack": {k: stack[k] for k in STACK_KEYS} if ball else None,
+        "stack": {k: stack[k] for k in STACK_KEYS if k in stack} if ball else None,
     }
 
 

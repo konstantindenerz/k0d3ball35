@@ -15,9 +15,7 @@ POCKET19  = -D 'mount="pocket"' -D ball_d=19.05
 POCKET25  = -D 'mount="pocket"' -D ball_d=25 -D notch_apothem=16.5
 CUTOUT25  = -D 'mount="cutout"' -D ball_d=25
 
-STL = stl/cradle-19mm-pocket.stl stl/retainer-19mm.stl \
-      stl/cradle-25mm-pocket.stl stl/retainer-25mm.stl \
-      stl/cradle-25mm-cutout.stl
+STL = stl/cradle-19mm-pocket.stl stl/cradle-25mm-pocket.stl stl/cradle-25mm-cutout.stl
 DXF = dxf/floor-19mm-pocket.dxf dxf/floor-25mm-pocket.dxf dxf/cutout-25mm.dxf
 PNG = preview/section-19mm-pocket.png preview/assembly-19mm-pocket.png \
       preview/assembly-25mm-pocket.png preview/section-25mm-cutout.png
@@ -33,12 +31,8 @@ stl dxf preview:
 
 stl/cradle-19mm-pocket.stl: cradle.scad params.scad | stl
 	$(OSC) -D 'part="cradle"'   $(POCKET19) -o $@ $<
-stl/retainer-19mm.stl: cradle.scad params.scad | stl
-	$(OSC) -D 'part="retainer"' $(POCKET19) -o $@ $<
 stl/cradle-25mm-pocket.stl: cradle.scad params.scad | stl
 	$(OSC) -D 'part="cradle"'   $(POCKET25) -o $@ $<
-stl/retainer-25mm.stl: cradle.scad params.scad | stl
-	$(OSC) -D 'part="retainer"' $(POCKET25) -o $@ $<
 stl/cradle-25mm-cutout.stl: cradle.scad params.scad | stl
 	$(OSC) -D 'part="cradle"'   $(CUTOUT25) -o $@ $<
 

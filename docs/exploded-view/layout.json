@@ -1097,7 +1097,6 @@
     "lens_reference_plane_dist": 2.4,
     "bearing_contact_z": 2.11168,
     "rim_z": 6.575,
-    "claw_top_z": 12.575,
     "floor_z": -11.6,
     "sensor_pcb_plane_z": -7.75,
     "housing_x": 30.0,

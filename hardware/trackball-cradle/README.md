@@ -2,8 +2,9 @@
 
 Parametric OpenSCAD model of the trackball holder: a cup with three static ceramic
 bearings, a housing for the PMW3610 sensor daughterboard underneath, and, since r2, a base
-that stands on the case floor in a pocket beside the right PCB. A separate claw ring keeps
-the ball from falling out when a half is lifted or turned over.
+that stands on the case floor in a pocket beside the right PCB. There is no retainer: the
+rim stays below the ball equator, the ball rests in the cup by gravity and lifts straight
+out for cleaning. The removable case lid (`issues/mech-case-lid.md`) covers it in transport.
 
 Files
 
@@ -24,9 +25,9 @@ Requires OpenSCAD 2025 or newer with the Manifold backend (tested with 2026.10.1
 
 | `mount` | `ball_d` | Where it sits | STL | Status |
 |---------|----------|---------------|-----|--------|
-| `pocket` | 19.05 | case pocket beside the right PCB, PCB notch apothem 15 mm | `cradle-19mm-pocket.stl`, `retainer-19mm.stl` | r2 default |
-| `pocket` | 25 | same, but needs a PCB notch apothem of 16.5 mm and a 35 mm pocket | `cradle-25mm-pocket.stl`, `retainer-25mm.stl` | fallback, different PCB |
-| `cutout` | 25 | through a 30 mm round cutout of the PCB, flange under the PCB | `cradle-25mm-cutout.stl`, `retainer-25mm.stl` | r1, kept for reference |
+| `pocket` | 19.05 | case pocket beside the right PCB, PCB notch apothem 15 mm | `cradle-19mm-pocket.stl` | r2 default |
+| `pocket` | 25 | same, but needs a PCB notch apothem of 16.5 mm and a 35 mm pocket | `cradle-25mm-pocket.stl` | fallback, different PCB |
+| `cutout` | 25 | through a 30 mm round cutout of the PCB, flange under the PCB | `cradle-25mm-cutout.stl` | r1, kept for reference |
 
 The 19.05 mm (3/4 inch) ball is the smallest size with a working precedent in keyboards
 (torabo-tsuki LP ships 19.05 mm POM balls, LiNEA40 uses 19 mm on a PMW3610); see
@@ -56,7 +57,7 @@ z = -11.6, the same plane the r1 cutout design used. The resulting heights:
 | Variant | Ball centre | Ball top above PCB top | Cup rim | Sensor PCB plane | Floor | Cup outer | Largest diameter above the PCB |
 |---------|-------------|------------------------|---------|------------------|-------|-----------|-------------------------------|
 | 19.05 mm, pocket | +7.58 | **+17.1 mm** | +6.58 | -7.75 | -11.6 | 23.1 mm | 24.1 mm (bearing bosses) |
-| 25 mm, pocket | +10.55 | +23.05 mm | +9.55 | -7.75 | -11.6 | 29.0 mm | 29.6 mm |
+| 25 mm, pocket | +10.55 | +23.05 mm | +9.55 | -7.75 | -11.6 | 29.0 mm | 29.0 mm |
 | 25 mm, cutout (r1) | +10.55 | +23.05 mm | +9.55 | -7.75 | n.a. (-7.75 lowest plastic) | 29.0 mm | 40 mm flange under the PCB |
 
 Numbers are reproduced by `make stack` into `stack.json`. The ball top height is
@@ -94,12 +95,13 @@ the straight-down stack is already 6 mm lower than r1 was, so the topic is close
 
 ### Ball retention
 
-The cup rim stops 1 mm below the equator all around, so the thumb reaches the ball freely.
-The separate retainer is a 1.2 mm ring sitting on that rim with three claws that follow
-the ball with the same 0.4 mm gap as the cup and rise 4.8 mm above the ring. The 19 mm ball
-can lift 0.85 mm before the claws block it (25 mm: 1.15 mm). Three pegs press into holes in
-the rim; pull the ring off to take the ball out for cleaning. The claws sit at 30, 150 and
-270 degrees so none of them is in the way of the thumb coming from the inner side.
+There is none, by design. The cup rim stops `rim_drop` = 1 mm below the equator all around
+(`rim_z` = ball centre minus 1 mm, `rim_below_equator` in `stack.json`), so the thumb reaches
+the ball at its widest point from every side and nothing above the rim can touch it. The ball
+sits on the three bearings by gravity and lifts straight out for cleaning. In use the half
+lies flat and the ball cannot leave the cup; for transport the removable case lid
+(`issues/mech-case-lid.md`) covers keys and ball, which is why a claw ring, lip or bayonet
+retainer was dropped. If you carry a bare half without the lid, take the ball out first.
 
 ### Bearings
 
@@ -129,15 +131,14 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 
 ## Printing
 
-- Material: PETG or PLA, any colour. PETG is less brittle for the retainer pegs.
+- Material: PETG or PLA, any colour.
 - Layer height 0.12 mm, 3 perimeters, 30 percent infill, no supports.
 - Cradle: print upright (ears down), the cup interior and the lens cavity are closed at
   45 degree or steeper angles. The three bearing bosses print as small overhangs on the
   outside, fine at 0.12 mm. The cable slot is a bridge of 24 mm at the board plane; it
   prints fine at 0.12 mm, add a support blocker only if your printer sags.
-- Retainer: print upside down (claw tips on the bed) so the pegs point up; the chamfered
-  claw tips are then the first layers.
-- Print one spare retainer; the pegs are the first thing to break.
+- Deburr the rim with a fingernail or a fine file: it is the only printed edge near the ball
+  and a stray strand of filament there is what makes a ball scrape.
 
 ## Assembly
 
@@ -154,12 +155,16 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
    keys; fasten with two M2x6 self-tapping screws from underneath the case (or M2x6 machine
    screws into heat-set inserts if you set `flange_pilot_d = 3.2`).
 5. Route the FFC to J1 on the PCB underside, insert, close the lock.
-6. Put the ball in, push the retainer onto the rim.
+6. Drop the ball in. It must spin freely in every direction without touching the rim.
 
 ## Test-fit checklist (do this before ordering PCBs)
 
 - Ball spins freely in every direction and settles without wobble: bearings seated.
-- Lift the half, turn it over, shake gently: ball stays in.
+- Rim clearance: with the ball in, a strip of paper slides between the ball and the rim all
+  the way round; the ball must touch only the three bearings. The equator stands 1 mm above
+  the rim.
+- Lift the ball out with two fingers: nothing holds it. (It is retained in transport by the
+  case lid, not by the cradle.)
 - Lens distance: with the ball out, lay a 2.0 mm feeler gauge on the lens aperture through
   the 9 mm hole and check that it is flush with the cup surface at the bottom (the ball
   rests 0.4 mm above the cup surface, so 2.0 mm gauge plus 0.4 mm design gap gives the
@@ -168,7 +173,7 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
   (print the notch from `hardware/layout/output/outline-right.dxf`): at least 0.3 mm all
   round between the cup and the notch edge.
 - Thumb clearance: check that the thumb reaches the ball at its equator from the inner side
-  without touching a claw.
+  without touching the rim.
 - Flash the firmware and watch the cursor: a 19 mm ball at 600 cpi should move the cursor
   about one screen width per half turn. Jitter at rest means the lens is not seated.
 
@@ -177,7 +182,9 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 - The ball top at +17.1 mm (19 mm ball) is set by physics (sensor straight below the ball,
   floor at -11.6). The next levers are a thinner sensor stack (PAW3222 module, 3.3 mm from
   board to ball) or a deeper floor under the pocket only.
-- Retainer pegs rely on friction. If they loosen, switch to a bayonet ring.
+- No retainer: the ball only stays in while the half lies flat or the case lid is on
+  (`issues/mech-case-lid.md`). If that turns out to be a nuisance, a shallow bayonet ring on
+  the rim is the fallback; the cup geometry does not change.
 - Bearing seat size is tuned for FDM; resin prints will need `bearing_fit` set to 0.
 
 ## Image prompts
@@ -185,8 +192,8 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 ```prompt
 Technical cross-section illustration of a 3D printed trackball module standing in a case
 pocket beside a keyboard PCB: a 19 mm white ball sitting in a thin blue cup, three small
-ceramic bearings at 35 degrees below the equator, a flat orange retainer ring with three
-claws above the equator, below the cup a rectangular housing reaching down to the case floor
+ceramic bearings at 35 degrees below the equator, the cup rim ending just below the ball's
+equator with nothing above it, below the cup a rectangular housing reaching down to the case floor
 with a green sensor PCB inside and a grey lens block looking up at the ball, two small screw
 ears on the floor, the 1.6 mm green PCB ending 1 mm away from the cup with an angular notch,
 dimension lines for 2.4 mm lens distance and 17 mm ball height, clean CAD line-art style,
@@ -195,7 +202,7 @@ white background.
 
 ```prompt
 Exploded assembly drawing of a trackball module: from top to bottom a 19 mm white ball, a
-thin retainer ring with three claws and three pegs, a cup with three tiny ceramic balls on a
+cup with three tiny ceramic balls on a
 rectangular housing with two screw ears, a 26 x 25 mm sensor board with a lens sliding in
 from below, two M2 screws, a flat ribbon cable leaving sideways through a slot, two longer
 screws coming up through a beige case floor, isometric, pastel colours, labelled parts.

@@ -29,4 +29,7 @@ controller LED), a 32 mm pocket beside the right PCB for the trackball module
 
 ## Notes
 
-Blocked by hw-two-pcbs-r2 (final outlines) and mech-case-ball-pocket. Optional tenting feet later.
+Blocked by hw-two-pcbs-r2 (final outlines) and mech-case-ball-pocket. Each half also gets a
+removable lid that covers keys and ball for transport and attaches under the half as a foot
+(`mech-case-lid`); the cradle has no ball retainer, so the lid is what keeps the ball in a bag.
+Provide magnet pockets on the case top rim and floor for it.

@@ -25,13 +25,14 @@ phase has to provide that pocket. All numbers come from `hardware/layout/output/
 | Housing footprint on the floor | 30 x 29 mm box plus two screw ears on the x axis: 43 x 29 mm overall, 0.5 mm clearance in `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`. The box corners reach outside the 32 mm circle below the PCB plane, so the well is the union of the circle and the rectangle |
 | Case screws | 2x M2 self-tapping from below through the floor into the ears, 36 mm apart on the x axis through the ball centre |
 | Sensor board | 26 x 25 mm (`trackball.sensor_board`), lies inside the housing; the FFC leaves the housing through the slot in its key-facing wall and runs under the PCB to J1 at (-8, +46.5) |
-| Cup | 23.1 mm outer diameter, rim at +6.6 mm; retainer claws to +12.6 mm; ball top +17.1 mm |
+| Cup | 23.1 mm outer diameter, rim at +6.6 mm (1 mm below the equator), nothing above the rim; ball top +17.1 mm |
 | Clearance | nothing of the cradle is closer than 0.3 mm to the PCB underside; the case must not add anything between the housing top (-1.9 mm) and the PCB |
 
 Where the housing lies under the PCB (towards the keys), it shares the general case cavity; the
-case floor there must also be at -11.6 mm or deeper. The pocket rim can rise to about +12 mm around
-the ball (retainer claws end at +12.6 mm) and must leave the thumb side open so the thumb reaches
-the ball at its equator.
+case floor there must also be at -11.6 mm or deeper. The pocket wall must stay below the cup rim
+(+6.6 mm) or at least leave the thumb side open so the thumb reaches the ball at its equator
+(+7.6 mm) from the inner side. The cradle has no retainer: the ball is held by gravity and, in
+transport, by the removable case lid (`mech-case-lid`), so the pocket itself needs no lip.
 
 ## Acceptance criteria
 
@@ -45,3 +46,4 @@ the ball at its equator.
 
 Mounting the cradle on top of the PCB was rejected (about 12 mm taller). The pocket keeps the sensor
 board on the case floor like the r1 cutout did while the PCB loses the cutout and the flange ring.
+The transport lid that keeps the ball in the open cup is `mech-case-lid`.

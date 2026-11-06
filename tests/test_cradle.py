@@ -2,8 +2,9 @@
 """Checks for the parametric trackball cradle (hardware/trackball-cradle).
 
 r2 mounts the module in a case pocket beside the right PCB (``mount = "pocket"``) with a
-19.05 mm ball; the 25 mm pocket and the r1 cutout mount stay as variants. The OpenSCAD
-dependent tests are skipped when no OpenSCAD binary is available.
+19.05 mm ball; the 25 mm pocket and the r1 cutout mount stay as variants. The cradle has no
+retainer: the rim stays ``rim_drop`` below the equator and the case lid keeps the ball in
+for transport. The OpenSCAD dependent tests are skipped when no OpenSCAD binary is available.
 """
 import json
 import re
@@ -23,6 +24,8 @@ LAYOUT = ROOT / "hardware" / "layout" / "k0d3ball35.yaml"
 LENS_Z_MIN, LENS_Z_MAX = 2.2, 2.6
 LENS_H, SENSOR_PCB_T = 3.4, 1.6
 PCB_T = 1.6
+RIM_DROP = 1.0   # params.scad rim_drop: cup rim this far below the ball equator
+CLAW_KEYS = {"claw_top_z", "retainer_ball_play"}
 
 
 def openscad():
@@ -60,6 +63,18 @@ def test_sources_present():
     assert "lens_z" in params
     assert re.search(r'^mount\s*=\s*"pocket"', params, re.M), "pocket mount must be the default"
     assert re.search(r"^ball_d\s*=\s*19\.05", params, re.M), "19.05 mm ball must be the default"
+    assert re.search(r"^rim_drop\s*=\s*1\.0", params, re.M)
+    # no retainer anywhere: no claw ring parameters, no retainer part, no peg holes
+    scad = SCAD.read_text()
+    for name in ("retainer_t", "retainer_claws", "claw_w", "claw_h", "claw_grip", "peg_d", "peg_h"):
+        assert not re.search(rf"^{name}\s*=", params, re.M), name
+    assert "module retainer" not in scad
+    assert 'part == "retainer"' not in scad
+    assert "peg" not in scad.lower()
+    assert "claw" not in scad.lower()
+    makefile = (CRADLE / "Makefile").read_text()
+    assert "retainer" not in makefile
+    assert not list((CRADLE / "stl").glob("retainer*"))
 
 
 def test_stack_json_values(stack):
@@ -70,8 +85,11 @@ def test_stack_json_values(stack):
         assert abs(v["sensor_pcb_plane_dist"] - (v["ball_d"] / 2 + v["lens_reference_plane_dist"] + LENS_H)) < 1e-6, name
         # nothing below the agreed envelope (case floor 10 mm under the PCB underside)
         assert min(v["lowest_plastic_z"], v["lowest_sensor_board_z"]) >= -(PCB_T + v["depth_below_pcb_bottom"]) - 1e-6, name
-        # retainer must capture the ball with limited play
-        assert 0 < v["retainer_ball_play"] < 2.0, name
+        # no retainer: the rim stays rim_drop below the equator so the ball lifts out freely
+        assert not CLAW_KEYS & set(v), name
+        assert abs(v["rim_below_equator"] - RIM_DROP) < 1e-6, name
+        assert abs((v["ball_centre_z"] - v["rim_z"]) - RIM_DROP) < 1e-6, name
+        assert v["rim_z"] < v["ball_centre_z"] < v["ball_top_above_pcb_top"], name
         if v["mount_pocket"]:
             # the module stands on the case floor and keeps clear of the PCB underside
             assert abs(v["lowest_plastic_z"] - v["floor_z"]) < 1e-6, name
@@ -114,6 +132,9 @@ def test_render_19mm_pocket_stl(tmp_path):
     radius = (above[:, :2] ** 2).sum(axis=1) ** 0.5
     assert radius.max() <= values["notch_apothem"] - 0.3 + 1e-3
     assert radius.max() <= values["envelope_d_above_pcb"] / 2 + 1e-3
+    # nothing printed above the rim (no claws), rim 1 mm below the ball centre
+    assert v[:, 2].max() <= values["rim_z"] + 1e-3
+    assert abs(values["ball_centre_z"] - values["rim_z"] - RIM_DROP) < 1e-6
     # housing footprint on the floor: sensor board plus walls plus the two ears
     on_floor = v[v[:, 2] < values["floor_z"] + 0.5]
     assert abs(on_floor[:, 0].max() - values["footprint_x"] / 2) < 0.6
@@ -125,7 +146,6 @@ def test_render_other_variants(tmp_path):
     for overrides in (
         {"ball_d": 25, "mount": "pocket", "notch_apothem": 16.5},
         {"ball_d": 25, "mount": "cutout"},
-        {"ball_d": 19.05, "mount": "pocket", "part": "retainer"},
     ):
         out = tmp_path / "part.stl"
         values, log = run_scad(overrides, out)
