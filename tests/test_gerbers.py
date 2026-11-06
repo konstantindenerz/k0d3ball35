@@ -79,11 +79,20 @@ GRAPHIC_LAYERS = {
 }
 
 # KiCad coordinates of the battery bay (layout bay centre (-53.9, 17.5), 21 x 41 mm, offset 120/60)
-BAY_KICAD = (55.6, 57.0, 76.6, 98.0)
+BAY_KICAD = (55.6, 57.0, 76.6, 98.0)   # right board; the left board is mirrored about the page origin x = 120
 BAY_TEXTS = ("LP552035 cell", "350 mAh", "leads +y")
 # controller footprint area in KiCad coordinates (centre (62, 74), 18 x 33.5 mm)
 CONTROLLER_KICAD = (53.0, 57.25, 71.0, 90.75)
 NOTCH_APOTHEM = 15.0  # cradle radius 14 + 1 mm clearance
+PAGE_X = 120.0        # KiCad x of the layout origin; the left board mirrors x about it
+
+
+def _mirrored(rect: tuple, board: str) -> tuple:
+    """(x0, y0, x1, y1) rectangle of the right board -> the same rectangle on the given board."""
+    if board == "right":
+        return rect
+    x0, y0, x1, y1 = rect
+    return (2 * PAGE_X - x1, y0, 2 * PAGE_X - x0, y1)
 NOTCH_SIDE = 2 * NOTCH_APOTHEM * math.tan(math.radians(22.5))
 
 
@@ -231,6 +240,8 @@ def test_main_board_outline_is_angular_without_cutout(board: str):
     allowed = {0.0, 90.0, 10.0, 20.0, 100.0, 110.0}
     if board == "right":
         allowed.add(45.0)
+    else:   # the left board is the mirror image: the thumb edges lean the other way
+        allowed = {(180.0 - a) % 180.0 for a in allowed}
     assert set(angles) <= allowed, f"{board}: unexpected outline directions {dict(angles)}"
 
 
@@ -256,6 +267,25 @@ def test_right_board_has_octagonal_notch_left_board_none():
 
     left = _outline_segments(_stack("left"))
     assert not [s for s in left if abs((math.degrees(math.atan2(s[3] - s[1], s[2] - s[0])) % 180) - 45) < 0.5]
+
+
+@pytest.mark.parametrize("board", MAIN)
+def test_main_board_extents_are_the_layout_bounds(board: str):
+    """The gerber outline spans the layout bounds plus the page offset; the left board mirrors x
+    about the page origin (gerber y is negated)."""
+    from k0d3.geometry import load_layout
+
+    layout = load_layout(board)
+    minx, miny, maxx, maxy = layout.outline.bounds
+    sx = layout.board_sx
+    want = (PAGE_X + min(sx * minx, sx * maxx), -(60.0 + maxy), PAGE_X + max(sx * minx, sx * maxx), -(60.0 + miny))
+    stack = _stack(board)
+    (x0, y0), (x1, y1) = stack.board_bounds()
+    half_w = _outline_width(stack) / 2
+    got = (x0 + half_w, y0 + half_w, x1 - half_w, y1 - half_w)
+    assert all(abs(a - b) < 0.15 for a, b in zip(got, want)), f"{board}: gerber extents {got}, layout {want}"
+    if board == "left":
+        assert got[0] < PAGE_X - 40 and got[2] > PAGE_X + 70, "controller block at +x on the left board"
 
 
 # ---------------------------------------------------------------- drills
@@ -308,21 +338,22 @@ def test_battery_bay_marking_on_back_silkscreen(board: str):
         assert layer == "B.SilkS", f"{board}: {text!r} on {layer}"
         block = pcb[m.end():m.end() + 300]
         assert "(justify mirror)" in block.split("(gr_", 1)[0], f"{board}: {text!r} not mirrored"
-        assert BAY_KICAD[0] < x < BAY_KICAD[2] and BAY_KICAD[1] < y < BAY_KICAD[3], f"{board}: {text!r} at {x},{y} outside the bay"
+        bay, ctrl = _mirrored(BAY_KICAD, board), _mirrored(CONTROLLER_KICAD, board)
+        assert bay[0] < x < bay[2] and bay[1] < y < bay[3], f"{board}: {text!r} at {x},{y} outside the bay"
         # the label sits in the lower part of the bay, below the controller's hole rows
-        assert CONTROLLER_KICAD[0] < x < CONTROLLER_KICAD[2] + 4 and y > CONTROLLER_KICAD[1]
+        assert ctrl[0] - 4 < x < ctrl[2] + 4 and y > ctrl[1]
     # the dashed rectangle is the only dashed item on B.SilkS
     dashed = re.findall(r"\(gr_poly\s*\(pts\s*((?:\(xy [\d. -]+\)\s*)+)\)\s*\(stroke\s*\(width [\d.]+\)\s*\(type dash\)\s*\)\s*\(fill no\)\s*\(layer \"B\.SilkS\"\)", pcb)
     assert len(dashed) == 1, f"{board}: {len(dashed)} dashed polygons on B.SilkS"
     pts = [tuple(map(float, xy.split())) for xy in re.findall(r"\(xy ([\d. -]+)\)", dashed[0])]
     xs, ys = sorted({p[0] for p in pts}), sorted({p[1] for p in pts})
-    assert (xs[0], ys[0], xs[-1], ys[-1]) == BAY_KICAD, f"{board}: dashed bay rectangle at {xs}, {ys}"
+    assert (xs[0], ys[0], xs[-1], ys[-1]) == bay, f"{board}: dashed bay rectangle at {xs}, {ys}"
     # and the gerber carries the strokes: text and dashes inside the bay rectangle on the bottom silk
     silk = _stack(board).graphic_layers[("bottom", "silk")]
     inside = 0
     for obj in silk.objects:
         (ox0, ox1), (oy0, oy1) = obj.bounding_box()
-        if BAY_KICAD[0] - 0.3 <= ox0 and ox1 <= BAY_KICAD[2] + 0.3 and -BAY_KICAD[3] - 0.3 <= oy0 and oy1 <= -BAY_KICAD[1] + 0.3:
+        if bay[0] - 0.3 <= ox0 and ox1 <= bay[2] + 0.3 and -bay[3] - 0.3 <= oy0 and oy1 <= -bay[1] + 0.3:
             inside += 1
     assert inside >= 80, f"{board}: only {inside} bottom silk strokes inside the battery bay"
 

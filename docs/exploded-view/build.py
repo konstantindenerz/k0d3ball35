@@ -63,6 +63,8 @@ def feet(outline: list[list[float]], inset: float = 7.0) -> list[list[float]]:
 
 
 def half_data(half: str, cfg: dict, stack: dict) -> dict:
+    # points-*.json is in the handedness-neutral layout frame; the page mirrors the left half for
+    # display (root.scale.x = -1), which matches the mirrored left board files (hardware/left-pcb).
     points = json.loads((REPO / f"hardware/layout/output/points-{half}.json").read_text())
     tb = points.get("trackball")
     ball = None

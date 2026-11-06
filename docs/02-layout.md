@@ -17,8 +17,10 @@ the PCBs is placed by hand.
 
 Millimetres, one frame per half: x grows outward towards the pinky, y grows downward towards the
 user. The origin is the centre of the middle-column top key. This is KiCad's screen orientation,
-so the PCB generator adds only a page offset. Both halves use the same frame; the left half is
-mirrored for display only. Since r2 the halves are two different PCBs: everything outside the
+so the PCB generator adds only a mirror and a page offset. Both halves use the same frame, which
+is handedness-neutral: the left BOARD (and its case and lid) is the mirror image of the frame,
+x -> -x, so seen from the top the left board has the controller block at its right-hand edge;
+the frame, `points-*.json` and `outline-*.dxf` stay unmirrored. Since r2 the halves are two different PCBs: everything outside the
 `halves:` section of the yaml is shared, the thumb list, the ball pocket, the FPC connector and the
 hand routes are per half.
 
@@ -139,7 +141,8 @@ the socket pads), joined with 90 degree steps that follow the column stagger, th
 controller block at the inner edge (from above the controller down to the thumb cluster) and the
 thumb bridge between the index/inner bottom keys and the thumb keys. Corners are not rounded
 (`corner_radius: 0`, mitre joins; the fab's 1 mm router radius is accepted). On the right half the
-octagonal pocket notch is subtracted. Sizes (bounding boxes): left 121.0 x 86.7 mm, right
+octagonal pocket notch is subtracted. The left board outline is the mirror image of this
+(controller block at +x, thumb arc leaning the other way). Sizes (bounding boxes): left 121.0 x 86.7 mm, right
 117.8 x 80.4 mm; the ball pocket adds about 3 mm of case height beside the right PCB.
 
 ## Changing the layout

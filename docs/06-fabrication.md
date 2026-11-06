@@ -61,6 +61,10 @@ The sensor board has its own `hardware/sensor-pcb/export.sh` with the same outpu
 - [ ] Open both zips in a gerber viewer (JLCPCB's upload preview is enough): outline closed, no
       internal cutout, the octagonal notch on the right board only, five mounting holes per board,
       J1 only on the right board, no missing layers
+- [ ] The left board outline is the mirror image of the right one: seen from the top the controller
+      block sits at the right-hand edge on the left board and at the left-hand edge on the right
+      board; the thumb arcs lean in opposite directions. The two boards are not interchangeable
+      (`tests/test_pcb_review.py::test_left_board_is_mirror_of_layout`)
 - [ ] Drill files (count them in `hardware/<half>-pcb/gerbers/*.drl` of the current export): per
       key one 3.40 mm and two 1.70 mm NPTH (switch posts) and three 3.05 mm NPTH (socket bosses,
       the reversible footprint has the mirrored third hole), so 18 / 36 / 54 on the left and

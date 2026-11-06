@@ -160,8 +160,14 @@ the controller's VCC (3.3 V, up to 500 mA available); the PMW3610 draws 0.6 mA w
 
 Coordinates are in mm in a half's own frame: x grows outward (towards the pinky), y grows downward
 (towards the user). Origin is the centre of the middle-column top key. Pitch 18 x 17. Both halves
-share the frame; the left half is rendered mirrored for display only. Everything that is not listed
-under `halves:` in the yaml is identical on both boards.
+share the frame, which is handedness-neutral: it describes the right half seen from the top and the
+left half seen through the board. Every physical artefact of the left half (PCB, case, lid) is the
+mirror image of the frame (x -> -x, `Layout.to_board` in `scripts/k0d3/geometry.py`): on the left
+BOARD seen from the top the controller block, the power switch and the test pads sit at +x, the
+right-hand edge, and the pinky column at the left. Footprints are not mirrored (the parts are
+chiral), only their rotation changes sign. The yaml, `points-*.json`, `outline-*.dxf` and the tables
+below stay in frame coordinates. Everything that is not listed under `halves:` in the yaml is
+identical on both boards.
 
 Column stagger (y offset of a column relative to the middle column; Keyball39 values 11.70 / 4.70 /
 0 / 2.50 / 5.00 mm at 19.05 pitch, scaled by 17 / 19.05):
