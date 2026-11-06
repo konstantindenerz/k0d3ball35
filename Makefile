@@ -23,7 +23,7 @@ BUILD      := build
 SCHS := $(wildcard $(HALF_SCHS) $(SENSOR_SCH))
 PCBS := $(wildcard $(HALF_PCBS) $(SENSOR_PCB))
 
-.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check clean help
+.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case clean help
 
 all: layout board erc drc gerbers
 
@@ -81,6 +81,12 @@ test: ## Run the test suite
 
 issues: ## Regenerate issues/README.md from the ticket frontmatter
 	$(PY) scripts/issues.py
+
+case-data: ## Regenerate hardware/case/data.scad (layout facts for the printed case)
+	$(MAKE) -C hardware/case data PYTHON=../../$(PY)
+
+case: ## Render the printed case: STLs, floor DXFs, previews and stack.json (needs OpenSCAD)
+	$(MAKE) -C hardware/case all PYTHON=../../$(PY)
 
 docs-check: ## Run only the documentation and ticket checks
 	$(PY) -m pytest -q tests/test_docs.py tests/test_issues.py tests/test_license.py
