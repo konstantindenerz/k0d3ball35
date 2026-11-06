@@ -26,28 +26,38 @@ vector master exists in the repo and nothing downstream has to touch the raster 
 
 - [x] Logo file added to the repo (`docs/images/logo.png` and the generated
       `docs/images/logo.svg`), ownership noted in `NOTICE`
-- [ ] PCB: logo as a silkscreen footprint in `hardware/lib/k0d3ball35.pretty/` (generated from the
-      SVG with `kicad-cli` / bitmap2component or a small script in `scripts/`), placed by
-      `scripts/k0d3/pcb.py` from a `branding:` block in the layout yaml (position, size, layer,
-      per half), on the top face in the free area of the controller block beside the title text
-      and on the bottom face under the thumb bridge; no silkscreen over pads (DRC gate stays clean,
-      `tests/test_pcb_review.py` silk allowlist unchanged)
+- [x] PCB: wordmark on the **back** silkscreen under the thumb bridge, centre (-35, 48.4),
+      13.9 x 4.7 mm, 0.26 mm strokes, from a `silkscreen.logo` block in the layout yaml and
+      emitted by `scripts/k0d3/pcb.py` as 34 filled `gr_poly` polygons from `k0d3.logo`. Not a
+      footprint and not on the front, see Notes. No silkscreen over pads, DRC clean on the first
+      routing attempt for both halves, `SILK_OVER_COPPER_ACCEPTED` unchanged
 - [x] Case: the logo engraved 0.6 mm into the box cap plate (18.0 x 52.5 mm, 1.0 mm strokes) and
       into the flat case underside (52.5 x 18.0 mm, 0.9 mm strokes, turned 90 degrees), as
       parameters of the case model (`logo.scad`, `logo_*` in `params.scad`); printable without
       supports because both faces lie on the bed and no groove bridges further than one cell
 - [ ] Transport lid (`mech-case-lid`) still has no logo; decide whether it needs one
-- [ ] Silkscreen minimum feature 0.15 mm line / 0.8 mm text respected after scaling; checked on
-      the renders and in the gerber viewer (`tests/test_gerbers.py` mask-overlap check stays at 0)
+- [x] Silkscreen minimum feature respected: strokes and gaps are 0.26 mm, 1.7 times the 0.15 mm
+      a fab holds; `tests/test_gerbers.py` mask overlap still 0 on all six faces and the rendered
+      bottom layer shows strokes and gaps cleanly separated
 - [x] Image prompts in `docs/images/PROMPTS.md` updated (new `img-case-logo-cap`, the style
       anchor and the hero shots show the engraved wordmark)
 
 ## Notes
 
 The case part is done (2026-11-06): generator, model, tests and docs are in `hardware/case/` and
-`docs/11-case.md` section 8. What is left is the PCB silkscreen. It is not blocked on
-anything: `gen_logo.build()` hands out the rectangles and `docs/images/logo.svg` is the vector
-master, so a generator can write the silkscreen polygons of a footprint in
-`hardware/lib/k0d3ball35.pretty/` directly - no tracing, no bitmap2component. Open decisions are
-placement and size per half (`branding:` block in the layout yaml) and keeping the silk off the
-pads.
+`docs/11-case.md` section 8. The PCB silkscreen is done (2026-11-06) with two deliberate deviations from the criteria above.
+
+**Back face only, not both.** The mark is 18 x 35 cells, a 1 : 2.96 aspect. Measured against
+pads, courtyards and the existing silk, the widest free bands are about 5 mm tall on either
+face, so the stroke width is what the band height buys: 0.26 mm on the back under the thumb
+bridge (39 mm of width to spare), 0.24 mm on the front squeezed between the title text and the
+reset and JST courtyards, with 0.07 mm to the title - close enough that `silk_overlap` would
+flag it and `test_pcb_review` does not tolerate that on the front. One legible mark beat two
+cramped ones.
+
+**A board polygon, not a footprint.** The wordmark has no pads and no net. As a footprint it
+would be a part without a schematic symbol, which `kicad-cli pcb drc --schematic-parity`
+reports; `scripts/k0d3/pcb.py` already draws board-level `gr_poly` on silkscreen for the battery
+bay, so the mark follows that.
+
+What is left: whether the transport lid gets the logo too (`mech-case-lid`).

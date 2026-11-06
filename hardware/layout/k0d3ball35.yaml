@@ -135,6 +135,16 @@ outline:
 silkscreen:
   title: k0d3ball35
   revision_text: r2
+  # Owner wordmark (docs/images/logo.svg, see NOTICE) on the back silkscreen, under the thumb
+  # bridge. That band is the only place on either face that is clear of pads and of the other
+  # silkscreen on both halves; the front is boxed in between the title text and the reset and
+  # JST courtyards. cell is the stroke width, the mark is 18 x 35 cells, so 0.26 gives
+  # 13.9 x 4.7 mm with 0.26 mm strokes - well above the 0.15 mm a fab can hold.
+  logo:
+    layer: B.SilkS
+    cell: 0.26
+    rotation: 90
+    center: {x: -35.0, y: 48.4}
 
 # Per-half data. Lists here are ADDED to the global ones (mounting_holes, stitching_vias);
 # scalar blocks (trackball.center, fpc) exist only where given.

@@ -15,6 +15,7 @@ import json
 from pathlib import Path
 
 from .footprints import all_footprints
+from .logo import placed_polygons
 from .geometry import Layout
 from .netlist import HOLE_PIN, LIB, Component, net_classes, net_names
 from .schematic import sym_uuid
@@ -168,6 +169,17 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
         btx, bty = P((bminx + bmaxx) / 2, bmaxy - 4.5 + i * 1.5)
         out.append(f"  (gr_text {quote(line)} (at {num(btx)} {num(bty)} 0) (layer \"B.SilkS\") "
                    f"(uuid {quote(uid('silk', 'B.SilkS', 'bay', i))}) (effects (font (size 0.8 0.8) (thickness 0.12)) (justify mirror)))")
+    # owner wordmark, a filled polygon set on the back silkscreen under the thumb bridge. It is
+    # drawn board-level rather than as a footprint: it carries no pads and no net, so a footprint
+    # would only add a part without a schematic symbol for --schematic-parity to complain about.
+    # The shape is mirrored in page x so it reads the right way round when the board is flipped.
+    lg = layout.cfg["silkscreen"].get("logo")
+    if lg:
+        lx, ly = P(lg["center"]["x"], lg["center"]["y"])
+        for i, poly in enumerate(placed_polygons(lg["cell"], lg["rotation"], lg["layer"].startswith("B."))):
+            lpts = " ".join(f"(xy {num(lx + px)} {num(ly + py)})" for px, py in poly)
+            out.append(f"  (gr_poly (pts {lpts}) (stroke (width 0) (type default)) (fill solid) "
+                       f"(layer {quote(lg['layer'])}) (uuid {quote(uid('silk', 'logo', i))}))")
     # silkscreen texts (front only): between the controller footprint and the reset/battery row
     silk = layout.cfg["silkscreen"]
     c = layout.cfg["controller"]

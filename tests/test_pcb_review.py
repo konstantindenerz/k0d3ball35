@@ -533,6 +533,32 @@ def test_controller_usb_overhang_per_spec(board, layout):
 
 
 # ----- battery bay ---------------------------------------------------------------------
+def test_owner_wordmark_on_back_silkscreen(board):
+    """The wordmark (docs/images/logo.svg) is a set of filled polygons on B.SilkS under the
+    thumb bridge: the same artwork as the case engraving, nowhere near a pad, and with strokes
+    a fab can hold. Drawn board-level, so it adds no footprint and no schematic parity item."""
+    from shapely.ops import unary_union
+
+    from k0d3.geometry import load_layout
+    from k0d3.logo import placed_polygons
+
+    cfg = load_layout(board.half).cfg["silkscreen"]["logo"]
+    expected = placed_polygons(cfg["cell"], cfg["rotation"], cfg["layer"].startswith("B."))
+    marks = [p for layer, stroke, p in board.gr_polys if layer == "B.SilkS" and stroke != "dash"]
+    assert len(marks) == len(expected), f"{board.half}: {len(marks)} wordmark polygons, expected {len(expected)}"
+    mark = unary_union(marks)
+    assert abs(mark.area - unary_union([Polygon(e) for e in expected]).area) < 0.01, "scaled differently"
+    assert board.outline.buffer(-0.5).contains(mark), f"{board.half}: wordmark reaches the board edge"
+    assert cfg["cell"] >= 0.2, "silkscreen strokes below what a fab holds"
+    # pads are the copper that matters: tracks, vias and the pours are under soldermask, pads
+    # are not, and silk on an exposed pad is what the fab and the DRC object to
+    for layer in ("B.Cu", "F.Cu"):
+        for what, poly in board.copper(layer):
+            if " pad " not in what:
+                continue
+            assert not poly.intersects(mark), f"{board.half}: wordmark over {what}"
+
+
 def test_battery_bay_on_back_silkscreen(board, layout, half):
     bay = _page(layout, layout.battery_bay())
     dashed = [p for layer, stroke, p in board.gr_polys if layer == "B.SilkS" and stroke == "dash"]

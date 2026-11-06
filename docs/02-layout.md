@@ -116,7 +116,18 @@ notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 | Test pads TP1.. | row from (-66, 57.5), 2.5 mm pitch along x | right: D0, D1, D2, D3, D9; left: the same plus D10, D14, D15, D16 | both |
 | FPC J1 | (-2.6, 45.5) | FH12-6S, **key side**, below the middle column's bottom key; the cable climbs beside the cup, folds over the notch edge into the mouth (0.5 mm from the edge) and the lock stays reachable when assembled | right only |
 
+| Owner wordmark | centre (-35, 48.4), 13.9 x 4.7 mm, back silkscreen | the `kode` mark from `docs/images/logo.svg`, turned 90 degrees, under the thumb bridge; 0.26 mm strokes; `silkscreen.logo` in the layout yaml | both |
+
 No solder jumpers: RAW, GND, RST and VCC are wired straight to the controller holes.
+
+The wordmark is the only branding besides the title text. It sits on the back because that is
+the only band on either face wide enough at a stroke width a fab can hold: the mark is 18 x 35
+cells with a 1 : 2.96 aspect, and on the front it would be squeezed between the title text and
+the reset and JST courtyards down to 0.24 mm strokes. It is drawn as 34 filled `gr_poly`
+polygons straight from `k0d3.logo`, not as a footprint - it carries no pads and no net, so a
+footprint would only add a part that `--schematic-parity` has no symbol for. Stitching vias fall
+inside its outline; they are tented and sit in the gaps, and the gerber check confirms no
+silkscreen lands on an exposed pad.
 
 ## Mounting holes
 
