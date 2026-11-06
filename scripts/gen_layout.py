@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Generate key positions, PCB outlines and previews from hardware/layout/k0d3ball36.yaml.
+"""Generate key positions, PCB outlines and previews from hardware/layout/k0d3ball35.yaml.
 
 Outputs (hardware/layout/output/), one set per half:
   points-<half>.json    key positions, outline polygon, ball pocket and controller data

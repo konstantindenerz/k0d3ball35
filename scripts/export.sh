@@ -11,7 +11,7 @@ HALVES=("$@")
 mkdir -p build
 for half in "${HALVES[@]}"; do
   case "$half" in left|right) ;; *) echo "unknown half '$half' (left|right)" >&2; exit 2 ;; esac
-  NAME="k0d3ball36-$half"
+  NAME="k0d3ball35-$half"
   DIR="hardware/$half-pcb"
   BOARD="$DIR/$NAME.kicad_pcb"
   SCH="$DIR/$NAME.kicad_sch"

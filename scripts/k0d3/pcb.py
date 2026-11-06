@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: CERN-OHL-P-2.0
-"""KiCad board generator for the k0d3ball36 main PCBs (unrouted, one per half).
+"""KiCad board generator for the k0d3ball35 main PCBs (unrouted, one per half).
 
 Writes a KiCad 8 format .kicad_pcb with all footprints placed and nets assigned, the
 board outline (with the ball pocket notch on the right), GND pours on both faces and
@@ -33,9 +33,9 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
     nets = net_names(comps)
     net_index = {n: i + 1 for i, n in enumerate(nets)}
     fps = all_footprints(HOLE_PIN)
-    out = [f"(kicad_pcb (version {PCB_VERSION}) (generator \"k0d3ball36\") (generator_version \"1.0\")",
+    out = [f"(kicad_pcb (version {PCB_VERSION}) (generator \"k0d3ball35\") (generator_version \"1.0\")",
            "  (general (thickness 1.6) (legacy_teardrops no))", "  (paper \"A3\")",
-           f"  (title_block (title {quote(layout.cfg['name'] + ' ' + layout.half + ' half')}) (date \"2026-11-06\") (rev {quote(layout.cfg['revision'])}) (company \"k0d3ball36 project\"))",
+           f"  (title_block (title {quote(layout.cfg['name'] + ' ' + layout.half + ' half')}) (date \"2026-11-06\") (rev {quote(layout.cfg['revision'])}) (company \"k0d3ball35 project\"))",
            "  (layers"]
     for l in LAYERS:
         extra = f" {quote(l[3])}" if len(l) > 3 else ""

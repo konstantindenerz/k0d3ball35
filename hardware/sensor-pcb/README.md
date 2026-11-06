@@ -10,7 +10,7 @@ Design notes, stack-up and the FFC orientation rule are in `docs/08-trackball-mo
 |------|---------|
 | `generate.py` | single source of truth: parts, nets, placement; writes schematic, PCB and libraries |
 | `export.sh` | ERC/DRC gates, gerbers, drill, pick-and-place, BOM, renders, STEP |
-| `k0d3ball36-sensor.kicad_pro/.kicad_sch/.kicad_pcb` | generated KiCad 10 project (committed so it can be opened directly) |
+| `k0d3ball35-sensor.kicad_pro/.kicad_sch/.kicad_pcb` | generated KiCad 10 project (committed so it can be opened directly) |
 | `gerbers/`, `fab/` | JLCPCB-ready outputs (`fab/*-gerbers.zip`, `*-bom.csv`, `*-cpl-*.csv`) |
 | `renders/` | schematic PDF/SVG, PCB renders, STEP model for the cradle design |
 | `build/` | scratch (DSN/SES, reports), ignored by git |
@@ -30,6 +30,6 @@ adds the ground pours and re-runs ERC and DRC (with schematic parity) until the 
 ## Ordering
 
 JLCPCB: 2 layer, 1.6 mm, any colour, ENIG recommended (flat pads under the 0.5 mm connector),
-"remove order number: specify location" not needed. Upload `fab/k0d3ball36-sensor-r1-gerbers.zip`.
+"remove order number: specify location" not needed. Upload `fab/k0d3ball35-sensor-r1-gerbers.zip`.
 For assembly use the BOM and the top-side CPL; the sensor (U1) is a through-hole part on the
 bottom side and is soldered by hand together with the lens.

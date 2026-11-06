@@ -1,4 +1,4 @@
-# k0d3ball36 build entry points.
+# k0d3ball35 build entry points.
 # Override tool paths on the command line, e.g. `make drc KICAD_CLI=kicad-cli`.
 
 KICAD_CLI ?= /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli
@@ -11,13 +11,13 @@ FREEROUTING_URL := https://github.com/freerouting/freerouting/releases/download/
 # The two main PCBs; `make route HALVES=right` builds one half only.
 HALVES    ?= left right
 
-LAYOUT     := hardware/layout/k0d3ball36.yaml
+LAYOUT     := hardware/layout/k0d3ball35.yaml
 LAYOUT_OUT := hardware/layout/output
-HALF_SCHS  := $(foreach h,$(HALVES),hardware/$(h)-pcb/k0d3ball36-$(h).kicad_sch)
-HALF_PCBS  := $(foreach h,$(HALVES),hardware/$(h)-pcb/k0d3ball36-$(h).kicad_pcb)
+HALF_SCHS  := $(foreach h,$(HALVES),hardware/$(h)-pcb/k0d3ball35-$(h).kicad_sch)
+HALF_PCBS  := $(foreach h,$(HALVES),hardware/$(h)-pcb/k0d3ball35-$(h).kicad_pcb)
 SENSOR_DIR := hardware/sensor-pcb
-SENSOR_SCH := $(SENSOR_DIR)/k0d3ball36-sensor.kicad_sch
-SENSOR_PCB := $(SENSOR_DIR)/k0d3ball36-sensor.kicad_pcb
+SENSOR_SCH := $(SENSOR_DIR)/k0d3ball35-sensor.kicad_sch
+SENSOR_PCB := $(SENSOR_DIR)/k0d3ball35-sensor.kicad_pcb
 BUILD      := build
 
 SCHS := $(wildcard $(HALF_SCHS) $(SENSOR_SCH))

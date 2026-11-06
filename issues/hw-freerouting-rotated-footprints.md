@@ -15,7 +15,7 @@ Freerouting 2.5 fails every connection to the three thumb keys (rotated 10 and 2
 
 ## Acceptance criteria
 
-- [x] Thumb cluster and the controller legs of COL3, COL4 and ROW3 are locked hand routes in `manual_routes` of `hardware/layout/k0d3ball36.yaml`
+- [x] Thumb cluster and the controller legs of COL3, COL4 and ROW3 are locked hand routes in `manual_routes` of `hardware/layout/k0d3ball35.yaml`
 - [x] `scripts/route.py` strips the placement block from the SES before import
 - [x] DRC with schematic parity clean after `scripts/build_board.sh`
 

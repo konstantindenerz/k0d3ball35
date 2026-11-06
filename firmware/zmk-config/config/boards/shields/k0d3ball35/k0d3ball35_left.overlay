@@ -1,0 +1,72 @@
+/*
+ * Left half (peripheral, no trackball in the default build).
+ *
+ * Row and column pins are shared with the right half and live in k0d3ball35.dtsi
+ * (COL0..COL4 = pro_micro 4..8, ROW0..ROW3 = pro_micro 21, 20, 19, 18). The four
+ * sensor lines are routed to test pads on the left PCB but not populated.
+ */
+
+#include "k0d3ball35.dtsi"
+
+/*
+ * Left-ball build. Populate a sensor board on the left half; it uses the same
+ * four controller pins as the right half:
+ *
+ *   TB_SCLK  pro_micro 15 = P1.13
+ *   TB_SDIO  pro_micro 16 = P0.10  (3-wire SPI: MOSI and MISO on the same pin)
+ *   TB_NCS   pro_micro 10 = P0.09
+ *   TB_MOT   pro_micro 14 = P1.11
+ *
+ * Steps: uncomment the block below, in k0d3ball35_right.overlay disable
+ * `trackball_listener` and enable `trackball_split_listener` plus `trackball_split`,
+ * and add CONFIG_INPUT_PMW3610=y / CONFIG_SPI=y / CONFIG_INPUT=y to k0d3ball35_left.conf.
+ *
+ * #include <dt-bindings/input/input-event-codes.h>
+ *
+ * &uicr {
+ *     nfct-pins-as-gpios;
+ * };
+ *
+ * &pinctrl {
+ *     spi1_default: spi1_default {
+ *         group1 {
+ *             psels = <NRF_PSEL(SPIM_SCK, 1, 13)>,
+ *                     <NRF_PSEL(SPIM_MOSI, 0, 10)>,
+ *                     <NRF_PSEL(SPIM_MISO, 0, 10)>;
+ *         };
+ *     };
+ *     spi1_sleep: spi1_sleep {
+ *         group1 {
+ *             psels = <NRF_PSEL(SPIM_SCK, 1, 13)>,
+ *                     <NRF_PSEL(SPIM_MOSI, 0, 10)>,
+ *                     <NRF_PSEL(SPIM_MISO, 0, 10)>;
+ *             low-power-enable;
+ *         };
+ *     };
+ * };
+ *
+ * &spi1 {
+ *     status = "okay";
+ *     compatible = "nordic,nrf-spim";
+ *     pinctrl-0 = <&spi1_default>;
+ *     pinctrl-1 = <&spi1_sleep>;
+ *     pinctrl-names = "default", "sleep";
+ *     cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
+ *
+ *     trackball: trackball@0 {
+ *         compatible = "pixart,pmw3610";
+ *         reg = <0>;
+ *         spi-max-frequency = <2000000>;
+ *         motion-gpios = <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+ *         zephyr,axis-x = <INPUT_REL_X>;
+ *         zephyr,axis-y = <INPUT_REL_Y>;
+ *         res-cpi = <600>;
+ *         smart-mode;
+ *     };
+ * };
+ *
+ * &trackball_split {
+ *     status = "okay";
+ *     device = <&trackball>;
+ * };
+ */

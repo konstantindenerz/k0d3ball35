@@ -1,4 +1,4 @@
-// k0d3ball36 trackball cradle
+// k0d3ball35 trackball cradle
 //
 // A 3D printed holder for a 19.05 mm (or 25 mm) trackball with three static ceramic
 // bearings and a PMW3610 / LM18-LSI sensor daughterboard underneath.

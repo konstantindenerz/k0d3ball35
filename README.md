@@ -1,4 +1,4 @@
-# k0d3ball36
+# k0d3ball35
 
 A wireless, low profile, 35-key split keyboard with an integrated 19 mm trackball.
 Keyball-inspired column stagger and thumb arc, Kailh Choc V1 hot-swap switches, a nice!nano v2
@@ -118,7 +118,7 @@ make test                          # full test suite
 ## Build the hardware files
 
 Everything under `hardware/left-pcb/` and `hardware/right-pcb/` is generated; edit
-`hardware/layout/k0d3ball36.yaml` and `scripts/k0d3/` instead of the KiCad files.
+`hardware/layout/k0d3ball35.yaml` and `scripts/k0d3/` instead of the KiCad files.
 
 ```sh
 make layout                                   # points-*.json, outline-*.dxf, previews for both halves

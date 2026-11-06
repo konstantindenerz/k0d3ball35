@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in k0d3ball36. This page explains how the repository is organised and
+Thanks for your interest in k0d3ball35. This page explains how the repository is organised and
 what a change needs before it is merged.
 
 ## Ground rules

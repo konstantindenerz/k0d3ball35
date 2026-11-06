@@ -1,5 +1,5 @@
 ---
-title: ZMK shield k0d3ball36 with trackball on the central half
+title: ZMK shield k0d3ball35 with trackball on the central half
 type: feature
 priority: P0
 status: done
@@ -7,7 +7,7 @@ area: fw
 created: 2026-11-05
 ---
 
-# ZMK shield k0d3ball36 with trackball on the central half
+# ZMK shield k0d3ball35 with trackball on the central half
 
 ## Context
 
@@ -18,7 +18,7 @@ revision, GitHub Actions build.
 
 ## Acceptance criteria
 
-- [ ] `k0d3ball36_left` and `k0d3ball36_right` build for `nice_nano//zmk` in CI, plus `settings_reset`
+- [ ] `k0d3ball35_left` and `k0d3ball35_right` build for `nice_nano//zmk` in CI, plus `settings_reset`
 - [ ] Pin assignments match the design spec table exactly
 - [ ] Keymap documented in `docs/05-firmware.md` with flashing and pairing steps
 - [ ] Sleep and idle timeouts set with battery life in mind

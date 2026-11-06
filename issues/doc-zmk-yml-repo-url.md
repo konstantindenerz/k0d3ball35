@@ -1,5 +1,5 @@
 ---
-title: Replace the placeholder repository URL in k0d3ball36.zmk.yml
+title: Replace the placeholder repository URL in k0d3ball35.zmk.yml
 type: task
 priority: P2
 status: open
@@ -7,11 +7,11 @@ area: doc
 created: 2026-11-05
 ---
 
-# Replace the placeholder repository URL in k0d3ball36.zmk.yml
+# Replace the placeholder repository URL in k0d3ball35.zmk.yml
 
 ## Context
 
-`firmware/zmk-config/config/boards/shields/k0d3ball36/k0d3ball36.zmk.yml` still contains a placeholder GitHub URL.
+`firmware/zmk-config/config/boards/shields/k0d3ball35/k0d3ball35.zmk.yml` still contains a placeholder GitHub URL.
 
 ## Acceptance criteria
 

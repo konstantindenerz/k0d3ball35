@@ -13,8 +13,8 @@ created: 2026-11-05
 
 Order 5 left PCBs, 5 right PCBs and 5 sensor PCBs (three designs since r2). Settings: 2 layers,
 1.6 mm, 1 oz, ENIG, black or white soldermask, remove order number or specify location. Checklist in
-`docs/06-fabrication.md`. Gerber zips: `hardware/left-pcb/k0d3ball36-left-gerbers.zip`,
-`hardware/right-pcb/k0d3ball36-right-gerbers.zip`, `hardware/sensor-pcb/`.
+`docs/06-fabrication.md`. Gerber zips: `hardware/left-pcb/k0d3ball35-left-gerbers.zip`,
+`hardware/right-pcb/k0d3ball35-right-gerbers.zip`, `hardware/sensor-pcb/`.
 
 ## Acceptance criteria
 

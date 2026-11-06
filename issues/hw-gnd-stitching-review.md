@@ -15,7 +15,7 @@ created: 2026-11-05
 
 ## Acceptance criteria
 
-- [ ] Open `hardware/left-pcb/k0d3ball36-left.kicad_pcb` and `hardware/right-pcb/k0d3ball36-right.kicad_pcb` in KiCad, show only the copper layers, check that no via sits where the case or a bumper needs a flat area
+- [ ] Open `hardware/left-pcb/k0d3ball35-left.kicad_pcb` and `hardware/right-pcb/k0d3ball35-right.kicad_pcb` in KiCad, show only the copper layers, check that no via sits where the case or a bumper needs a flat area
 - [ ] Check that the pours are not fragmented into thin slivers around the socket pads
 - [ ] Decide whether the 6 mm grid stays or a hand-picked set of vias replaces it
 

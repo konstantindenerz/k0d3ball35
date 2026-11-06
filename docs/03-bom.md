@@ -13,9 +13,9 @@ Quantities marked "+n" include recommended spares. Sensor-board passives are 060
 
 | Qty | Part | Spec | Source | Price | Notes |
 |-----|------|------|--------|-------|-------|
-| 1 (min. order 5) | Left PCB `k0d3ball36-left` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 121 x 87 mm | JLCPCB, gerbers in `hardware/left-pcb/` | 15 to 25 EUR per 5 | 18 keys, no sensor connector |
-| 1 (min. order 5) | Right PCB `k0d3ball36-right` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 118 x 80 mm | JLCPCB, gerbers in `hardware/right-pcb/` | 15 to 25 EUR per 5 | 17 keys, FPC connector, octagonal notch for the ball pocket |
-| 1 (min. order 5) | Sensor PCB `k0d3ball36-sensor` | 2 layer, 1.6 mm, ENIG, 26 x 25 mm | JLCPCB, gerbers in `hardware/sensor-pcb/gerbers/` | 2 to 5 EUR per 5 | Order all three in the same cart to share shipping |
+| 1 (min. order 5) | Left PCB `k0d3ball35-left` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 121 x 87 mm | JLCPCB, gerbers in `hardware/left-pcb/` | 15 to 25 EUR per 5 | 18 keys, no sensor connector |
+| 1 (min. order 5) | Right PCB `k0d3ball35-right` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 118 x 80 mm | JLCPCB, gerbers in `hardware/right-pcb/` | 15 to 25 EUR per 5 | 17 keys, FPC connector, octagonal notch for the ball pocket |
+| 1 (min. order 5) | Sensor PCB `k0d3ball35-sensor` | 2 layer, 1.6 mm, ENIG, 26 x 25 mm | JLCPCB, gerbers in `hardware/sensor-pcb/gerbers/` | 2 to 5 EUR per 5 | Order all three in the same cart to share shipping |
 | | Shipping and import VAT | | | 20 to 40 EUR | |
 
 ## 2. Controllers and sockets

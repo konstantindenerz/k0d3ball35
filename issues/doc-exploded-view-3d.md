@@ -16,7 +16,7 @@ sensor board and ball sit relative to each other before anything is printed. A s
 self-contained HTML page (`docs/exploded-view/index.html`, three.js from cdnjs) animates the
 stack of the right half from assembled to fully exploded, with labels, a section view through
 the ball and a left-half mirror toggle. The page is generated from the layout data by
-`docs/exploded-view/build.py`, so it follows `hardware/layout/k0d3ball36.yaml`.
+`docs/exploded-view/build.py`, so it follows `hardware/layout/k0d3ball35.yaml`.
 
 ## Acceptance criteria
 

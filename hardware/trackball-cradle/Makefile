@@ -1,4 +1,4 @@
-# k0d3ball36 trackball cradle build
+# k0d3ball35 trackball cradle build
 # Requires OpenSCAD 2025.x or newer with the Manifold backend (tested with 2026.10.11,
 # `brew install --cask openscad@snapshot`). The 2021.01 release renders the same
 # geometry but is roughly 100x slower and lacks --backend.

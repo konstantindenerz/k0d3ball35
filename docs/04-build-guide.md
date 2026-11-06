@@ -1,6 +1,6 @@
 # Build guide
 
-Assembly instructions for one k0d3ball36: a left PCB with 18 keys and a right PCB with 17 keys
+Assembly instructions for one k0d3ball35: a left PCB with 18 keys and a right PCB with 17 keys
 and the trackball. The structure follows the Keyball39 build guide: every chapter lists what you
 need, numbered steps, and a checkpoint before you move on. Plan two evenings for the electronics
 and one for the trackball module and firmware.
@@ -60,9 +60,9 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 
 | Qty | Part | Where it goes | Chapter |
 |-----|------|---------------|---------|
-| 1 | Left PCB `k0d3ball36-left` | left half, 18 keys | 2 |
-| 1 | Right PCB `k0d3ball36-right` | right half, 17 keys, trackball | 2 |
-| 1 | Sensor PCB `k0d3ball36-sensor` | right half, in the ball pocket | 10 |
+| 1 | Left PCB `k0d3ball35-left` | left half, 18 keys | 2 |
+| 1 | Right PCB `k0d3ball35-right` | right half, 17 keys, trackball | 2 |
+| 1 | Sensor PCB `k0d3ball35-sensor` | right half, in the ball pocket | 10 |
 | 35 (+ spares) | 1N4148W SOD-123 diode | bottom face, one per key (18 + 17) | 3 |
 | 35 (+ spares) | Kailh CPG135001S30 hot-swap socket | bottom face, one per key (18 + 17) | 4 |
 | 2 | nice!nano v2 or SuperMini nRF52840 | top face, inner edge | 5 |
@@ -103,7 +103,7 @@ notch at its lower outer corner and the FPC footprint), the sensor kit has both 
 ## 2. Identify the halves
 
 Each PCB has its name and revision in silkscreen on the top face below the controller outline:
-`k0d3ball36 r2  LEFT half` or `RIGHT half`. The right PCB is the one with the octagonal notch
+`k0d3ball35 r2  LEFT half` or `RIGHT half`. The right PCB is the one with the octagonal notch
 beside the thumb keys and the FPC connector footprint J1 between the index/middle bottom keys and
 the thumb keys; it has two thumb positions. The left PCB has three thumb positions and no notch.
 
@@ -254,8 +254,8 @@ strain.
 ## 8. Flash the firmware
 
 Firmware files come from the GitHub Actions run or the local Docker build (see
-[firmware](05-firmware.md), section 1). You need `settings_reset`, `k0d3ball36_left` and
-`k0d3ball36_right` as UF2 files.
+[firmware](05-firmware.md), section 1). You need `settings_reset`, `k0d3ball35_left` and
+`k0d3ball35_right` as UF2 files.
 
 ![Dragging the UF2 onto the controller drive](images/img-build-step-flash.png)
 
@@ -264,8 +264,8 @@ Firmware files come from the GitHub Actions run or the local Docker build (see
 2. Connect USB-C to the computer. Double-tap the reset button within half a second: a drive
    named `NICENANO` appears.
 3. Copy `settings_reset-nice_nano_v2-zmk.uf2` onto the drive. The drive disappears when done.
-4. Double-tap reset again and copy `k0d3ball36_right-...uf2` (right half) or
-   `k0d3ball36_left-...uf2` (left half).
+4. Double-tap reset again and copy `k0d3ball35_right-...uf2` (right half) or
+   `k0d3ball35_left-...uf2` (left half).
 5. Repeat for the other half. Both halves must get `settings_reset` first on a fresh build or
    whenever they stop talking to each other.
 6. Unplug USB. Switch both halves on within a minute of each other; they pair automatically.
@@ -384,9 +384,9 @@ Checkpoint: 35 keys register, no switch sits high or tilted.
 
 1. Both halves on. The halves find each other within seconds. Connect the right half to the host
    by USB or by Bluetooth: on the System layer (hold both outer thumb keys), select profile 0 with
-   the top-left key and pair "k0d3ball36" from the host.
+   the top-left key and pair "k0d3ball35" from the host.
 2. Cursor direction: roll the ball away from you, the cursor must move up. If an axis is reversed,
-   set `invert-x` / `invert-y` in `k0d3ball36_right.overlay`; if the axes are swapped, add
+   set `invert-x` / `invert-y` in `k0d3ball35_right.overlay`; if the axes are swapped, add
    `&zip_xy_swap_mapper` (sensor board rotated 90 degrees). Rebuild and reflash the right half.
 3. Speed: the default is 600 CPI. A half turn of the 19 mm ball should move the cursor about one
    screen width. Adjust `res-cpi` in steps of 200, or add a scaler in the input processors (see
@@ -441,7 +441,7 @@ forward 0.5 to 0.7 V.
 ## 16. Printable checklist
 
 ```
-k0d3ball36 build checklist                       half: [ ] right (17 keys)  [ ] left (18 keys)
+k0d3ball35 build checklist                       half: [ ] right (17 keys)  [ ] left (18 keys)
 
 [ ] 1  parts complete, tools ready, cell measured 3.6-4.2 V
 [ ] 2  PCB identified: "<SIDE> half" silkscreen readable from above

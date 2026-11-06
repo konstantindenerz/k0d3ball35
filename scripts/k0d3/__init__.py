@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
-"""Design generators for the k0d3ball36 keyboard.
+"""Design generators for the k0d3ball35 keyboard.
 
-geometry  - key positions, outline and clearance checks from hardware/layout/k0d3ball36.yaml
+geometry  - key positions, outline and clearance checks from hardware/layout/k0d3ball35.yaml
 netlist   - matrix / controller / connector nets shared by schematic and PCB
 sexpr     - tiny helpers to emit KiCad s-expressions
 footprints- reversible footprints emitted straight into the PCB file

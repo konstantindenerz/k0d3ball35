@@ -1,0 +1,13 @@
+file_format: "1"
+id: k0d3ball35
+name: k0d3ball35
+type: shield
+url: https://github.com/k0d3/k0d3ball35
+requires: [pro_micro]
+features:
+  - keys
+  - pointer
+  - studio
+siblings:
+  - k0d3ball35_left
+  - k0d3ball35_right

@@ -1,4 +1,4 @@
-# k0d3ball36 design specification
+# k0d3ball35 design specification
 
 Revision: r2 (2026-11-06). This document is the contract every other part of the
 repository (layout, schematic, PCB, firmware, cradle, tests, docs) must agree with.
@@ -22,7 +22,7 @@ board. Ticket `hw-two-pcbs-r2`.
 | R6 | Pointing | 19.05 mm (3/4 inch) POM trackball on the right half in a case pocket beside the PCB, PMW3610 sensor on a daughterboard on the case floor; 25 mm stays a cradle parameter |
 | R7 | Wireless | nRF52840 Pro Micro form factor (nice!nano v2 or SuperMini), BLE split, ZMK |
 | R8 | Power | 1S LiPo per half, on-board charger of the controller, slide power switch |
-| R9 | PCB | two main PCBs (`k0d3ball36-left`, `k0d3ball36-right`) with identical controller wiring; one sensor PCB |
+| R9 | PCB | two main PCBs (`k0d3ball35-left`, `k0d3ball35-right`) with identical controller wiring; one sensor PCB |
 | R10 | Height | low profile: nothing taller than the Choc switch above the PCB except the ball; ball top about 17 mm above the PCB top |
 | R11 | Indicators | none on the PCB; controller LED visible through a case window |
 | R12 | Assembly | all parts hand-solderable (SOD-123, 1.27 mm sockets, 0.5 mm FPC with care) |
@@ -136,7 +136,7 @@ solder jumpers and no sacrificed pins: D0 is a free test pad. Sensor supply on t
 the controller's VCC (3.3 V, up to 500 mA available); the PMW3610 draws 0.6 mA when tracking and
 36 uA in rest.
 
-## 5. Geometry (single source: `hardware/layout/k0d3ball36.yaml`)
+## 5. Geometry (single source: `hardware/layout/k0d3ball35.yaml`)
 
 Coordinates are in mm in a half's own frame: x grows outward (towards the pinky), y grows downward
 (towards the user). Origin is the centre of the middle-column top key. Pitch 18 x 17. Both halves
@@ -203,8 +203,8 @@ keeps the 0.3 mm copper-to-edge clearance.
 
 ## 6. Firmware contract
 
-ZMK `main` (Zephyr 4.1 based), shield name `k0d3ball36`, builds `k0d3ball36_left` and
-`k0d3ball36_right` for `nice_nano//zmk` plus `settings_reset`. One shared kscan with the pin set
+ZMK `main` (Zephyr 4.1 based), shield name `k0d3ball35`, builds `k0d3ball35_left` and
+`k0d3ball35_right` for `nice_nano//zmk` plus `settings_reset`. One shared kscan with the pin set
 of section 2; the matrix transform is 4 rows x 10 columns with 35 positions, row 3 mapping
 `RC(3,2) RC(3,3) RC(3,4)` on the left and `RC(3,8) RC(3,7)` on the right (right thumb middle is
 matrix column 3, thumb outer column 2). The right half is the split central and carries the sensor

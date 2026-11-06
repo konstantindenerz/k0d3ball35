@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""KiCad schematic generator for the k0d3ball36 main PCBs (one sheet per half).
+"""KiCad schematic generator for the k0d3ball35 main PCBs (one sheet per half).
 
 Produces a single-sheet KiCad 8 format schematic (readable by KiCad 9/10) with all
 symbols embedded, so the file needs no external symbol library. Connections are made
@@ -195,9 +195,9 @@ class SchematicWriter:
 
     # ----- output -----------------------------------------------------------------------
     def render(self) -> str:
-        out = [f"(kicad_sch (version {SCH_VERSION}) (generator \"k0d3ball36\") (generator_version \"1.0\")",
+        out = [f"(kicad_sch (version {SCH_VERSION}) (generator \"k0d3ball35\") (generator_version \"1.0\")",
                f"  (uuid {quote(self.sheet_uuid)})", "  (paper \"A2\")",
-               f"  (title_block (title {quote(self.title)}) (date \"2026-11-06\") (rev {quote(self.rev)}) (company \"k0d3ball36 project\")",
+               f"  (title_block (title {quote(self.title)}) (date \"2026-11-06\") (rev {quote(self.rev)}) (company \"k0d3ball35 project\")",
                f"    (comment 1 {quote(self.comment)})",
                "    (comment 2 \"Licensed under CERN-OHL-P-2.0\"))",
                "  (lib_symbols"]

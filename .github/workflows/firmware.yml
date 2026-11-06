@@ -20,4 +20,4 @@ jobs:
     with:
       config_path: firmware/zmk-config/config
       build_matrix_path: firmware/zmk-config/build.yaml
-      archive_name: k0d3ball36-firmware
+      archive_name: k0d3ball35-firmware

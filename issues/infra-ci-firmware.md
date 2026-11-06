@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-GitHub Actions workflow building `k0d3ball36_left`, `k0d3ball36_right` and `settings_reset`
+GitHub Actions workflow building `k0d3ball35_left`, `k0d3ball35_right` and `settings_reset`
 for `nice_nano//zmk` from `firmware/zmk-config`, uploading UF2 artifacts, plus a scheduled build so
 breakage from ZMK main surfaces early.
 

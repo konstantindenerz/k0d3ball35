@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""Geometry checks for the key layout (hardware/layout/k0d3ball36.yaml), both halves."""
+"""Geometry checks for the key layout (hardware/layout/k0d3ball35.yaml), both halves."""
 from __future__ import annotations
 
 import json

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: CERN-OHL-P-2.0
-"""Footprints for the k0d3ball36 main PCBs.
+"""Footprints for the k0d3ball35 main PCBs.
 
 All footprints are described in the board frame with x outward, y towards the user and
 the component side = F (switches on top, sockets and small parts on the back). The
@@ -127,8 +127,8 @@ class Footprint:
         return " ".join(parts)
 
     def library_sexpr(self, lib: str) -> str:
-        out = [f"(footprint {quote(self.name)} (version {VERSION}) (generator {quote('k0d3ball36')}) (generator_version {quote('1.0')})",
-               f"  (layer \"F.Cu\")", f"  (descr {quote(self.descr)})", f"  (tags {quote('k0d3ball36')})",
+        out = [f"(footprint {quote(self.name)} (version {VERSION}) (generator {quote('k0d3ball35')}) (generator_version {quote('1.0')})",
+               f"  (layer \"F.Cu\")", f"  (descr {quote(self.descr)})", f"  (tags {quote('k0d3ball35')})",
                f"  (property \"Reference\" \"REF**\" (at {num(self.ref_offset[0])} {num(self.ref_offset[1])} 0) (layer {quote(self.ref_layer)}) (uuid {quote(uid(self.name, 'ref'))}) (effects (font (size 1 1) (thickness 0.15))))",
                f"  (property \"Value\" {quote(self.name)} (at 0 2 0) (layer \"F.Fab\") (uuid {quote(uid(self.name, 'val'))}) (effects (font (size 1 1) (thickness 0.15))))",
                f"  (property \"Footprint\" {quote(lib + ':' + self.name)} (at 0 0 0) (layer \"F.Fab\") (hide yes) (uuid {quote(uid(self.name, 'fp'))}) (effects (font (size 1.27 1.27))))",
@@ -145,7 +145,7 @@ class Footprint:
         fid = uid("fp", ref)
         at = f"(at {num(x)} {num(y)}" + (f" {num(rot)})" if abs(rot) > 1e-9 else ")")
         out = [f"  (footprint {quote(lib + ':' + self.name)} (layer \"F.Cu\") (uuid {quote(fid)}) {at}",
-               f"    (descr {quote(descr or self.descr)})", f"    (tags {quote('k0d3ball36')})",
+               f"    (descr {quote(descr or self.descr)})", f"    (tags {quote('k0d3ball35')})",
                f"    (property \"Reference\" {quote(ref)} (at {num(self.ref_offset[0])} {num(self.ref_offset[1])} {num(rot)}) (layer {quote(self.ref_layer)}) (uuid {quote(uid(fid, 'ref'))}) (effects (font (size 0.8 0.8) (thickness 0.12))))",
                f"    (property \"Value\" {quote(value)} (at 0 2 {num(rot)}) (layer \"F.Fab\") (uuid {quote(uid(fid, 'val'))}) (effects (font (size 0.8 0.8) (thickness 0.12))))",
                f"    (property \"Footprint\" {quote(lib + ':' + self.name)} (at 0 0 {num(rot)}) (layer \"F.Fab\") (hide yes) (uuid {quote(uid(fid, 'fp'))}) (effects (font (size 1.27 1.27))))",

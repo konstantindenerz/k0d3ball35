@@ -17,7 +17,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 CRADLE = ROOT / "hardware" / "trackball-cradle"
 SCAD = CRADLE / "cradle.scad"
-LAYOUT = ROOT / "hardware" / "layout" / "k0d3ball36.yaml"
+LAYOUT = ROOT / "hardware" / "layout" / "k0d3ball35.yaml"
 
 # PMW3610DM-SUDU datasheet, table 2 and figure 4
 LENS_Z_MIN, LENS_Z_MAX = 2.2, 2.6

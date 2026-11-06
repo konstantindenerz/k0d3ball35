@@ -18,7 +18,7 @@ and how this design differs (ZMK instead of BMP firmware, own PCBs, PMW3610, 35 
 ## Acceptance criteria
 
 - [ ] Summary section in `docs/00-feasibility.md` with the component list of the reference build
-- [ ] Differences table reference build vs k0d3ball36
+- [ ] Differences table reference build vs k0d3ball35
 
 ## Notes
 

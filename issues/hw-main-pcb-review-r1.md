@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-Both r2 boards (`hardware/left-pcb/k0d3ball36-left.kicad_pcb`, `hardware/right-pcb/k0d3ball36-right.kicad_pcb`)
+Both r2 boards (`hardware/left-pcb/k0d3ball35-left.kicad_pcb`, `hardware/right-pcb/k0d3ball35-right.kicad_pcb`)
 are generated and autorouted; a human pass in the KiCad GUI with 3D models is still required before money is spent.
 
 ## Acceptance criteria

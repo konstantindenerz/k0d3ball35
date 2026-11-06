@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""Electrical description of the k0d3ball36 main PCBs (left and right half).
+"""Electrical description of the k0d3ball35 main PCBs (left and right half).
 
 The same component/net model feeds the schematic generator, the PCB generator and the
 tests, so the three can never disagree. Everything follows docs/01-design-spec.md.
@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 
 from .geometry import Layout
 
-LIB = "k0d3ball36"
+LIB = "k0d3ball35"
 
 # Pro Micro / nice!nano pin names per hole (top view, USB up), identical on both halves.
 HOLE_PIN = {

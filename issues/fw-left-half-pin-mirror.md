@@ -18,7 +18,7 @@ RAW, RST and VCC rows are selected with the solder jumpers JP1, JP2 and JP3.
 
 ## Acceptance criteria
 
-- [x] `k0d3ball36_left.overlay` uses the mirrored pin set, rows and columns live in the per-side overlays
+- [x] `k0d3ball35_left.overlay` uses the mirrored pin set, rows and columns live in the per-side overlays
 - [x] docs/01-design-spec.md section 2 lists both pin tables
 - [x] `firmware/zmk-config/scripts/check_pins.py` verifies both halves
 

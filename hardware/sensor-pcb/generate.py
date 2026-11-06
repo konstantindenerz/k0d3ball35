@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate the k0d3ball36 PMW3610 sensor daughterboard (schematic, PCB, libraries).
+"""Generate the k0d3ball35 PMW3610 sensor daughterboard (schematic, PCB, libraries).
 
 Run with the Python interpreter bundled with KiCad 10 (it provides the pcbnew module):
 
@@ -7,8 +7,8 @@ Run with the Python interpreter bundled with KiCad 10 (it provides the pcbnew mo
         hardware/sensor-pcb/generate.py all
 
 Subcommands
-    sym     write hardware/lib/k0d3ball36.kicad_sym (shared symbol library)
-    fp      write the PMW3610DM-SUDU footprint into hardware/lib/k0d3ball36.pretty
+    sym     write hardware/lib/k0d3ball35.kicad_sym (shared symbol library)
+    fp      write the PMW3610DM-SUDU footprint into hardware/lib/k0d3ball35.pretty
     sch     write the schematic (.kicad_sch), project (.kicad_pro) and lib tables
     pcb     place footprints and nets into a fresh .kicad_pcb (unrouted)
     route   export Specctra DSN, run freerouting, import the session back
@@ -26,8 +26,8 @@ import uuid
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 LIB = os.path.join(REPO, "hardware", "lib")
-PRETTY = os.path.join(LIB, "k0d3ball36.pretty")
-PROJECT = "k0d3ball36-sensor"
+PRETTY = os.path.join(LIB, "k0d3ball35.pretty")
+PROJECT = "k0d3ball35-sensor"
 SCH = os.path.join(HERE, PROJECT + ".kicad_sch")
 PCB = os.path.join(HERE, PROJECT + ".kicad_pcb")
 PRO = os.path.join(HERE, PROJECT + ".kicad_pro")
@@ -37,7 +37,7 @@ FREEROUTING = os.environ.get("FREEROUTING_JAR", "")
 JAVA = os.environ.get("JAVA", "/opt/homebrew/opt/openjdk/bin/java")
 
 REV = "r1"
-TITLE = "k0d3ball36 trackball sensor board (PMW3610)"
+TITLE = "k0d3ball35 trackball sensor board (PMW3610)"
 
 
 def uid():
@@ -146,7 +146,7 @@ PLACEMENT = {
 
 
 # --------------------------------------------------------------------------------------
-# Symbol library (shared file hardware/lib/k0d3ball36.kicad_sym)
+# Symbol library (shared file hardware/lib/k0d3ball35.kicad_sym)
 # --------------------------------------------------------------------------------------
 
 F = '(effects (font (size 1.27 1.27)))'
@@ -204,38 +204,38 @@ def symbol_defs():
     ]
     S["PMW3610DM-SUDU"] = dict(ref="U", power=False, gfx=[rect(-12.7, 17.78, 12.7, -17.78)],
                                pins=s_pins, value="PMW3610DM-SUDU",
-                               fp="k0d3ball36:PMW3610DM-SUDU",
+                               fp="k0d3ball35:PMW3610DM-SUDU",
                                desc="PixArt PMW3610 low power laser mouse sensor",
                                ds="https://www.pixart.com/products-detail/21/PMW3610DM-SUDU")
     S["XC6206P182MR"] = dict(ref="U", power=False, gfx=[rect(-5.08, 3.81, 5.08, -3.81)],
                              pins=[("power_in", -7.62, 1.27, 0, 2.54, "VIN", "3"),
                                    ("power_out", 7.62, 1.27, 180, 2.54, "VOUT", "2"),
                                    ("power_in", 0, -6.35, 90, 2.54, "GND", "1")],
-                             value="XC6206P182MR", fp="k0d3ball36:SOT-23",
+                             value="XC6206P182MR", fp="k0d3ball35:SOT-23",
                              desc="1.8 V 200 mA LDO regulator, SOT-23",
                              ds="https://www.torexsemi.com/file/xc6206/XC6206.pdf")
     S["FPC_6P"] = dict(ref="J", power=False, gfx=[rect(-2.54, 8.89, 2.54, -8.89)],
                        pins=[("passive", -7.62, 6.35 - 2.54 * i, 0, 5.08, f"Pin_{i+1}", str(i + 1))
                              for i in range(6)] +
                             [("passive", 0, -11.43, 90, 2.54, "MP", "MP")],
-                       value="FPC_6P", fp="k0d3ball36:FPC_0.5mm_6P_FH12-6S",
+                       value="FPC_6P", fp="k0d3ball35:FPC_0.5mm_6P_FH12-6S",
                        desc="6 position 0.5 mm FPC/FFC connector with mounting pads", ds="")
     S["C"] = dict(ref="C", power=False,
                   gfx=[poly([(-2.032, 0.762), (2.032, 0.762)], 0.508),
                        poly([(-2.032, -0.762), (2.032, -0.762)], 0.508)],
                   pins=[("passive", 0, 2.54, 270, 1.778, "~", "1"),
                         ("passive", 0, -2.54, 90, 1.778, "~", "2")],
-                  value="C", fp="k0d3ball36:C_0603", desc="Capacitor", ds="", hide_numbers=True)
+                  value="C", fp="k0d3ball35:C_0603", desc="Capacitor", ds="", hide_numbers=True)
     S["R"] = dict(ref="R", power=False, gfx=[rect(-1.016, 2.54, 1.016, -2.54)],
                   pins=[("passive", 0, 3.81, 270, 1.27, "~", "1"),
                         ("passive", 0, -3.81, 90, 1.27, "~", "2")],
-                  value="R", fp="k0d3ball36:R_0603", desc="Resistor", ds="", hide_numbers=True)
+                  value="R", fp="k0d3ball35:R_0603", desc="Resistor", ds="", hide_numbers=True)
     S["TestPoint"] = dict(ref="TP", power=False, gfx=[circle(0, 0, 0.762)],
                           pins=[("passive", 0, -2.54, 90, 1.778, "1", "1")],
-                          value="TestPoint", fp="k0d3ball36:TestPoint_D1.0mm",
+                          value="TestPoint", fp="k0d3ball35:TestPoint_D1.0mm",
                           desc="Test point", ds="", hide_numbers=True, in_bom=False)
     S["MountingHole"] = dict(ref="H", power=False, gfx=[circle(0, 0, 1.27)], pins=[],
-                             value="MountingHole", fp="k0d3ball36:MountingHole_M2",
+                             value="MountingHole", fp="k0d3ball35:MountingHole_M2",
                              desc="Mounting hole", ds="", in_bom=False)
     for name, up in (("GND", False), ("VCC", True), ("+1V8", True)):
         if up:
@@ -255,7 +255,7 @@ def symbol_defs():
     return S
 
 
-def symbol_sexpr(name, d, libname="k0d3ball36"):
+def symbol_sexpr(name, d, libname="k0d3ball35"):
     full = f"{libname}:{name}" if libname else name
     out = [f'(symbol "{full}"']
     if d.get("power"):
@@ -283,12 +283,12 @@ def symbol_sexpr(name, d, libname="k0d3ball36"):
 def write_symbol_lib():
     S = symbol_defs()
     body = "\n".join(symbol_sexpr(n, d, libname=None) for n, d in S.items())
-    txt = ('(kicad_symbol_lib (version 20241209) (generator "k0d3ball36_generate") '
+    txt = ('(kicad_symbol_lib (version 20241209) (generator "k0d3ball35_generate") '
            '(generator_version "1.0")\n' + body + "\n)\n")
     os.makedirs(LIB, exist_ok=True)
-    with open(os.path.join(LIB, "k0d3ball36.kicad_sym"), "w") as f:
+    with open(os.path.join(LIB, "k0d3ball35.kicad_sym"), "w") as f:
         f.write(txt)
-    print("wrote", os.path.join(LIB, "k0d3ball36.kicad_sym"))
+    print("wrote", os.path.join(LIB, "k0d3ball35.kicad_sym"))
 
 
 # --------------------------------------------------------------------------------------
@@ -329,7 +329,7 @@ def write_pmw3610_footprint():
         f'(fp_line (start {body_x0:.3f} 6.2) (end {body_x1:.3f} 6.2) (stroke (width 0.12) (type solid)) (layer "F.SilkS") (uuid "{uid()}"))',
         f'(fp_text user "optical centre" (at 0 7.4 0) (layer "F.Fab") (uuid "{uid()}") (effects (font (size 0.6 0.6) (thickness 0.1))))',
     ]
-    txt = (f'(footprint "PMW3610DM-SUDU" (version 20241229) (generator "k0d3ball36_generate") '
+    txt = (f'(footprint "PMW3610DM-SUDU" (version 20241229) (generator "k0d3ball35_generate") '
            f'(generator_version "1.0") (layer "F.Cu")\n'
            f'  (descr "PixArt PMW3610DM-SUDU 16-pin molded lead-frame DIP, origin at optical centre, '
            f'includes body cutout")\n  (tags "PMW3610 sensor trackball")\n  (attr through_hole)\n'
@@ -382,11 +382,11 @@ def write_project_files():
     with open(PRO, "w") as f:
         f.write(pro)
     with open(os.path.join(HERE, "sym-lib-table"), "w") as f:
-        f.write('(sym_lib_table\n  (version 7)\n  (lib (name "k0d3ball36")(type "KiCad")'
-                '(uri "${KIPRJMOD}/../lib/k0d3ball36.kicad_sym")(options "")(descr "project symbols"))\n)\n')
+        f.write('(sym_lib_table\n  (version 7)\n  (lib (name "k0d3ball35")(type "KiCad")'
+                '(uri "${KIPRJMOD}/../lib/k0d3ball35.kicad_sym")(options "")(descr "project symbols"))\n)\n')
     with open(os.path.join(HERE, "fp-lib-table"), "w") as f:
-        f.write('(fp_lib_table\n  (version 7)\n  (lib (name "k0d3ball36")(type "KiCad")'
-                '(uri "${KIPRJMOD}/../lib/k0d3ball36.pretty")(options "")(descr "project footprints"))\n)\n')
+        f.write('(fp_lib_table\n  (version 7)\n  (lib (name "k0d3ball35")(type "KiCad")'
+                '(uri "${KIPRJMOD}/../lib/k0d3ball35.pretty")(options "")(descr "project footprints"))\n)\n')
 
 
 # Schematic placement of every part (mm, KiCad sheet coordinates, y down).
@@ -403,10 +403,10 @@ SCH_POS = {
 def write_schematic():
     S = symbol_defs()
     root = uid()
-    out = ['(kicad_sch (version 20250114) (generator "k0d3ball36_generate") (generator_version "9.0")',
+    out = ['(kicad_sch (version 20250114) (generator "k0d3ball35_generate") (generator_version "9.0")',
            f'  (uuid "{root}")', '  (paper "A3")',
            f'  (title_block (title "{TITLE}") (date "2026-11-05") (rev "{REV}") '
-           '(company "k0d3ball36 project") (comment 1 "Licensed under CERN-OHL-P-2.0") '
+           '(company "k0d3ball35 project") (comment 1 "Licensed under CERN-OHL-P-2.0") '
            '(comment 2 "FPC pin order is mirrored relative to the main PCB; see docs/08-trackball-module.md"))',
            '  (lib_symbols']
     for n, d in S.items():
@@ -418,7 +418,7 @@ def write_schematic():
 
     def place(ref, symname, value, x, y, fields=None):
         d = S[symname]
-        lines = [f'  (symbol (lib_id "k0d3ball36:{symname}") (at {x} {y} 0) (unit 1) '
+        lines = [f'  (symbol (lib_id "k0d3ball35:{symname}") (at {x} {y} 0) (unit 1) '
                  f'(exclude_from_sim no) (in_bom {"no" if d.get("in_bom") is False else "yes"}) '
                  f'(on_board yes) (dnp no) (fields_autoplaced yes) (uuid "{uid()}")']
         hide_ref = bool(d.get("power"))
@@ -487,7 +487,7 @@ def write_schematic():
         place(f'#PWR0{pwr_count["#PWR"]:02d}', net, net, x, y + 5.08)
 
     notes = [
-        ('  (text "k0d3ball36 trackball sensor board, PMW3610DM-SUDU + LM18-LSI lens.\\n'
+        ('  (text "k0d3ball35 trackball sensor board, PMW3610DM-SUDU + LM18-LSI lens.\\n'
          'VDDIO and all logic run at 3.3 V straight from the main PCB (no level shifters).\\n'
          'VDD 1.8 V is generated on board by U2.  MOTION is push-pull; R3 limits current if the\\n'
          'FFC is inserted the wrong way round.  R2 keeps the sensor deselected while the host boots."'
@@ -539,7 +539,7 @@ def new_board():
     board.GetTitleBlock().SetTitle(TITLE)
     board.GetTitleBlock().SetRevision(REV)
     board.GetTitleBlock().SetDate("2026-11-05")
-    board.GetTitleBlock().SetCompany("k0d3ball36 project")
+    board.GetTitleBlock().SetCompany("k0d3ball35 project")
     return board
 
 
@@ -628,7 +628,7 @@ def build_pcb():
             raise SystemExit(f"footprint {fp} not found in {PRETTY}")
         m.SetReference(ref)
         m.SetValue(value)
-        m.SetFPIDAsString(f"k0d3ball36:{fp}")
+        m.SetFPIDAsString(f"k0d3ball35:{fp}")
         x, y, rot, layer = PLACEMENT[ref]
         board.Add(m)
         m.SetPosition(pcbnew.VECTOR2I(mm(x), mm(y)))
@@ -767,7 +767,7 @@ def finish():
     add_text(board, "1:MOT", 120.9, 105.3, pcbnew.F_SilkS, 0.6)
     add_text(board, "BALL SIDE", 103.5, 100.4, pcbnew.B_SilkS, 1.2, mirror=True, bold=True)
     add_text(board, "PMW3610 / LM18-LSI", 103.5, 98.6, pcbnew.B_SilkS, 0.7, mirror=True)
-    add_text(board, "k0d3ball36 sensor " + REV, 110.0, 117.6, pcbnew.B_SilkS, 0.7, mirror=True)
+    add_text(board, "k0d3ball35 sensor " + REV, 110.0, 117.6, pcbnew.B_SilkS, 0.7, mirror=True)
     add_text(board, "lens + sensor body on this side", 110.0, 121.8, pcbnew.B_SilkS, 0.6, mirror=True)
     for m in board.GetFootprints():
         if m.GetReference() == "U1":

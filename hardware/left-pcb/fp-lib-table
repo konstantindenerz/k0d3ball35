@@ -1,4 +1,4 @@
 (fp_lib_table
   (version 7)
-  (lib (name "k0d3ball36")(type "KiCad")(uri "${KIPRJMOD}/../lib/k0d3ball36.pretty")(options "")(descr "k0d3ball36 project footprints"))
+  (lib (name "k0d3ball35")(type "KiCad")(uri "${KIPRJMOD}/../lib/k0d3ball35.pretty")(options "")(descr "k0d3ball35 project footprints"))
 )

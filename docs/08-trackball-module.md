@@ -1,6 +1,6 @@
 # Trackball module: sensor board, lens and cradle
 
-The trackball module is the one part of k0d3ball36 that is not covered by the Keyball39 heritage:
+The trackball module is the one part of k0d3ball35 that is not covered by the Keyball39 heritage:
 Keyball never published its sensor board or its ball holder. This document describes the sensor
 daughterboard that lives in `hardware/sensor-pcb/`, the optical stack it needs, the 19.05 mm
 ball decision, and the rules the cradle (`hardware/trackball-cradle/`) has to follow in the r2
@@ -45,7 +45,7 @@ PMW3610DM-SUDU in the centre, a SOT-23 regulator XC6206 1.8 V on the left feedin
 capacitors near each supply pin, a 6-pin FPC connector on the far left with pins labelled MOT, NCS,
 SDIO, SCLK, GND, VCC, net labels on orthogonal wires, black lines on white.*
 
-Parts and their purpose (also in `fab/k0d3ball36-sensor-r1-bom.csv` with LCSC numbers):
+Parts and their purpose (also in `fab/k0d3ball35-sensor-r1-bom.csv` with LCSC numbers):
 
 | Ref | Value | Purpose |
 |-----|-------|---------|

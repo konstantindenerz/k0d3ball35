@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
-"""Key geometry for k0d3ball36 (r2: two separate PCBs).
+"""Key geometry for k0d3ball35 (r2: two separate PCBs).
 
-Everything is derived from hardware/layout/k0d3ball36.yaml. Coordinates are in mm,
+Everything is derived from hardware/layout/k0d3ball35.yaml. Coordinates are in mm,
 x outward (pinky), y downward (towards the user), origin at the centre of the
 middle-column top key. Both halves use this frame; the left half is mirrored for
 display only. This matches KiCad's screen coordinate system, so the PCB generator
@@ -26,7 +26,7 @@ from shapely.ops import unary_union
 from shapely import affinity
 
 REPO = Path(__file__).resolve().parents[2]
-LAYOUT_FILE = REPO / "hardware" / "layout" / "k0d3ball36.yaml"
+LAYOUT_FILE = REPO / "hardware" / "layout" / "k0d3ball35.yaml"
 HALVES = ("left", "right")
 
 

@@ -1,0 +1,163 @@
+# k0d3ball35 layout - single source of truth for the key geometry (revision r2).
+# SPDX-License-Identifier: CERN-OHL-P-2.0
+#
+# Coordinates describe a half in millimetres in its own frame: x grows outward
+# (towards the pinky), y grows downward (towards the user). The origin is the centre
+# of the middle-column top key. Both halves share this frame; the left half is
+# rendered mirrored for display only. Since r2 the two halves are separate PCBs:
+#   left  = 15 finger keys + 3 thumb keys, no trackball
+#   right = 15 finger keys + 2 thumb keys (the two outer ones) + trackball pocket
+#
+# The column stagger and the thumb arc are the Keyball39 proportions (measured from
+# the published Keyball39 gerbers: 19.05 mm pitch, stagger 11.70 / 4.70 / 0 / 2.50 /
+# 5.00 mm, thumb keys at 0 / 10 / 20 degrees) scaled to the Choc 18 x 17 mm pitch.
+
+name: k0d3ball35
+revision: r2
+units: mm
+
+pitch:
+  x: 18.0
+  y: 17.0
+
+keycap:            # Choc 1u cap footprint used for clearance checks and outlines
+  width: 17.5
+  height: 16.5
+
+switch_body: 13.8  # Choc V1 housing, square
+
+# Finger columns, outer to inner. "stagger" is the y offset of row 0 relative to the
+# middle column (positive = lower). Values are Keyball39 stagger * 17 / 19.05.
+columns:
+  - { name: pinky,  col: 0, x: 36.0,  stagger: 10.44 }
+  - { name: ring,   col: 1, x: 18.0,  stagger: 4.19 }
+  - { name: middle, col: 2, x: 0.0,   stagger: 0.0 }
+  - { name: index,  col: 3, x: -18.0, stagger: 2.23 }
+  - { name: inner,  col: 4, x: -36.0, stagger: 4.46 }
+
+rows: 3            # finger rows 0..2; row 3 is the thumb row
+
+# Thumb key positions. Offsets are relative to the centre of the inner column's bottom
+# key (row 2). Keyball39 offsets (+15.05/+23.75, -6.50/+25.55, -27.42/+31.07 mm) scaled
+# by 18/19.05 in x and 17/19.05 in y. Rotation is KiCad convention (positive = CCW).
+# Which of these a half uses is listed under halves.<side>.thumbs.
+thumbs:
+  - { name: thumb_outer,  row: 3, col: 2, dx: 14.22,  dy: 21.19, rotation: 0 }
+  - { name: thumb_middle, row: 3, col: 3, dx: -6.14,  dy: 22.80, rotation: 10 }
+  - { name: thumb_inner,  row: 3, col: 4, dx: -25.91, dy: 27.73, rotation: 20 }
+
+# Trackball parameters shared by every half that has a ball (centre under halves.<side>).
+# The ball sits in a case pocket BESIDE the PCB: the sensor board lies on the case floor,
+# the cradle is screwed to the case, the PCB edge gets an octagonal notch around it.
+trackball:
+  ball_diameter: 19.05          # 3/4 inch POM ball (25 mm cradle still available as a parameter)
+  cradle_diameter: 28.0         # outer diameter of the cradle flange (clearance check)
+  min_keycap_clearance: 1.0     # cradle flange to any keycap
+  pocket:
+    notch_clearance: 1.0        # PCB notch = cradle radius + this (octagon apothem)
+    wall: 2.0                   # case wall around the cradle (pocket circle in the previews / DXF)
+
+controller:                     # nice!nano v2 / SuperMini, Pro Micro pinout
+  center: { x: -58.0, y: 14.0 }
+  rotation: 0                   # USB connector towards the top (away from the user)
+  size: { x: 18.0, y: 33.5 }
+  usb_overhang: 1.5             # USB-C shell past the PCB edge
+  pin_pitch: 2.54
+  row_spacing: 15.24            # 2 x 7.62
+
+power_switch: { center: { x: -68.5, y: 30.0 }, rotation: 90 }   # MSK12C02, bottom side, actuator through the inner edge
+reset_button: { center: { x: -66.0, y: 38.0 }, rotation: 0 }    # EVQP7A, bottom side, inner corner below the power switch
+battery_pads: { center: { x: -57.0, y: 50.5 }, rotation: 0 }    # 2 x 1.7 mm PTH, 2.54 mm pitch, B+ / B-, below the JST
+battery_jst:  { center: { x: -56.0, y: 42.0 }, rotation: 0 }    # S2B-PH-SM4-TB, optional (6 mm tall), bottom side
+
+test_pads:                      # spare controller pins as 1.5 mm pads, in a row below the battery pads
+  start: { x: -66.0, y: 57.5 }
+  pitch: 2.5
+  direction: x
+
+mounting_holes:                 # M2 through holes for the case (2.2 mm), in the gaps between switches, both halves
+  - { x: 27.0,  y: 10.8 }       # ring / pinky, top (outside the socket pad bands)
+  - { x: 27.0,  y: 44.5 }       # ring / pinky, bottom
+  - { x: -9.0,  y: 40.0 }       # middle / index, bottom
+  - { x: -27.0, y: 8.0 }        # index / inner, top
+  - { x: -32.0, y: 61.0 }       # between outer and middle thumb key
+
+stitching_vias:                 # GND vias tying the two pours together (free spots between switches), both halves
+  - [27.0, 27.5]
+  - [9.0, 6.0]
+  - [-27.0, 25.0]
+  - [-45.0, 31.5]
+  - [-28.0, 48.5]
+  - [28.5, 50.0]
+  - [-64.5, 46.8]
+  - [-70.0, 15.0]
+  - [-33.0, 47.5]
+
+outline:
+  margin: 0.5                   # PCB edge outside the keycap rectangles
+  socket_margin: 1.1            # extra width per side so the hot-swap socket pads (9.8 mm out) keep 0.3 mm to the edge
+  corner_radius: 0.0            # r2: angular, 90 degree steps, no rounding (the fab's 1 mm router radius is accepted)
+  controller_margin: 2.0
+
+silkscreen:
+  title: k0d3ball35
+  revision_text: r2
+
+# Per-half data. Lists here are ADDED to the global ones (mounting_holes, stitching_vias);
+# scalar blocks (trackball.center, fpc) exist only where given.
+halves:
+  left:
+    thumbs: [thumb_outer, thumb_middle, thumb_inner]
+    mounting_holes: []
+    stitching_vias:
+      - [-15.0, 65.0]
+    # Hand-placed tracks for the rotated thumb cluster (the autorouter does not reach pads of
+    # footprints rotated by 10/20 degrees). Points are layout coordinates or pad references:
+    # "REF:joiner" = the switch's plated pin-1 joiner pad, "REF:pad2" / "REF:pad2f" = the switch's
+    # socket pad 2 on the back / front face, "REF:bus" = bottom end of the column bus at this key,
+    # "REF:1" / "REF:2" = diode pad 1 (cathode) / pad 2 (anode).
+    manual_routes:
+      - { net: ROW3, layer: B.Cu, width: 0.25,
+          points: ["D32:1", [-26.0, 63.0], [-35.0, 63.5], [-41.0, 64.6], "D33:1", [-46.5, 69.0], [-53.5, 69.3], [-59.5, 69.6], "D34:1"] }
+      - { net: COL3, layer: B.Cu, width: 0.25,
+          points: ["SW23:bus", [-20.6, 49.5], "SW33:joiner"] }
+      # Controller to the inner column and the thumb row: the router gives up on these two on the
+      # left, so they are fixed. COL4 leaves hole 11 under the controller's bottom holes on the
+      # back; ROW3 leaves hole 20 on the front through the gap between the controller and the
+      # inner key column and ends at the cathode of the middle thumb diode.
+      - { net: COL4, layer: B.Cu, width: 0.25,
+          points: ["U1:11", [-64.3, 26.7], [-64.3, 29.8], [-41.0, 29.8], "SW24:bus"] }
+      - { net: ROW3, layer: F.Cu, width: 0.25,
+          points: ["U1:20", [-47.5, 18.5], [-47.5, 52.5], [-45.5, 56.5], [-45.3, 64.5], "D33:1"] }
+      - { net: COL4, layer: B.Cu, width: 0.25,   # below the battery pads, between TP4 and TP5, to the inner thumb key
+          points: ["SW24:bus", [-38.6, 49.0], [-52.5, 52.8], [-60.75, 52.8], [-60.75, 56.5], "SW34:joiner"] }
+      # Inner thumb key (20 deg): its switch net crosses the ROW3 track, so it runs on the front
+      # from the diode to a via and on the back from there to socket pad 2; the front copy of pad 2
+      # is fed around the socket boss holes.
+      - { net: SW34, layer: F.Cu, width: 0.25, via_end: true,
+          points: ["D34:2", [-54.5, 66.5]] }
+      - { net: SW34, layer: B.Cu, width: 0.25,
+          points: [[-54.5, 66.5], "SW34:pad2"] }
+      - { net: SW34, layer: F.Cu, width: 0.25,
+          points: ["D34:2", [-63.5, 70.5], [-70.0, 69.0], "SW34:pad2f"] }
+      - { net: COL2, layer: B.Cu, width: 0.25,   # between SW22/SW23, past H3, left of the thumb notch
+          points: ["SW22:bus", [-2.6, 35.5], [-7.0, 38.0], [-7.0, 41.5], [-10.5, 42.3], [-12.5, 44.5], [-12.5, 50.5], "SW32:joiner"] }
+    test_pads:                      # nine pads on the left: one row below the battery pads, above the inner thumb key
+      start: { x: -69.5, y: 54.5 }
+  right:
+    thumbs: [thumb_middle, thumb_outer]
+    trackball:
+      center: { x: 5.0, y: 64.0 }   # outboard of the outer thumb key, below the middle/ring columns
+    fpc:                            # sensor daughterboard connector (bottom side), cable exits downward into the pocket
+      center: { x: -8.0, y: 46.5 }
+      rotation: 0
+    mounting_holes: []
+    stitching_vias:
+      - [-14.0, 58.0]
+    manual_routes:
+      - { net: ROW3, layer: B.Cu, width: 0.25,
+          points: ["D32:1", [-26.0, 63.0], [-35.0, 63.5], [-41.0, 64.6], "D33:1"] }
+      - { net: COL3, layer: B.Cu, width: 0.25,
+          points: ["SW23:bus", [-20.6, 49.5], "SW33:joiner"] }
+      - { net: COL2, layer: B.Cu, width: 0.25,   # between SW22/SW23, past H3, left of the FPC connector
+          points: ["SW22:bus", [-2.6, 35.5], [-7.0, 38.0], [-7.0, 41.5], [-10.5, 42.3], [-12.5, 44.5], [-12.5, 50.5], "SW32:joiner"] }

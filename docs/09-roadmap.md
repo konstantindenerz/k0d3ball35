@@ -8,8 +8,8 @@ Do these before paying for anything:
 
 1. Finish the r2 pipeline: both halves generated, routed, ERC/DRC clean, gerbers exported, renders
    in the README. Ticket `hw-two-pcbs-r2`.
-2. Independent gerber check: upload `hardware/left-pcb/k0d3ball36-left-gerbers.zip`,
-   `hardware/right-pcb/k0d3ball36-right-gerbers.zip` and the sensor zip to the JLCPCB preview or
+2. Independent gerber check: upload `hardware/left-pcb/k0d3ball35-left-gerbers.zip`,
+   `hardware/right-pcb/k0d3ball35-right-gerbers.zip` and the sensor zip to the JLCPCB preview or
    open them in gerbv; layers, drills, outlines, the octagonal notch on the right board, no copper
    in the notch. Ticket `test-fab-gerber-viewer`.
 3. Manual review in the KiCad GUI with 3D models: socket orientation against a real socket, FH12

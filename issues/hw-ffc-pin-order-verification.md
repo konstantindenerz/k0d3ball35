@@ -27,7 +27,7 @@ The sensor PCB chooses its order to match. A mistake here swaps 3V3 and MOT and 
 torabo-tsuki-lp uses a 6-pin FFC between main board and sensor module; its schematics are a cross-check.
 
 Both boards use the same footprint, Hirose FH12-6S-0.5SH (0.5 mm, 6 contacts, bottom contact, ZIF slider),
-copied into `hardware/lib/k0d3ball36.pretty`. Main PCB pin order (fixed): 1 VCC 3.3 V, 2 GND, 3 TB_SCLK,
+copied into `hardware/lib/k0d3ball35.pretty`. Main PCB pin order (fixed): 1 VCC 3.3 V, 2 GND, 3 TB_SCLK,
 4 TB_SDIO, 5 TB_NCS, 6 TB_MOT. The sensor PCB adapts its order to the cable.
 
 Resolved on paper (2026-11-05): the sensor-board order is mirrored, 1 MOT, 2 NCS, 3 SDIO, 4 SCLK, 5 GND, 6 VCC, because

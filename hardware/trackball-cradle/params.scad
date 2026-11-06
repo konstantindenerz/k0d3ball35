@@ -1,4 +1,4 @@
-// k0d3ball36 trackball cradle - parameters
+// k0d3ball35 trackball cradle - parameters
 // All dimensions in mm. Coordinate system: z up, z = 0 is the TOP surface of the
 // main PCB, the ball centre is on the z axis. +x points outward (towards the pinky
 // side of the right half), +y points towards the user.

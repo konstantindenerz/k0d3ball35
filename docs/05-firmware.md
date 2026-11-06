@@ -1,25 +1,25 @@
 # Firmware (ZMK)
 
-k0d3ball36 runs [ZMK](https://zmk.dev) on two nice!nano v2 (or SuperMini nRF52840) controllers.
+k0d3ball35 runs [ZMK](https://zmk.dev) on two nice!nano v2 (or SuperMini nRF52840) controllers.
 The right half is the split central and drives the PMW3610 trackball through the upstream Zephyr
 `pixart,pmw3610` input driver; no third-party driver module is needed. Since r2 the two halves are
 separate PCBs with identical controller wiring: one shared kscan pin set, 35 keys (18 left, 17 right). ZMK Studio is enabled, so the
 keymap can be edited live from a browser.
 
-Sources: `firmware/zmk-config/`. Shield files: `config/boards/shields/k0d3ball36/`.
+Sources: `firmware/zmk-config/`. Shield files: `config/boards/shields/k0d3ball35/`.
 
 ## 1. Building
 
 ### GitHub Actions (default)
 
 Every push that touches `firmware/zmk-config/` runs `.github/workflows/firmware.yml`, which calls
-ZMK's reusable `build-user-config.yml`. Download the `k0d3ball36-firmware` artifact from the
+ZMK's reusable `build-user-config.yml`. Download the `k0d3ball35-firmware` artifact from the
 workflow run; it contains:
 
 | File | Flash to |
 |------|----------|
-| `k0d3ball36_right-nice_nano_v2-zmk.uf2` | right half (central, trackball) |
-| `k0d3ball36_left-nice_nano_v2-zmk.uf2` | left half |
+| `k0d3ball35_right-nice_nano_v2-zmk.uf2` | right half (central, trackball) |
+| `k0d3ball35_left-nice_nano_v2-zmk.uf2` | left half |
 | `settings_reset-nice_nano_v2-zmk.uf2` | either half, to wipe pairing data |
 
 The workflow also runs weekly against the pinned ZMK commit in `config/west.yml`, so a broken
@@ -34,9 +34,9 @@ docker run --rm -it -v "$PWD":/workspaces/zmk-config -v zmk-ws:/workspaces -w /w
 # inside the container
 west init -l zmk-config/config && west update --fetch-opt=--filter=tree:0 && west zephyr-export
 west build -p -s zmk/app -d build/right -b 'nice_nano//zmk' -S studio-rpc-usb-uart -- \
-  -DSHIELD=k0d3ball36_right -DZMK_CONFIG=/workspaces/zmk-config/config
+  -DSHIELD=k0d3ball35_right -DZMK_CONFIG=/workspaces/zmk-config/config
 west build -p -s zmk/app -d build/left -b 'nice_nano//zmk' -- \
-  -DSHIELD=k0d3ball36_left -DZMK_CONFIG=/workspaces/zmk-config/config
+  -DSHIELD=k0d3ball35_left -DZMK_CONFIG=/workspaces/zmk-config/config
 ```
 
 The UF2 files land in `build/<side>/zephyr/zmk.uf2`. A native toolchain works the same way after
@@ -53,7 +53,7 @@ halves in the same session.
 
 1. Flash `settings_reset` to **both** halves first (new build, or whenever the halves stop talking to
    each other). Double-tap reset, copy the UF2 to the `NICENANO` drive, wait for the drive to vanish.
-2. Flash `k0d3ball36_left` to the left half and `k0d3ball36_right` to the right half the same way.
+2. Flash `k0d3ball35_left` to the left half and `k0d3ball35_right` to the right half the same way.
 3. Power-cycle both halves. The halves pair with each other automatically within a few seconds.
 4. Connect the right half to the host by USB or pair it over Bluetooth (profile 0 by default).
 
@@ -75,23 +75,23 @@ keys, or `&lt SYS ESC` on the left outer thumb):
 | right outer thumb | reset |
 
 Switch the host device by selecting another profile; the first connection on a fresh profile starts
-advertising and the host sees "k0d3ball36".
+advertising and the host sees "k0d3ball35".
 
 ## 4. ZMK Studio
 
 The right half is built with the `studio-rpc-usb-uart` snippet. Connect it by USB (or Bluetooth on
 browsers that support Web Bluetooth), open <https://zmk.studio>, press the Studio unlock key on the
 System layer, and edit layers and bindings live. Changes persist on the keyboard. Keymap changes in
-`k0d3ball36.keymap` are ignored once Studio has saved a keymap, until you choose "Restore Stock
+`k0d3ball35.keymap` are ignored once Studio has saved a keymap, until you choose "Restore Stock
 Settings" in Studio.
 
-Studio shows the keyboard using the physical layout in `k0d3ball36-layouts.dtsi`, which is
+Studio shows the keyboard using the physical layout in `k0d3ball35-layouts.dtsi`, which is
 generated from `hardware/layout/output/points-left.json` and `points-right.json` by
 `scripts/gen_physical_layout.py`. Regenerate it whenever the hardware layout changes:
 
 ```bash
 python3 firmware/zmk-config/scripts/gen_physical_layout.py > /tmp/pl.txt   # paste into the dtsi
-python3 firmware/zmk-config/scripts/gen_physical_layout.py --json > firmware/zmk-config/config/k0d3ball36.json
+python3 firmware/zmk-config/scripts/gen_physical_layout.py --json > firmware/zmk-config/config/k0d3ball35.json
 ```
 
 ## 5. Default keymap
@@ -131,7 +131,7 @@ Image prompt: *Top-down flat illustration of a 35-key split keyboard layout, 3x5
 
 ## 6. Trackball tuning
 
-All trackball settings live in `k0d3ball36_right.overlay`.
+All trackball settings live in `k0d3ball35_right.overlay`.
 
 | Setting | Where | Default | Notes |
 |---------|-------|---------|-------|
@@ -184,7 +184,7 @@ level) and shown in ZMK Studio.
 
 Since r2 each half is its own PCB and the controller footprint is wired identically on both, so
 there is one pin table (`docs/01-design-spec.md`, section 2) and one shared `kscan0` in
-`k0d3ball36.dtsi`:
+`k0d3ball35.dtsi`:
 
 | Line | Both halves |
 |------|-------------|
@@ -204,12 +204,12 @@ PCB (the layout generator can produce one by giving the left half the `trackball
 and mirroring the pocket). The firmware side is a configuration change because the sensor pins are
 the same on both halves:
 
-1. In `k0d3ball36_left.overlay`, enable the prepared left-ball block (`&pinctrl`, `&spi1` with
+1. In `k0d3ball35_left.overlay`, enable the prepared left-ball block (`&pinctrl`, `&spi1` with
    the `trackball` node on D15 / D16 / D10 / D14, and `&trackball_split { status = "okay"; device = <&trackball>; };`).
-2. In `k0d3ball36_right.overlay`, remove `trackball_listener` and enable the shared
+2. In `k0d3ball35_right.overlay`, remove `trackball_listener` and enable the shared
    `trackball_split_listener` and the `trackball_split` node (`status = "okay";` on both). Move the
    input processor settings to that listener.
-3. Add `CONFIG_INPUT_PMW3610=y`, `CONFIG_SPI=y` and `CONFIG_INPUT=y` to `k0d3ball36_left.conf`.
+3. Add `CONFIG_INPUT_PMW3610=y`, `CONFIG_SPI=y` and `CONFIG_INPUT=y` to `k0d3ball35_left.conf`.
 4. Rebuild and flash both halves.
 
 The peripheral forwards motion events to the central through ZMK's `zmk,input-split`; input

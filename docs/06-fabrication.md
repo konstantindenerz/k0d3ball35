@@ -45,11 +45,11 @@ extended-part fees roughly double the price; hand assembly is fine for a first s
 | File | Content |
 |------|---------|
 | `hardware/<half>-pcb/gerbers/*.gbr`, `*.drl`, map files | gerbers (F/B copper, paste, silk, mask, Edge.Cuts), Excellon drill files (PTH and NPTH separate), drill map |
-| `hardware/<half>-pcb/k0d3ball36-<half>-gerbers.zip` | the zip to upload |
-| `hardware/<half>-pcb/k0d3ball36-<half>.step` | STEP model for the case design |
+| `hardware/<half>-pcb/k0d3ball35-<half>-gerbers.zip` | the zip to upload |
+| `hardware/<half>-pcb/k0d3ball35-<half>.step` | STEP model for the case design |
 | `hardware/<half>-pcb/renders/<half>-pcb-top.png`, `-bottom.png` | rendered views |
-| `hardware/<half>-pcb/k0d3ball36-<half>-schematic.pdf` | schematic |
-| `hardware/<half>-pcb/k0d3ball36-<half>-bom.csv`, `-pos.csv` | BOM and placement file (for PCBA, not needed for a bare board) |
+| `hardware/<half>-pcb/k0d3ball35-<half>-schematic.pdf` | schematic |
+| `hardware/<half>-pcb/k0d3ball35-<half>-bom.csv`, `-pos.csv` | BOM and placement file (for PCBA, not needed for a bare board) |
 
 The sensor board has its own `hardware/sensor-pcb/export.sh` with the same outputs.
 
@@ -127,9 +127,9 @@ Verification commands (replace `left` with `right` for the other board):
 
 ```
 /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli sch erc --exit-code-violations --severity-error \
-  --format json -o build/erc-left.json hardware/left-pcb/k0d3ball36-left.kicad_sch
+  --format json -o build/erc-left.json hardware/left-pcb/k0d3ball35-left.kicad_sch
 /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli pcb drc --schematic-parity --exit-code-violations \
-  --severity-error --format json -o build/drc-left.json hardware/left-pcb/k0d3ball36-left.kicad_pcb
+  --severity-error --format json -o build/drc-left.json hardware/left-pcb/k0d3ball35-left.kicad_pcb
 .venv/bin/pytest -q
 ```
 
@@ -137,7 +137,7 @@ Remaining DRC warnings are expected: the diode courtyard lies inside the switch 
 diode joiner holes sit inside the switch courtyard (`pth_inside_courtyard`), and a few silkscreen
 labels touch copper under the keycaps.
 
-Everything is generated from `hardware/layout/k0d3ball36.yaml` and `scripts/k0d3/`. Do not edit the
+Everything is generated from `hardware/layout/k0d3ball35.yaml` and `scripts/k0d3/`. Do not edit the
 KiCad files by hand; change the generator and re-run, otherwise the next run overwrites your work.
 
 ## CI gates

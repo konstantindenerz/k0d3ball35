@@ -63,7 +63,7 @@ keys, dimension arrows with millimetre labels, sans-serif font.
 
 ## img-layout-compare-keyball
 
-Aspect 2:1. Overlay of Keyball39 and k0d3ball36 geometry.
+Aspect 2:1. Overlay of Keyball39 and k0d3ball35 geometry.
 
 ```prompt
 Technical overlay diagram, white background, two key layouts drawn as outlines on top of each
@@ -319,7 +319,7 @@ Aspect 3:2. Which face is up for which half.
 Top-down photo of two bare green keyboard PCBs side by side on a cutting mat, near mirror images
 of each other with angular stepped outlines, the right-hand board with an octagonal notch at its
 lower outer edge and only two thumb key positions, the left-hand board with three thumb positions,
-each with a small silkscreen text below the controller outline reading "k0d3ball36 r2 LEFT half"
+each with a small silkscreen text below the controller outline reading "k0d3ball35 r2 LEFT half"
 and "RIGHT half", even light, no components.
 ```
 

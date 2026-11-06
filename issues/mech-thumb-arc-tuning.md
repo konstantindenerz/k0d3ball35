@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-Keyball owners report the thumb keys being hit by ball swipes and the arc not fitting all hand sizes. The arc offsets and rotations live in `hardware/layout/k0d3ball36.yaml`.
+Keyball owners report the thumb keys being hit by ball swipes and the arc not fitting all hand sizes. The arc offsets and rotations live in `hardware/layout/k0d3ball35.yaml`.
 
 ## Acceptance criteria
 

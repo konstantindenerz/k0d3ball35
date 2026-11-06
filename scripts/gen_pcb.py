@@ -4,8 +4,8 @@
 
     scripts/gen_pcb.py [left|right ...]      (default: both)
 
-Writes hardware/<half>-pcb/k0d3ball36-<half>.kicad_pcb and regenerates
-hardware/lib/k0d3ball36.pretty.
+Writes hardware/<half>-pcb/k0d3ball35-<half>.kicad_pcb and regenerates
+hardware/lib/k0d3ball35.pretty.
 """
 from __future__ import annotations
 

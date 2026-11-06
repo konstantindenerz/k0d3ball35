@@ -20,7 +20,7 @@ $PY scripts/gen_layout.py >/dev/null
 mkdir -p build
 for half in "${HALVES[@]}"; do
   case "$half" in left|right) ;; *) echo "unknown half '$half' (left|right)" >&2; exit 2 ;; esac
-  NAME="k0d3ball36-$half"
+  NAME="k0d3ball35-$half"
   DIR="hardware/$half-pcb"
   BOARD="$DIR/$NAME.kicad_pcb"
   $PY scripts/gen_schematic.py "$half"

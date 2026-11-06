@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Generate the ZMK physical layout (key_physical_attrs rows) for k0d3ball36.
+"""Generate the ZMK physical layout (key_physical_attrs rows) for k0d3ball35.
 
 Key centres come from the layout generator's exact output,
 hardware/layout/output/points-left.json and points-right.json (run
@@ -10,7 +10,7 @@ column's top key. The left half is mirrored for display, the right half is used
 as is, and the two halves are placed HALF_GAP_MM apart (inner column centre to
 the mirror axis).
 
-Keys are emitted in matrix-transform order (k0d3ball36.dtsi): three finger rows,
+Keys are emitted in matrix-transform order (k0d3ball35.dtsi): three finger rows,
 each left pinky..inner then right inner..pinky, followed by the thumb keys (left
 outer, middle, inner, then right middle, outer). 35 keys in total.
 
@@ -110,7 +110,7 @@ def to_json(keys) -> dict:
             entry["rx"] = round((cx - min_x) / MM_PER_UNIT, 3)
             entry["ry"] = round((cy - min_y) / MM_PER_UNIT, 3)
         layout.append(entry)
-    return {"id": "k0d3ball36", "name": "k0d3ball36", "layouts": {"default_layout": {"layout": layout}}}
+    return {"id": "k0d3ball35", "name": "k0d3ball35", "layouts": {"default_layout": {"layout": layout}}}
 
 
 def main() -> None:

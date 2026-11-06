@@ -3,7 +3,7 @@
 """Build docs/exploded-view/index.html from template.html and the layout data.
 
 Reads hardware/layout/output/points-left.json and points-right.json,
-hardware/layout/k0d3ball36.yaml and hardware/trackball-cradle/stack.json (19 mm pocket
+hardware/layout/k0d3ball35.yaml and hardware/trackball-cradle/stack.json (19 mm pocket
 variant), writes layout.json and inlines it into the page so the HTML is self-contained.
 The right half carries the ball pocket, the left half has no ball. Run after `make layout`.
 """
@@ -57,7 +57,7 @@ def half_data(half: str, cfg: dict, stack: dict) -> dict:
 
 
 def main() -> None:
-    cfg = yaml.safe_load((REPO / "hardware/layout/k0d3ball36.yaml").read_text())
+    cfg = yaml.safe_load((REPO / "hardware/layout/k0d3ball35.yaml").read_text())
     stack = json.loads((REPO / "hardware/trackball-cradle/stack.json").read_text())["variants"]["19mm-pocket"]
     right = json.loads((REPO / "hardware/layout/output/points-right.json").read_text())
     data = {

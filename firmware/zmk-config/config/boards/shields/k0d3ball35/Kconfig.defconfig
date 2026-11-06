@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+
+if SHIELD_K0D3BALL36_RIGHT
+
+config ZMK_KEYBOARD_NAME
+    default "k0d3ball35"
+
+# The trackball half is the split central: lowest pointer latency, and the
+# sensor stays powered only while the central is awake.
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+config SPI
+    default y
+
+config INPUT
+    default y
+
+config INPUT_PMW3610
+    default y
+
+endif
+
+if SHIELD_K0D3BALL36_LEFT || SHIELD_K0D3BALL36_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+config ZMK_POINTING
+    default y
+
+endif

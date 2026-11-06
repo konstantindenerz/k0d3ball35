@@ -5,7 +5,7 @@
 The keyboard is two separate PCBs with the identical controller pin set, so the
 spec section 2 carries ONE pin table valid for both halves. This script parses
 the first table in that section and compares it with the agreed values, then
-checks the shared devicetree (k0d3ball36.dtsi) and both overlays against them:
+checks the shared devicetree (k0d3ball35.dtsi) and both overlays against them:
 
   - row/col GPIOs live in the shared dtsi (not per half)
   - the right overlay sets the column offset, SPI psels, chip select and motion pin
@@ -26,7 +26,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 SPEC = ROOT / "docs" / "01-design-spec.md"
-SHIELD = ROOT / "firmware" / "zmk-config" / "config" / "boards" / "shields" / "k0d3ball36"
+SHIELD = ROOT / "firmware" / "zmk-config" / "config" / "boards" / "shields" / "k0d3ball35"
 KEYS = 35
 
 # nice!nano v2: Pro Micro number -> (port, pin)
@@ -126,10 +126,10 @@ def main() -> int:
         if missing:
             notes.append(f"spec pin table lacks {', '.join(missing)}")
 
-    dtsi_raw = (SHIELD / "k0d3ball36.dtsi").read_text()
+    dtsi_raw = (SHIELD / "k0d3ball35.dtsi").read_text()
     dtsi = strip_comments(dtsi_raw)
-    right = strip_comments((SHIELD / "k0d3ball36_right.overlay").read_text())
-    left_raw = (SHIELD / "k0d3ball36_left.overlay").read_text()
+    right = strip_comments((SHIELD / "k0d3ball35_right.overlay").read_text())
+    left_raw = (SHIELD / "k0d3ball35_left.overlay").read_text()
     left = strip_comments(left_raw)
 
     # Matrix pins: once, in the shared dtsi
@@ -140,7 +140,7 @@ def main() -> int:
     for side, text in (("right", right), ("left", left)):
         for prop in ("row-gpios", "col-gpios"):
             if dts_gpios(text, prop):
-                errors.append(f"{side} overlay redefines {prop}; the pins are shared and belong in k0d3ball36.dtsi")
+                errors.append(f"{side} overlay redefines {prop}; the pins are shared and belong in k0d3ball35.dtsi")
 
     # Sensor: active on the right, documented (commented scaffold) on the left
     check_sensor(right, "right", errors)
@@ -157,7 +157,7 @@ def main() -> int:
             errors.append(f"matrix transform lacks thumb cell {cell}")
     if "RC(3,9)" in dtsi:
         errors.append("matrix transform maps RC(3,9); the right half has no inner thumb key")
-    layouts = (SHIELD / "k0d3ball36-layouts.dtsi").read_text()
+    layouts = (SHIELD / "k0d3ball35-layouts.dtsi").read_text()
     if layouts.count("&key_physical_attrs") != KEYS:
         errors.append(f"physical layout lists {layouts.count('&key_physical_attrs')} keys, expected {KEYS}")
 

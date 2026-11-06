@@ -1,6 +1,6 @@
 # Key layout
 
-The whole geometry of k0d3ball36 lives in one file, `hardware/layout/k0d3ball36.yaml`. The
+The whole geometry of k0d3ball35 lives in one file, `hardware/layout/k0d3ball35.yaml`. The
 generator `scripts/gen_layout.py` turns it into one set of outputs per half in
 `hardware/layout/output/`: `points-left.json` and `points-right.json` (consumed by the schematic
 and PCB generators, the tests, the exploded view and the firmware physical layout),
@@ -28,7 +28,7 @@ The Keyball39 is an MX board on a 19.05 mm grid. Its column stagger and thumb ar
 the published gerbers (switch centre coordinates) and scaled to the Choc 18 x 17 mm pitch. Keyball
 files are not reused; only these ratios are.
 
-| Column | Keyball39 stagger (mm) | in key units | k0d3ball36 stagger (x 17 / 19.05) |
+| Column | Keyball39 stagger (mm) | in key units | k0d3ball35 stagger (x 17 / 19.05) |
 |--------|------------------------|--------------|------------------------------------|
 | pinky | 11.70 | 0.614 | 10.44 |
 | ring | 4.70 | 0.247 | 4.19 |
@@ -142,7 +142,7 @@ octagonal pocket notch is subtracted. Sizes (bounding boxes): left 121.0 x 86.7 
 
 ## Changing the layout
 
-1. Edit `hardware/layout/k0d3ball36.yaml` (stagger, thumb offsets, per-half thumb lists, ball
+1. Edit `hardware/layout/k0d3ball35.yaml` (stagger, thumb offsets, per-half thumb lists, ball
    centre, part positions, holes, hand routes).
 2. Run `make layout`. The generator prints every key of both halves and refuses to write if keycaps
    overlap, the cradle circle touches a cap or cuts into the outline, a hole collides with a switch

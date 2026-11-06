@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-For builders who do not want to solder diodes and sockets, JLCPCB assembly needs a BOM with LCSC part numbers and a position file; `scripts/export.sh` already writes `k0d3ball36-pos.csv` and a BOM without LCSC fields. The PMW3610 is C42442560 (extended part).
+For builders who do not want to solder diodes and sockets, JLCPCB assembly needs a BOM with LCSC part numbers and a position file; `scripts/export.sh` already writes `k0d3ball35-pos.csv` and a BOM without LCSC fields. The PMW3610 is C42442560 (extended part).
 
 ## Acceptance criteria
 

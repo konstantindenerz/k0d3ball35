@@ -1,6 +1,6 @@
 # Project libraries
 
-Symbols (`k0d3ball36.kicad_sym`) and footprints (`k0d3ball36.pretty/`) shared by every KiCad project in
+Symbols (`k0d3ball35.kicad_sym`) and footprints (`k0d3ball35.pretty/`) shared by every KiCad project in
 this repository. Both project folders reference them through their local `sym-lib-table` and
 `fp-lib-table` with `${KIPRJMOD}/../lib/...`, so the repository is self-contained and needs no
 global library configuration.

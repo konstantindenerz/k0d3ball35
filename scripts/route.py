@@ -27,7 +27,7 @@ from pathlib import Path
 import pcbnew
 
 REPO = Path(__file__).resolve().parents[1]
-PCB = REPO / "hardware" / "right-pcb" / "k0d3ball36-right.kicad_pcb"
+PCB = REPO / "hardware" / "right-pcb" / "k0d3ball35-right.kicad_pcb"
 BUILD = REPO / "build"
 
 

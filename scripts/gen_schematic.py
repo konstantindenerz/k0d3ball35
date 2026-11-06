@@ -4,8 +4,8 @@
 
     scripts/gen_schematic.py [left|right ...]      (default: both)
 
-Writes hardware/<half>-pcb/k0d3ball36-<half>.kicad_sch, .kicad_pro, the library tables
-pointing at the shared hardware/lib/, and regenerates hardware/lib/k0d3ball36-main.kicad_sym.
+Writes hardware/<half>-pcb/k0d3ball35-<half>.kicad_sch, .kicad_pro, the library tables
+pointing at the shared hardware/lib/, and regenerates hardware/lib/k0d3ball35-main.kicad_sym.
 """
 from __future__ import annotations
 

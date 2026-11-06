@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-`k0d3ball36-layouts.dtsi` and the keymap-editor JSON were generated from the approximate coordinates in the design
+`k0d3ball35-layouts.dtsi` and the keymap-editor JSON were generated from the approximate coordinates in the design
 spec. The layout generator now exports exact values in `hardware/layout/output/points-left.json` and `points-right.json` (35 keys since r2).
 
 ## Acceptance criteria

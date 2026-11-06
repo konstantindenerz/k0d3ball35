@@ -1,10 +1,10 @@
-k0d3ball36 - third-party notices and credits
+k0d3ball35 - third-party notices and credits
 
 This project is licensed under the MIT License (firmware, scripts, tests, documentation; see LICENSE)
 and the CERN Open Hardware Licence Version 2 - Permissive (hardware design files under hardware/;
 see LICENSE-HARDWARE).
 
-The following projects inspired or are used by k0d3ball36. None of their files are redistributed
+The following projects inspired or are used by k0d3ball35. None of their files are redistributed
 in this repository unless stated.
 
 Keyball (Yowkees)
@@ -12,7 +12,7 @@ Keyball (Yowkees)
   Inspiration for the hand geometry and the build guide structure. The column stagger ratios and
   thumb arc angles were measured from the published gerber files and re-expressed as parameters.
   No design files, footprints, symbols, copper or firmware code from Keyball are included.
-  "Keyball" is the name of Yowkees' product line; k0d3ball36 is an independent design.
+  "Keyball" is the name of Yowkees' product line; k0d3ball35 is an independent design.
 
 torabo-tsuki-lp (sekigon-gonnoc)
   https://github.com/sekigon-gonnoc/torabo-tsuki-lp - MIT

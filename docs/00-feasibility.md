@@ -2,7 +2,7 @@
 
 Status: complete (2026-11-05). Verdict: **GO.**
 
-Every subsystem of k0d3ball36 has working, open-source prior art. The firmware stack needs no
+Every subsystem of k0d3ball35 has working, open-source prior art. The firmware stack needs no
 third-party driver module any more. The two genuine risks are mechanical and logistical, not
 electrical: a trackball small enough for a low-profile board that still tracks (resolved in r2 with
 a 19.05 mm POM ball, see section 4a), and keeping the sensor stack under the ball low enough.
@@ -32,15 +32,15 @@ same conversion route agree on two points: battery life of the converted boards 
 PMW3360 on the Keyball daughterboard is a 5 V, high-current part), and ZMK-native designs with
 the PMW3610 sensor (roBa, moNa2, torabo-tsuki) are the better route today.
 
-That is exactly what k0d3ball36 does: it is a from-scratch low-profile, wireless-first design that
+That is exactly what k0d3ball35 does: it is a from-scratch low-profile, wireless-first design that
 keeps the Keyball39 hand geometry and replaces everything else.
 
-## 2. What Keyball39 actually is, and how k0d3ball36 differs
+## 2. What Keyball39 actually is, and how k0d3ball35 differs
 
 Measured from the published design data of the Keyball repository (gerbers, KiCad 5 sources,
 netlist). Nothing from that repository is included here; see section 7.
 
-| Aspect | Keyball39 (Yowkees) | k0d3ball36 |
+| Aspect | Keyball39 (Yowkees) | k0d3ball35 |
 |--------|---------------------|------------|
 | Keys | 39 (21 no-ball half, 18 ball half) | 35 (18 left, 17 ball half; two different PCBs since r2) |
 | Switch standard | MX, 19.05 mm pitch, 5 thumb positions MX/Choc dual | Choc V1, 18 x 17 mm pitch, all positions hot-swap |
@@ -159,9 +159,9 @@ Keyball's repository carries a blanket GPL-3.0 with no hardware-specific wording
 files say GPL-2.0-or-later. GPL applied to CAD data is an awkward fit, and deriving PCB files from
 it would bind this project to GPL-3.0.
 
-k0d3ball36 therefore takes **no file, footprint, symbol, schematic fragment or copper from Keyball**.
+k0d3ball35 therefore takes **no file, footprint, symbol, schematic fragment or copper from Keyball**.
 What it takes is the hand geometry: the column stagger ratios and the thumb arc angles, measured
-from the published gerbers and re-expressed as parameters in `hardware/layout/k0d3ball36.yaml`.
+from the published gerbers and re-expressed as parameters in `hardware/layout/k0d3ball35.yaml`.
 A key layout is functional information, not a copyrightable expression, and it is reproduced with
 different pitch, different switches, different outline and different electronics. Keyball is
 credited in `NOTICE` and in the README as the inspiration.

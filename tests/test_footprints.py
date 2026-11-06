@@ -11,7 +11,7 @@ from k0d3.footprints import Pad, all_footprints
 from k0d3.geometry import REPO
 from k0d3.netlist import HOLE_PIN
 
-LIB_DIR = REPO / "hardware" / "lib" / "k0d3ball36.pretty"
+LIB_DIR = REPO / "hardware" / "lib" / "k0d3ball35.pretty"
 HANDED = {"SW_Choc_V1_HS_reversible", "SW_SPDT_MSK12C02_reversible", "JST_PH_S2B-PH-SM4-TB_reversible"}
 BOTTOM_ONLY = {"FPC_0.5mm_6P_FH12-6S_bottom"}
 SYMMETRIC = {"D_SOD-123_reversible", "TestPad_1.5mm", "SW_SPST_EVQP7A_reversible"}
