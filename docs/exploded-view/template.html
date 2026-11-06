@@ -249,8 +249,8 @@ function build(half) {
       const fpInner = fpOuter.map(([x, y]) => [bx + (x - bx) * (1 - 2 / 17.5), bz + (y - bz) * (1 - 2 / 17)]);
       g.add(slab(outlineShape(fpOuter), 2.0, floorTop, M.case));                                  // pocket floor
       g.add(slab(outlineShape(fpOuter, [{ points: fpInner }]), -PCB_T - 0.3 - floorTop, -PCB_T - 0.3, M.caseGhost));   // low wall
-      const ring = new THREE.Mesh(new THREE.RingGeometry(ball.pocket_d / 2, ball.pocket_d / 2 + 2, 64), M.caseGhost);
-      const wall = cyl(ball.pocket_d / 2 + 2, S.rim_z + PCB_T + 0.3, M.caseGhost, bx, (S.rim_z - PCB_T - 0.3) / 2, bz, ball.pocket_d / 2 + 2, true);
+      const ring = new THREE.Mesh(new THREE.RingGeometry(ball.pocket_d / 2 - 2, ball.pocket_d / 2, 64), M.caseGhost);   // pocket_d is the outer diameter (cradle + 2 mm wall)
+      const wall = cyl(ball.pocket_d / 2, S.rim_z + PCB_T + 0.3, M.caseGhost, bx, (S.rim_z - PCB_T - 0.3) / 2, bz, ball.pocket_d / 2, true);
       g.add(wall);
       ring.rotation.x = -Math.PI / 2; ring.position.set(bx, S.rim_z, bz); g.add(ring);
     }
@@ -361,7 +361,7 @@ function build(half) {
   // --- pocket rim marker ---
   if (ball) {
     const g = layer('Pocket rim (future case)', 54, '#E8762E', { x: bx, y: S.rim_z + 6, z: bz + 10 });
-    const rim = new THREE.Mesh(new THREE.CylinderGeometry(ball.pocket_d / 2 + 2, ball.pocket_d / 2 + 2, S.rim_z + 1.6, 32, 1, true), M.rim);
+    const rim = new THREE.Mesh(new THREE.CylinderGeometry(ball.pocket_d / 2, ball.pocket_d / 2, S.rim_z + 1.6, 32, 1, true), M.rim);
     rim.position.set(bx, (S.rim_z - 1.6) / 2, bz); g.add(rim);
   }
 
