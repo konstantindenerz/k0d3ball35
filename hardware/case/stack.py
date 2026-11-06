@@ -12,7 +12,8 @@ HERE = Path(__file__).resolve().parent
 VARIANTS = {
     "left": {"half": "left"},
     "right": {"half": "right"},
-    "right-25mm": {"half": "right", "ball_d": 25, "notch_apothem": 16.5, "pocket_d": 35, "ball_top_z": 23.05},
+    "right-25mm": {"half": "right", "ball_d": 25, "notch_apothem": 16.5, "pocket_d": 35, "ball_top_z": 23.05,
+                  "lid_mode": "flat"},
 }
 
 

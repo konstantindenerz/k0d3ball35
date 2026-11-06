@@ -11,7 +11,9 @@ PYTHON   ?= ../../.venv/bin/python
 CAM_ASM   = --camera=-10,30,0,55,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_SEC   = --camera=5,64,0,75,0,150,230 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_BOX   = --camera=-58,22,5,60,0,300,150 --imgsize=1400,1000 --colorscheme=Tomorrow
-CAM_FOOT  = --camera=-10,30,-10,78,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_FOOT  = --camera=-10,30,15,80,0,0,330 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_FOLD  = --camera=-13,30,10,60,0,40,260 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_HINGE = --camera=-13,-9,14,70,0,0,60 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_BOT   = --camera=-10,30,-10,125,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_CAP   = --camera=-59.5,21.9,8.7,0,0,0,170 --imgsize=700,1200 --colorscheme=Tomorrow
 SRC       = case.scad params.scad data.scad logo_data.scad common.scad logo.scad tray.scad lid.scad
@@ -19,10 +21,13 @@ LEFT      = -D 'half="left"'
 RIGHT     = -D 'half="right"'
 
 STL = stl/tray-left.stl stl/tray-right.stl stl/box-cap-left.stl stl/box-cap-right.stl \
-      stl/lid-left.stl stl/lid-right.stl stl/pocket-test-right.stl
+      stl/lid-left.stl stl/lid-right.stl stl/lid-outer-left.stl stl/lid-outer-right.stl \
+      stl/lid-inner-left.stl stl/lid-inner-right.stl stl/lid-folded-left.stl stl/lid-folded-right.stl \
+      stl/pocket-test-right.stl
 DXF = dxf/floor-left.dxf dxf/floor-right.dxf
 PNG = preview/assembly-left.png preview/assembly-right.png preview/section-right.png \
-      preview/lid-on-right.png preview/lid-foot-right.png preview/box-right.png \
+      preview/lid-on-right.png preview/lid-foot-right.png preview/lid-folded-right.png \
+      preview/lid-hinge-right.png preview/box-right.png \
       preview/tray-bottom-right.png preview/cap-logo-right.png
 
 .PHONY: all data logo stls dxfs previews stack clean
@@ -56,6 +61,18 @@ stl/lid-left.stl: $(SRC) | stl
 	$(OSC) -D 'part="lid"' $(LEFT) -o $@ case.scad
 stl/lid-right.stl: $(SRC) | stl
 	$(OSC) -D 'part="lid"' $(RIGHT) -o $@ case.scad
+stl/lid-outer-left.stl: $(SRC) | stl
+	$(OSC) -D 'part="lid_outer"' $(LEFT) -o $@ case.scad
+stl/lid-outer-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="lid_outer"' $(RIGHT) -o $@ case.scad
+stl/lid-inner-left.stl: $(SRC) | stl
+	$(OSC) -D 'part="lid_inner"' $(LEFT) -o $@ case.scad
+stl/lid-inner-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="lid_inner"' $(RIGHT) -o $@ case.scad
+stl/lid-folded-left.stl: $(SRC) | stl
+	$(OSC) -D 'part="lid_folded"' $(LEFT) -o $@ case.scad
+stl/lid-folded-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="lid_folded"' $(RIGHT) -o $@ case.scad
 stl/pocket-test-right.stl: $(SRC) | stl
 	$(OSC) -D 'part="pocket_test"' $(RIGHT) -o $@ case.scad
 
@@ -74,6 +91,10 @@ preview/lid-on-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="lid_on"' $(RIGHT) $(CAM_ASM) -o $@ case.scad
 preview/lid-foot-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="lid_foot"' $(RIGHT) $(CAM_FOOT) -o $@ case.scad
+preview/lid-folded-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="lid_folded"' $(RIGHT) $(CAM_FOLD) -o $@ case.scad
+preview/lid-hinge-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="lid"' $(RIGHT) $(CAM_HINGE) -o $@ case.scad
 preview/tray-bottom-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="tray"' $(RIGHT) $(CAM_BOT) -o $@ case.scad
 preview/cap-logo-right.png: $(SRC) | preview

@@ -9,7 +9,7 @@
 
 // ---------------------------------------------------------------- selection
 half            = "right";     // "left" | "right"
-part            = "assembly";  // tray | box_cap | lid | lid_dome | pocket_test | assembly | section | floor2d
+part            = "assembly";  // tray | box_cap | lid | lid_outer | lid_inner | lid_folded | lid_dome | pocket_test | assembly | section | floor2d
 mirror_left     = true;        // mirror x once at the top level for the left half (physical part)
 
 // ---------------------------------------------------------------- PCB and walls
@@ -77,8 +77,9 @@ logo_floor_pos  = [0, 25.5];  // flat floor between the feet, under the key area
 logo_floor_rot  = 90;         // the wordmark lies along the board on the floor
 
 // ---------------------------------------------------------------- magnets and feet
-// Magnets only hold the lid-as-foot: four in the tray floor (from below) and four in the lid
-// roof (from the roof underside, closed by magnet_skin on top). The lid on top holds by its lip.
+// Magnets only hold the lid-as-foot: four in the tray floor (from below) and four in the roof
+// of the outer lid plate (from the roof underside, closed by magnet_skin on top). The lid on
+// top holds by its lip.
 magnet_d        = 6.2;         // 6 x 2 mm neodymium discs
 magnet_h        = 2.2;
 magnet_skin     = 0.6;         // roof left above the lid magnets (lid_roof_t - magnet_h - magnet_pocket_extra)
@@ -87,15 +88,33 @@ foot_d          = 10.5;        // rubber feet recess
 foot_recess     = 0.5;
 
 // ---------------------------------------------------------------- lid
+// Two plates per half joined by a pin hinge along x = hinge_x (data.scad): the outer plate
+// (pinky side, carries the ball window and the four roof magnets) and the inner plate
+// (controller and thumb side). Closed it is the transport cover; folded by hinge_fold_deg it
+// goes under the half as a tenting stand, the outer plate roof-up against the floor magnets and
+// the inner plate as the leg. See docs/11-case.md section 7.
 cap_top_z       = 11.0;        // Choc V1 keycap top
-lid_clear       = 1.0;
+lid_clear       = 3.0;         // roof underside over the caps; also room for the hinge strip
 lid_roof_t      = 3.0;         // takes the 2.4 mm magnet pockets plus the 0.6 mm skin
 lid_lip_t       = 1.0;         // inner lip that holds the lid on the tray by friction
 lid_lip_depth   = 3.0;         // how far the lip reaches into the tray below the rim
 lid_fit         = 0.15;        // clearance between the lip and the inner wall face
-lid_mode        = "flat";      // "flat" | "dome" (dome only matters for the ball half)
-tent_wedge_deg  = 0;           // > 0 adds a wedge to the lid roof so the lid-as-foot tents the half
+lid_mode        = "window";    // "window" (ball looks through a hole smaller than itself) | "flat" (roof over the ball) | "dome"
+ball_window_d   = 16.0;        // through the roof at the ball centre; < ball_d keeps the ball in the cup
 lid_box_clear   = 0.3;         // lid skirt around the controller box walls
+
+// ---------------------------------------------------------------- lid hinge and tenting foot
+tent_deg        = 15;          // tilt of the half on the folded lid, inner edge up; the stop is cut for 2 x this
+hinge_fold_deg  = 2 * tent_deg; // fold shown by lid_folded / lid_foot; the stop faces meet at exactly 2 x tent_deg
+hinge_knuckle_d = 5.0;         // knuckle diameter = thickness of the hinge strip, flush with the roof top
+hinge_strip_w   = 6.0;         // the roof is thickened to hinge_knuckle_d this far on both sides of the line
+hinge_seg_len   = 10.0;        // target knuckle length; the count is odd so the outer plate owns both ends
+hinge_seg_gap   = 0.3;         // between neighbouring knuckles along the pin
+hinge_clear     = 0.3;         // radial clearance of a knuckle in the other plate's groove
+hinge_gap       = 0.2;         // between the two plates' vertical cut faces above the axis
+hinge_pin_d     = 2.0;         // steel rod; 1.75 for a piece of filament
+hinge_pin_fit   = 0.2;         // hole = pin + this
+hinge_blind     = 1.5;         // the pin hole stops this short of the y-max end (towards the user)
 
 // ---------------------------------------------------------------- trackball pocket
 ball_d          = 19.05;       // 25 mm fallback: -D ball_d=25 -D notch_apothem=16.5 -D pocket_d=35

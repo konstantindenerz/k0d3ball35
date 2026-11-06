@@ -1,6 +1,7 @@
 // k0d3ball35 printed case - entry point
 // Usage: openscad --backend manifold -D half=\"right\" -D part=\"tray\" -o tray-right.stl case.scad
-// Parts: tray | box_cap | lid | lid_dome | pocket_test | assembly | section | floor2d
+// Parts: tray | box_cap | lid | lid_outer | lid_inner | lid_folded | lid_dome | pocket_test | assembly | section | floor2d
+// Previews: lid_on | lid_foot (tilted on the desk) | lid_foot_flat
 // Layout facts come from data.scad (scripts/gen_case.py), dimensions from params.scad.
 
 include <params.scad>
@@ -27,7 +28,22 @@ echo(str("STACK lid_roof_under_z=", lid_roof_under_z));
 echo(str("STACK lid_top_z=", lid_top_z));
 echo(str("STACK lid_roof_t=", lid_roof_t));
 echo(str("STACK lid_lip_depth=", lid_lip_depth));
-echo(str("STACK lid_lift=", lid_top_z - rim_z + lid_lip_depth));
+echo(str("STACK lid_window=", lid_window ? 1 : 0));
+echo(str("STACK ball_window_d=", ball_window_d));
+echo(str("STACK hinge_x=", hx));
+echo(str("STACK hinge_axis_z=", hinge_axis_z));
+echo(str("STACK hinge_knuckle_d=", hinge_knuckle_d));
+echo(str("STACK hinge_pin_d=", hinge_pin_d));
+echo(str("STACK hinge_pin_len=", hinge_len() - hinge_blind));
+echo(str("STACK hinge_y0=", hinge_span()[0]));
+echo(str("STACK hinge_y1=", hinge_span()[1]));
+echo(str("STACK hinge_segments=", hinge_segments()));
+echo(str("STACK hinge_seg=", hinge_seg()));
+echo(str("STACK tent_deg=", tent_deg));
+echo(str("STACK hinge_fold_deg=", hinge_fold_deg));
+echo(str("STACK foot_tilt_deg=", foot_tilt_deg()));
+echo(str("STACK foot_hinge_h=", foot_hinge_h()));
+echo(str("STACK foot_outer_h=", foot_outer_h()));
 echo(str("STACK has_ball=", has_ball(half) ? 1 : 0));
 echo(str("STACK ball_top_z=", ball_top_z));
 echo(str("STACK cradle_rim_z=", cradle_rim_z()));
@@ -89,19 +105,19 @@ module dispatch() {
     if (part == "tray") tray();
     else if (part == "box_cap") box_cap();
     else if (part == "lid") lid();
+    else if (part == "lid_outer") lid_plate("outer");
+    else if (part == "lid_inner") lid_plate("inner");
+    else if (part == "lid_folded") lid_folded();
     else if (part == "lid_dome") lid_dome();
     else if (part == "pocket_test") pocket_test();
     else if (part == "assembly") assembly();
     else if (part == "section") section();
     else if (part == "floor2d") floor2d();
     else if (part == "lid_on") { tray(); if (controller_box) box_cap(); color("tan", 0.6) lid(); }
-    else if (part == "lid_foot") { tray(); if (controller_box) box_cap(); color("tan") lid_as_foot(); }
+    else if (part == "lid_foot") on_desk() { tray(); if (controller_box) box_cap(); color("tan") lid_under_tray(); }
+    else if (part == "lid_foot_flat") { tray(); if (controller_box) box_cap(); color("tan") lid_under_tray(); }
     else assert(false, str("unknown part ", part));
 }
-
-// the lid the same way up with its roof top against the tray underside (foot position); the
-// four roof magnets meet the four floor magnets
-module lid_as_foot() translate([0, 0, base_z - lid_top_z]) lid();
 
 if (half == "left" && mirror_left) mirror([1, 0, 0]) dispatch();
 else dispatch();

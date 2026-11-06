@@ -1,9 +1,13 @@
-// k0d3ball35 printed case - removable lid per half (transport cover and foot)
+// k0d3ball35 printed case - hinged lid per half (transport cover and tenting foot)
 // The skirt stands on the tray rim (rim_z) and follows the outer footprint including the
-// pocket block; the roof clears keycaps and ball by lid_clear. A 1 mm lip on the inside of the
-// skirt reaches lid_lip_depth into the tray and holds the lid by friction, no magnets on top.
-// Under the half (same way up, roof top against the tray underside) four magnets in the roof
-// meet four in the tray floor and the lid lifts the half by lid_top_z - rim_z + lid_lip_depth.
+// pocket block; the roof clears the keycaps by lid_clear and the ball looks through a window
+// smaller than itself. A 1 mm lip on the inside of the skirt reaches lid_lip_depth into the
+// tray and holds the lid by friction, no magnets on top. The lid is split along x = hx into
+// the outer and the inner plate, joined by a pin hinge whose knuckles are flush with the roof
+// top. Under the half the outer plate lies roof-up against the tray (four magnets meet four in
+// the floor) and the inner plate folds down by hinge_fold_deg as the leg: the half tilts by
+// foot_tilt_deg with the inner edge up. Each plate's cut face below the axis leans outward by
+// tent_deg, so the two faces meet flat on flat at the fold and carry the load.
 
 module lid_body(top) translate([0, 0, rim_z]) linear_extrude(top - rim_z) outer_top_2d();
 
@@ -61,6 +65,12 @@ module lid_lip(under) {
             lip_2d(lid_fit + lid_lip_chamfer - i * dz);
 }
 
+// the ball looks through the roof; the hole is smaller than the ball, so the ball stays in
+module lid_window() {
+    if (lid_window)
+        translate([bc()[0], bc()[1], lid_roof_under_z - 1]) cylinder(d = ball_window_d, h = lid_roof_t + 2);
+}
+
 // body (children) minus the cavity and the box notch, plus the lip, minus the roof magnets
 module lid_shell(under) {
     difference() {
@@ -72,17 +82,99 @@ module lid_shell(under) {
     }
 }
 
-// everything above a plane that rises towards -x (inner edge) by tent_wedge_deg
-module tent_cut() {
-    xr = maxx(outline(half)) + pcb_clear + wall + 1;
-    translate([xr, 0, lid_top_z]) rotate([0, tent_wedge_deg, 0]) translate([-1000, -500, 0]) cube([2000, 1000, 500]);
+// ---------------------------------------------------------------- hinge
+// the roof thickened to hinge_knuckle_d along the hinge line, clipped to the lid footprint
+module hinge_strip() {
+    translate([0, 0, lid_top_z - hinge_knuckle_d]) linear_extrude(hinge_knuckle_d) intersection() {
+        outer_top_2d();
+        translate([hx - hinge_strip_w, -500]) square([2 * hinge_strip_w, 1000]);
+    }
 }
 
-module lid() {
-    lid_shell(lid_roof_under_z) {
-        if (tent_wedge_deg > 0) difference() { lid_body(lid_top_z + 300); tent_cut(); }
-        else lid_body(lid_top_z);
+// the one-piece lid before the hinge cut: shell, strip and window
+module lid_full() {
+    difference() {
+        union() { lid_shell(lid_roof_under_z) lid_body(lid_top_z); hinge_strip(); }
+        lid_window();
     }
+}
+
+// a prism along y from an (x, z) polygon
+module xz_prism(p) rotate([90, 0, 0]) linear_extrude(1000, center = true) polygon(p);
+
+// what the outer plate keeps: x > hx + hinge_gap / 2 above the axis, below it the face leans
+// outward by tent_deg through the axis line (the stop face)
+module keep_outer() {
+    g = hinge_gap / 2;
+    zt = lid_top_z + 10;
+    zb = lip_bottom_z - 10;
+    xz_prism([[hx + g, zt], [hx + g, hinge_axis_z - g / tan(tent_deg)],
+              [hx + (hinge_axis_z - zb) * tan(tent_deg), zb], [hx + 500, zb], [hx + 500, zt]]);
+}
+module keep_inner() translate([hx, 0, 0]) mirror([1, 0, 0]) translate([-hx, 0, 0]) keep_outer();
+
+// cylinders on the axis over the knuckles owned by `side`, radius r, every knuckle grown by
+// `ext` at both ends and the two outermost ones by `end_ext` where they meet the skirt
+module hinge_cylinders(side, r, ext = 0, end_ext = 0) {
+    n = hinge_segments();
+    for (i = [0 : n - 1])
+        if (hinge_owner(i) == side) {
+            e0 = ext + (i == 0 ? end_ext : 0);
+            e1 = ext + (i == n - 1 ? end_ext : 0);
+            translate([hx, hinge_seg_y0(i) - e0, hinge_axis_z]) rotate([-90, 0, 0])
+                cylinder(r = r, h = hinge_seg() + e0 + e1);
+        }
+}
+// the other plate's knuckles need a round groove plus the strip cleared next to the line, so
+// no thin lips remain where the groove meets the strip's top and bottom faces
+module hinge_grooves(side) {
+    r = hinge_knuckle_d / 2 + hinge_clear;
+    dir = side == "outer" ? 1 : -1;
+    hinge_cylinders(side, r, hinge_seg_gap);
+    for (i = [0 : hinge_segments() - 1])
+        if (hinge_owner(i) == side)
+            translate([hx + (dir > 0 ? -r : -10), hinge_seg_y0(i) - hinge_seg_gap, lid_top_z - hinge_knuckle_d - 1])
+                cube([10 + r, hinge_seg() + 2 * hinge_seg_gap, hinge_knuckle_d + 2]);
+}
+module hinge_pin_hole() {
+    s = hinge_span();
+    translate([hx, s[0] - 1, hinge_axis_z]) rotate([-90, 0, 0])
+        cylinder(d = hinge_pin_d + hinge_pin_fit, h = hinge_len() + 1 - hinge_blind);
+}
+// own knuckles run hinge_end_ext past the span so their end faces never coincide with the skirt
+hinge_end_ext = 0.5;
+function other(side) = side == "outer" ? "inner" : "outer";
+
+module lid_plate(side) {
+    difference() {
+        union() {
+            difference() {
+                intersection() { lid_full(); if (side == "outer") keep_outer(); else keep_inner(); }
+                hinge_grooves(other(side));
+            }
+            intersection() {
+                hinge_cylinders(side, hinge_knuckle_d / 2, 0, hinge_end_ext);
+                translate([0, 0, rim_z]) linear_extrude(lid_top_z - rim_z) outer_top_2d();
+            }
+        }
+        hinge_pin_hole();
+    }
+}
+
+// both plates closed: the transport cover
+module lid() { lid_plate("outer"); lid_plate("inner"); }
+
+// the inner plate rotated about the hinge axis, far end down for fold > 0
+module fold_inner(fold) translate([hx, 0, hinge_axis_z]) rotate([0, -fold, 0]) translate([-hx, 0, -hinge_axis_z]) children();
+module lid_folded(fold = hinge_fold_deg) { lid_plate("outer"); fold_inner(fold) lid_plate("inner"); }
+
+// foot pose relative to the tray: outer plate roof-up against the tray underside
+module lid_under_tray() translate([0, 0, base_z - lid_top_z]) lid_folded();
+// tray plus folded lid tilted by foot_tilt_deg about the hinge axis and lifted so that both
+// contact edges stand on z = 0 (the desk)
+module on_desk() {
+    translate([0, 0, foot_hinge_h()]) translate([hx, 0, 0]) rotate([0, foot_tilt_deg(), 0])
+        translate([-hx, 0, -(hinge_axis_z + base_z - lid_top_z)]) children();
 }
 
 // dome variant for the ball half: flat roof at keycap height plus a round turret over the pocket
