@@ -31,5 +31,6 @@ left-ball build (see the commented block in the left overlay) uses the same pins
 | TB_SCLK / SDIO / NCS / MOT | D15 / D16 / D10 / D14 |
 
 Matrix transform: 4 rows x 10 columns (right half with `col-offset = <5>`). Row 3 holds
-the thumb keys, `RC(3,2) RC(3,3) RC(3,4)` on the left and `RC(3,8) RC(3,7)` on the right
-(right middle thumb next to the centre, right outer thumb next to the ball).
+the thumb keys, `RC(3,2) RC(3,3) RC(3,4)` on the left and `RC(3,9) RC(3,8)` on the right
+(position 33 is the right inner thumb next to the controller, 34 the right middle thumb next to
+the ball; the right half has no outer thumb key since r2.3).

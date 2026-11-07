@@ -24,10 +24,28 @@ boards. Since r2 the two main boards are different designs; order each as its ow
 | Gold fingers | no |
 | Confirm production file | no |
 
-The Edge.Cuts layer carries only the outer outline; there is no internal cutout any more. The
-outline is angular with 90 degree inside corners, which the fab's 1 mm router leaves slightly
-rounded; that is accepted (`corner_radius: 0` in the layout). The right board's notch is a regular
-octagon with 15 mm apothem; JLCPCB mills it without a note.
+On the two main boards the Edge.Cuts layer carries only the outer outline; there is no internal
+cutout. The **sensor** board does have one: a 16.96 x 8.60 mm slot for the PMW3610 body, drawn on
+Edge.Cuts by the U1 footprint itself. JLCPCB mills it without a note, but do not be surprised by it
+in the preview.
+
+The outline is angular with 90 degree inside corners (`corner_radius: 0` in the layout). There are
+13 concave corners per half, and a router cannot cut into a concave corner: a 2 mm end mill leaves
+an uncut fillet reaching (sqrt(2) - 1) * 1 mm = **0.41 mm** diagonally into the corner, 0.50 mm with
+a 2.4 mm bit. That is accepted for the look, but it eats into two clearances that are worth knowing
+about before the first fit:
+
+- the trackball module's insertion path. The squared notch corner at layout (-28, 51) sits 0.707 mm
+  diagonally from the cradle housing corner, i.e. the documented 0.5 mm per axis. Subtract the
+  fillet and roughly 0.29 mm is left (0.21 mm with a 2.4 mm bit), before the printed housing's own
+  elephant-foot adds material on the other side. If the module will not drop into its pocket, this
+  corner is why, and a file on the printed housing is the fix.
+- the case tray cavity, which offsets the outline by `pcb_clear` = 0.2 mm with mitred corners, i.e.
+  0.283 mm diagonally at a concave corner. The real FR4 protrudes further, so expect to break the
+  corners of the tray cavity or the board with a file on the first assembly.
+
+The right board's notch is a regular octagon with 15 mm apothem, with the corner towards the keys
+squared off; JLCPCB mills it without a note.
 
 ## Sensor PCB order settings
 
@@ -59,7 +77,8 @@ The sensor board has its own `hardware/sensor-pcb/export.sh` with the same outpu
 - [ ] `make erc` and `make drc` report zero errors for both halves (DRC runs with schematic parity)
 - [ ] `make test` green (geometry, netlist, KiCad gates)
 - [ ] Open both zips in a gerber viewer (JLCPCB's upload preview is enough): outline closed, no
-      internal cutout, the pocket notch on the right board only, five mounting holes per board,
+      internal cutout on the main boards (the sensor board has the 16.96 x 8.60 mm sensor slot),
+      the pocket notch on the right board only, five mounting holes per board,
       J1 only on the right board, no missing layers
 - [ ] The left board outline is the mirror image of the right one: seen from the top the controller
       block sits at the right-hand edge on the left board and at the left-hand edge on the right
@@ -132,7 +151,8 @@ pads and on top of grid points (`tests/test_pcb_review.py::test_drills_keep_the_
 Design rules: clearance 0.2 mm, tracks 0.25 mm everywhere except RAW and the battery at 0.4 mm.
 The sensor bus is 0.25 mm too since r2.3: a track centred on an FH12 contact still clears the
 neighbour by 0.5 - 0.125 - 0.15 = 0.225 mm, so the 0.15 mm of r2.2 only added resistance, vias 0.6 / 0.3 mm, copper to edge 0.3 mm enforced with a 0.35 mm
-keep-out ring, 0.45 mm socket pad bands kept inside the outline. The thumb cluster and the COL2,
+keep-out ring; the hot-swap socket pads reach 9.8 mm out and `socket_margin` 1.1 keeps them
+0.3 mm inside the outline. The thumb cluster and the COL2,
 COL3, COL4 and ROW3 legs are hand routes in the per-half `manual_routes` of the layout file because
 the autorouter does not reach footprints rotated by 10 or 20 degrees (ticket
 `hw-freerouting-rotated-footprints`).

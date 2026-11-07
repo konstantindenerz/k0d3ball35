@@ -62,8 +62,8 @@ cannot reach the button, short the RST and GND pads on the PCB twice quickly.
 
 ## 3. Pairing and profiles
 
-The right half manages up to five Bluetooth profiles. On the System layer (hold both outer thumb
-keys, or `&lt SYS ESC` on the left outer thumb):
+The right half manages up to five Bluetooth profiles. On the System layer (hold the left outer
+thumb key, `&lt SYS ESC`; the right half has no outer thumb key, the ball pocket is there):
 
 | Key | Action |
 |-----|--------|
@@ -72,7 +72,7 @@ keys, or `&lt SYS ESC` on the left outer thumb):
 | right top row 1 / 2 | force USB / force BLE output |
 | right top row outer | bootloader |
 | right bottom row outer | ZMK Studio unlock |
-| right outer thumb | reset |
+| right middle thumb | reset |
 
 Switch the host device by selecting another profile; the first connection on a fresh profile starts
 advertising and the host sees "k0d3ball35".

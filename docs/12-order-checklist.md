@@ -77,7 +77,7 @@ sensor board), tented vias, remove order number ("specify a location" or "yes"),
 
 | Done | Step | Status | You do |
 |------|------|--------|--------|
-| [ ] | Upload preview: 2 layers detected, about 121 x 87, 118 x 80 and 26 x 25 mm, no DFM complaint about the notch or the sensor window | open | `issues/test-fab-gerber-viewer.md` |
+| [ ] | Upload preview: 2 layers detected, about 121 x 87, 121 x 87 and 26 x 25 mm, no DFM complaint about the notch or the sensor window | open | `issues/test-fab-gerber-viewer.md` |
 | [ ] | Order the three batches | open | record order number, cost and the tag `v0.2.0-r2-order` in `issues/hw-jlcpcb-order-r1.md` |
 
 LCSC lines for the sensor board, in the same cart (quantities for one board plus spares; codes

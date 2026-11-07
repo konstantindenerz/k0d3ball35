@@ -238,8 +238,9 @@ switch bodies and outside the hot-swap socket pad bands, identical on both board
 | H5 (left) | -32.0 | +61.0 | between outer and middle thumb key |
 | H5 (right) | -31.0 | +49.0 | thumb bridge, left of the notch: the left spot is 0.3 mm from the edge here |
 
-Ten GND stitching vias per half (nine shared positions plus one per half) tie the two ground pours
-together, and a 0.45 mm wide track/via keep-out ring runs along the board edge so the autorouter
+Ten GND stitching vias on the left and nine on the right (nine shared positions plus one on the
+left; the r2.2 spot at (-14, 58) falls inside the notch now) tie the two ground pours
+together, and a 0.35 mm wide track/via keep-out ring runs along the board edge so the autorouter
 keeps the 0.3 mm copper-to-edge clearance.
 
 ### 5.1 Case interface

@@ -7,8 +7,8 @@ Tickets referenced here live in `issues/`. Priorities: P0 blocker, P1 must, P2 s
 Do these before paying for anything:
 
 1. Done: r2 pipeline, both halves generated, routed, ERC/DRC clean, gerbers exported, renders in
-   the README (`hw-two-pcbs-r2`). The left board is being mirrored from the right one
-   (`hw-left-pcb-mirror`, P0); the order waits for that ticket.
+   the README (`hw-two-pcbs-r2`). The left board is the x mirror of the layout frame since
+   2026-11-06 (`hw-left-pcb-mirror`, done).
 2. Done (automated part): independent gerber parse of all three zips in `tests/test_gerbers.py`
    (layers, drills, outlines, the pocket notch, no copper in the notch). Open: upload
    `hardware/left-pcb/k0d3ball35-left-gerbers.zip`, `hardware/right-pcb/k0d3ball35-right-gerbers.zip`
@@ -41,7 +41,7 @@ person needs to order parts, build the two halves and flash them.
 |------|-------|--------|
 | Feasibility, design spec r2, BOM | done | |
 | Layout generator per half, coordinate tables, stepped outline, pocket notch | done | `hw-two-pcbs-r2` |
-| Left and right PCB schematic, routing, DRC, gerbers | done (left mirror in progress) | `hw-two-pcbs-r2`, `hw-left-pcb-mirror`, `hw-main-pcb-review-r1` |
+| Left and right PCB schematic, routing, DRC, gerbers | done | `hw-two-pcbs-r2`, `hw-left-pcb-mirror`, `hw-main-pcb-review-r1` |
 | Sensor PCB | done (r1, lens envelope per datasheet) | `hw-sensor-pcb-r1` |
 | Cradle 19 mm pocket mount (25 mm pocket and r1 cutout as variants) | done, test print in parallel with the order | `mech-trackball-cradle` |
 | ZMK shield with 35 keys, keymap, CI build | in progress | `fw-zmk-shield`, `infra-ci-firmware` |
