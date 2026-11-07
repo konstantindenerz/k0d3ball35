@@ -215,18 +215,27 @@ halves:
       side: top
     mounting_holes:
       - { x: -52.0, y: 52.0 }     # above the inner thumb key; the left half's spot is in the pocket now
+    test_pads:                    # the global row at (-66, 57.5) lands on the inner thumb key's socket
+      start: { x: -69.0, y: 53.5 }  # since r2.3; this spot keeps about 1 mm to every part around it
     stitching_vias:
-      - [4.0, 58.0]               # the old spot (-14, 58) is inside the notch since r2.3
+      - [-31.0, 57.0]             # thumb bridge, left of the notch (the r2.2 spot is inside it now)
     # The thumb pair is the middle (10 deg) and inner (20 deg) key since r2.3, so the right board
     # needs the same hand routes the left one needs, laid out for the unmirrored board.
+    # Found with a grid search over the free copper of each layer (drills, foreign pads, the board
+    # edge and the other hand routes as obstacles), then verified independently; see the ticket.
     manual_routes:
-      - { net: ROW3, layer: B.Cu, width: 0.25,   # thumb diode chain, 10 deg to 20 deg
-          points: ["D33:1", [-47.0, 65.0], [-56.0, 67.0], "D34:1"] }
-      - { net: COL3, layer: B.Cu, width: 0.25,
-          points: ["SW23:bus", [-20.6, 49.5], "SW33:joiner"] }
-      - { net: COL4, layer: B.Cu, width: 0.25,   # inner column bus down to the 20 deg key
-          points: ["SW24:bus", [-38.6, 50.0], [-55.0, 54.0], [-59.0, 58.0], "SW34:joiner"] }
-      - { net: SW34, layer: B.Cu, width: 0.25,   # 20 deg key: anode to socket pad 2 on the back
-          points: ["D34:2", [-62.0, 71.5], "SW34:pad2"] }
-      - { net: SW34, layer: F.Cu, width: 0.25,   # and the front copy of pad 2 around the centre hole
-          points: ["D34:2", [-59.0, 70.0], [-53.5, 69.0], [-51.5, 66.5], [-51.0, 62.0], "SW34:pad2f"] }
+      - { net: SW34, layer: B.Cu, width: 0.25,   # 20 deg key: anode to socket pad 2, past its pin hole
+          points: ["D34:2", [-55.5, 65.0], "SW34:pad2"] }
+      - { net: SW34, layer: F.Cu, width: 0.25,   # and the front copy of pad 2, around the far side
+          points: ["D34:2", [-67.0, 66.5], [-70.0, 66.0], "SW34:pad2f"] }
+      - { net: ROW3, layer: B.Cu, width: 0.25,   # thumb diode chain, below the SW34 link
+          points: ["D33:1", [-58.5, 72.5], "D34:1"] }
+      - { net: ROW3, layer: F.Cu, width: 0.25,   # controller to the thumb row, as on the left half
+          points: ["U1:20", [-49.0, 17.5], [-46.5, 56.5], [-45.5, 58.5], "D33:1"] }
+      - { net: COL3, layer: B.Cu, width: 0.25,   # index column bus into the 10 deg key, left of J1
+          points: ["SW23:bus", [-25.0, 31.5], [-25.5, 36.0], [-34.0, 43.0], [-35.0, 43.5], "SW33:joiner"] }
+      - { net: COL4, layer: B.Cu, width: 0.25,   # controller hole 11 to the inner column bus
+          points: ["U1:11", "SW24:bus"] }
+      - { net: COL4, layer: B.Cu, width: 0.25,   # and on down to the 20 deg key, between J3's netless
+          points: ["SW24:bus", [-43.5, 34.0], [-57.0, 48.5],       # hold-down pads, then between the
+                   [-57.0, 51.5], [-58.0, 54.5], "SW34:joiner"] }   # battery pads and the test pads
