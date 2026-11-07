@@ -6,7 +6,11 @@
 # of the middle-column top key. Both halves share this frame; the left half is
 # rendered mirrored for display only. Since r2 the two halves are separate PCBs:
 #   left  = 15 finger keys + 3 thumb keys, no trackball
-#   right = 15 finger keys + 2 thumb keys (the two outer ones) + trackball pocket
+#   right = 15 finger keys + 2 thumb keys (the two INNER ones) + trackball pocket
+# Since r2.3 the ball sits where the outer thumb key used to be, not outboard of it: every
+# reference design (Keyball 39/44/61, torabo-tsuki LP, Charybdis) drops the outermost thumb
+# key on the ball half, and a 19 mm ball has to sit further in than a 34 mm one because the
+# thumb touches its near surface, not its centre (issues/hw-ball-inboard-r2-3.md).
 #
 # The column stagger and the thumb arc are the Keyball39 proportions (measured from
 # the published Keyball39 gerbers: 19.05 mm pitch, stagger 11.70 / 4.70 / 0 / 2.50 /
@@ -113,7 +117,8 @@ mounting_holes:                 # M2 through holes for the case (2.2 mm), in the
   - { x: 27.0,  y: 44.5 }       # ring / pinky, bottom
   - { x: -9.0,  y: 40.0 }       # middle / index, bottom
   - { x: -27.0, y: 8.0 }        # index / inner, top
-  - { x: -32.0, y: 61.0 }       # between outer and middle thumb key
+# The fifth hole sits in the thumb cluster, whose shape differs per half since r2.3, so it is
+# listed under halves.<side>.mounting_holes instead of here.
 
 stitching_vias:                 # GND vias tying the two pours together (free spots between switches), both halves
   - [27.0, 27.5]
@@ -151,7 +156,8 @@ silkscreen:
 halves:
   left:
     thumbs: [thumb_outer, thumb_middle, thumb_inner]
-    mounting_holes: []
+    mounting_holes:
+      - { x: -32.0, y: 61.0 }     # between the outer and the middle thumb key
     stitching_vias:
       - [-15.0, 65.0]
     # Hand-placed tracks for the rotated thumb cluster (the autorouter does not reach pads of
@@ -193,24 +199,34 @@ halves:
     test_pads:                      # nine pads on the left: one row below the battery pads, above the inner thumb key
       start: { x: -69.5, y: 54.5 }
   right:
-    thumbs: [thumb_middle, thumb_outer]
+    thumbs: [thumb_middle, thumb_inner]   # the outer position is the ball's since r2.3
     trackball:
-      center: { x: 5.0, y: 64.0 }   # outboard of the outer thumb key, below the middle/ring columns
+      center: { x: -13.0, y: 66.0 }  # 5 mm outboard of the index column, 29.5 mm from the middle
+                                     # thumb key: the band the reference designs land in once their
+                                     # 34 mm ball is radius-corrected to 19.05 mm
     fpc:                            # sensor daughterboard connector, KEY SIDE (r2.2): the cable climbs
                                     # the gap between the cradle cup and the notch, folds over the board
                                     # edge at y = 49 and enters the connector from +y, so the lock stays
                                     # reachable with everything assembled (docs/08-trackball-module.md).
-      center: { x: -2.6, y: 45.5 }    # mouth 0.5 mm short of the notch edge, contact row lined up
-                                      # with the sensor board's connector so the cable runs straight
+      center: { x: -20.6, y: 46.5 }   # ball x - 7.6, which is the cradle's cable_ch_x: the FFC runs
+                                      # straight from the channel into the connector. y puts the mouth
+                                      # 0.5 mm short of the notch edge and clears D23's courtyard
       rotation: 0
       side: top
-    mounting_holes: []
+    mounting_holes:
+      - { x: -52.0, y: 52.0 }     # above the inner thumb key; the left half's spot is in the pocket now
     stitching_vias:
-      - [-14.0, 58.0]
+      - [4.0, 58.0]               # the old spot (-14, 58) is inside the notch since r2.3
+    # The thumb pair is the middle (10 deg) and inner (20 deg) key since r2.3, so the right board
+    # needs the same hand routes the left one needs, laid out for the unmirrored board.
     manual_routes:
-      - { net: ROW3, layer: B.Cu, width: 0.25,
-          points: ["D32:1", [-26.0, 63.0], [-35.0, 63.5], [-41.0, 64.6], "D33:1"] }
+      - { net: ROW3, layer: B.Cu, width: 0.25,   # thumb diode chain, 10 deg to 20 deg
+          points: ["D33:1", [-47.0, 65.0], [-56.0, 67.0], "D34:1"] }
       - { net: COL3, layer: B.Cu, width: 0.25,
           points: ["SW23:bus", [-20.6, 49.5], "SW33:joiner"] }
-      - { net: COL2, layer: B.Cu, width: 0.25,   # between SW22/SW23, past H3, left of the FPC connector
-          points: ["SW22:bus", [-2.6, 35.5], [-7.0, 38.0], [-7.0, 41.5], [-10.5, 42.3], [-12.5, 44.5], [-12.5, 50.5], "SW32:joiner"] }
+      - { net: COL4, layer: B.Cu, width: 0.25,   # inner column bus down to the 20 deg key
+          points: ["SW24:bus", [-38.6, 50.0], [-55.0, 54.0], [-59.0, 58.0], "SW34:joiner"] }
+      - { net: SW34, layer: B.Cu, width: 0.25,   # 20 deg key: anode to socket pad 2 on the back
+          points: ["D34:2", [-62.0, 71.5], "SW34:pad2"] }
+      - { net: SW34, layer: F.Cu, width: 0.25,   # and the front copy of pad 2 around the centre hole
+          points: ["D34:2", [-59.0, 70.0], [-53.5, 69.0], [-51.5, 66.5], [-51.0, 62.0], "SW34:pad2f"] }
