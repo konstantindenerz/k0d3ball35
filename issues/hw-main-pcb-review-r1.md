@@ -178,7 +178,14 @@ or countersunk screws from the back.
    Toggle `View > Flip board` (or press F) for the back. The generated footprints carry no 3D
    models, so judge against the fab outlines: `Preferences > Display options > Fab layers` on,
    `Silkscreen` on, `Solder mask` off.
-2. **Sockets, 1:1 paper check:** `File > Plot`, layers `B.Cu`, `B.Fab`, `B.SilkS`, `Edge.Cuts`,
+2. **Without the parts yet:** `make print-check` writes `build/print/<half>-check-1to1.pdf`, an A4
+   sheet per half with the board at 1:1, the key grid, the controller hole pattern, the battery bay
+   and (right) the notch and ball circle dimensioned in colour, plus a 100 mm and a 50 mm
+   calibration bar. It settles two things a ruler can settle - that the print is really 1:1 and that
+   the geometry carries the layout's numbers - and the hand check: thumb to ball circle. It does not
+   check a single footprint; that is the paper check below. `tests/test_print_check.py` keeps the
+   printed numbers tied to the layout and the PDF page box at A4.
+2b. **Sockets, 1:1 paper check (needs the parts):** `File > Plot`, layers `B.Cu`, `B.Fab`, `B.SilkS`, `Edge.Cuts`,
    mirrored, PDF, scale 1:1; print, place a real CPG135001S30 with its two bosses in the 3.05 mm
    circles of SW22: both solder legs must land on the two pads and the body must stay inside the
    dashed 15 x 6.9 outline. Repeat for a thumb key (SW33, rotated 10 degrees) and for SW00 at the

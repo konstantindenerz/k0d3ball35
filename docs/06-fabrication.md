@@ -73,6 +73,10 @@ The sensor board has its own `hardware/sensor-pcb/export.sh` with the same outpu
       vias. `tests/test_gerbers.py` counts all of this against the boards. Nothing of 2.20 mm beyond the five case holes: there are no cradle holes
 - [ ] Ticket `test-fab-gerber-viewer` closed (independent viewer check)
 - [ ] Ticket `hw-gnd-stitching-review` closed (pours and auto-placed vias looked at in KiCad)
+- [ ] `make print-check`, both sheets printed at 100 %: the 100 mm and 50 mm calibration bars
+      measure exactly, then the board, key grid, controller, battery bay and pocket dimensions
+      printed on the sheet (`scripts/gen_print_check.py`, A4 per half). This needs no parts; the
+      footprint check against real sockets is step 2b of `hw-main-pcb-review-r1`
 - [ ] Ticket `hw-main-pcb-review-r1` closed (manual review of both boards in the KiCad GUI)
 - [ ] Ticket `hw-ffc-pin-order-verification` resolved for the sensor board
 - [ ] Quantity 5 for all three boards, 1.6 mm, ENIG or HASL as decided
