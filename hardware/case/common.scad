@@ -51,16 +51,30 @@ function foot_axis_x() = hx + foot_dx(half);                                   /
 // hinge axis above the desk: the axis is hinge_knuckle_d / 2 under the roof top = tray underside
 function foot_hinge_h() = _rot2([foot_axis_x() - foot_pivot_x(), -hinge_knuckle_d / 2], tent_deg)[1];
 // the kickstand's contact edge relative to the axis in the lid frame (lip bottom at the inner edge)
-function _kick_rel() = [minx(outline(half)) - _lip_in() - hx, lip_bottom_z - hinge_axis_z];
-function _kick_gap(f) = foot_hinge_h() + _rot2(_kick_rel(), tent_deg - f)[1];
+// Which edge of the kickstand lands on the desk depends on the fold: the lip is lower, the
+// skirt's outer face is further out (lip_min_x / skirt_min_x in data.scad are the true extremes
+// of those two rings, which on a mitred outline is not minx(outline) plus an offset). Take
+// whichever ends up deeper at the angle in question.
+function _kick_lip() = [lip_min_x(half) - hx, lip_bottom_z - hinge_axis_z];
+function _kick_skirt() = [skirt_min_x(half) - hx, rim_z - hinge_axis_z];
+function _kick_rel() = _kick_gap_lip(hinge_fold_solved) <= _kick_gap_skirt(hinge_fold_solved)
+                       ? _kick_lip() : _kick_skirt();
+function _kick_gap_lip(f) = foot_hinge_h() + _rot2(_kick_lip(), tent_deg - f)[1];
+function _kick_gap_skirt(f) = foot_hinge_h() + _rot2(_kick_skirt(), tent_deg - f)[1];
+function _kick_gap(f) = min(_kick_gap_lip(f), _kick_gap_skirt(f));
 function _bisect(lo, hi, n) = n == 0 ? (lo + hi) / 2
     : let (m = (lo + hi) / 2) (_kick_gap(m) > 0 ? _bisect(m, hi, n - 1) : _bisect(lo, m, n - 1));
 hinge_fold_solved = _bisect(0, 90 + tent_deg, 40);
 hinge_fold_deg    = hinge_fold_override > 0 ? hinge_fold_override : hinge_fold_solved;
 hinge_stop_deg    = hinge_fold_solved / 2;                     // each cut face leans this far outward
 function foot_beta_deg() = hinge_fold_solved - tent_deg;       // kickstand angle below the desk plane... measured from the tray
-function foot_reach() = -(foot_axis_x() - foot_pivot_x() + _rot2(_kick_rel(), tent_deg - hinge_fold_solved)[0]
-                          + foot_pivot_x() - (minx(outline(half)) - pcb_clear - wall));   // kickstand foot beyond the inner wall
+// Everything below is in the desk frame: the half is rotated about its outer bottom edge, so
+// the hinge axis and the inner wall move in x as well - the earlier formula took their board
+// coordinates and came out 0.6 mm long.
+function foot_axis_desk_x() = foot_pivot_x() + _rot2([foot_axis_x() - foot_pivot_x(), -hinge_knuckle_d / 2], tent_deg)[0];
+function foot_contact_x() = foot_axis_desk_x() + _rot2(_kick_rel(), tent_deg - hinge_fold_solved)[0];
+function foot_wall_desk_x() = foot_pivot_x() + (minx(outline(half)) - pcb_clear - wall - foot_pivot_x()) * cos(tent_deg);
+function foot_reach() = foot_wall_desk_x() - foot_contact_x();   // free desk a half needs inward
 // the outer plate's free end (lip bottom at its outer edge, shifted) above the desk
 function foot_free_end_h() = _rot2([maxx(outline(half)) + _lip_in() + foot_dx(half) - foot_pivot_x(),
                                     -(lid_top_z - lip_bottom_z)], tent_deg)[1];

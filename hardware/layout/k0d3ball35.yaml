@@ -168,34 +168,36 @@ halves:
     # The left BOARD is the mirror image of the frame (x -> -x) while the footprints are not
     # mirrored, so pad references land on the mirrored side of their part and the free points
     # below are chosen for the left board, not copied from the right half.
+    # Found with the same grid search as the right half (every drill, every pad of another net,
+    # the board edge and the other hand routes as obstacles), squared onto long runs with 45
+    # degree corners. Points are layout-frame; the left BOARD is their x mirror.
+    # Found with the same grid search as the right half (every drill, every pad of another net,
+    # the board edge, the other hand routes and the thumb switches' own column pads as
+    # obstacles), squared onto long runs with 45 degree corners. Points are layout-frame; the
+    # left BOARD is their x mirror.
+    # Found with the same grid search as the right half (every drill, every pad and GND via of
+    # another net, the board edge, the other hand routes and the thumb switches' own column pads
+    # as obstacles), squared onto long runs with 45 degree corners. Points are layout-frame; the
+    # left BOARD is their x mirror.
     manual_routes:
-      # ROW3 along the thumb diodes on the back: the cathodes sit on the pinky side of each diode
-      # on the left board, so the track passes above the diode bodies (between the switch holes
-      # and the diodes) before dropping onto the next cathode.
-      - { net: ROW3, layer: B.Cu, width: 0.25,
-          points: ["D32:1", [-19.0, 63.3], [-34.5, 63.3], [-38.3, 65.6], "D33:1"] }
-      - { net: ROW3, layer: B.Cu, width: 0.25,
-          points: ["D33:1", [-38.6, 64.8], [-50.0, 64.8], "D34:1"] }
-      - { net: COL3, layer: B.Cu, width: 0.25,
-          points: ["SW23:bus", [-15.4, 49.5], "SW33:joiner"] }
-      # Controller to the inner column and the thumb row: the router gives up on these two on the
-      # left, so they are fixed. COL4 leaves hole 11 under the controller's bottom holes on the
-      # back; ROW3 leaves hole 20 (inner-edge hole column on the left board) on the front, crosses
-      # between the hole rows, runs down past the test pad row and ends at the middle thumb cathode.
-      - { net: COL4, layer: B.Cu, width: 0.25,
-          points: ["U1:11", [-52.5, 23.1], [-52.5, 29.8], [-35.8, 29.8], "SW24:bus"] }   # sideways first, clear of hole 12 below
-      - { net: ROW3, layer: F.Cu, width: 0.25,
-          points: ["U1:20", [-64.3, 16.78], [-48.3, 16.78], [-48.3, 28.0], [-50.75, 30.5], [-50.75, 64.0], "D33:1"] }
-      - { net: COL4, layer: B.Cu, width: 0.25,   # below the battery pads, between TP4 and TP5, to the inner thumb key
-          points: ["SW24:bus", [-33.4, 45.8], [-52.5, 52.8], [-60.75, 52.8], [-60.75, 56.5], "SW34:joiner"] }
-      # Inner thumb key (20 deg): anode to socket pad 2 on the back along the board edge; the front
-      # copy of pad 2 is fed around the switch centre hole and the post.
-      - { net: SW34, layer: B.Cu, width: 0.25,
-          points: ["D34:2", [-66.3, 71.0], "SW34:pad2"] }
-      - { net: SW34, layer: F.Cu, width: 0.25,
-          points: ["D34:2", [-62.6, 69.4], [-56.0, 69.4], [-54.0, 67.0], [-53.3, 61.5], "SW34:pad2f"] }
-      - { net: COL2, layer: B.Cu, width: 0.25,   # down the bus line, along the lower edge of SW22 past H3, into the thumb bridge
-          points: ["SW22:bus", [2.6, 42.0], [-8.6, 42.0], [-12.1, 43.3], [-12.1, 50.0], "SW32:joiner"] }
+      - { net: SW34, layer: B.Cu, width: 0.25,   # 20 deg key: anode to socket pad 2 on the back
+          points: ["D34:2", [-64.5, 72.5], [-71.0, 66.0], [-71.25, 65.75], "SW34:pad2"] }
+      - { net: SW34, layer: F.Cu, width: 0.25,   # and the front copy of pad 2, around the far side of the switch
+          points: ["D34:2", [-55.25, 66.25], "SW34:pad2f"] }
+      - { net: ROW3, layer: B.Cu, width: 0.25,   # thumb diode chain, 0 deg key to 10 deg key
+          points: ["D32:1", [-21.5, 67.0], "D33:1"] }
+      - { net: ROW3, layer: B.Cu, width: 0.25,   # and on to the 20 deg key
+          points: ["D33:1", [-42.0, 69.5], [-54.5, 69.5], [-56.25, 71.25], "D34:1"] }
+      - { net: ROW3, layer: F.Cu, width: 0.25,   # controller to the thumb row, clear of the thumbs' own column pads
+          points: ["U1:20", [-42.75, 38.25], [-42.75, 49.0], [-39.5, 52.25], [-39.5, 55.5], [-40.0, 56.0], [-40.0, 66.0], [-39.5, 66.5], "D33:1"] }
+      - { net: COL2, layer: B.Cu, width: 0.25,   # middle column bus into the 0 deg key
+          points: ["SW22:bus", [2.5, 28.5], [-6.75, 37.75], [-6.75, 40.0], [-11.25, 44.5], [-12.25, 44.5], "SW32:joiner"] }
+      - { net: COL3, layer: B.Cu, width: 0.25,   # index column bus into the 10 deg key, past the stitching via at (-33, 47.5)
+          points: ["SW23:bus", [-15.5, 30.75], [-24.75, 40.0], [-28.25, 40.0], "SW33:joiner"] }
+      - { net: COL4, layer: B.Cu, width: 0.25,   # controller hole 11 to the inner column bus
+          points: ["U1:11", [-43.25, 30.5], "SW24:bus"] }
+      - { net: COL4, layer: B.Cu, width: 0.25,   # and on down to the 20 deg key
+          points: ["SW24:bus", [-33.5, 32.75], [-34.5, 33.75], [-34.75, 34.0], [-54.0, 53.25], [-55.0, 53.25], [-55.75, 54.0], [-55.75, 55.0], [-58.75, 58.0], "SW34:joiner"] }
     test_pads:                      # nine pads on the left: one row below the battery pads, above the inner thumb key
       start: { x: -69.5, y: 54.5 }
   right:

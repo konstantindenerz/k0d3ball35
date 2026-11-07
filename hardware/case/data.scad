@@ -91,6 +91,14 @@ hinge_x_left = -13;
 hinge_x_right = -31;
 function hinge_x(h) = h == "left" ? hinge_x_left : hinge_x_right;
 
+lip_min_x_left = -74.052;
+lip_min_x_right = -74.052;
+function lip_min_x(h) = h == "left" ? lip_min_x_left : lip_min_x_right;
+
+skirt_min_x_left = -78.73;
+skirt_min_x_right = -78.73;
+function skirt_min_x(h) = h == "left" ? skirt_min_x_left : skirt_min_x_right;
+
 foot_dx_left = -67.828;
 foot_dx_right = -49.828;
 function foot_dx(h) = h == "left" ? foot_dx_left : foot_dx_right;

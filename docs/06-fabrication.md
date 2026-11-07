@@ -9,7 +9,7 @@ boards. Since r2 the two main boards are different designs; order each as its ow
 | Setting | Value |
 |---------|-------|
 | Layers | 2 |
-| Dimensions | left about 121.0 x 86.7 mm, right about 117.8 x 80.4 mm (from the gerbers) |
+| Dimensions | about 121.0 x 86.7 mm per half (from the gerbers) |
 | Quantity | 5 (minimum) of each = 5 keyboards' worth of one side plus spares |
 | Material | FR-4, TG 135 or higher |
 | Thickness | 1.6 mm (stiffness for the hot-swap sockets; do not go thinner) |
@@ -129,8 +129,9 @@ would come closer to an existing hole than the board's `min_hole_to_hole` (0.25 
 clearance says nothing about two holes on the same net, and the router does put vias next to GND
 pads and on top of grid points (`tests/test_pcb_review.py::test_drills_keep_the_board_minimum_hole_to_hole`).
 
-Design rules: clearance 0.2 mm, tracks 0.25 mm (0.4 mm for RAW and battery, 0.15 mm for the FPC
-nets at the 0.5 mm connector), vias 0.6 / 0.3 mm, copper to edge 0.3 mm enforced with a 0.35 mm
+Design rules: clearance 0.2 mm, tracks 0.25 mm everywhere except RAW and the battery at 0.4 mm.
+The sensor bus is 0.25 mm too since r2.3: a track centred on an FH12 contact still clears the
+neighbour by 0.5 - 0.125 - 0.15 = 0.225 mm, so the 0.15 mm of r2.2 only added resistance, vias 0.6 / 0.3 mm, copper to edge 0.3 mm enforced with a 0.35 mm
 keep-out ring, 0.45 mm socket pad bands kept inside the outline. The thumb cluster and the COL2,
 COL3, COL4 and ROW3 legs are hand routes in the per-half `manual_routes` of the layout file because
 the autorouter does not reach footprints rotated by 10 or 20 degrees (ticket

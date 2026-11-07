@@ -9,8 +9,8 @@ case pocket right beside the thumb keys.
 Photorealistic product photo, 35 mm lens, soft window light. Two halves of a low profile split
 keyboard on a light oak desk next to a closed silver MacBook. Each half has 15 finger keys in a
 column-staggered 3x5 grid with an angular, stepped case outline that follows the stagger; the left
-half has three thumb keys fanned in an arc, the right half two thumb keys and, directly beside
-them, a glossy white 19 mm trackball sitting low in a round pocket of the case. Keycaps are matte
+half has three thumb keys fanned in an arc, the right half two thumb keys and, where its third
+would be, a glossy white 19 mm trackball sitting low in a round pocket of the case. Keycaps are matte
 white and light grey low profile caps, the thumb keys are burnt orange. Cases are boxy, warm
 beige-grey 3D printed trays about 12 mm tall with a slightly taller rectangular controller box at
 the inner edge of each half. No cables anywhere. Shallow depth of field, the right half in focus.
@@ -48,7 +48,8 @@ Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 
 
 ## Features
 
-- 35 keys: 3 rows x 5 columns per half plus 3 thumb keys on the left and 2 on the right, 18 x 17 mm pitch
+- 35 keys: 3 rows x 5 columns per half plus 3 thumb keys on the left and 2 on the right (the ball
+  takes the third position), 18 x 17 mm pitch
 - Column stagger and thumb arc derived from the Keyball39 geometry, scaled to Choc spacing
 - Kailh Choc V1 switches in hot-swap sockets (hot-swap only, like the Keyball)
 - 19.05 mm (3/4 inch) POM trackball on the right half, resting on three 2 mm ceramic balls in a
@@ -149,7 +150,8 @@ Firmware is built by GitHub Actions from `firmware/zmk-config`; see
 ```prompt
 Top-down studio render of the right half of a low profile split keyboard, white background, soft
 shadows. Bare black PCB with an angular, stepped outline, 17 Kailh Choc hot-swap sockets, small
-SOD-123 diodes next to each key, two thumb key positions at the lower inner side, a nice!nano
+SOD-123 diodes next to each key, two thumb key positions at the lower inner side and the ball
+pocket where a third would be, a nice!nano
 controller on low profile sockets in a rectangular block at the inner edge, a dashed rectangle
 printed on the board under it marking the battery bay on the other face, an octagonal notch in the lower outer edge of the board where a beige
 printed cradle holding a white 19 mm ball stands beside the PCB, a tiny flat flex cable running
@@ -171,8 +173,8 @@ from under the cradle to a connector on the PCB. Clean, technical, product photo
 
 ```prompt
 Three quarter view close-up of the trackball pocket on the right half: a glossy white 19 mm ball
-sitting low in a round pocket of a boxy beige 3D printed case, right beside two burnt orange thumb
-keycaps, the ball top only a little higher than the keycaps, three tiny ceramic balls just visible
+sitting low in a round pocket of a boxy beige 3D printed case, in line with two burnt orange thumb
+keycaps to its left, the ball top only a little higher than the keycaps, three tiny ceramic balls just visible
 at the rim of the beige cradle, light grey Choc keycaps behind, the angular stepped case edge
 visible. Oak desk, soft daylight, macro lens, shallow depth of field.
 ```

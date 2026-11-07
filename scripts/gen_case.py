@@ -31,6 +31,7 @@ BOX_CAP_CLEAR = 1.0      # controller box keeps this to every keycap
 WELL_GROW = 1.0          # well = bay + J3 + RB1 courtyards grown by this
 WALL_GUESS = 3.2         # pcb_clear + wall, only for the sanity checks here
 FOOT_D = 10.5
+LIP_IN = 0.2 - 0.15 - 0.5   # params.scad pcb_clear - lid_fit - lid_lip_chamfer
 MAGNET_D = 6.2           # foot magnet pocket (params.scad magnet_d)
 MAGNET_INSET = 8.0       # foot magnet centres this far inside the PCB outline / the hinge line
 HINGE_X = -13.0          # lid hinge line (x = const, runs front to back) on a half without a ball
@@ -228,6 +229,12 @@ def half_data(layout: Layout) -> dict:
         d["cable_corridor"] = []
         keep = []
     keep.append(well.buffer(2.0, join_style=2))
+    # Two candidates touch the desk when the kickstand folds down, and which one wins depends
+    # on the fold: the lip sits 3 mm lower, the skirt's outer face 3.65 mm further out, so the
+    # skirt takes over above about 39 degrees. Both are the true extremes of their own ring -
+    # on an outline with mitred corners that is not minx of the outline plus an offset.
+    d["lip_min_x"] = round(layout.outline.buffer(LIP_IN, join_style=2).bounds[0], 3)
+    d["skirt_min_x"] = round(layout.outline.buffer(WALL_LID, join_style=2).bounds[0], 3)
     d["hinge_x"] = hinge_x(layout)
     d["foot_dx"] = foot_dx(layout)
     d["foot_magnets"] = foot_magnets(layout, br, keep, d["foot_dx"])
@@ -304,13 +311,13 @@ def render(data: dict[str, dict]) -> str:
              "// Selector functions take the half name: outline(\"left\"), holes(\"right\"), ...", ""]
     names = ["outline", "holes", "bay", "well", "j3", "rb1", "ps1", "reset", "switch", "ctrl_rect", "box_rect",
              "test_pads", "keys", "has_ball", "ball_center", "housing_footprint", "housing_box", "case_screws",
-             "notch", "fpc_box", "cable_corridor", "hinge_x", "foot_dx", "foot_magnets", "feet"]
+             "notch", "fpc_box", "cable_corridor", "hinge_x", "lip_min_x", "skirt_min_x", "foot_dx", "foot_magnets", "feet"]
     for name in names:
         for half in HALVES:
             v = data[half][name]
             if name == "has_ball":
                 s = "true" if v else "false"
-            elif name in ("hinge_x", "foot_dx"):
+            elif name in ("hinge_x", "lip_min_x", "skirt_min_x", "foot_dx"):
                 s = fmt(v)
             elif name in ("reset", "switch", "ball_center"):
                 s = f"[{fmt(v[0])}, {fmt(v[1])}]"

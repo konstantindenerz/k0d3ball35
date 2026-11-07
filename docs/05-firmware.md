@@ -106,28 +106,30 @@ Key positions in matrix transform order:
 ```
 
 35 positions: the left half has three thumb keys (30 inner, 31 middle, 32 outer), the right half
-only the two outer ones (33 middle, 34 outer); the place where a right inner thumb key would sit is
-taken by the ball pocket. Matrix transform row 3 is `RC(3,2) RC(3,3) RC(3,4)` on the left and
-`RC(3,8) RC(3,7)` on the right.
+only the two INNER ones (33 inner, 34 middle); the place where a right outer thumb key would sit
+is taken by the ball pocket since r2.3. Matrix transform row 3 is `RC(3,2) RC(3,3) RC(3,4)` on the
+left and `RC(3,9) RC(3,8)` on the right.
 
 | Layer | Access | Content |
 |-------|--------|---------|
 | 0 Base | | QWERTY, home-row mods GACS on A S D F and J K L ; (hold = mod, tap = letter) |
 | 1 Nav | hold left middle thumb (Space) | arrows, Home/End, PgUp/PgDn, media; left hand keeps the mods |
 | 2 Num | hold left inner thumb (Tab) | numpad on the left hand, brackets and operators around it |
-| 3 Sym | hold right middle thumb (Enter) | symbols on the left hand mirroring the Num layer |
+| 3 Sym | hold right inner thumb (Enter) | symbols on the left hand mirroring the Num layer |
 | 4 Mouse | automatic, when the ball moves | right home row J K L = left / right / middle click, M , = back / forward, U = hold for scroll, I = hold for snipe, right thumbs = left / right click and scroll |
-| 5 Scroll | hold U on the mouse layer, or right outer thumb (Backspace) | ball movement becomes scrolling, clicks stay available |
+| 5 Scroll | hold U on the mouse layer, or right middle thumb (Backspace) | ball movement becomes scrolling, clicks stay available |
 | 6 Snipe | hold I on the mouse layer | ball movement at one third speed |
-| 7 System | hold left outer thumb (Esc), or both outer thumbs | Bluetooth profiles, output selection, F keys, bootloader, Studio unlock, reset |
+| 7 System | hold left outer thumb (Esc), or it together with the right middle thumb | Bluetooth profiles, output selection, F keys, bootloader, Studio unlock, reset |
 
 Thumb keys: left outer `Esc / System`, left middle `Space / Nav`, left inner `Tab / Num`,
-right middle `Enter / Sym`, right outer `Backspace / Scroll`. The r1 right inner thumb key is gone,
-so its bindings moved one key outward and Delete is reached from the Nav layer.
+right inner `Enter / Sym`, right middle `Backspace / Scroll`. The right half has no outer thumb
+key since r2.3 - the ball sits there - so its two keys carry those bindings and Delete is reached
+from the Nav layer.
 
-Combos on the base layer: W+E = Esc, E+R = Tab, F+J = Caps Word, both outer thumbs = System layer.
+Combos on the base layer: W+E = Esc, E+R = Tab, F+J = Caps Word, left outer plus right middle
+thumb = System layer.
 
-Image prompt: *Top-down flat illustration of a 35-key split keyboard layout, 3x5 keys per hand plus three fanned thumb keys on the left and two on the right, legends showing a QWERTY base layer with small modifier labels (GUI ALT CTRL SHIFT) under the home-row keys, a 19 mm trackball drawn beside the right thumb keys, clean technical diagram style, white background.*
+Image prompt: *Top-down flat illustration of a 35-key split keyboard layout, 3x5 keys per hand plus three fanned thumb keys on the left and two on the right, legends showing a QWERTY base layer with small modifier labels (GUI ALT CTRL SHIFT) under the home-row keys, a 19 mm trackball drawn where the right half's outer thumb key would be, clean technical diagram style, white background.*
 
 ## 6. Trackball tuning
 

@@ -5,7 +5,7 @@ repository (layout, schematic, PCB, firmware, cradle, tests, docs) must agree wi
 If something here changes, the change must be propagated and a ticket filed in `issues/`.
 
 What changed from r1: two separate PCBs instead of one reversible board, 35 keys (the right
-half loses its inner thumb key), a stepped angular outline without rounding, and a 19.05 mm
+half loses its OUTER thumb key since r2.3; see the note at the end of this section), a stepped angular outline without rounding, and a 19.05 mm
 ball in a case pocket beside the right PCB instead of a 25 mm ball through a PCB cutout. The
 solder jumpers, the mirrored left-half pin map and the grounded D0 are gone with the reversible
 board. Ticket `hw-two-pcbs-r2`.
@@ -18,7 +18,7 @@ board. Ticket `hw-two-pcbs-r2`.
 | R2 | Switches | Kailh Choc V1 (PG1350) in hot-swap sockets (CPG135001S30); hot-swap only, like the Keyball |
 | R3 | Key pitch | 18.0 mm (x) x 17.0 mm (y) |
 | R4 | Column stagger | Keyball39 proportions scaled to 17 mm row pitch (see section 5) |
-| R5 | Thumb cluster | Keyball39 three-key arc, 0 / 10 / 20 degree rotation; the right half uses the two outer keys (0 and 10 degrees) |
+| R5 | Thumb cluster | Keyball39 three-key arc, 0 / 10 / 20 degree rotation; the right half uses the two INNER keys (10 and 20 degrees), the outer position is the ball's |
 | R6 | Pointing | 19.05 mm (3/4 inch) POM trackball on the right half in a case pocket beside the PCB, PMW3610 sensor on a daughterboard on the case floor; 25 mm stays a cradle parameter |
 | R7 | Wireless | nRF52840 Pro Micro form factor (nice!nano v2 or SuperMini), BLE split, ZMK |
 | R8 | Power | 1S LiPo per half, on-board charger of the controller, slide power switch |
@@ -70,8 +70,8 @@ D15 and D16 (the sensor pins that have no connector on the left). All are bare c
 jumpers exist on either board.
 
 Matrix: 4 rows x 5 columns, diode direction COL2ROW (diode cathode towards the row line).
-Row 3 holds the thumb keys: left `(3,2)` outer, `(3,3)` middle, `(3,4)` inner; right `(3,2)`
-outer and `(3,3)` middle. Cells `(3,0)` and `(3,1)` do not exist on either half, `(3,4)` does
+Row 3 holds the thumb keys: left `(3,2)` outer, `(3,3)` middle, `(3,4)` inner; right `(3,3)`
+middle and `(3,4)` inner. Cells `(3,0)` and `(3,1)` do not exist on either half, `(3,2)` does
 not exist on the right. Firmware keeps one overlay per half for the matrix transform and the
 sensor; the kscan pin set is shared.
 
@@ -185,18 +185,21 @@ Column stagger (y offset of a column relative to the middle column; Keyball39 va
 
 Thumb arc (Keyball39 positions scaled by 18 / 19.05 in x and 17 / 19.05 in y, 20.4 mm between
 neighbouring thumb centres, rotations kept). The keys sit at the same positions on both halves;
-the right half omits the inner one:
+the right half omits the outer one, whose place the ball takes:
 
 | Key | Matrix cell | x | y | rotation | left | right |
 |-----|-------------|---|---|----------|------|-------|
-| thumb outer | (3,2) | -21.78 | +59.65 | 0 deg | yes | yes |
+| thumb outer | (3,2) | -21.78 | +59.65 | 0 deg | yes | no |
 | thumb middle | (3,3) | -42.14 | +61.26 | 10 deg | yes | yes |
-| thumb inner | (3,4) | -61.91 | +66.19 | 20 deg | yes | no |
+| thumb inner | (3,4) | -61.91 | +66.19 | 20 deg | yes | yes |
 
 Exact values come out of the layout generator and are tabulated in `docs/02-layout.md`.
 
-Ball pocket (right half only): ball centre (+5.0, +64.0), outboard of the outer thumb key and
-below the middle/ring columns. The ball does not pass through the PCB. The PCB edge has a regular
+Ball pocket (right half only): ball centre (-13.0, +66.0), 5 mm outboard of the index column and
+29.5 mm from the middle thumb key. Until r2.3 it sat at (+5.0, +64.0), outboard of the whole
+thumb cluster and under the ring column; every reference design (Keyball 39/44/61, torabo-tsuki
+LP, Charybdis) drops the outermost thumb key on the ball half instead, and a 19 mm ball has to
+sit further in than their 34 mm one because the thumb touches its near surface, not its centre. The ball does not pass through the PCB. The PCB edge has a regular
 octagonal notch with apothem 15.0 mm around the ball centre (cradle clearance radius 14 mm plus
 1.0 mm), with the corner towards the keys and the inner column squared off so the module can be
 lowered into its pocket past the board edge (`issues/mech-cradle-notch-relief.md`). The case
@@ -217,9 +220,11 @@ thumb keys.
 Outline: the union of the keycap rectangles (0.5 mm margin plus 1.1 mm per side for the hot-swap
 socket pads), 90 degree steps between neighbouring columns, the controller block and the thumb
 bridge, closed with mitre joins (corner radius 0; the fab's 1 mm router radius is accepted). The
-right half additionally subtracts the pocket notch. Sizes: left 121.0 x 86.7 mm, right 117.8 x 80.4 mm.
+right half additionally subtracts the pocket notch. Sizes: left 121.0 x 86.7 mm, right 121.0 x 86.7 mm (the inner thumb key makes the halves the
+same size since r2.3; the right was 117.8 x 80.4 mm before).
 
-Mounting holes: five M2 (2.2 mm) non-plated holes per half for the case, placed in the gaps between
+Mounting holes: five M2 (2.2 mm) non-plated holes per half for the case; four are shared and the
+fifth differs per half since r2.3. Placed in the gaps between
 switch bodies and outside the hot-swap socket pad bands, identical on both boards:
 
 | Hole | x | y | Location |
@@ -228,7 +233,8 @@ switch bodies and outside the hot-swap socket pad bands, identical on both board
 | H2 | +27.0 | +44.5 | ring / pinky, bottom |
 | H3 | -9.0 | +40.0 | middle / index, bottom |
 | H4 | -27.0 | +8.0 | index / inner, top |
-| H5 | -32.0 | +61.0 | between outer and middle thumb key |
+| H5 (left) | -32.0 | +61.0 | between outer and middle thumb key |
+| H5 (right) | -31.0 | +49.0 | thumb bridge, left of the notch: the left spot is 0.3 mm from the edge here |
 
 Ten GND stitching vias per half (nine shared positions plus one per half) tie the two ground pours
 together, and a 0.45 mm wide track/via keep-out ring runs along the board edge so the autorouter
@@ -255,8 +261,8 @@ and derives everything from it; the numbers below are the contract between PCB a
 ZMK `main` (Zephyr 4.1 based), shield name `k0d3ball35`, builds `k0d3ball35_left` and
 `k0d3ball35_right` for `nice_nano//zmk` plus `settings_reset`. One shared kscan with the pin set
 of section 2; the matrix transform is 4 rows x 10 columns with 35 positions, row 3 mapping
-`RC(3,2) RC(3,3) RC(3,4)` on the left and `RC(3,8) RC(3,7)` on the right (right thumb middle is
-matrix column 3, thumb outer column 2). The right half is the split central and carries the sensor
+`RC(3,2) RC(3,3) RC(3,4)` on the left and `RC(3,9) RC(3,8)` on the right (right thumb inner is
+matrix column 4, thumb middle column 3). The right half is the split central and carries the sensor
 (`pixart,pmw3610`, `res-cpi` 600 default for the 19 mm ball). `zmk,input-split` is scaffolded so
 that a left-ball or dongle build is a configuration change. ZMK Studio enabled; the physical layout
 is generated from `points-left.json` and `points-right.json`.

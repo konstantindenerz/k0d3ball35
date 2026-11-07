@@ -162,7 +162,11 @@ def net_classes() -> dict[str, dict]:
         "Default": {"clearance": 0.2, "track_width": 0.25, "via_diameter": 0.6, "via_drill": 0.3},
         "Power": {"clearance": 0.2, "track_width": 0.4, "via_diameter": 0.6, "via_drill": 0.3,
                   "nets": ["RAW", "BAT+"]},   # GND is pour-fed, stays in Default
-        # thin tracks for the 0.5 mm pitch FPC connector (0.3 mm pads, 0.2 mm gaps)
-        "FPC": {"clearance": 0.2, "track_width": 0.15, "via_diameter": 0.6, "via_drill": 0.3,
+        # The sensor bus ends on the FH12's 0.3 mm pads at 0.5 mm pitch. A 0.25 mm track centred
+        # on such a pad still keeps 0.5 - 0.125 - 0.15 = 0.225 mm to the neighbouring pad, so the
+        # 0.15 mm of r2.2 bought nothing and only added resistance: Keyball runs the same PMW
+        # sensor bus 130 mm long at 0.25 mm with no guard trace. VCC rides in this class because
+        # it has to enter the same pad field; the sensor draws single-digit mA.
+        "FPC": {"clearance": 0.2, "track_width": 0.25, "via_diameter": 0.6, "via_drill": 0.3,
                 "nets": ["TB_SCLK", "TB_SDIO", "TB_NCS", "TB_MOT", "VCC"]},
     }

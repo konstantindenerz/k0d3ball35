@@ -19,6 +19,7 @@ Environment: FREEROUTING_JAR (path to freerouting-2.x.jar), JAVA (java binary), 
 from __future__ import annotations
 
 import json
+import math
 import os
 import subprocess
 import sys
@@ -90,6 +91,15 @@ def export_dsn(pcb: Path, dsn: Path) -> None:
     print("DSN export:", ok, dsn, "| rotated footprints baked:", baked)
 
 
+# Tried and rejected (2026-11-07): a `.rules` file with per-layer preferred directions
+# (F.Cu horizontal for the rows, B.Cu vertical for the columns, as on the Ferris and the
+# Keyball) plus via_costs 200 and fanout off, passed with `-dr`. Freerouting honours the
+# file - and then returns an almost empty session: 91 segments on 8 nets instead of 724.
+# The rules file sits above the DSN in freerouting's precedence ladder, so it also replaces
+# the net class widths and clearances the DSN carries, and the router gives up. Not worth
+# re-deriving the whole class table in a second syntax: the board already comes out at
+# 51 % horizontal on the front and 47 % vertical on the back, which is the convention the
+# matrix geometry produces on its own.
 def route(dsn: Path, ses: Path) -> int:
     jar = os.environ.get("FREEROUTING_JAR")
     jar = str(Path(jar).resolve()) if jar else None
@@ -100,6 +110,12 @@ def route(dsn: Path, ses: Path) -> int:
         return 2
     if ses.exists():
         ses.unlink()
+    # freerouting picks up a <board>.rules next to the DSN on its own, with a higher
+    # priority than the DSN itself: a leftover one silently replaces the net classes and
+    # the router then returns an almost empty session, or hangs.
+    stale = dsn.with_suffix(".rules")
+    if stale.exists():
+        stale.unlink()
     cmd = [java, "-jar", jar, "-de", str(dsn), "-do", str(ses), "-mp", passes, "-l", "en", "-dct", "0"]
     res = subprocess.run(cmd, cwd=BUILD, capture_output=True, text=True, timeout=3600)
     print("\n".join(l for l in res.stdout.splitlines() if "Auto-routing stage completed" in l or "pre-existing" in l))
@@ -172,6 +188,15 @@ def drop_floating_ground_vias(board) -> int:
     return removed
 
 
+def _point_to_segment(p, a, b) -> float:
+    ax, ay, bx, by, px, py = a.x, a.y, b.x, b.y, p.x, p.y
+    dx, dy = bx - ax, by - ay
+    if dx == 0 and dy == 0:
+        return math.hypot(px - ax, py - ay)
+    t = max(0.0, min(1.0, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy)))
+    return math.hypot(px - (ax + t * dx), py - (ay + t * dy))
+
+
 def stitch_ground(board, grid_mm: float = 6.0, via_mm: float = 0.6, drill_mm: float = 0.3, margin_mm: float = 0.3,
                   hole_gap_mm: float = 0.25) -> int:
     """Add GND vias on a grid wherever both pours have copper around the point.
@@ -205,7 +230,16 @@ def stitch_ground(board, grid_mm: float = 6.0, via_mm: float = 0.6, drill_mm: fl
             if d > 0:
                 p = pad.GetPosition()
                 holes.append((p.x, p.y, d / 2))
+    # Tracks of other nets: the pour keeps its clearance from them, but a grid point can still
+    # land on one where the fill happens to reach around it. Copper to copper is the rule here.
+    foreign = []
+    for t in board.GetTracks():
+        if t.GetClass() != "PCB_TRACK":
+            continue
+        foreign.append((t.GetStart(), t.GetEnd(), t.GetWidth() / 2, t.GetNetname()))
     keep = pcbnew.FromMM(hole_gap_mm + drill_mm / 2)
+    via_r = pcbnew.FromMM(via_mm / 2)
+    clear = pcbnew.FromMM(0.2)
     bbox = board.GetBoardEdgesBoundingBox()
     r = pcbnew.FromMM(via_mm / 2 + margin_mm)
     step = pcbnew.FromMM(grid_mm)
@@ -218,6 +252,14 @@ def stitch_ground(board, grid_mm: float = 6.0, via_mm: float = 0.6, drill_mm: fl
             ok = all(zones[l].Contains(pcbnew.VECTOR2I(x + dx, y + dy)) for l in (f, b) for dx, dy in ring)
             if ok and any((x - hx) ** 2 + (y - hy) ** 2 < (keep + hr) ** 2 for hx, hy, hr in holes):
                 ok = False
+            if ok:
+                pt = pcbnew.VECTOR2I(x, y)
+                for ta, tb, hw, tnet in foreign:        # not a/b: those are the layer pair
+                    if tnet == "GND":
+                        continue
+                    if _point_to_segment(pt, ta, tb) < via_r + hw + clear:
+                        ok = False
+                        break
             if ok:
                 via = pcbnew.PCB_VIA(board)
                 via.SetPosition(pcbnew.VECTOR2I(x, y))

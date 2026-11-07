@@ -45,7 +45,8 @@ Thumb keys are placed relative to the inner column's bottom key. The Keyball39 o
 -6.50/+25.55 and -27.42/+31.07 mm) are scaled by 18 / 19.05 in x and 17 / 19.05 in y; the 0 / 10 / 20
 degree rotations are kept. The resulting pitch between neighbouring thumb centres is 20.4 mm, which
 leaves a few millimetres between rotated 1u Choc caps. The left half uses all three positions, the
-right half the two outer ones (0 and 10 degrees) so that the ball pocket has room beside the thumb.
+right half the two INNER ones (10 and 20 degrees) since r2.3: the ball takes the outer position,
+the way Keyball, torabo-tsuki and Charybdis all do it.
 
 ## Key table, left half (18 keys)
 
@@ -155,7 +156,8 @@ thumb bridge between the index/inner bottom keys and the thumb keys. Corners are
 (`corner_radius: 0`, mitre joins; the fab's 1 mm router radius is accepted). On the right half the
 pocket notch is subtracted. The left board outline is the mirror image of this
 (controller block at +x, thumb arc leaning the other way). Sizes (bounding boxes): left 121.0 x 86.7 mm, right
-117.8 x 80.4 mm; the ball pocket adds about 3 mm of case height beside the right PCB.
+121.0 x 86.7 mm (the same as the left since r2.3); the ball pocket adds about 3 mm of case
+height beside the right PCB.
 
 ## Changing the layout
 
@@ -176,7 +178,7 @@ Clean technical top-view diagram of the two halves of a 35-key split keyboard on
 background: each half has five columns of three keys in a column-staggered grid (middle column
 highest, pinky column lowest) with an angular stepped board outline following the stagger, the
 left half with three thumb keys fanning out at 0, 10 and 20 degrees below the inner column, the
-right half with only the two outer thumb keys and a 19 mm trackball circle in a notch at
+right half with only the two inner thumb keys and a 19 mm trackball circle in a notch at
 the lower right beside the thumb keys, a Pro Micro sized controller rectangle in a rectangular block
 at the inner edge of each half, five small mounting hole circles per half, dimension lines showing
 18 mm column pitch and 17 mm row pitch, thin grey lines, labels in a sans-serif font, 16:10.

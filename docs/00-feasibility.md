@@ -45,7 +45,7 @@ netlist). Nothing from that repository is included here; see section 7.
 | Keys | 39 (21 no-ball half, 18 ball half) | 35 (18 left, 17 ball half; two different PCBs since r2) |
 | Switch standard | MX, 19.05 mm pitch, 5 thumb positions MX/Choc dual | Choc V1, 18 x 17 mm pitch, all positions hot-swap |
 | Column stagger | 11.70 / 4.70 / 0 / 2.50 / 5.00 mm (pinky to inner) | same proportions scaled to 17 mm rows |
-| Thumb cluster | 3-key arc, 21.63 mm pitch, 0 / 10 / 20 degrees | same arc, 20.4 mm pitch, same angles; the ball half uses the two outer keys |
+| Thumb cluster | 3-key arc, 21.63 mm pitch, 0 / 10 / 20 degrees | same arc, 20.4 mm pitch, same angles; the ball half uses the two inner keys and the ball takes the outer position, as on the Keyball |
 | Controller | Pro Micro (ATmega32U4) or RP2040 Pro Micro, wired | nice!nano v2 / SuperMini (nRF52840), BLE |
 | Half interconnect | TRRS cable, half-duplex serial | Bluetooth split (ZMK) |
 | Sensor | PMW3360 on a 5 V daughterboard with 1.9 V LDO and two level shifters | PMW3610 on a 3.3 V daughterboard, 1.8 V LDO, no level shifting |
