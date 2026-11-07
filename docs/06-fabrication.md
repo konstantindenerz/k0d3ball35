@@ -120,7 +120,10 @@ clearances, `dsn` gives duplicate pad numbers unique names, bakes footprint rota
 drops the pours (GND is routed as a normal net) and exports the DSN, `route` runs freerouting,
 `import` strips the placement block from the SES and imports the tracks, `finish` widens undersized
 tracks to their net class, fills the pours, adds GND vias on a 6 mm grid wherever both pours have
-copper and removes vias that would only anchor islands.
+copper and removes vias that would only anchor islands. A grid point is skipped when its drill
+would come closer to an existing hole than the board's `min_hole_to_hole` (0.25 mm): copper
+clearance says nothing about two holes on the same net, and the router does put vias next to GND
+pads and on top of grid points (`tests/test_pcb_review.py::test_drills_keep_the_board_minimum_hole_to_hole`).
 
 Design rules: clearance 0.2 mm, tracks 0.25 mm (0.4 mm for RAW and battery, 0.15 mm for the FPC
 nets at the 0.5 mm connector), vias 0.6 / 0.3 mm, copper to edge 0.3 mm enforced with a 0.35 mm

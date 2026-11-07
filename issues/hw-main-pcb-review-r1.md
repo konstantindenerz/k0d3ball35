@@ -29,7 +29,9 @@ in the first pass are fixed and their regression tests run as plain tests (no `x
 - [x] Five mounting holes per board clear switch bodies and sockets (automated; see the clearance table, H1 is tight to the SW11 socket)
 - [x] Right board: octagonal notch (apothem 15 mm) present, no copper, pour or via inside the notch or within 0.3 mm of its edge; no cradle holes anywhere (automated)
 - [x] Left board: three thumb positions, no FPC footprint, nine test pads (D0, D1, D2, D3, D9, D10, D14, D15, D16); right board: two thumb positions, five test pads (automated)
-- [ ] Routed tracks reviewed for ugly detours near the controller and the thumb cluster on both boards (hand, steps below)
+- [x] Routed tracks reviewed for ugly detours near the controller and the thumb cluster on both boards
+      (scripted pass 2026-11-07, see below; two drill defects found and fixed, the eyeball pass in the
+      GUI stays with the remaining hand checks)
 
 Additional items verified by the tests: every controller hole carries the net the pin table in
 `docs/01-design-spec.md` section 2 demands (RAW, GND, RST, VCC on holes 13 to 16 of the
@@ -85,13 +87,30 @@ overall length vs the 33.5 mm board) and `usb_overhang` 1.5 mm. The controller h
 moved from (-58, 14) to (-58, 11.7) so the PCB outline is unchanged: the controller board now
 overhangs the top edge by 0.9 mm and the shell by 1.5 mm. `check_layout` verifies the overhang.
 
-### Minor: two GND vias almost touching (right board)
+### Minor: two GND vias almost touching (right board) - fixed 2026-11-07
 
 DRC `hole_to_hole` warning: the stitching via at frame (9.0, 6.0) and an autorouter via at
-(9.475, 6.225) are 0.2256 mm hole to hole (board minimum 0.25 mm, same net). Not fatal (both GND,
+(9.475, 6.225) were 0.2256 mm hole to hole (board minimum 0.25 mm, same net). Not fatal (both GND,
 JLCPCB only enforces hole spacing between different nets), but the second via is useless and a
-drill that close to another may break; drop the autorouter via in the finish step or move the
-stitching via a few millimetres in the yaml.
+drill that close to another may break.
+
+**Fixed 2026-11-07** in `scripts/route.py`: `stitch_ground` now collects every existing hole
+(router vias and all pad drills) before it places the grid and skips a grid point whose drill
+would come closer than the board's `min_hole_to_hole`. The grid point at (9.0, 6.0) is simply
+left out; the right board goes from 41 to 39 stitching vias (87 to 85 vias in total), the left
+board is unchanged at 100. The pour-contains test the placement already did only guarantees
+*copper* clearance, and copper says nothing about two holes that belong to the same net.
+
+### Defect 3: a stitching via inside a controller pad hole (right board)
+
+Found by the same pass and worse than the one above: a 0.3 mm GND stitching via sat 0.152 mm
+from the centre of U1 pad 14 (GND, 1.0 mm hole) at frame (-50.53, 0.23), i.e. **inside** the
+controller socket hole, -0.4982 mm hole to hole. KiCad never reported it: its `hole_to_hole`
+rule skips pairs on the same net, and the GND pour connects to that pad, so the grid point
+passed the "inside both fills" test. The fab would have drilled a 0.3 mm hole into a 1.0 mm
+one. Same fix as above (pad drills are part of the hole list);
+`test_drills_keep_the_board_minimum_hole_to_hole` is the regression test and fails on the
+2026-11-06 board for both defects.
 
 ### Hot-swap socket geometry (verified)
 
@@ -179,15 +198,42 @@ or countersunk screws from the back.
 6. **Routing review:** PCB editor, press the backtick key and click a net to highlight it, in this
    order: `ROW3`, `COL4`, `COL3`, `RAW`, `BAT+`, `TB_SCLK`, `TB_SDIO`, `TB_NCS`, `TB_MOT`, `VCC`.
    Look for detours around the controller block, loops around the thumb keys and long parallel runs
-   of the SPI nets. `Inspect > Board Statistics` shows the via count (103 on the right board);
-   anything with more than four vias on one signal net deserves a look. Remove the autorouter via
-   next to the stitching via at frame (9.0, 6.0) on the right board.
+   of the SPI nets. `Inspect > Board Statistics` shows the via count (85 on the right board since
+   2026-11-07); anything with more than four vias on one signal net deserves a look. The scripted
+   pass below already did the counting, so this step is only the eyeball check.
 7. **Mounting holes:** back view, look at H1: the SW11 socket starts 0.4 mm from the hole edge;
    note the standoff limit in the case ticket (`issues/mech-case.md`).
 8. Repeat steps 1, 2, 4, 5, 6 and 7 on `hardware/left-pcb/k0d3ball35-left.kicad_pro` (18 keys,
    nine test pads, no J1, the inner thumb key SW34 at 20 degrees is hand-routed).
 9. Close with the gerber viewer pass of `test-fab-gerber-viewer` and the drill counts in
     `docs/06-fabrication.md`.
+
+### Routing review, scripted pass (2026-11-07)
+
+Every signal net of both boards measured against the minimum spanning tree over its own pads (the
+shortest a router could do with straight lines and no obstacles), plus via counts, dangling track
+ends, hole-to-hole distances and parallel runs of the SPI nets:
+
+| Finding | Verdict |
+|---|---|
+| Worst detour left: `SW33` 53.3 mm of track for a 26.1 mm MST (ratio 2.04) with 5 vias and 26 segments | accepted. A matrix net of a 10 degree thumb key whose front and back socket pad copies sit on opposite sides of D33; about 25 milliohm, no signal integrity meaning. It is the only net on either board above 4 vias, `test_no_signal_net_piles_up_vias` holds the line at 5 |
+| Worst detour right: `TB_SCLK` 82.3 mm for 54.0 mm (1.52), `BAT+` 40.6 for 27.1 (1.50), `VCC` 82.2 for 60.3 (1.36) | accepted. The SPI nets run from U1 at the inner edge to J1 at the notch and have to pass the thumb cluster; `BAT+` and `VCC` are 0.4 mm class and go round the battery well |
+| Everything else is below 1.4, 29 of 39 nets below 1.2 | no detours worth a hand route |
+| Dangling track ends | none on either board (every end sits in a pad or a via) |
+| Holes closer than 0.25 mm | two on the right board, both fixed, see defects above |
+| `TB_SCLK` and `TB_MOT` run 27.1 mm, `TB_SDIO` and `TB_MOT` 33.1 mm side by side on B.Cu, 0.252 mm edge to edge (0.15 mm tracks) | accepted, see below |
+
+On the parallel SPI runs: the gap is 1.7 track widths over about 30 mm with no GND between the
+two (the pour cannot fit into 0.25 mm), and the reference pour is 1.5 mm away on the other face.
+That is as tight as it looks, but the same six conductors then run **0.5 mm apart over the whole
+length of the FFC**, which is the dominant coupling path and cannot be designed away; the
+aggressor is SCLK at 2 MHz, the victim MOT is a level signal that carries a 1 k series resistor
+(R3) on the sensor board, and a false edge on it costs a pointer poll, not data. Widening the
+gap means hand routes for three nets through the thumb cluster. Revisit only if the first board
+shows spurious motion interrupts (`fw-cursor-axis-verification`).
+
+Reproduce: `PYTHONPATH=scripts:tests .venv/bin/python` on the snippet in the ticket history, or
+just run `tests/test_pcb_review.py`, which now carries the two assertions that matter.
 
 Use `kicad-cli pcb render` outputs in `hardware/left-pcb/renders/` and `hardware/right-pcb/renders/`
 for a first look, then the GUI. Title kept for history; it covers both r2 boards.

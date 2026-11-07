@@ -151,7 +151,8 @@ def finish(pcb: Path) -> None:
                 t.SetWidth(want)
                 fixed += 1
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())
-    added = stitch_ground(board)
+    rules = pro["board"]["design_settings"]["rules"]
+    added = stitch_ground(board, hole_gap_mm=rules.get("min_hole_to_hole", 0.25))
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     pcbnew.SaveBoard(str(pcb), board)
     print("widened tracks:", fixed, "| GND stitching vias added:", added, "| saved", pcb)
@@ -171,11 +172,15 @@ def drop_floating_ground_vias(board) -> int:
     return removed
 
 
-def stitch_ground(board, grid_mm: float = 6.0, via_mm: float = 0.6, drill_mm: float = 0.3, margin_mm: float = 0.3) -> int:
+def stitch_ground(board, grid_mm: float = 6.0, via_mm: float = 0.6, drill_mm: float = 0.3, margin_mm: float = 0.3,
+                  hole_gap_mm: float = 0.25) -> int:
     """Add GND vias on a grid wherever both pours have copper around the point.
 
     The pours already keep their clearance to every other net, so a via that sits fully
-    inside both fills is clear of everything else and ties the two pours together.
+    inside both fills is clear of everything else and ties the two pours together. Copper
+    clearance says nothing about drills on the same net, though: a router via that landed
+    next to a grid point would leave two holes a fraction of a millimetre apart, which DRC
+    reports as hole_to_hole and a drill may break. Such grid points are skipped.
     """
     import math
 
@@ -189,6 +194,18 @@ def stitch_ground(board, grid_mm: float = 6.0, via_mm: float = 0.6, drill_mm: fl
     f, b = pcbnew.F_Cu, pcbnew.B_Cu
     if f not in zones or b not in zones:
         return 0
+    holes = []
+    for t in board.GetTracks():
+        if t.GetClass() == "PCB_VIA":
+            p = t.GetPosition()
+            holes.append((p.x, p.y, t.GetDrill() / 2))
+    for fp in board.GetFootprints():
+        for pad in fp.Pads():
+            d = max(pad.GetDrillSizeX(), pad.GetDrillSizeY())
+            if d > 0:
+                p = pad.GetPosition()
+                holes.append((p.x, p.y, d / 2))
+    keep = pcbnew.FromMM(hole_gap_mm + drill_mm / 2)
     bbox = board.GetBoardEdgesBoundingBox()
     r = pcbnew.FromMM(via_mm / 2 + margin_mm)
     step = pcbnew.FromMM(grid_mm)
@@ -199,6 +216,8 @@ def stitch_ground(board, grid_mm: float = 6.0, via_mm: float = 0.6, drill_mm: fl
         x = bbox.GetLeft() + step // 2
         while x < bbox.GetRight():
             ok = all(zones[l].Contains(pcbnew.VECTOR2I(x + dx, y + dy)) for l in (f, b) for dx, dy in ring)
+            if ok and any((x - hx) ** 2 + (y - hy) ** 2 < (keep + hr) ** 2 for hx, hy, hr in holes):
+                ok = False
             if ok:
                 via = pcbnew.PCB_VIA(board)
                 via.SetPosition(pcbnew.VECTOR2I(x, y))

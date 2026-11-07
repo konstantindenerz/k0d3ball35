@@ -808,3 +808,42 @@ def test_gnd_zones_have_no_slivers(board):
                 remnants.append(round(poly.area, 2))
         assert len(remnants) <= max_remnants, \
             f"{board.half} {layer}: {len(remnants)} GND fill remnants {remnants}, more than {max_remnants}"
+
+
+def test_drills_keep_the_board_minimum_hole_to_hole(board, half):
+    """No two holes closer than the board's `min_hole_to_hole` (0.25 mm), whatever their nets.
+
+    KiCad only reports this between different nets, but a drill that close to another breaks
+    whether or not the copper belongs together: the autorouter put a GND via 0.2256 mm from a
+    GND stitching via on the right board (see the ticket). `route.stitch_ground` now skips
+    grid points that land next to an existing hole.
+    """
+    import json
+
+    limit = json.loads(BOARDS[half].with_suffix(".kicad_pro").read_text())["board"]["design_settings"]["rules"]["min_hole_to_hole"]
+    holes = [(x, y, drill / 2, f"via {net}") for net, x, y, _, drill in board.vias]
+    for fp in board.footprints.values():
+        for pad in fp.pads:
+            if pad.drill:
+                holes.append((pad.x, pad.y, pad.drill / 2, f"{fp.ref} pad {pad.number}"))
+    holes.sort()
+    for i, (x1, y1, r1, a) in enumerate(holes):
+        for x2, y2, r2, b in holes[i + 1:]:
+            if x2 - x1 >= limit + r1 + r2:
+                break
+            gap = math.dist((x1, y1), (x2, y2)) - r1 - r2
+            assert gap >= limit - 1e-6, \
+                f"{half}: {a} and {b} are {gap:.4f} mm hole to hole at ({x1 - OFFSET[0]:.2f}, {y1 - OFFSET[1]:.2f})"
+
+
+def test_no_signal_net_piles_up_vias(board):
+    """Step 6 of the review: more than five vias on one signal net means the router took a
+    detour worth looking at. SW33 on the left board is at five (a 10 degree thumb key whose
+    front and back socket pads sit on either side of the diode); everything else is at three
+    or fewer."""
+    count = {}
+    for net, _, _, _, _ in board.vias:
+        if net not in ("GND", ""):
+            count[net] = count.get(net, 0) + 1
+    worst = sorted(count.items(), key=lambda kv: -kv[1])[:3]
+    assert all(n <= 5 for _, n in count.items()), f"{board.half}: via pile-up {worst}"
