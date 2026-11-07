@@ -26,7 +26,7 @@ pocket mount.
 | Board | 26 x 25 mm, 1.6 mm FR4, 2 layer, 2x M2 holes on the vertical centre line 20 mm apart |
 | Connector | 0.5 mm pitch, 6 contacts, bottom contact, Hirose FH12-6S-0.5SH or an LCSC clone (C2764370) |
 | Optical centre | exactly between the two mounting holes (board centre). The ball axis goes through it |
-| Position | on the case floor under the ball, centred at layout (+5, +64) of the right half, component side down |
+| Position | on the case floor under the ball, centred at layout (-13, +66) of the right half, component side down |
 
 The sensor body passes through a 16.96 x 8.60 mm cutout in the board (datasheet figure 5) and
 protrudes 0.7 mm on the lens side. Its leads are soldered on the component side. The lens clips

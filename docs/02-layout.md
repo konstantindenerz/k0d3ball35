@@ -77,19 +77,20 @@ The fifteen finger keys SW00 to SW24 are at the same coordinates as on the left 
 
 | Ref | Name | Row | Col | x | y | Rotation |
 |-----|------|-----|-----|---|---|----------|
-| SW32 | thumb_outer | 3 | 2 | -21.78 | 59.65 | 0 |
 | SW33 | thumb_middle | 3 | 3 | -42.14 | 61.26 | 10 |
+| SW34 | thumb_inner | 3 | 4 | -61.91 | 66.19 | 20 |
 
 Rotation follows the KiCad convention (positive is counter-clockwise on screen). Each key's diode
 sits 6 mm below the switch centre, rotated with it. The reference designators double as matrix
 positions: `SWrc` is row r, column c; column 0 is the pinky, column 4 the inner index column, row 3
-the thumb row. Cells (3,0) and (3,1) do not exist; (3,4) exists only on the left.
+the thumb row. Cells (3,0) and (3,1) do not exist; (3,2) exists only on the left, because the right
+half gave up its outer thumb key to the ball pocket in r2.3.
 
 ## Ball pocket (right half)
 
 | Item | Value |
 |------|-------|
-| Ball centre | (+5.0, +64.0), below the middle/ring columns, outboard of the outer thumb key |
+| Ball centre | (-13.0, +66.0), below the index/middle columns, where the outer thumb key used to be |
 | Ball diameter | 19.05 mm (3/4 inch POM); the cradle also exists for 25 mm, which needs a wider notch |
 | Cradle clearance circle | 28 mm diameter (`trackball.cradle_diameter`); the printed cradle is 24.1 mm wide above the PCB plane |
 | PCB notch | octagon, apothem 15.0 mm (cradle radius + 1.0 mm `notch_clearance`), with the corner towards the keys and the inner column squared off so the module can be lowered into the pocket past the board edge; vertices in `points-right.json` under `trackball.notch` |
@@ -99,8 +100,8 @@ the thumb row. Cells (3,0) and (3,1) do not exist; (3,4) exists only on the left
 | Mounting | cradle screwed to the case floor through its sensor posts (two M2 x 10 from below, 20 mm apart); no cradle holes on the PCB |
 | Insertion corridor | the housing and the sensor board inside it must not be covered by the board: `Layout.insertion_corridor()` keeps 0.50 mm to the outline all round, which is what makes the module a cartridge (in and out with the PCB fitted) |
 
-The ball centre was moved until the 28 mm circle cleared the outer thumb cap, the ring and the
-pinky bottom keys by 1 mm each and the circle stays at least `notch_clearance` away from the rest
+The ball centre was moved until the 28 mm circle cleared the middle thumb cap and the index and
+middle bottom keys by 1 mm each and the circle stays at least `notch_clearance` away from the rest
 of the outline. The generator refuses to write if the cradle circle intersects the PCB outside the
 notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 
@@ -114,8 +115,8 @@ notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 | Reset button RB1 | (-66, 41) | EVQ-P7A, bottom side, below the battery bay | both |
 | JST J3 | (-56, 44) | default battery connection, 6 mm tall, bottom side, below the bay inside the same well | both |
 | Battery pads J2 | (-57, 50.5) | 2.54 mm pitch, B+ is the square pad, solder alternative to J3 | both |
-| Test pads TP1.. | row from (-66, 57.5), 2.5 mm pitch along x | right: D0, D1, D2, D3, D9; left: the same plus D10, D14, D15, D16 | both |
-| FPC J1 | (-2.6, 45.5) | FH12-6S, **key side**, below the middle column's bottom key; the cable climbs beside the cup, folds over the notch edge into the mouth (0.5 mm from the edge) and the lock stays reachable when assembled | right only |
+| Test pads TP1.. | left: row from (-69.5, 54.5) along x; right: from (-66, 45.0) along y, 2.5 mm pitch | right: D0, D1, D2, D3, D9; left: the same plus D10, D14, D15, D16 | both |
+| FPC J1 | (-20.6, 47.4) | FH12-6S, **key side**, below the middle column's bottom key; the cable climbs beside the cup, folds over the notch edge into the mouth (0.5 mm from the edge) and the lock stays reachable when assembled | right only |
 
 | Owner wordmark | centre (-35, 48.4), 13.9 x 4.7 mm, back silkscreen | the `kode` mark from `docs/images/logo.svg`, turned 90 degrees, under the thumb bridge; 0.26 mm strokes; `silkscreen.logo` in the layout yaml | both |
 
@@ -141,7 +142,8 @@ and outside the bands the hot-swap socket pads occupy:
 | H2 | 27.0 | 44.5 |
 | H3 | -9.0 | 40.0 |
 | H4 | -27.0 | 8.0 |
-| H5 | -32.0 | 61.0 |
+| H5 (left) | -32.0 | 61.0 |
+| H5 (right) | -31.0 | 49.0 |
 
 The case can add standoffs under the controller block; the cradle has its own two screws into the
 case floor. Under the controller block the case floor drops to a 9 mm deep well for the battery

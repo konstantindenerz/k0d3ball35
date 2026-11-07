@@ -21,8 +21,8 @@ Keyball owners report the thumb keys being hit by ball swipes and the arc not fi
 
 ## Notes
 
-2026-11-06: since r2.3 the right half has only the two INNER thumb keys (0 and 10 degrees) at the same
+2026-11-06: since r2.3 the right half has only the two INNER thumb keys (10 and 20 degrees) at the same
 positions as on the left; the inner 20 degree key exists on the left only. Variants therefore go
 into `thumbs:` (shared positions) plus `halves.<side>.thumbs` (which keys a half uses); the right
-half's ball pocket (centre (+5, +64), 28 mm clearance circle) limits how far the outer thumb key can
+half's ball pocket (centre (-13, +66), 28 mm clearance circle) limits how far the thumb keys can
 move outward.

@@ -64,8 +64,10 @@ way on both. The left half simply leaves the four sensor pins unconnected (they 
 P0.09 and P0.10 are the NFC pins; the ZMK nice!nano board definition already configures them as GPIO.
 The same mapping is used by the existing community Keyball39 ZMK configs, so their tuning carries over.
 
-Test pads: a row of 1.5 mm pads at the bottom of the controller block (start (-66, +57.5),
-2.5 mm pitch along x). Right half: D0, D1, D2, D3, D9. Left half: the same five plus D10, D14,
+Test pads: a row of 1.5 mm pads at the bottom of the controller block, 2.5 mm pitch. The left half
+runs along x from (-69.5, +54.5); on the right half the global row would land on the inner thumb
+key's socket since r2.3, so it runs along y from (-66, +45.0), down the inner edge.
+Right half: D0, D1, D2, D3, D9. Left half: the same five plus D10, D14,
 D15 and D16 (the sensor pins that have no connector on the left). All are bare copper; no
 jumpers exist on either board.
 
@@ -88,7 +90,7 @@ Right PCB connector J1 pin order (fixed):
 | 5 | TB_NCS |
 | 6 | TB_MOT |
 
-J1 sits on the **key side** of the right PCB at (-2.6, +45.5), below the middle column's bottom
+J1 sits on the **key side** of the right PCB at (-20.6, +47.4), below the middle column's bottom
 key and 1.05 mm clear of its keycap, with the cable mouth 0.5 mm short of the notch edge. The
 cable climbs the gap between the cradle cup and the notch, folds over the board edge and goes
 into the mouth from +y, so the lock stays reachable with the keyboard assembled and the trackball
@@ -254,7 +256,7 @@ and derives everything from it; the numbers below are the contract between PCB a
 | Floor under the key area | -4.6 mm (3.0 mm for sockets and diodes) |
 | PCB fastening | M2 machine screws from the top into heat-set inserts in 6 mm standoffs on the five mounting holes |
 | Controller box | walls to +8.7 mm, separate cap with its roof underside at +6.7 mm (controller top +5.7 plus 1 mm) |
-| Cradle screws | two M2 x 10 countersunk (90 degree flat head) from below at (5, 54) and (5, 74) in a 4.8 mm countersink 1.3 mm deep, head 0.2 mm below the flat underside |
+| Cradle screws | two M2 x 10 countersunk (90 degree flat head) from below at (-13, 56) and (-13, 76) in a 4.8 mm countersink 1.3 mm deep, head 0.2 mm below the flat underside |
 
 ## 6. Firmware contract
 

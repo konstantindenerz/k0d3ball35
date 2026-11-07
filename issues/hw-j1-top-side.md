@@ -21,7 +21,8 @@ the PCB was still in the hand, and the trackball could only be serviced by takin
 
 ## Decision
 
-J1 moves to the key side at (-2.6, +45.5), rotation 0, footprint `FPC_0.5mm_6P_FH12-6S_top`
+J1 moves to the key side at (-20.6, +47.4) (r2.3; it was (-2.6, +45.5) when this was written),
+rotation 0, footprint `FPC_0.5mm_6P_FH12-6S_top`
 (same part, front-face pad set). Its mouth ends 0.5 mm short of the notch edge. The cable leaves
 the sensor board under its own connector, turns up in a 6 mm channel inside the key-facing wall
 of the cradle housing, climbs the 2.95 mm gap between the cup envelope and the notch edge and
@@ -32,7 +33,7 @@ Consequences:
 * Both connectors stay bottom contact, but they now look at the cable from opposite faces, so the
   cable must be a **type B** FFC (contacts on opposite faces at its two ends).
 * The pin order is straight through, 1 to 1, because a front-face footprint is not mirrored.
-* x = -2.6 is where the sensor board's connector sits (its J1 is 7.6 mm off the optical centre and
+* x = ball x - 7.6 is where the sensor board's connector sits (its J1 is 7.6 mm off the optical centre and
   the board is turned over), so the cable runs straight with no lateral offset.
 * J1 is the last connection of the build and the first to undo for service: lock open, cable out,
   two screws from below, module out of the pocket. Keycaps and PCB stay in place.

@@ -12,7 +12,7 @@ created: 2026-11-07
 ## Context
 
 The two M2 x 10 screws that hold the trackball cradle go in from below through the pocket
-block of the right tray (`case_screws` (5, 54) and (5, 74)). The floor there is 2.5 mm thick
+block of the right tray (`case_screws` (-13, 56) and (-13, 76)). The floor there is 2.5 mm thick
 and the counterbore is only 0.5 mm deep (`case_screw_cb_d` 4.5, `case_screw_cb_h` =
 `floor_t - 2.0`), so a 1.5 mm pan head stands 1 mm proud of the underside. In the exploded
 view (`docs/exploded-view`) the heads show as two grey discs floating under the pocket block

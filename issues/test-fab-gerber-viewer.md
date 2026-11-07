@@ -47,8 +47,8 @@ Findings (2026-11-06, exports of 10:15 for the main boards, 07:39 for the sensor
 - docs/06-fabrication.md states two 3.05 mm socket boss holes per key (36 / 34). The reversible
   Choc footprint `SW_Choc_V1_HS_reversible` has three, so the boards and gerbers have 54 / 51.
   The 0.40 mm diode joiner holes are also three per key (54 / 51). Update the checklist in docs/06.
-- Board extents in the gerbers (outline stroke subtracted): left 120.98 x 86.70 mm, right 117.85 x
-  80.42 mm, sensor 26.00 x 25.00 mm.
+- Board extents in the gerbers (outline stroke subtracted): left 120.98 x 86.70 mm, right 120.98 x
+  86.70 mm (both halves are the same size since r2.3), sensor 26.00 x 25.00 mm.
 - Right notch in Edge.Cuts: one 45 degree side of 12.43 mm between a horizontal side at y = 109 and
   a vertical side at x = 110 (KiCad coordinates), i.e. a regular octagon with 15 mm apothem around
   the pocket centre (107, -126) = layout (-13, 66). No board material or copper inside the octagon.

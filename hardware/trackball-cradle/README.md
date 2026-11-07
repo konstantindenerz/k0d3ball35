@@ -130,7 +130,7 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 ### Interfaces that other parts of the project rely on
 
 - Right PCB (`docs/01-design-spec.md` section 5, `hardware/layout/output/points-right.json`):
-  ball centre (+5, +64), notch with apothem 15 mm around it (square corner towards the keys), no copper or parts
+  ball centre (-13, +66), notch with apothem 15 mm around it (square corner towards the keys), no copper or parts
   needed around the notch. The cradle never touches the PCB.
 - Case (`issues/mech-case-ball-pocket.md`): pocket wall circle 32 mm around the ball centre
   above the PCB plane, below the PCB plane a rounded rectangle of 34 x 34 mm around the

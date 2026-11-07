@@ -30,16 +30,28 @@ A wrong cable type connects nothing at one end, a wrong order would swap 3V3 and
 
 torabo-tsuki-lp uses a 6-pin FFC between main board and sensor module; its schematics are a cross-check.
 
-Both boards use the same footprint, Hirose FH12-6S-0.5SH (0.5 mm, 6 contacts, bottom contact, ZIF slider),
-copied into `hardware/lib/k0d3ball35.pretty`. Main PCB pin order (fixed): 1 VCC 3.3 V, 2 GND, 3 TB_SCLK,
-4 TB_SDIO, 5 TB_NCS, 6 TB_MOT. The sensor PCB adapts its order to the cable.
+Both boards use the same connector, Hirose FH12-6S-0.5SH (0.5 mm, 6 contacts, bottom contact, ZIF slider),
+in two single-face footprint variants. Main PCB pin order (fixed): 1 VCC 3.3 V, 2 GND, 3 TB_SCLK,
+4 TB_SDIO, 5 TB_NCS, 6 TB_MOT.
 
-Resolved on paper (2026-11-05): the sensor-board order is mirrored, 1 MOT, 2 NCS, 3 SDIO, 4 SCLK, 5 GND, 6 VCC, because
-both connectors are bottom contact on the component sides and a type A cable reverses the order. R3 (1 k in
-series with MOTION) and R2 (NCS pull-up) keep a wrongly inserted cable non-destructive. Still to do: the physical
-check with the first cable and connectors before ordering main PCBs in quantity.
+**Current answer (r2.2, see the desk check at the bottom): the cable is type B and the pin order is
+straight through, 1 to 1.** The sensor board carries the same order as the main board:
+1 VCC, 2 GND, 3 SCLK, 4 SDIO, 5 NCS, 6 MOT_J. R3 (1 k in series with MOTION) and R2 (NCS pull-up) keep a
+wrongly inserted cable non-destructive. Still to do: the physical check with the first cable and connectors
+before ordering main PCBs in quantity.
 
-### Desk check 2026-11-06 (r2, superseded by r2.2 below)
+An earlier paragraph here said the sensor order was mirrored (1 MOT ... 6 VCC) for a **type A** cable. That
+was the r2 answer and it was removed on 2026-11-07, because it was not merely superseded: it described a
+board that does not exist. `hardware/sensor-pcb/k0d3ball35-sensor.kicad_pcb` has had the straight order
+since r2.2, and reading the mirrored one top-down leads to ordering the wrong cable -- whose failure mode,
+nothing connecting at one end, looks exactly like a dead sensor.
+
+### Desk check 2026-11-06 (r2) -- SUPERSEDED, DO NOT ACT ON THIS SECTION
+
+> Kept for the reasoning only. It concludes that a **type A** cable and a mirrored sensor-side pin order
+> are correct. Both were true while J1 sat on the **back** of the right PCB; since r2.2 J1 is on the key
+> side (`hw-j1-top-side`) and the current answer is **type B, straight through**. The live answer is in
+> "Desk check 2026-11-06, r2.2 (current)" further down and in the Notes above.
 
 Pads read from `hardware/right-pcb/k0d3ball35-right.kicad_pcb` and `hardware/sensor-pcb/k0d3ball35-sensor.kicad_pcb`
 (board frames, KiCad y points down, i.e. towards the user on the right PCB):
@@ -94,9 +106,10 @@ together and the net pairing above would be unchanged.
 ### Desk check 2026-11-06, r2.2 (current)
 
 J1 moved to the key side of the right PCB (`hw-j1-top-side`): footprint
-`FPC_0.5mm_6P_FH12-6S_top`, placed on F.Cu at (117.4, 105.5) in the board frame, rotation 0, pad
-set on F.Cu and **not** mirrored, so pad 1 is at -x (board x 116.15) and the cable mouth faces +y,
-towards the notch. The sensor board is unchanged.
+`FPC_0.5mm_6P_FH12-6S_top`, placed on F.Cu at (99.4, 107.4) in the board frame, rotation 0, pad
+set on F.Cu and **not** mirrored, so pad 1 is at -x (board x 98.15) and the cable mouth faces +y,
+towards the notch. (Layout frame (-20.6, +47.4); the connector moved with the ball in r2.3.) The sensor
+board is unchanged: 1 VCC, 2 GND, 3 SCLK, 4 SDIO, 5 NCS, 6 MOT_J.
 
 | | Right PCB J1 | Sensor PCB J1 |
 |---|---|---|
