@@ -317,6 +317,10 @@ def jst_ph_sm4_reversible() -> Footprint:
 
 
 def msk12c02_reversible() -> Footprint:
+    # The three terminal pads sit at -2.25 / +0.75 / +2.25, i.e. gaps of 3.00 and 1.50 mm, and are not
+    # centred on the body, while the two locating holes below are symmetric at +-1.5. No datasheet or
+    # drawing reference for these coordinates exists in the repo, so they are unverified: check a physical
+    # switch on the 1:1 plot before ordering (issues/hw-msk12c02-pad-pitch.md).
     pads_f = [Pad("1", "smd", "roundrect", -2.25, -1.95, 0.6, 1.3, F_SMD, rratio=0.25),
               Pad("2", "smd", "roundrect", 0.75, -1.95, 0.6, 1.3, F_SMD, rratio=0.25),
               Pad("3", "smd", "roundrect", 2.25, -1.95, 0.6, 1.3, F_SMD, rratio=0.25),
