@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "k0d3ball35"
 version = "0.1.0"
@@ -9,10 +13,17 @@ dependencies = [
   "pyyaml>=6",
   "kiutils>=1.4",
   "numpy>=1.26",
+  "shapely>=2.0",
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=8", "gerbonara>=1.6", "cairosvg>=2.7", "pillow>=10"]
+# ezdxf and trimesh are importorskip'd by the DXF and mesh tests: without them those
+# tests skip silently, which is worse than failing, so they belong in the test extra.
+test = ["pytest>=8", "gerbonara>=1.6", "cairosvg>=2.7", "pillow>=10", "ezdxf>=1.1", "trimesh>=4"]
+
+[tool.setuptools]
+package-dir = { "" = "scripts" }
+packages = ["k0d3"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
