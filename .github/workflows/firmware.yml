@@ -1,5 +1,12 @@
 name: firmware
 
+# firmware/zmk-config is a self-contained west workspace: `west init -l config` puts the
+# west topdir there, which is the local build documented in spec/05-firmware.md. ZMK's
+# reusable build-user-config.yml runs west from the repository root and therefore only
+# works when the config directory is a direct child of it, so the build job lives here.
+# It follows zmkfirmware/zmk/.github/workflows/build-user-config.yml; keep it in step when
+# that workflow changes (the weekly run surfaces container drift, not workflow drift).
+
 on:
   push:
     # path filters are not evaluated for tag pushes, so every tag builds and releases
@@ -16,17 +23,141 @@ on:
   workflow_dispatch:
 
 jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    name: Fetch build matrix
+    outputs:
+      build_matrix: ${{ steps.fetch.outputs.build_matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: fetch
+        run: |
+          build_matrix=$(yq -oj -I0 firmware/zmk-config/build.yaml)
+          if [ -z "$build_matrix" ] || [ "$build_matrix" = "null" ]; then
+            echo "::error file=firmware/zmk-config/build.yaml,title=Empty build matrix::no targets to build"
+            exit 1
+          fi
+          echo "build_matrix=$build_matrix" >> "$GITHUB_OUTPUT"
+          echo "$build_matrix"
+
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
-    with:
-      config_path: firmware/zmk-config/config
-      build_matrix_path: firmware/zmk-config/build.yaml
-      archive_name: k0d3ball35-firmware
+    needs: matrix
+    runs-on: ubuntu-latest
+    container:
+      image: zmkfirmware/zmk-build-arm:stable
+    name: Build
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.matrix.outputs.build_matrix) }}
+    defaults:
+      run:
+        # the west workspace topdir, created by `west init -l config` below
+        working-directory: firmware/zmk-config
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare variables
+        shell: bash -x {0}
+        env:
+          board: ${{ matrix.board }}
+          shield: ${{ matrix.shield }}
+          snippet: ${{ matrix.snippet }}
+          artifact: ${{ matrix.artifact-name }}
+        run: |
+          echo "build_dir=$(mktemp -d)" >> "$GITHUB_ENV"
+          echo "zephyr_version=${ZEPHYR_VERSION}" >> "$GITHUB_ENV"
+          echo "zmk_config=${GITHUB_WORKSPACE}/firmware/zmk-config/config" >> "$GITHUB_ENV"
+          echo "extra_west_args=${snippet:+-S \"${snippet}\"}" >> "$GITHUB_ENV"
+          echo "extra_cmake_args=${shield:+-DSHIELD=\"${shield}\"}" >> "$GITHUB_ENV"
+          echo "display_name=${shield:+${shield} - }${board}" >> "$GITHUB_ENV"
+          echo "artifact_name=${artifact:-${shield:+${shield}-}${board//\//_}-zmk}" >> "$GITHUB_ENV"
+
+      - name: Cache west modules
+        uses: actions/cache@v6
+        continue-on-error: true
+        with:
+          path: |
+            firmware/zmk-config/modules/
+            firmware/zmk-config/tools/
+            firmware/zmk-config/zephyr/
+            firmware/zmk-config/bootloader/
+            firmware/zmk-config/zmk/
+          key: ${{ runner.os }}-zephyr-${{ env.zephyr_version }}-${{ hashFiles('firmware/zmk-config/config/west.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-zephyr-${{ env.zephyr_version }}-
+            ${{ runner.os }}-zephyr-
+
+      - name: West init
+        run: west init -l config
+
+      - name: West update
+        run: west update --fetch-opt=--filter=tree:0
+
+      - name: Pinned ZMK revision
+        run: west list -f "{name} {revision}" zmk
+
+      - name: West Zephyr export
+        run: west zephyr-export
+
+      - name: Build (${{ env.display_name }})
+        shell: sh -x {0}
+        run: |
+          west build -s zmk/app -d "${{ env.build_dir }}" -b "${{ matrix.board }}" ${{ env.extra_west_args }} -- \
+            -DZMK_CONFIG="${{ env.zmk_config }}" ${{ env.extra_cmake_args }} ${{ matrix.cmake-args }}
+
+      - name: Kconfig (${{ env.display_name }})
+        if: ${{ !cancelled() }}
+        run: |
+          if [ -f "${{ env.build_dir }}/zephyr/.config" ]; then
+            grep -v -e "^#" -e "^$" "${{ env.build_dir }}/zephyr/.config" | sort
+          else
+            echo "No Kconfig output"
+          fi
+
+      - name: Devicetree (${{ env.display_name }})
+        if: ${{ !cancelled() }}
+        run: |
+          if [ -f "${{ env.build_dir }}/zephyr/zephyr.dts" ]; then
+            cat "${{ env.build_dir }}/zephyr/zephyr.dts"
+          elif [ -f "${{ env.build_dir }}/zephyr/zephyr.dts.pre" ]; then
+            cat -s "${{ env.build_dir }}/zephyr/zephyr.dts.pre"
+          else
+            echo "No Devicetree output"
+          fi
+
+      - name: Collect ${{ env.artifact_name }}
+        run: |
+          mkdir -p "${{ env.build_dir }}/artifacts"
+          if [ -f "${{ env.build_dir }}/zephyr/zmk.uf2" ]; then
+            cp "${{ env.build_dir }}/zephyr/zmk.uf2" "${{ env.build_dir }}/artifacts/${{ env.artifact_name }}.uf2"
+          elif [ -f "${{ env.build_dir }}/zephyr/zmk.bin" ]; then
+            cp "${{ env.build_dir }}/zephyr/zmk.bin" "${{ env.build_dir }}/artifacts/${{ env.artifact_name }}.bin"
+          else
+            echo "::error title=No firmware image::neither zmk.uf2 nor zmk.bin was built"
+            exit 1
+          fi
+
+      - name: Archive (${{ env.display_name }})
+        uses: actions/upload-artifact@v7
+        with:
+          name: artifact-${{ env.artifact_name }}
+          path: ${{ env.build_dir }}/artifacts
+
+  merge:
+    needs: build
+    runs-on: ubuntu-latest
+    name: Merge firmware artifacts
+    steps:
+      - uses: actions/upload-artifact/merge@v7
+        with:
+          name: k0d3ball35-firmware
+          pattern: artifact-*
+          delete-merged: true
 
   release:
     # attach the UF2 files to the GitHub release of a tag (created here if missing)
     if: startsWith(github.ref, 'refs/tags/')
-    needs: build
+    needs: merge
     runs-on: ubuntu-latest
     permissions:
       contents: write

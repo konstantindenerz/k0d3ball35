@@ -35,7 +35,8 @@ breakage from ZMK main surfaces early.
 - Workflow inputs (`config_path`, `build_matrix_path`, `archive_name`) and the `build.yaml` keys
   (`board`, `shield`, `snippet`, `artifact-name`) match the current upstream
   `zmkfirmware/zmk/.github/workflows/build-user-config.yml`; the merged artifact is named
-  `k0d3ball35-firmware`.
+  `k0d3ball35-firmware`. (Superseded: the reusable workflow is no longer called, see the CI fix
+  below. The inputs were valid; the nesting of `config_path` was not.)
 - `config/west.yml` pins ZMK to a commit and imports `app/west.yml`; the PMW3610 driver is
   Zephyr's upstream `pixart,pmw3610` (`drivers/input/input_pmw3610.c`, `CONFIG_INPUT_PMW3610`),
   so no third-party module is needed. All properties on the sensor node exist in the Zephyr
@@ -58,10 +59,34 @@ Fixed on the way:
 - `firmware.yml`: added the `release` job (downloads the merged artifact, creates the release if
   it does not exist, uploads `*.uf2`).
 
+## CI fix (2026-11-07)
+
+The first runs on GitHub failed in every matrix target with
+`FATAL ERROR: no west workspace found from "/__w/k0d3ball35/k0d3ball35"`. ZMK's reusable
+`build-user-config.yml` runs `west init -l "$GITHUB_WORKSPACE/<config_path>"` and then `west update`
+with `working-directory: $GITHUB_WORKSPACE`. West puts the workspace topdir at the *parent* of the
+manifest directory, so with `config_path: firmware/zmk-config/config` the topdir landed in
+`firmware/zmk-config` while west ran one level above it. The reusable workflow only supports a
+config directory that is a direct child of the repository root; nesting cannot be expressed through
+its inputs.
+
+`firmware.yml` now carries the build itself (matrix, build, merge, release), modelled on upstream's
+steps but with `working-directory: firmware/zmk-config` — the same workspace the local build in
+`spec/05-firmware.md` uses. `tests/test_firmware_build_config.py` checks that every west command
+stays in that workspace.
+
+Replayed in `zmkfirmware/zmk-build-arm:stable` with the repository mounted at the CI path
+(`/__w/k0d3ball35/k0d3ball35`) and the workflow's own commands: `west init -l config` reports
+`topdir=/__w/k0d3ball35/k0d3ball35/firmware/zmk-config`, `west update` resolves the pinned
+`4dd95d78`, and all three targets build and write `zmk.uf2` (right 276052 B flash / 73470 B RAM,
+left 190628 B / 37824 B, settings_reset 52508 B / 12840 B).
+
+Behind the west failure sat a second one: `k0d3ball35-layouts.dtsi` did not parse, so no target
+could have built even with the workspace fixed. See `issues/fw-physical-layout-exact-coords.md`.
+
 ## What you must do
 
-1. Push the repository to GitHub and enable Actions (Settings > Actions > "Allow all actions and
-   reusable workflows"; the build calls a reusable workflow from `zmkfirmware/zmk`).
+1. Push the repository to GitHub and enable Actions.
 2. Check the first run of `firmware` and download `k0d3ball35-firmware`. Tick the first criterion.
 3. Push a tag (`git tag v0.1.0 && git push --tags`) once and verify the UF2 files appear on the
    release. The `release` job needs `contents: write`, which the default `GITHUB_TOKEN` grants
@@ -70,9 +95,8 @@ Fixed on the way:
 
 ## Remaining risks
 
-- The workflow references `build-user-config.yml@main`; upstream can change its inputs or the
-  container. The weekly run surfaces this, `tests/test_firmware_build_config.py` only checks the
-  inputs known today.
+- The build job is a copy of upstream's `build-user-config.yml` steps and has to be kept in step
+  with it by hand. The weekly run surfaces container drift, not workflow drift.
 - Expected warnings in the build log that are not ours: `Deprecated symbol KSCAN is enabled`
   (ZMK on Zephyr 4.1), `ZMK_USB ... unsatisfied dependencies` on the left half (set by the board
   defconfig, the peripheral has no USB HID), an unused variable in

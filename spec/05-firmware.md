@@ -12,9 +12,9 @@ Sources: `firmware/zmk-config/`. Shield files: `config/boards/shields/k0d3ball35
 
 ### GitHub Actions (default)
 
-Every push that touches `firmware/zmk-config/` runs `.github/workflows/firmware.yml`, which calls
-ZMK's reusable `build-user-config.yml`. Download the `k0d3ball35-firmware` artifact from the
-workflow run; it contains:
+Every push that touches `firmware/zmk-config/` runs `.github/workflows/firmware.yml`, which runs
+the west build below in ZMK's `zmk-build-arm` container, one job per target. Download the
+`k0d3ball35-firmware` artifact from the workflow run; it contains:
 
 | File | Flash to |
 |------|----------|

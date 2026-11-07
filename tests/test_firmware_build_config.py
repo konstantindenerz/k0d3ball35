@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: MIT
 """The firmware build configuration must be consistent before CI can build it.
 
-Checks the GitHub workflow against ZMK's reusable build-user-config.yml, the
-build matrix against the shield files, the pinned ZMK revision, the Kconfig
-symbols of the shield and the devicetree/keymap references that a build would
-resolve. No Zephyr toolchain needed.
+Checks that the workflow runs west in the config workspace, the build matrix
+against the shield files, the pinned ZMK revision, the Kconfig symbols of the
+shield and the devicetree/keymap references that a build would resolve. No
+Zephyr toolchain needed.
 """
 import pathlib
 import re
@@ -19,10 +19,10 @@ SHIELD = CONFIG / "boards" / "shields" / "k0d3ball35"
 WORKFLOW = ROOT / ".github" / "workflows" / "firmware.yml"
 DOCS = ROOT / "spec" / "05-firmware.md"
 
-# inputs of zmkfirmware/zmk/.github/workflows/build-user-config.yml
-UPSTREAM_INPUTS = {"build_matrix_path", "config_path", "fallback_binary", "archive_name"}
-# keys of a build.yaml entry the upstream workflow reads
-UPSTREAM_MATRIX_KEYS = {"board", "shield", "snippet", "cmake-args", "artifact-name"}
+# the west workspace: `west init -l config` puts the west topdir here
+WORKSPACE = "firmware/zmk-config"
+# keys of a build.yaml entry the build job reads
+MATRIX_KEYS = {"board", "shield", "snippet", "cmake-args", "artifact-name"}
 # features allowed by zmk/schema/hardware-metadata.schema.json
 ZMK_FEATURES = {"keys", "display", "encoder", "underglow", "backlight", "pointer", "studio"}
 
@@ -46,15 +46,35 @@ def matrix():
     return _yaml(FW / "build.yaml")["include"]
 
 
-def test_workflow_calls_upstream_build_with_valid_inputs(workflow):
+def _runs(job) -> dict[str, str]:
+    return {str(s.get("name", "")): str(s.get("run", "")) for s in job["steps"]}
+
+
+def test_matrix_job_feeds_the_build_from_build_yaml(workflow):
+    assert (ROOT / WORKSPACE / "build.yaml").is_file()
+    assert f"{WORKSPACE}/build.yaml" in "".join(_runs(workflow["jobs"]["matrix"]).values())
+    strategy = workflow["jobs"]["build"]["strategy"]["matrix"]
+    assert "needs.matrix.outputs.build_matrix" in strategy
+
+
+def test_build_job_runs_west_in_the_config_workspace(workflow):
+    """`west init -l <dir>` puts the topdir at the parent of <dir>, so every west command
+    must run in WORKSPACE. Running them in the repository root is what broke the build
+    while it used ZMK's reusable build-user-config.yml, which only supports a config
+    directory that is a direct child of the repository root."""
     build = workflow["jobs"]["build"]
-    assert build["uses"].startswith("zmkfirmware/zmk/.github/workflows/build-user-config.yml@")
-    inputs = build["with"]
-    assert set(inputs) <= UPSTREAM_INPUTS, f"unknown inputs: {set(inputs) - UPSTREAM_INPUTS}"
-    assert (ROOT / inputs["config_path"]).is_dir()
-    assert (ROOT / inputs["config_path"] / "west.yml").is_file()
-    assert (ROOT / inputs["build_matrix_path"]).is_file()
-    assert inputs["build_matrix_path"] == "firmware/zmk-config/build.yaml"
+    assert build["container"]["image"].startswith("zmkfirmware/zmk-build-arm")
+    assert build["defaults"]["run"]["working-directory"] == WORKSPACE
+    assert (ROOT / WORKSPACE / "config" / "west.yml").is_file()
+    runs = _runs(build)
+    assert "west init -l config" in "".join(runs.values())
+    assert "west update" in "".join(runs.values())
+    for step in build["steps"]:
+        if re.search(r"\bwest \w", str(step.get("run", ""))):
+            assert "working-directory" not in step, f"{step.get('name')} leaves the west topdir"
+    assert f"zmk_config=${{GITHUB_WORKSPACE}}/{WORKSPACE}/config" in runs["Prepare variables"]
+    built = next(v for k, v in runs.items() if k.startswith("Build ("))
+    assert "-DZMK_CONFIG=" in built and "env.zmk_config" in built
 
 
 def test_workflow_triggers_cover_push_schedule_and_tags(workflow):
@@ -62,14 +82,20 @@ def test_workflow_triggers_cover_push_schedule_and_tags(workflow):
     assert "schedule" in on and on["schedule"], "weekly scheduled run missing"
     assert "workflow_dispatch" in on
     for event in ("push", "pull_request"):
-        assert "firmware/zmk-config/**" in on[event]["paths"]
+        assert f"{WORKSPACE}/**" in on[event]["paths"]
+    uploaded = next(s for s in workflow["jobs"]["build"]["steps"]
+                    if str(s.get("uses", "")).startswith("actions/upload-artifact@"))
+    merged = next(s for s in workflow["jobs"]["merge"]["steps"]
+                  if str(s.get("uses", "")).startswith("actions/upload-artifact/merge@"))
+    pattern = merged["with"]["pattern"]
+    assert pattern.endswith("*") and uploaded["with"]["name"].startswith(pattern[:-1])
     release = workflow["jobs"]["release"]
     assert "refs/tags/" in release["if"]
-    assert release["needs"] == "build"
+    assert release["needs"] == "merge"
     assert release["permissions"]["contents"] == "write"
     steps = release["steps"]
     download = next(s for s in steps if str(s.get("uses", "")).startswith("actions/download-artifact@"))
-    assert download["with"]["name"] == workflow["jobs"]["build"]["with"]["archive_name"]
+    assert download["with"]["name"] == merged["with"]["name"]
     assert any("gh release upload" in str(s.get("run", "")) for s in steps)
 
 
@@ -77,7 +103,7 @@ def test_build_matrix_targets(matrix):
     shields = [e["shield"] for e in matrix]
     assert shields == ["k0d3ball35_right", "k0d3ball35_left", "settings_reset"]
     for entry in matrix:
-        assert set(entry) <= UPSTREAM_MATRIX_KEYS, f"unknown matrix key in {entry}"
+        assert set(entry) <= MATRIX_KEYS, f"unknown matrix key in {entry}"
         assert entry["board"] == "nice_nano//zmk", "Zephyr 4.1 hardware model name of the nice!nano v2"
         if entry["shield"] != "settings_reset":
             assert (SHIELD / f"{entry['shield']}.overlay").is_file()

@@ -35,3 +35,11 @@ build/lib/
 .idea/
 .vscode/
 en/
+
+# west workspace from `west init -l config` in firmware/zmk-config (spec/05-firmware.md)
+firmware/zmk-config/.west/
+firmware/zmk-config/bootloader/
+firmware/zmk-config/modules/
+firmware/zmk-config/tools/
+firmware/zmk-config/zephyr/
+firmware/zmk-config/zmk/

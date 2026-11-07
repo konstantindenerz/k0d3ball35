@@ -25,7 +25,7 @@ another step has not produced yet skip with a reason instead of failing.
 | `tests/test_gerbers.py` | independent parse of the three gerber zips with gerbonara: file set and naming, two copper layers, extents, closed outlines, drill hit counts against the boards, the notch, battery bay silkscreen, no copper outside the outline; renders `build/gerber-check/*.png` for a visual pass |
 | `tests/test_ffc_pin_order.py` | the sensor board's FPC pin order matches the right PCB's pin for pin, which is what an opposite-side-contact (type B) cable needs: both connectors are bottom contact, but J1 sits on the key side of the right PCB and the sensor's under its own board |
 | `tests/test_sensor_pcb_vs_cradle.py` | sensor board against the cradle: outline, hole spacing, optical centre, sensor cutout and lens envelope (LM18-LSI datasheet) inside the cavity, parts on the floor side below the component gap, connector in front of the cable slot; OpenSCAD render when available |
-| `tests/test_firmware_build_config.py` | firmware build configuration: the GitHub workflow against ZMK's reusable build-user-config, the build matrix against the shield files, the pinned ZMK revision, Kconfig symbols and the devicetree/keymap references a build would resolve |
+| `tests/test_firmware_build_config.py` | firmware build configuration: the GitHub workflow runs west in the config workspace, the build matrix against the shield files, the pinned ZMK revision, Kconfig symbols and the devicetree/keymap references a build would resolve |
 | `tests/test_case.py` | case geometry, generated data, renders |
 
 Current state: run `.venv/bin/pytest -q`; the KiCad gates run against the generated left, right and sensor PCBs and skip while a board file does not exist yet.
