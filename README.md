@@ -5,6 +5,26 @@ Keyball-inspired column stagger and thumb arc, Kailh Choc V1 hot-swap switches, 
 on each half, ZMK firmware, two flat angular PCBs (18 keys left, 17 keys right) and the ball in a
 case pocket right beside the thumb keys.
 
+![k0d3ball35 concept render: both halves on a desk, trackball in the right half's case pocket](docs/images/concept-render.png)
+
+*Concept render, not a photo of a finished build — generated from the prompt below.*
+
+> ## ⚠️ Work in progress — do not build or order parts from this repository
+>
+> **k0d3ball35 is an unfinished design under active development. Nothing here has been
+> manufactured, assembled or tested in hardware.**
+>
+> - No PCB in this repository has ever been fabricated, populated or electrically verified.
+> - No case or cradle part has been printed and fit-checked against real switches, a real
+>   trackball or a real battery.
+> - Footprints, dimensions, the bill of materials and the firmware are all still changing, and
+>   the geometry is revised between revisions without notice.
+>
+> **Do not send these gerbers to a fab, do not print these STLs, and do not buy components
+> against this BOM.** If you do, you will very likely end up with parts that do not fit and
+> money you cannot get back. Treat everything here as a design sketch to read, not a build
+> guide to follow. Use at your own risk; there is no warranty of any kind.
+
 ```prompt
 Photorealistic product photo, 35 mm lens, soft window light. Two halves of a low profile split
 keyboard on a light oak desk next to a closed silver MacBook. Each half has 15 finger keys in a
