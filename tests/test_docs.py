@@ -13,7 +13,8 @@ import issues
 LINK_RE = re.compile(r"(?<!!)\[[^\]]*\]\(([^)\s]+)\)")
 SPEC_DOC_RE = re.compile(r"`docs/(\d\d-[a-z0-9-]+\.md)`")
 TEXT_SUFFIXES = {".md", ".py", ".sh", ".yml", ".yaml", ".toml", ".txt", ".scad", ".conf", ".keymap", ".overlay", ".dtsi", ".cfg", ".mk", ".json"}
-FORBIDDEN_WORDS = ("Claude", "Anthropic", "AI-generated", "AI generated")
+# matched case insensitively, so a lowercase host name in a URL is caught too
+FORBIDDEN_WORDS = ("claude", "anthropic", "ai-generated", "ai generated", "copilot", "chatgpt")
 GERMAN_WORDS = ("und", "nicht", "oder", "für", "ist", "auch", "wird", "werden", "eine", "einen", "das", "die", "der")
 GERMAN_RE = re.compile(r"(?<![\w-])(?:" + "|".join(GERMAN_WORDS) + r")(?![\w-])")
 PROMPTS_FILE = Path("docs/images/PROMPTS.md")
@@ -103,8 +104,9 @@ def test_no_tool_attribution(repo_root: Path, tracked_files: list[Path]):
             text = path.read_text(encoding="utf-8")
         except UnicodeDecodeError:
             continue
+        lowered = text.lower()
         for word in FORBIDDEN_WORDS:
-            if word in text:
+            if word in lowered:
                 hits.append(f"{path.relative_to(repo_root)}: '{word}'")
     assert not hits, "\n".join(hits)
 
