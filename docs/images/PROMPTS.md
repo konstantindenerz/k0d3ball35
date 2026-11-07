@@ -13,7 +13,7 @@ boxy, angular matte beige-grey 3D printed case whose stepped outline follows the
 with a slightly raised rectangular controller box at the inner edge whose roof plate carries a
 narrow labyrinth wordmark engraved into it, white and light-grey
 low-profile keycaps, three bright orange thumb keycaps on the left half and two on the right, a
-glossy white 19 mm trackball sitting low in a round pocket of the case directly beside the right
+matte white 19 mm trackball sitting low in a round pocket of the case directly beside the right
 thumb keys (ball top only a little above the keycaps), no cables, on an oiled oak desk with a silver laptop in the background, soft daylight from the left,
 shallow depth of field, product-photography look. Diagram prompts use a clean technical style:
 white background, thin dark-grey lines, one accent colour (orange), sans-serif labels.
@@ -29,7 +29,7 @@ Product photo, two halves of a low-profile split mechanical keyboard on an oiled
 beige-grey 3D printed cases with flat tops, white and light-grey low-profile keycaps in a
 column-staggered 3x5 grid, three thumb keys on the left half and two on the right, orange thumb
 keycaps, boxy angular cases with a raised controller box at the inner edge, the right half has a
-glossy white 19 mm trackball sitting in a round pocket of the case right next to its two thumb
+matte white 19 mm trackball sitting in a round pocket of the case right next to its two thumb
 keys, no cables anywhere, a
 silver laptop and a tablet blurred in the background, soft daylight from the left, shallow depth
 of field, 45 degree three-quarter view, photorealistic.
@@ -43,7 +43,7 @@ Aspect 3:2. Straight top-down of both halves.
 Top-down product photo of a 35-key wireless split keyboard, two halves 10 cm apart on light oak,
 column-staggered keys with the pinky column noticeably lower, angular stepped case outlines, the
 left half with three fanned thumb keys rotated 0, 10 and 20 degrees, the right half with only the
-two outer thumb keys and a white 19 mm trackball in a round pocket directly beside them below the
+two inner thumb keys and a matte white 19 mm trackball in a round pocket directly beside them below the
 middle and ring finger columns, white keycaps with orange thumb caps, matte grey boxy cases with a
 raised controller box at each inner edge, a narrow labyrinth wordmark engraved into the roof
 plate of each controller box, even soft light, photorealistic.
@@ -58,7 +58,7 @@ Technical diagram, white background, both halves of a split keyboard drawn as ro
 17 x 16 mm on an 18 x 17 mm grid, five columns with vertical offsets (from the outside in: 10.4,
 4.2, 0, 2.2, 4.5 mm lower than the middle column), angular stepped board outlines following the
 stagger, the left half with three thumb keys in an arc below the inner columns rotated 0, 10 and
-20 degrees, the right half with the two outer thumb keys and a dashed circle of 28 mm inside an
+20 degrees, the right half with the two inner thumb keys and a dashed circle of 28 mm inside an
 notch beside them labelled "ball pocket", thin grey lines, orange highlight on the thumb
 keys, dimension arrows with millimetre labels, sans-serif font.
 ```
@@ -473,7 +473,7 @@ Aspect 3:2. Lid on for transport.
 Product photo of a right keyboard half in a beige-grey printed case with its matching lid
 snapped on top, the lid a plain angular shell 12 mm tall following the stepped outline with a
 flat roof, split front to back by a straight hinge line of short round knuckles flush with the
-roof, a round 16 mm window in the roof through which the top of a glossy white trackball shows
+roof, a round 16 mm window in the roof through which the top of a matte white trackball shows
 flush with the surface, smooth plain outer walls flush with the case below, no tabs or
 fasteners visible, a controller box corner poking through a notch in the lid skirt, the half
 lying in an open canvas bag, soft daylight.
@@ -489,7 +489,7 @@ on its own folded lid, the beige-grey lid's outer plate lying roof-up against th
 of the case under the controller half of the board, held there invisibly by magnets, its inner
 plate folded down at the hinge just beyond the inner edge as a kickstand pointing inward towards
 the other half, the outer edge of the case resting directly on the oak desk so the half tilts
-by about 15 degrees with the inner edge raised, a second lid-less half beside it lying flat,
+by about 18 degrees with the inner edge raised, a second lid-less half beside it lying flat,
 soft studio light.
 ```
 
@@ -499,12 +499,12 @@ Aspect 3:2. The folded lid as a tenting stand under the right half, seen from th
 
 ```prompt
 Low three-quarter photo from the inner edge of a right keyboard half in a beige-grey printed
-case with a glossy white 19 mm trackball, tilted by about 15 degrees with the inner edge up and
+case with a matte white 19 mm trackball, tilted by about 18 degrees with the inner edge up and
 standing on its own hinged lid: the lid's outer plate lies flat and roof-up against the case
 underside under the controller half of the board, the hinge line sits just outside the inner
-edge of the case about 30 mm above the desk, and from it the inner plate folds down and inward
-at about 34 degrees as a kickstand pointing towards where the other half would stand, its thin
-skirt edge on the oak desk about 55 mm from the case, the outer bottom edge of the case resting
+edge of the case about 38 mm above the desk, and from it the inner plate folds down and inward
+at about 58 degrees as a kickstand pointing towards where the other half would stand, its thin
+skirt edge on the oak desk about 34 mm from the case, the outer bottom edge of the case resting
 on the desk, the free end of the outer plate floating a few millimetres above it, no magnets or
 fasteners visible, soft daylight, shallow depth of field.
 ```

@@ -10,7 +10,7 @@ Photorealistic product photo, 35 mm lens, soft window light. Two halves of a low
 keyboard on a light oak desk next to a closed silver MacBook. Each half has 15 finger keys in a
 column-staggered 3x5 grid with an angular, stepped case outline that follows the stagger; the left
 half has three thumb keys fanned in an arc, the right half two thumb keys and, where its third
-would be, a glossy white 19 mm trackball sitting low in a round pocket of the case. Keycaps are matte
+would be, a matte white 19 mm trackball sitting low in a round pocket of the case. Keycaps are matte
 white and light grey low profile caps, the thumb keys are burnt orange. Cases are boxy, warm
 beige-grey 3D printed trays about 12 mm tall with a slightly taller rectangular controller box at
 the inner edge of each half. No cables anywhere. Shallow depth of field, the right half in focus.
@@ -172,7 +172,7 @@ from under the cradle to a connector on the PCB. Clean, technical, product photo
 - [ZMK](https://zmk.dev) and the Zephyr PMW3610 driver.
 
 ```prompt
-Three quarter view close-up of the trackball pocket on the right half: a glossy white 19 mm ball
+Three quarter view close-up of the trackball pocket on the right half: a matte white 19 mm ball
 sitting low in a round pocket of a boxy beige 3D printed case, in line with two burnt orange thumb
 keycaps to its left, the ball top only a little higher than the keycaps, three tiny ceramic balls just visible
 at the rim of the beige cradle, light grey Choc keycaps behind, the angular stepped case edge

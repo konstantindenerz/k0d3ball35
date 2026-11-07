@@ -99,11 +99,11 @@ is handedness-neutral; the left half is mirrored once at the top level of `case.
   cannot walk out. `-D hinge_pin_d=1.75` fits a piece of filament. Above the axis the two
   plates' vertical cut faces are 0.2 mm apart (`hinge_gap`).
 - Stop: below the axis each plate's cut face is a plane through the axis leaning outward by
-  `hinge_stop_deg`, half the solved fold (16.9 degrees right, 16.8 left), so closed there is a
+  `hinge_stop_deg`, half the solved fold (28.8 degrees right, 21.9 left), so closed there is a
   V slit at the skirt bottom (about 7.5 mm wide at the front and back skirt, 1.5 mm under the
-  strip) and when folded by `hinge_fold_deg` (33.8 right, 33.6 left) the two faces meet flat
+  strip) and when folded by `hinge_fold_deg` (57.6 right, 43.7 left) the two faces meet flat
   on flat along the whole cut (skirt ends and strip underside) and carry the load. Knuckle and
-  groove are round and never take the stop load. The fold is derived from `tent_deg` = 15 (the
+  groove are round and never take the stop load. The fold is derived from `tent_deg` = 18 (the
   input): it is the angle at which the kickstand's lip edge reaches the desk.
 - Feet: seven 10.5 mm recesses 0.5 deep (the five hole positions and two under the
   controller block).
@@ -124,7 +124,7 @@ From `stack.json` (`make stack`):
 | lid roof under / lid top | +14.0 / +17.0 | +14.0 / +17.0 | +26.1 / +29.1 (`lid_mode` flat) |
 | hinge strip under / hinge axis | +12.0 / +14.5 | +12.0 / +14.5 | +24.1 / +26.55 |
 | lid lip bottom | +2.0 | +2.0 | +2.0 |
-| foot: tilt / fold / hinge axis above the desk / kickstand reach / free-end clearance | 15 deg / 33.6 deg / 31.3 / 57.0 / 4.0 | 15 deg / 33.8 deg / 30.5 / 53.9 / 3.2 | 15 deg / 21.0 deg / 30.5 / 58.1 / -8.4 (not usable, see below) |
+| foot: tilt / fold / hinge axis above the desk / kickstand reach / free-end clearance | 18 deg / 43.7 deg / 37.8 / 53.2 / 7.7 | 18 deg / 57.6 deg / 37.8 / 34.3 / 2.1 | 18 deg / 37.9 deg / 37.8 / 35.7 / -9.4 (not usable, see below) |
 
 ## Printing
 
@@ -187,7 +187,7 @@ From `stack.json` (`make stack`):
 Closed, the two plates are one cover: skirt on the rim, lip in the tray, the knuckles flush
 with the roof top, a 0.2 mm gap between the cut faces above the axis and the V slit of the
 stop below it. Folded, the lid is the stand. The whole folded lid is shifted inward by
-`foot_dx` (`data.scad`: -64.7 mm right, -67.8 left) so that the hinge axis sits 3 mm
+`foot_dx` (`data.scad`: -49.8 mm right, -67.8 left) so that the hinge axis sits 3 mm
 (`foot_overhang`) outside the inner tray wall: the outer plate lies roof-up against the tray
 underside under the controller half (its four roof magnets meet the four floor magnets,
 invisible in both positions thanks to the 0.6 mm skin on the roof and the pockets from below
@@ -196,12 +196,12 @@ inward, between the two halves, the two cut faces pressed flat on flat. The half
 own outer bottom edge on the desk and on the hinge directly above the kickstand: nothing is
 cantilevered, so a thumb press or a resting palm cannot pivot the board against the magnets,
 which only keep the plate aligned. The four rubber feet at (-58, 1), (-58, 34), (-27, 8) and
-(-32, 61) rest on the lid roof. Result (`stack.json`, right; left in brackets): `tent_deg` = 15
+(-32, 61) rest on the lid roof. Result (`stack.json`, right; left in brackets): `tent_deg` = 18
 is the input, the fold `hinge_fold_deg` is solved so that the kickstand's lip edge reaches the
-desk: 33.8 degrees (33.6), stop faces at `hinge_stop_deg` = half of that. The kickstand hangs
-`foot_beta_deg` 18.8 degrees (18.6) below the tray, the hinge axis is 30.5 mm (31.3) above the
-desk (`foot_hinge_h`), the kickstand's foot stands 53.9 mm (57.0) beyond the inner wall
-(`foot_reach`) and the outer plate's free end floats 3.2 mm (4.0) above the desk
+desk: 57.6 degrees (43.7), stop faces at `hinge_stop_deg` = half of that. The kickstand hangs
+`foot_beta_deg` 39.6 degrees (25.7) below the tray, the hinge axis is 37.8 mm (37.8) above the
+desk (`foot_hinge_h`), the kickstand's foot stands 34.3 mm (53.2) beyond the inner wall
+(`foot_reach`) and the outer plate's free end floats 2.1 mm (7.7) above the desk
 (`foot_free_end_h`; below about 13 degrees of tilt the lid thickness alone would hold the
 board up, `tests/test_case.py` asserts more than 0.5 mm). `hinge_fold_override` (`params.scad`,
 -1) shows another fold in `lid_folded` for the collision test only. The rubber feet stay
@@ -214,7 +214,7 @@ closed pair, `lid_folded` the folded pair; the previews `lid_foot` (tilted on th
 `-D ball_d=25 -D notch_apothem=16.5 -D pocket_d=35 -D ball_top_z=23.05` (a different PCB
 notch): the pocket cavity follows the octagon, and with `-D lid_mode="flat"` the right lid roof
 rises over the ball to +26.1 (top +29.1, hinge axis +26.55). Documented as a parameter, not
-printed. The foot does not work with that lid: the solver gives a 21.0 degree fold for 15
+printed. The foot does not work with that lid: the solver gives a 37.9 degree fold for 18
 degrees of tilt, but the thicker outer plate's free end would be 8.4 mm below the desk
 (`foot_free_end_h`), so the plate touches down before the kickstand and the half would need a
 steeper tilt.

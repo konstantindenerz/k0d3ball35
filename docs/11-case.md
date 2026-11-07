@@ -177,10 +177,10 @@ the user); the last knuckle towards the user is blind, so the pin cannot walk ou
 vertical cut faces are 0.2 mm apart.
 
 The stop is in the cut itself. Below the axis each plate's cut face is a plane through the
-axis leaning outward by `hinge_stop_deg`, half the solved fold (16.9 degrees right, 16.8
+axis leaning outward by `hinge_stop_deg`, half the solved fold (28.8 degrees right, 21.9
 left), so closed there is a V slit at the skirt bottom (about 7.5 mm wide at the front and
-back skirt, 1.5 mm under the strip), and when the lid is folded by `hinge_fold_deg` (33.8
-degrees right, 33.6 left) the two faces meet flat on flat along the whole cut - skirt ends
+back skirt, 1.5 mm under the strip), and when the lid is folded by `hinge_fold_deg` (57.6
+degrees right, 43.7 left) the two faces meet flat on flat along the whole cut - skirt ends
 and strip underside - and carry the load. Knuckle and groove are round and never take it.
 
 Magnets only hold the foot position: four 6 x 2 mm discs from below in the tray floor under
@@ -197,19 +197,21 @@ check the snap with a loose magnet before the glue sets.
 ![Lid folded as a tenting foot](images/img-case-lid-folded.png)
 
 As a foot the lid folds and goes under the controller half of the tray: the whole folded lid
-is shifted inward by `foot_dx` (-64.7 mm right, -67.8 left, `data.scad`) so that the hinge
+is shifted inward by `foot_dx` (-49.8 mm right, -67.8 left, `data.scad`) so that the hinge
 axis sits 3 mm (`foot_overhang`) outside the inner tray wall. The outer plate lies roof-up
 against the tray underside, its four magnets on the four floor magnets, and the inner plate
 folds down beyond the inner edge as a kickstand that points inward, towards the other half.
 The half stands on its own outer bottom edge and on the hinge directly above the kickstand's
 lip edge, so nothing is cantilevered: a thumb press or a resting palm cannot pivot the board
-against the magnets, which only keep the plate aligned. The tilt `tent_deg` = 15 degrees is the
+against the magnets, which only keep the plate aligned. The tilt `tent_deg` = 18 degrees is the
 input; the fold is solved so that the kickstand's lip edge reaches the desk (`hinge_fold_deg`
-33.8 degrees right, 33.6 left), and the stop is cut at half of that. In numbers
-(`stack.json`, right; left in brackets): the kickstand hangs 18.8 degrees (18.6) below the
-tray (`foot_beta_deg`), the hinge axis is 30.5 mm (31.3) above the desk (`foot_hinge_h`), the
-kickstand's foot stands 53.9 mm (57.0) beyond the inner wall (`foot_reach`), and the outer
-plate's free end floats 3.2 mm (4.0) above the desk (`foot_free_end_h`). Below about 13
+57.6 degrees right, 43.7 left), and the stop is cut at half of that. In numbers
+(`stack.json`, right; left in brackets): the kickstand hangs 39.6 degrees (25.7) below the
+tray (`foot_beta_deg`), the hinge axis is 37.8 mm (37.8) above the desk (`foot_hinge_h`), the
+kickstand's foot stands 34.3 mm (53.2) beyond the inner wall (`foot_reach`), and the outer
+plate's free end floats 2.1 mm (7.7) above the desk (`foot_free_end_h`). The right half is the
+tight one: 2.1 mm is all the clearance the outer plate has, so a warped print or a desk mat puts
+its free end down and the half rocks. Below about 13
 degrees of tilt the lid thickness alone would hold the board up, so `tent_deg` must stay
 above that (`tests/test_case.py` asserts more than 0.5 mm of clearance). The rubber feet at
 (-58, 1), (-58, 34), (-27, 8) and (-32, 61) rest on the lid roof, the others are off the

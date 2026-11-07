@@ -425,8 +425,8 @@ hardware allows, so do not improvise.
 9. Ball into the cup, four rubber feet onto the underside, lid on. As a stand, fold the inner lid plate down to its stop and
    let the outer plate snap roof-up under the controller half of the board, the folded inner
    plate just beyond the inner edge as a kickstand pointing towards the other half: the half
-   stands on its outer edge and the kickstand and tilts by about 15 degrees, inner edge up.
-   Leave about 55 mm between the halves for the kickstands.
+   stands on its outer edge and the kickstand and tilts by about 18 degrees, inner edge up.
+   Leave about 35 mm between the halves for the kickstands (53 mm for the left one).
 
 Service, in the other direction: the trackball module comes out with the keycaps and the PCB in
 place - open J1's lock, pull the cable, undo the two screws from below, lift the module out.
