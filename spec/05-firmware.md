@@ -90,7 +90,9 @@ generated from `hardware/layout/output/points-left.json` and `points-right.json`
 `scripts/gen_physical_layout.py`. Regenerate it whenever the hardware layout changes:
 
 ```bash
-python3 firmware/zmk-config/scripts/gen_physical_layout.py > /tmp/pl.txt   # paste into the dtsi
+# the script prints the value of the `keys` property only; paste it in place of that
+# value inside the k0d3ball35_layout node, do not overwrite the whole dtsi
+python3 firmware/zmk-config/scripts/gen_physical_layout.py > /tmp/pl.txt
 python3 firmware/zmk-config/scripts/gen_physical_layout.py --json > firmware/zmk-config/config/k0d3ball35.json
 ```
 

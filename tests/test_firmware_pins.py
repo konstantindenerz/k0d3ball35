@@ -85,6 +85,17 @@ def test_physical_layout_matches_generator():
     layouts = (SHIELD / "k0d3ball35-layouts.dtsi").read_text()
     assert dts.strip() in layouts, "k0d3ball35-layouts.dtsi is stale; rerun gen_physical_layout.py"
     assert layouts.count("&key_physical_attrs") == KEYS
+    # The generator prints the value of the `keys` property only. Commit 242cbe3 pasted it
+    # over the node around it and left devicetree that does not parse, which no test saw
+    # and CI could not reach because the west workspace failed earlier.
+    assert 'compatible = "zmk,physical-layout";' in layouts
+    assert re.search(r"keys\s*(?://[^\n]*)?\n\s*= <&key_physical_attrs", layouts), \
+        "the `keys` property is gone; the generator output was pasted over the node"
+    label = re.search(r"(\w+): \w+ \{\n\s+compatible = \"zmk,physical-layout\";", layouts)
+    assert label, "no labelled zmk,physical-layout node"
+    shared = (SHIELD / "k0d3ball35.dtsi").read_text()
+    assert f"zmk,physical-layout = &{label.group(1)};" in shared
+    assert layouts.count("{") == layouts.count("}"), "unbalanced braces in the devicetree"
 
     js = subprocess.run([sys.executable, str(script), "--json"], capture_output=True, text=True, check=True).stdout
     current = json.loads((FW / "config" / "k0d3ball35.json").read_text())
