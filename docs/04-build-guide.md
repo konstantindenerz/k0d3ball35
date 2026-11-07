@@ -420,8 +420,7 @@ hardware allows, so do not improvise.
 8. Right half: fold the FFC over the board edge into J1 on the key side and close the lock
    (chapter 11, step 7). This is the last connection of the build and the only one you can reach
    with everything assembled.
-9. Ball into the cup, four rubber feet onto the underside (clear of the wordmark engraved in
-   the middle of the floor), lid on. As a stand, fold the inner lid plate down to its stop and
+9. Ball into the cup, four rubber feet onto the underside, lid on. As a stand, fold the inner lid plate down to its stop and
    let the outer plate snap roof-up under the controller half of the board, the folded inner
    plate just beyond the inner edge as a kickstand pointing towards the other half: the half
    stands on its outer edge and the kickstand and tilts by about 15 degrees, inner edge up.

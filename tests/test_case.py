@@ -39,7 +39,7 @@ BALL = (5.0, 64.0)
 # downward facing area above the base that the known bridges and 45 degree boss chamfers add up
 # to: four 6.2 mm foot magnet pockets from below (121), the shelf over the pocket well corners
 # and the FFC channel (154 on the right), USB (11) and LED (9) openings, boss chamfers (46).
-# The engraved wordmark is on top of that and is measured from the model (logo_floor_area /
+# The engraved wordmark (cap only by default) is on top of that and is measured from the model (logo_floor_area /
 # logo_cap_area): its grooves are one cell wide, so nothing bridges further than logo_line_w.
 OVERHANG_BUDGET_TRAY = 450.0
 OVERHANG_BUDGET_POCKET = 200.0
@@ -151,7 +151,7 @@ def test_sources_present_and_defaults():
     assert re.search(r"^ball_d\s*=\s*19\.05", params, re.M)
     assert re.search(r"^box_inner_x\s*=\s*-45\.5", params, re.M)
     assert re.search(r"^logo_on_cap\s*=\s*true", params, re.M)
-    assert re.search(r"^logo_on_floor\s*=\s*true", params, re.M)
+    assert re.search(r"^logo_on_floor\s*=\s*false", params, re.M)
     assert re.search(r"^logo_invert\s*=\s*false", params, re.M)
     assert re.search(r"^logo_depth\s*=\s*0\.6", params, re.M)
     assert re.search(r'^lid_mode\s*=\s*"window"', params, re.M)
@@ -314,11 +314,11 @@ def test_stack_json(stack, cradle_stack):
         assert v["insert_hole_d"] == 3.2 and v["standoff_d"] == 6.0, name
         assert v["standoff_d"] - v["insert_hole_d"] >= 2 * 1.4, "1.4 mm around the insert"
         assert v["foot_magnets"] == 4, name
-        assert v["logo_on_cap"] == 1 and v["logo_on_floor"] == 1, name
+        assert v["logo_on_cap"] == 1 and v["logo_on_floor"] == 0, name
         assert 0.4 <= v["logo_depth"] <= 0.8, "deep enough to read, shallow enough to bridge"
         assert v["logo_line_w"] >= 0.8, "min printable feature on a 0.4 mm nozzle"
         assert v["logo_depth"] < v["logo_line_w"], "grooves wider than deep bridge cleanly"
-        assert v["logo_cap_area"] > 0 and v["logo_floor_area"] > 0, name
+        assert v["logo_cap_area"] > 0 and v["logo_floor_area"] == 0, name
         assert abs(v["lid_top_z"] - (v["lid_roof_under_z"] + 3.0)) < 1e-6, name
         # hinge: knuckles flush with the roof top, strip clear of the caps, odd knuckle count,
         # stop at twice the tent angle, the folded lid tilts the half by about the tent angle

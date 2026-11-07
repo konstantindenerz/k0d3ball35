@@ -31,10 +31,11 @@ vector master exists in the repo and nothing downstream has to touch the raster 
       emitted by `scripts/k0d3/pcb.py` as 34 filled `gr_poly` polygons from `k0d3.logo`. Not a
       footprint and not on the front, see Notes. No silkscreen over pads, DRC clean on the first
       routing attempt for both halves, `SILK_OVER_COPPER_ACCEPTED` unchanged
-- [x] Case: the logo engraved 0.6 mm into the box cap plate (18.0 x 52.5 mm, 1.0 mm strokes) and
-      into the flat case underside (52.5 x 18.0 mm, 0.9 mm strokes, turned 90 degrees), as
+- [x] Case: the logo engraved 0.6 mm into the box cap plate (18.0 x 52.5 mm, 1.0 mm strokes), as
       parameters of the case model (`logo.scad`, `logo_*` in `params.scad`); printable without
-      supports because both faces lie on the bed and no groove bridges further than one cell
+      supports because the face lies on the bed and no groove bridges further than one cell.
+      The floor engraving (52.5 x 18.0 mm, 0.9 mm strokes, turned 90 degrees) was dropped on
+      2026-11-07 (did not look right); it stays in the model behind `logo_on_floor = false`
 - [ ] Transport lid (`mech-case-lid`) still has no logo; decide whether it needs one
 - [x] Silkscreen minimum feature respected: strokes and gaps are 0.26 mm, 1.7 times the 0.15 mm
       a fab holds; `tests/test_gerbers.py` mask overlap still 0 on all six faces and the rendered

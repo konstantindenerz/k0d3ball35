@@ -137,8 +137,9 @@ From `stack.json` (`make stack`):
   the lip's lead-in chamfer is a stepped taper at the top of the print. On the lid plates the
   horizontal 2.2 mm pin hole and the knuckle halves that protrude past the hinge line are the
   only small overhangs; the knuckle grooves in the skirt ends are the only upward faces.
-- Wordmark: engraved 0.6 mm into the cap plate and into the case underside, both of which lie
-  on the bed. The grooves are one cell wide (1.0 mm on the cap, 0.9 mm on the floor), so every
+- Wordmark: engraved 0.6 mm into the cap plate, which lies on the bed (the case underside can
+  take it too with `logo_on_floor = true`, off by default). The grooves are one cell wide
+  (1.0 mm on the cap, 0.9 mm on the floor), so every
   bridge is shorter than a millimetre and the first layer is the connected field between them.
   A filament change at 0.6 mm gives a flush two-colour wordmark. `logo_invert = true` engraves
   the field instead and leaves the lines proud, at the cost of a much thinner first layer.

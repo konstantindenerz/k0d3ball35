@@ -214,7 +214,10 @@ should start from - the PCB silkscreen footprint, a web page, a sticker.
 | Where | Size | Stroke | Parameters |
 |-------|------|--------|------------|
 | Box cap plate, centred at (-59.525, 21.9) | 18.0 x 52.5 mm | 1.0 mm | `logo_cell`, `logo_stretch` |
-| Case underside, centred at (0, 25.5), turned 90 degrees | 52.5 x 18.0 mm | 0.9 mm | `logo_floor_cell`, `logo_floor_rot` |
+| Case underside, centred at (0, 25.5), turned 90 degrees (off by default) | 52.5 x 18.0 mm | 0.9 mm | `logo_on_floor`, `logo_floor_cell`, `logo_floor_rot` |
+
+Only the cap carries the wordmark by default; the floor engraving stayed in the model as an
+option (`logo_on_floor = true`) after it was dropped in the review of 2026-11-07.
 
 The relief is engraved, not raised: both faces lie on the bed when the part is printed, where
 raised lines would need support. `logo_depth` is 0.6 mm, three layers at 0.2, and no groove
@@ -228,7 +231,7 @@ screw holes; on the floor it keeps at least 1.1 mm to the nearest foot recess. `
 mirrors the left half as a whole, so `logo.scad` mirrors the wordmark back - it reads the same
 way round on both halves, which `tests/test_case.py` checks on the rendered meshes.
 
-Set `logo_on_cap = false` / `logo_on_floor = false` for a plain case.
+Set `logo_on_cap = false` for a plain case.
 
 ## 9. Open points
 

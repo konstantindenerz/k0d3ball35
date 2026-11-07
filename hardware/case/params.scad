@@ -63,10 +63,10 @@ led_z           = 3.5;         // bottom of the window
 
 // ---------------------------------------------------------------- owner wordmark
 // Grid and rectangles in logo_data.scad (scripts/gen_logo.py). The relief is engraved, not
-// raised: the box cap and the tray both print with the engraved face on the bed. Grooves are
-// one cell wide, so nothing bridges further than logo_cell.
+// raised: the box cap prints with the engraved face on the bed (so would the tray floor if
+// logo_on_floor is set). Grooves are one cell wide, so nothing bridges further than logo_cell.
 logo_on_cap     = true;
-logo_on_floor   = true;
+logo_on_floor   = false;      // the floor stays plain (2026-11-07); true engraves it like the cap
 logo_invert     = false;      // true: engrave the field instead, leaving the lines proud of it
 logo_depth      = 0.6;        // 3 layers at 0.2
 logo_cell       = 1.0;        // stroke width on the cap; the min printable feature

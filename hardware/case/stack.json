@@ -53,13 +53,13 @@
       "box_y1": 50.6,
       "foot_magnets": 4.0,
       "logo_on_cap": 1.0,
-      "logo_on_floor": 1.0,
+      "logo_on_floor": 0.0,
       "logo_depth": 0.6,
       "logo_line_w": 0.9,
       "logo_cap_x": 18.0,
       "logo_cap_y": 52.5,
       "logo_cap_area": 490.5,
-      "logo_floor_area": 397.305
+      "logo_floor_area": 0.0
     },
     "right": {
       "floor_z_key": -4.6,
@@ -113,13 +113,13 @@
       "box_y1": 50.6,
       "foot_magnets": 4.0,
       "logo_on_cap": 1.0,
-      "logo_on_floor": 1.0,
+      "logo_on_floor": 0.0,
       "logo_depth": 0.6,
       "logo_line_w": 0.9,
       "logo_cap_x": 18.0,
       "logo_cap_y": 52.5,
       "logo_cap_area": 490.5,
-      "logo_floor_area": 397.305
+      "logo_floor_area": 0.0
     },
     "right-25mm": {
       "floor_z_key": -4.6,
@@ -173,13 +173,13 @@
       "box_y1": 50.6,
       "foot_magnets": 4.0,
       "logo_on_cap": 1.0,
-      "logo_on_floor": 1.0,
+      "logo_on_floor": 0.0,
       "logo_depth": 0.6,
       "logo_line_w": 0.9,
       "logo_cap_x": 18.0,
       "logo_cap_y": 52.5,
       "logo_cap_area": 490.5,
-      "logo_floor_area": 397.305
+      "logo_floor_area": 0.0
     }
   }
 }
