@@ -27,7 +27,7 @@ case pocket right beside the thumb keys.
 
 ```prompt
 Photorealistic product photo, 35 mm lens, soft window light. Two halves of a low profile split
-keyboard on a light oak desk next to a closed silver MacBook. Each half has 15 finger keys in a
+keyboard on a light oak desk next to a closed unbranded laptop. Each half has 15 finger keys in a
 column-staggered 3x5 grid with an angular, stepped case outline that follows the stagger; the left
 half has three thumb keys fanned in an arc, the right half two thumb keys and, where its third
 would be, a matte white 19 mm trackball sitting low in a round pocket of the case. Keycaps are matte
