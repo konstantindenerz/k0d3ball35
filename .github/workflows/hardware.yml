@@ -25,6 +25,12 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v4
+      - name: Build tools
+        # The KiCad image is a bare Debian trixie: no make for the entry points,
+        # no zip for the gerber archive in scripts/export.sh.
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends make zip
       - name: KiCad version
         run: kicad-cli version
       - name: ERC
@@ -58,6 +64,11 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v4
+      - name: Build tools
+        # The KiCad image ships a python without ensurepip, so venv creation fails.
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends python3-venv
       - name: Python dependencies
         run: |
           python3 -m venv .venv
