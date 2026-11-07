@@ -195,16 +195,17 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
     def ring_polygon(outer, inner):
         ext = list(outer.exterior.coords)[:-1]
         inn = list(inner.exterior.coords)[:-1]
-        # start the slit at the exterior vertex closest to an interior vertex
-        best = min(((i, j, (ext[i][0]-inn[j][0])**2 + (ext[i][1]-inn[j][1])**2) for i in range(0, len(ext), max(1, len(ext)//60)) for j in range(0, len(inn), max(1, len(inn)//60))), key=lambda t: t[2])
-        i, j = best[0], best[1]
-        path = ext[i:] + ext[:i] + [ext[i]] + [inn[j]] + list(reversed(inn[:j] + [inn[j]] if False else (inn[j:] + inn[:j])))[::1][::-1][::-1]
-        # ensure the interior is traversed in the opposite winding
-        inner_path = inn[j:] + inn[:j]
-        inner_path = inner_path[::-1]
-        inner_path = inner_path[-1:] + inner_path[:-1]  # start at inn[j]
-        path = ext[i:] + ext[:i] + [ext[i], inn[j]] + inner_path[1:] + [inn[j]]
-        return path
+        # The slit starts at the exterior vertex closest to an interior vertex; sampling every
+        # len/60th vertex is enough to find it and keeps this out of O(n^2) on a 400-point outline.
+        step_e, step_i = max(1, len(ext) // 60), max(1, len(inn) // 60)
+        i, j, _ = min(
+            ((a, b, (ext[a][0] - inn[b][0]) ** 2 + (ext[a][1] - inn[b][1]) ** 2)
+             for a in range(0, len(ext), step_e) for b in range(0, len(inn), step_i)),
+            key=lambda t: t[2])
+        # the interior is traversed in the opposite winding, starting and ending at inn[j]
+        inner_path = (inn[j:] + inn[:j])[::-1]
+        inner_path = inner_path[-1:] + inner_path[:-1]
+        return ext[i:] + ext[:i] + [ext[i], inn[j]] + inner_path[1:] + [inn[j]]
     edge_ring = ring_polygon(layout.outline, layout.outline.buffer(-0.35, join_style=2))
     for name, poly in (("edge_keepout", edge_ring),):
         kpts = pts_sexpr(poly)

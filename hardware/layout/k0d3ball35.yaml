@@ -168,13 +168,6 @@ halves:
     # The left BOARD is the mirror image of the frame (x -> -x) while the footprints are not
     # mirrored, so pad references land on the mirrored side of their part and the free points
     # below are chosen for the left board, not copied from the right half.
-    # Found with the same grid search as the right half (every drill, every pad of another net,
-    # the board edge and the other hand routes as obstacles), squared onto long runs with 45
-    # degree corners. Points are layout-frame; the left BOARD is their x mirror.
-    # Found with the same grid search as the right half (every drill, every pad of another net,
-    # the board edge, the other hand routes and the thumb switches' own column pads as
-    # obstacles), squared onto long runs with 45 degree corners. Points are layout-frame; the
-    # left BOARD is their x mirror.
     # Found with the same grid search as the right half (every drill, every pad and GND via of
     # another net, the board edge, the other hand routes and the thumb switches' own column pads
     # as obstacles), squared onto long runs with 45 degree corners. Points are layout-frame; the
@@ -233,8 +226,6 @@ halves:
                                 # left of it carries the wordmark; the 6 mm grid covers the bridge
     # The thumb pair is the middle (10 deg) and inner (20 deg) key since r2.3, so the right board
     # needs the same hand routes the left one needs, laid out for the unmirrored board.
-    # Found with a grid search over the free copper of each layer (drills, foreign pads, the board
-    # edge and the other hand routes as obstacles), then verified independently; see the ticket.
     # Found with a grid search over the free copper of each layer (every drill, every pad of
     # another net, the board edge and the other hand routes as obstacles), then squared onto
     # long runs with 45 degree corners and verified independently; see the ticket.
