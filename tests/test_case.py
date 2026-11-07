@@ -350,6 +350,14 @@ def test_stack_json(stack, cradle_stack):
     assert r["ball_top_z"] <= r["lid_top_z"] + 0.2
     assert r["housing_x"] == cradle_stack["housing_x"] and r["housing_y"] == cradle_stack["housing_y"]
     assert r["case_screw_sp"] == cradle_stack["case_screw_sp"]
+    # cradle screws: 90 degree countersink, the flat head sinks until the cone is as wide as the
+    # head, so it ends up below the flat underside and never touches the desk or the folded lid
+    assert abs(r["case_screw_cs_h"] - (r["case_screw_cs_d"] - r["case_screw_d"]) / 2) < 1e-6
+    assert r["case_screw_cs_d"] >= r["case_screw_head_d"] + 0.2, "mouth wider than the widest M2 head"
+    head_h = (r["case_screw_head_d"] - 2.0) / 2        # cone height of a 90 degree head over the shank
+    assert r["case_screw_cs_h"] >= head_h, "recess at least as deep as the head"
+    assert 0 <= r["case_screw_head_z"] - r["base_z"] <= 0.5, "head flush or just inside the underside"
+    assert r["case_screw_floor_left"] >= 1.0, "floor left between the cone and the cradle"
     assert r["ball_top_z"] == cradle_stack["ball_top_above_pcb_top"]
     assert abs(r["cradle_rim_z"] - cradle_stack["rim_z"]) < 1e-6
     assert stack["right-25mm"]["lid_roof_under_z"] >= 23.05 + 1.0
@@ -422,13 +430,19 @@ def test_render_tray(tmp_path, half, data):
     assert len(band) > 0
     assert all(hull.contains(Point(x * sx, y)) for x, y, _ in band), half
     if half == "right":
-        # case screw holes through the pocket floor, counterbored from below
+        # case screw holes through the pocket floor, countersunk from below so the heads sit flush
         for cx, cy in CASE_SCREWS:
             near = v[(np.hypot(v[:, 0] - cx, v[:, 1] - cy) < 2.0) & (np.abs(v[:, 2] - values["pocket_floor_z"]) < 0.05)]
             assert len(near) > 10, (cx, cy)
             assert abs(np.hypot(near[:, 0] - cx, near[:, 1] - cy).max() - 1.1) < 0.05
-            cb = v[(np.hypot(v[:, 0] - cx, v[:, 1] - cy) < 3.0) & (np.abs(v[:, 2] - (values["base_z"] + 0.5)) < 0.05)]
-            assert len(cb) > 10, "counterbore leaves 2 mm of floor"
+            mouth = v[(np.hypot(v[:, 0] - cx, v[:, 1] - cy) < 3.5) & (np.abs(v[:, 2] - values["base_z"]) < 0.05)]
+            assert len(mouth) > 10, "countersink opens in the flat underside"
+            assert abs(np.hypot(mouth[:, 0] - cx, mouth[:, 1] - cy).max() - values["case_screw_cs_d"] / 2) < 0.05
+            # the cone ends where the bore starts, one countersink depth above the underside
+            cone = v[(np.hypot(v[:, 0] - cx, v[:, 1] - cy) < 3.5)
+                     & (np.abs(v[:, 2] - (values["base_z"] + values["case_screw_cs_h"])) < 0.05)]
+            assert len(cone) > 10, "90 degree cone, no counterbore shelf"
+            assert abs(np.hypot(cone[:, 0] - cx, cone[:, 1] - cy).max() - values["case_screw_d"] / 2) < 0.05
         # nothing of the tray inside the cradle circle above the PCB plane
         above = v[v[:, 2] > -PCB_T + 0.05]
         assert np.hypot(above[:, 0] - BALL[0], above[:, 1] - BALL[1]).min() >= 14.0

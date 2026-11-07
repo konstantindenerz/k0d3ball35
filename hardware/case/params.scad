@@ -126,9 +126,10 @@ pocket_d        = 32.0;        // round pocket wall above the PCB plane (cradle 
 pocket_wall     = 2.0;
 cradle_d        = 28.0;        // cradle clearance circle above the PCB plane
 ball_top_z      = 17.1;        // cradle stack.json ball_top_above_pcb_top (19.05 mm ball)
-case_screw_d    = 2.2;         // clearance holes for the M2 x 10 case screws from below
-case_screw_cb_d = 4.5;         // counterbore so 2 mm of floor remain under the cradle
-case_screw_cb_h = floor_t - 2.0;
+case_screw_d      = 2.2;       // clearance holes for the M2 x 10 case screws from below
+case_screw_head_d = 4.4;       // widest countersunk M2 head: DIN 7982 ST2.2 is 4.4, DIN 7991/965 M2 is 3.8
+case_screw_cs_d   = case_screw_head_d + 0.4;              // 90 degree countersink mouth in the flat underside
+case_screw_cs_h   = (case_screw_cs_d - case_screw_d) / 2; // 1.3 mm deep, 1.2 mm of floor left at the bore
 fpc_clear       = 0.5;         // clearance around J1 and the FFC corridor on the key side
 
 // ---------------------------------------------------------------- rendering

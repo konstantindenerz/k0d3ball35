@@ -58,8 +58,10 @@ is handedness-neutral; the left half is mirrored once at the top level of `case.
 - Pocket (right half): above the PCB plane the cavity is the PCB notch octagon (apothem 15)
   plus 0.2 and the 28 mm cradle circle, with a 2 mm wall around it; at floor level the
   housing well is 30 x 30 (housing 29 x 29 plus 0.5) in a 34 x 34 block with 3 mm corners,
-  floor at -11.6, two 2.2 mm holes 20 mm apart on the y axis with a 0.5 mm counterbore from
-  below so 2.0 mm of floor remain as the cradle assumes. A 12 mm wide channel from J1 to the
+  floor at -11.6, two 2.2 mm holes 20 mm apart on the y axis with a 4.8 mm, 1.3 mm deep
+  90 degree countersink from below (`case_screw_cs_d`, `case_screw_cs_h`): the flat head of
+  an M2 countersunk screw ends up 0.2 mm inside the underside, 1.2 mm of floor is left at
+  the bore. A 12 mm wide channel from J1 to the
   housing wall is where the cradle's own cable channel brings the FFC up; the tray only keeps the
   lid lip off J1 and the cable corridor on the key side (`fpc_clear`).
 - Foot magnets: four 6.2 mm pockets from below in the 9.5 mm floor under the key area next
@@ -156,8 +158,8 @@ From `stack.json` (`make stack`):
   for assembly.
 - Alternative: `-D pcb_screws="pilot"` turns the holes into 1.6 mm pilots for M2 self-tapping
   screws (6 mm deep).
-- Cradle: two M2 x 10 self-tapping screws from below through the counterbored floor holes
-  into the cradle's sensor posts (`hardware/trackball-cradle/README.md`).
+- Cradle: two M2 x 10 countersunk self-tapping screws from below through the countersunk
+  floor holes into the cradle's sensor posts (`hardware/trackball-cradle/README.md`).
 
 ## Assembly
 

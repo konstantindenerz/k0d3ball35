@@ -81,7 +81,7 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 1 (+1) | 19.05 mm (3/4 inch) POM trackball, or the PandaKB TB19 phenolic ball | right half | 11 |
 | 3 (+3) | 2.0 mm ZrO2 ceramic bearing balls | cradle | 11 |
 | 1 | printed cradle (`hardware/trackball-cradle/stl/cradle-19mm-pocket.stl`) | right half, case pocket; no retainer, the case lid keeps the ball in for transport | 11 |
-| 2 | M2 x 10 self-tapping screws (or M2 x 10 machine screws + heat-set inserts) | case screws: from below through the case floor and the sensor board into the cradle posts | 11 |
+| 2 | M2 x 10 self-tapping countersunk screws (or M2 x 10 countersunk machine screws + heat-set inserts) | case screws: from below through the case floor and the sensor board into the cradle posts | 11 |
 | 2 (optional) | M2 x 5 self-tapping screws | bench test: sensor board in the cradle posts before the case exists | 11 |
 | 35 (+2) | Kailh Choc V1 switch (PG1350) | | 12 |
 | 35 | Choc 1u keycaps (MBK), 5 in an accent colour for the thumbs | | 12 |
@@ -368,10 +368,12 @@ case exists, a scrap of 2 mm material with two 2.2 mm holes 20 mm apart works as
 
 6. Lower the module into the case pocket (screw holes on the user-facing axis, cable slot and
    channel towards the keys), take the short bench-test screws out and fasten it with two M2 x 10
-   self-tapping screws from underneath the case floor: each screw passes the 2 mm floor, the
-   2.25 mm gap and the sensor board and bites about 4 mm into the post (or M2 x 10 machine screws
-   into heat-set inserts). Snug, not tight: the same screws clamp the board, it must not bow. The
-   cup must sit centred in the notch with a visible gap all round. It goes straight down and comes
+   countersunk self-tapping screws from underneath the case floor: each screw passes the 2.5 mm
+   floor, the 2.25 mm gap and the sensor board and bites about 4 mm into the post (or M2 x 10
+   countersunk machine screws into heat-set inserts). The flat head pulls itself into the 90
+   degree cone in the underside and ends up 0.2 mm inside it; a pan head would stand 1 mm
+   proud. Snug, not tight: the same screws clamp the board, it must not bow. The cup must sit
+   centred in the notch with a visible gap all round. It goes straight down and comes
    straight up: the housing is 0.5 mm narrower than the well all round, which is why this works
    with the PCB already fitted.
 7. Bring the cable up the gap between the cup and the notch, fold it over the board edge with a
@@ -406,7 +408,7 @@ hardware allows, so do not improvise.
    of the two lid plates and push the 2 mm rod in from the back edge until it bottoms in the
    blind end knuckle; a drop of glue at the entry if it is loose.
 3. Right half: lower the finished trackball module (chapter 11) into its pocket and fasten it with
-   the two M2 x 10 screws from below. It drops straight in and lifts straight out, also later with
+   the two M2 x 10 countersunk screws from below. It drops straight in and lifts straight out, also later with
    the PCB fitted, so this step can be repeated at any time.
 4. Cell onto the back of the PCB in the dashed bay and into J3 (chapter 7). The battery well is
    completely covered by the board, so the cell has to travel with the PCB.

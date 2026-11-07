@@ -293,7 +293,10 @@ function build(half) {
     const g = layer('Trackball cradle (pocket mount)', -8, '#CFC5B3', { x: bx - 18, y: 4, z: bz });
     const housing = new THREE.Mesh(new THREE.BoxGeometry(S.housing_x, S.housing_top_z - S.floor_z, S.housing_y), M.cradle);
     housing.position.set(bx, (S.housing_top_z + S.floor_z) / 2, bz); g.add(housing);
-    for (const [sx_, sz_] of ball.case_screws) g.add(cyl(1.75, 1.5, M.metal, sx_, S.floor_z - 2.0 - 0.75, sz_));   // M2 x 10 heads under the case floor
+    // M2 x 10 flat heads in the 90 degree countersinks: the flat face sits below the tray underside
+    const CS = H.case_stack, headK = (CS.case_screw_head_d - 2.0) / 2;
+    for (const [sx_, sz_] of ball.case_screws)
+      g.add(cyl(CS.case_screw_head_d / 2, headK, M.metal, sx_, CS.case_screw_head_z + headK / 2, sz_, 1.0));
     g.add(cyl(S.cup_outer_d / 2, S.rim_z - S.housing_top_z, M.cradle, bx, (S.rim_z + S.housing_top_z) / 2, bz));         // cup skirt
     const bowl = new THREE.Mesh(new THREE.SphereGeometry(ball.d / 2 + 1.2, 48, 24, 0, Math.PI * 2, Math.PI / 2 + 0.25, Math.PI / 2 - 0.25), M.cradle);
     bowl.position.set(bx, S.ball_centre_z, bz); g.add(bowl);

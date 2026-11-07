@@ -208,8 +208,8 @@ option. The r1 25 mm ball stood 12 mm proud, which is why the ball size was redu
   clamped to two M2 posts from below. The two holes are 20.0 mm apart on the board's long axis,
   symmetric to the optical centre.
 * The posts double as the case fastening: their 1.6 mm pilot holes run through to the housing
-  underside and two M2 x 10 self-tapping screws come up from below through the case floor
-  (2 mm), the 2.25 mm component gap and the board into the posts (`case_screw_sp` = 20 mm in
+  underside and two M2 x 10 countersunk self-tapping screws come up from below through the
+  case floor (2.5 mm), the 2.25 mm component gap and the board into the posts (`case_screw_sp` = 20 mm in
   `stack.json`). The housing therefore has no screw ears; its floor footprint is the bare
   29 x 29 mm box (`footprint_x` / `footprint_y`), and the case pocket below the PCB plane is a
   34 x 34 mm rounded rectangle around it (`issues/mech-case-ball-pocket.md`). The housing is 1 mm
@@ -285,7 +285,7 @@ different cradle. What changes:
    enabled; TP3/TP4/TP5 allow probing SPI with a logic analyser.
 8. Slide the board lens-first into the cradle housing from below, cable out through the slot and
    up the channel in the key-facing wall, stand the module in the pocket and fasten board and
-   module together with the two M2 x 10 case screws from below the floor (short M2 x 5 screws for
+   module together with the two M2 x 10 countersunk case screws from below the floor (short M2 x 5 screws for
    a bench test without the case).
 9. Fold the cable over the board edge into J1 on the key side, close the lock, drop in the ball
    and test tracking. For service the order reverses: open the lock, pull the cable out of J1,
@@ -296,8 +296,8 @@ Image prompt: *Hands-on macro photo of someone pressing a small black optical se
 in a green PCB from the back side, a pair of tweezers holding a clear plastic lens next to it, soft
 workshop lighting, shallow depth of field.*
 
-The case side of this is in `docs/11-case.md` section 3: the two floor holes are counterbored so
-2.0 mm of floor remain under the housing, and the lid's lip keeps clear of J1 and of the cable
+The case side of this is in `docs/11-case.md` section 3: the two floor holes are countersunk at
+90 degrees so the flat heads sit 0.2 mm inside the underside, and the lid's lip keeps clear of J1 and of the cable
 corridor on the key side of the board.
 
 ## 5. Test procedure

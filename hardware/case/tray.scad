@@ -33,9 +33,11 @@ module tray_cuts() {
     if (has_ball(half)) {
         translate([0, 0, pocket_floor_z]) linear_extrude(-pcb_t - pocket_floor_z + eps) pocket_well_2d();
         translate([0, 0, -pcb_t]) linear_extrude(box_top_z + 20) pocket_cavity_2d();
+        // through hole plus a 90 degree countersink, so the flat-head screws sit below the underside
         for (s = case_screws(half)) {
             translate([s[0], s[1], base_z - 1]) cylinder(d = case_screw_d, h = floor_t + 2);
-            translate([s[0], s[1], base_z - 1]) cylinder(d = case_screw_cb_d, h = 1 + case_screw_cb_h);
+            translate([s[0], s[1], base_z - eps])
+                cylinder(d1 = case_screw_cs_d + 2 * eps, d2 = case_screw_d, h = case_screw_cs_h + eps);
         }
     }
     screw_holes();

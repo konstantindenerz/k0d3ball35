@@ -63,8 +63,12 @@ turret; both render but are not part of the default build.
 The cradle stands on the case floor in a well beside the right PCB
 (`docs/08-trackball-module.md`, `hardware/trackball-cradle/README.md`): the housing well is
 30 x 30 mm (housing 29 x 29 plus 0.5 mm) in a 34 x 34 mm block, floor at -11.6, two 2.2 mm
-holes 20 mm apart on the y axis for the M2 x 10 case screws from below, counterbored so the
-cradle sees the 2.0 mm floor it assumes. Above the PCB plane the cavity is the PCB notch
+holes 20 mm apart on the y axis for the M2 x 10 case screws from below. The screws are
+countersunk flat heads (90 degrees): the underside opens into a 4.8 mm cone 1.3 mm deep
+(`case_screw_cs_d`, `case_screw_cs_h`), the head sinks until the cone is as wide as it is and
+ends up 0.2 mm inside the flat underside, so nothing stands proud against the desk or the
+folded lid. 1.2 mm of floor is left at the bore, the cone's load goes into the full 2.5 mm
+around it. Above the PCB plane the cavity is the PCB notch
 (apothem 15 mm, square corner towards the keys) plus 0.2 mm, so the printed wall continues the
 PCB edge around the cup with a 2 mm wall. The rim stops at +5.0, 1.6 mm below the cup rim, and
 the thumb reaches the ball at its equator from the key side. The FFC needs nothing from the

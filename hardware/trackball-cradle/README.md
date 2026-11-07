@@ -81,10 +81,11 @@ ball stood 12 mm proud.
   2.95 mm gap between the cup and the PCB notch and folds over the board edge into J1 on the key
   side of the main PCB. Nothing of the cable runs under the PCB any more.
 - The two sensor posts double as the case fastening: their 1.6 mm pilot holes run straight
-  down to the housing underside, and two M2 x 10 self-tapping screws come up from below
-  through the case floor (2 mm), the 2.25 mm component gap and the sensor board (1.6 mm)
-  into the posts (`case_screw_sp` = 20 mm on the y axis through the ball centre, about 4 mm
-  of thread in each post). The board stays clamped to the posts as before, the housing walls
+  down to the housing underside, and two M2 x 10 countersunk (90 degree flat head)
+  self-tapping screws come up from below through the case floor (2.5 mm, the head sinks into
+  a cone in its underside), the 2.25 mm component gap and the sensor board (1.6 mm) into the
+  posts (`case_screw_sp` = 20 mm on the y axis through the ball centre, about 3.8 mm of
+  thread in each post). The board stays clamped to the posts as before, the housing walls
   stand on the floor, and there are no lugs or extra holes: the floor footprint is the bare
   29 x 29 mm housing (`dxf/floor-19mm-pocket.dxf`: 30 x 30 mm outline with 0.5 mm clearance
   and two 2.2 mm holes). The PCB is not touched.
@@ -170,9 +171,10 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
    lens must sit flat in its pocket and the aperture must be centred in the 9 mm hole when you
    look into the cup.
 4. Stand the module on the case floor in the pocket, screw holes on the y axis, slot towards
-   the keys; fasten with two M2 x 10 self-tapping screws from underneath the case, up
-   through the floor, the component gap and the sensor board into the posts (or M2 x 10
-   machine screws into heat-set inserts if you set `flange_pilot_d = 3.2`). Snug, not
+   the keys; fasten with two M2 x 10 countersunk self-tapping screws from underneath the
+   case, up through the floor, the component gap and the sensor board into the posts (or
+   M2 x 10 countersunk machine screws into heat-set inserts if you set `flange_pilot_d =
+   3.2`). The flat head disappears into the 90 degree cone in the case underside. Snug, not
    tight: the screws clamp the board and hold the module at the same time.
 5. Fold the cable over the PCB edge into J1 on the key side, contacts down, close the lock.
 6. Drop the ball in. It must spin freely in every direction without touching the rim.
@@ -193,8 +195,8 @@ below and lift the module out of the pocket. Keycaps and PCB stay where they are
   rests 0.4 mm above the cup surface, so 2.0 mm gauge plus 0.4 mm design gap gives the
   2.4 mm the datasheet asks for). Anything between 2.2 and 2.6 mm total is inside the window.
 - Case screws: with the module standing on a 2 mm test floor, an M2 x 10 screw from below
-  must reach at least 3 mm into the post (it passes 2 mm floor, 2.25 mm gap and 1.6 mm board
-  first); the sensor board must sit flat on the posts and not bow when the screws are snug.
+  must reach at least 3 mm into the post (in the case it passes 2.5 mm floor less the 1.3 mm
+  countersink, 2.25 mm gap and 1.6 mm board first); the sensor board must sit flat on the posts and not bow when the screws are snug.
 - Notch clearance: lay the printed module next to a 1.6 mm board with the notch (print the
   outline from `hardware/layout/output/outline-right.dxf`): at least 0.3 mm all round between
   the cup and the notch edge.

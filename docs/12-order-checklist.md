@@ -49,7 +49,7 @@ One cart; everything ships from the same warehouse.
 |------|-----|------|------|--------|--------|
 | [ ] | 1 pack | Ball 19.05 mm | 3/4 inch POM (Delrin) bearing balls, pack of 10 to 20 | open | test two or three balls on the sensor (`issues/hw-ball-colour-tracking-test.md`) |
 | [ ] | 3 (+3) | Bearing ball | 2.0 mm ZrO2 (zirconia) precision balls | open | AliExpress is the usual source, Amazon if in stock |
-| [ ] | 2 | Cradle screw | M2 x 10 self-tapping pan head | open | plus 2 x M2 x 5 self-tapping for the bench test of the sensor board in the cradle posts |
+| [ ] | 2 | Cradle screw | M2 x 10 self-tapping countersunk (90 degree flat head) | open | plus 2 x M2 x 5 self-tapping for the bench test of the sensor board in the cradle posts |
 | [ ] | 1 pack (50) | Heat-set threaded insert | brass, M2, 3 mm long, about 3.5 mm OD, for a 3.2 mm hole | open | 14 used: 5 PCB standoffs + 2 controller-cap bosses per half; Amazon DE or AliExpress |
 | [ ] | 1 pack (14 used) | PCB and cap screw | M2 x 5 (or x 6) machine screw, pan or button head, head max 3.5 mm dia | open | 7 per half; the alternative is self-tapping into a 1.6 mm pilot (`-D pcb_screws="pilot"` in `hardware/case/params.scad`) |
 | [ ] | 8 | Bumper | GLIPLUS pads or 3M SJ5302 | open | |
