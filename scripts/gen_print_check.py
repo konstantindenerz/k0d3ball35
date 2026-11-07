@@ -17,7 +17,9 @@ Usage: scripts/gen_print_check.py [left|right ...]
 """
 from __future__ import annotations
 
+import datetime
 import math
+import subprocess
 import sys
 import textwrap
 from dataclasses import dataclass
@@ -93,6 +95,23 @@ def mm(value: float) -> str:
     return f"{value:.2f} mm".replace(".00 mm", ".0 mm")
 
 
+def stamp() -> str:
+    """Short commit and date for the sheet's corner: a printout on the desk has to say which
+    state of the repository it came from. `-dirty` marks uncommitted changes, so a sheet made
+    from work in progress can never be mistaken for one made from a commit."""
+    def git(*args: str) -> str:
+        return subprocess.run(["git", *args], cwd=REPO, capture_output=True, text=True,
+                              check=True).stdout.strip()
+
+    try:
+        rev = git("rev-parse", "--short", "HEAD")
+        if git("status", "--porcelain"):
+            rev += "-dirty"
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        rev = "no commit"
+    return f"{rev}  ·  {datetime.date.today().isoformat()}"
+
+
 def dim_h(s: Sheet, x1: float, x2: float, y: float, label: str, colour: str) -> None:
     """Horizontal dimension line with end ticks; the label sits on the line in a white patch."""
     t = 1.5
@@ -128,6 +147,7 @@ def build(layout: Layout) -> tuple[str, list[Dim]]:
     # ---- header
     s.text(MARGIN_X, 14, f"{cfg['name']} {cfg['revision']} - {layout.half} half, 1:1 measuring sheet",
            size=5.0, weight="bold")
+    s.text(PAGE[0] - MARGIN_X, 14, stamp(), size=3.0, fill=GHOST, anchor="end")
     s.text(MARGIN_X, 20, "Top view, keys up. Print at 100 %: no “fit to page”, no scaling. Measure the "
                          "red bars first - if they are off, nothing else counts.", size=3.0)
     s.text(MARGIN_X, 24.5, "A steel ruler reads to about 0.5 mm, so the sheet only asks for long distances. "

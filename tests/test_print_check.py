@@ -10,9 +10,9 @@ import zlib
 
 import pytest
 
-from gen_print_check import PAGE, build
+from gen_print_check import PAGE, build, stamp
 from k0d3.footprints import nice_nano_tht
-from k0d3.geometry import HALVES, load_layout
+from k0d3.geometry import HALVES, REPO, load_layout
 
 
 @pytest.fixture(scope="module", params=HALVES)
@@ -32,6 +32,23 @@ def test_page_is_a4_in_millimetres(sheet):
     assert f'width="{PAGE[0]}mm" height="{PAGE[1]}mm"' in svg
     assert f'viewBox="0 0 {PAGE[0]} {PAGE[1]}"' in svg
     assert PAGE == (210.0, 297.0)
+
+
+def test_sheet_carries_the_commit_it_was_made_from(sheet):
+    """A printout on the desk has to say which state of the repository it came from."""
+    import subprocess
+
+    _, svg, _ = sheet
+    try:
+        rev = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO,
+                             capture_output=True, text=True, check=True).stdout.strip()
+        dirty = bool(subprocess.run(["git", "status", "--porcelain"], cwd=REPO,
+                                    capture_output=True, text=True, check=True).stdout.strip())
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        pytest.skip("not a git checkout")
+    assert f">{rev}" in svg, "the sheet does not name the commit"
+    assert (f"{rev}-dirty" in svg) == dirty, "the dirty marker does not match the working tree"
+    assert stamp() in svg
 
 
 def test_dimensions_are_the_layout_values(sheet):
