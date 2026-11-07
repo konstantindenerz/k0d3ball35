@@ -33,7 +33,9 @@ WALL_GUESS = 3.2         # pcb_clear + wall, only for the sanity checks here
 FOOT_D = 10.5
 MAGNET_D = 6.2           # foot magnet pocket (params.scad magnet_d)
 MAGNET_INSET = 8.0       # foot magnet centres this far inside the PCB outline / the hinge line
-HINGE_X = -13.0          # lid hinge line (x = const, runs front to back), 2 mm inboard of the pocket ring
+HINGE_X = -13.0          # lid hinge line (x = const, runs front to back) on a half without a ball
+POCKET_RING_R = 17.2     # notch apothem 15 + 0.2 clearance + 2 mm pocket wall (params.scad)
+HINGE_POCKET_CLEAR = 0.8 # on the ball half the hinge line sits this far inboard of that ring
 HINGE_STRIP = 6.0        # the hinge strip under the lid roof, no roof pocket within this of the line
 WALL_LID = 3.2           # pcb_clear + wall: the lid skirt outer face beyond the PCB outline
 FOOT_OVERHANG = 3.0      # as a foot the hinge axis sits this far outside the inner tray wall
@@ -102,12 +104,21 @@ def well_polygon(layout: Layout) -> Polygon:
     return Polygon(well.exterior).simplify(0.01)
 
 
+def hinge_x(layout: Layout) -> float:
+    """The hinge line has to clear the ball pocket, so on the ball half it follows the ball
+    instead of being a constant: the pocket ring would otherwise sit on the line and the lid's
+    ball window would be cut in half."""
+    if not layout.has_ball:
+        return HINGE_X
+    return round(layout.ball_center[0] - POCKET_RING_R - HINGE_POCKET_CLEAR, 1)
+
+
 def foot_dx(layout: Layout) -> float:
     """As a foot the lid is shifted inward until its hinge axis sits FOOT_OVERHANG outside the
     inner tray wall: the outer plate lies under the controller half, the inner plate folds down
     beyond the inner edge as the kickstand. Board x = lid x + foot_dx."""
     minx = layout.outline.bounds[0]
-    return round(minx - WALL_LID - FOOT_OVERHANG - HINGE_X, 3)
+    return round(minx - WALL_LID - FOOT_OVERHANG - hinge_x(layout), 3)
 
 
 def foot_magnets(layout: Layout, box_r, keep_out: list[Polygon], dx: float) -> list[tuple[float, float]]:
@@ -121,7 +132,8 @@ def foot_magnets(layout: Layout, box_r, keep_out: list[Polygon], dx: float) -> l
     poly = layout.outline
     minx, miny, maxx, maxy = poly.bounds
     inset = poly.buffer(-MAGNET_INSET, join_style=2)
-    lid_region = inset.intersection(box(HINGE_X + HINGE_STRIP + MAGNET_D / 2 + 0.5, miny - 1, maxx + 1, maxy + 1))
+    hx = hinge_x(layout)
+    lid_region = inset.intersection(box(hx + HINGE_STRIP + MAGNET_D / 2 + 0.5, miny - 1, maxx + 1, maxy + 1))
     board_region = translate(inset, -dx, 0)
     allowed = lid_region.intersection(board_region)
     assert allowed.geom_type == "Polygon", allowed.geom_type
@@ -216,7 +228,7 @@ def half_data(layout: Layout) -> dict:
         d["cable_corridor"] = []
         keep = []
     keep.append(well.buffer(2.0, join_style=2))
-    d["hinge_x"] = HINGE_X
+    d["hinge_x"] = hinge_x(layout)
     d["foot_dx"] = foot_dx(layout)
     d["foot_magnets"] = foot_magnets(layout, br, keep, d["foot_dx"])
     d["feet"] = feet(layout, br)

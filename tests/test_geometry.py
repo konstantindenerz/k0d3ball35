@@ -11,7 +11,9 @@ from shapely.geometry import Point
 from k0d3.geometry import HALVES, REPO, check_layout, load_layout, rotated_box
 
 SPEC_STAGGER = {0: 10.44, 1: 4.19, 2: 0.0, 3: 2.23, 4: 4.46}
-THUMB_COLS = {"left": [2, 3, 4], "right": [2, 3]}
+# Since r2.3 the ball takes the right half's OUTER thumb position, so that half keeps the
+# two inner keys (columns 3 and 4) instead of the two outer ones.
+THUMB_COLS = {"left": [2, 3, 4], "right": [3, 4]}
 
 
 @pytest.fixture(scope="module", params=HALVES)
@@ -51,7 +53,8 @@ def test_stagger_matches_spec(layout):
 def test_thumb_arc(layout):
     thumbs = sorted(layout.thumbs, key=lambda k: k.col)
     assert all(t.row == 3 for t in thumbs)
-    assert [t.rotation for t in thumbs] == [0, 10, 20][: len(thumbs)]
+    arc = {2: 0, 3: 10, 4: 20}          # the arc is shared; a half uses a slice of it
+    assert [t.rotation for t in thumbs] == [arc[t.col] for t in thumbs]
     for a, b in zip(thumbs, thumbs[1:]):
         # Keyball39 arc pitch 21.63 mm scaled to the Choc pitch gives about 20.4 mm
         assert 19.5 <= math.dist((a.x, a.y), (b.x, b.y)) <= 21.0

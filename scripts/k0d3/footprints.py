@@ -243,7 +243,10 @@ def nice_nano_tht(hole_pin: dict[int, str]) -> Footprint:
         row = (h - 1) % 12
         y = -13.97 + row * 2.54
         shape = "rect" if h == 1 else "circle"
-        pads.append(Pad(str(h), "thru_hole", shape, col, y, 1.7, 1.7, THT, 1.0, zone_connect=2 if h in (2, 14) else None))
+        # the three GND holes connect solidly to the pours: a thermal relief there starves,
+        # and these pins carry the ground return of the whole half
+        pads.append(Pad(str(h), "thru_hole", shape, col, y, 1.7, 1.7, THT, 1.0,
+                        zone_connect=2 if h in (3, 4, 14) else None))
     gfx = rect_lines(0, -0.6, 18.0, 33.5, "F.Fab", 0.1) + rect_lines(0, -0.6, 18.0, 33.5, "B.Fab", 0.1)
     gfx += rect_lines(0, -0.6, 19.0, 36.0, "F.CrtYd", 0.05) + rect_lines(0, -0.6, 19.0, 36.0, "B.CrtYd", 0.05)
     gfx += rect_lines(0, -0.6, 18.0, 33.5, "F.SilkS", 0.12) + rect_lines(0, -0.6, 18.0, 33.5, "B.SilkS", 0.12)

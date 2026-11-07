@@ -367,13 +367,18 @@ def test_left_board_is_mirror_of_layout(board, layout, half):
 
 def test_key_counts_thumbs_and_test_pads(board, layout, half):
     switches = {fp.ref for fp in board.by_prefix("SW")}
-    thumbs = {"left": {"SW32", "SW33", "SW34"}, "right": {"SW32", "SW33"}}[half]
+    thumbs = {"left": {"SW32", "SW33", "SW34"}, "right": {"SW33", "SW34"}}[half]
     assert switches == {f"SW{r}{c}" for r in range(3) for c in range(5)} | thumbs
     assert {fp.ref for fp in board.by_prefix("D")} == {"D" + ref[2:] for ref in switches}
     tps = board.by_prefix("TP")
     assert [tp.pad("1", "F.Cu").net for tp in tps] == spare_pad_nets(half)
     assert len(tps) == {"left": 9, "right": 5}[half]
-    assert all(math.isclose(tps[i + 1].x - tps[i].x, 2.5 * layout.board_sx, abs_tol=1e-6) for i in range(len(tps) - 1))
+    # the row runs along x on the left half and down y on the right one, where the thumb
+    # cluster took the old spot (hardware/layout/k0d3ball35.yaml, halves.<side>.test_pads)
+    step = 2.5 * (layout.board_sx if layout.cfg['test_pads']['direction'] == 'x' else 1)
+    axis = 'x' if layout.cfg['test_pads']['direction'] == 'x' else 'y'
+    assert all(math.isclose(getattr(tps[i + 1], axis) - getattr(tps[i], axis), step, abs_tol=1e-6)
+               for i in range(len(tps) - 1))
     assert ("J1" in board.footprints) == (half == "right"), "FPC connector on the right board only"
     assert not any(fp.name.startswith("FPC") for fp in board.footprints.values() if half == "left")
 

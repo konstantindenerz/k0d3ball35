@@ -39,7 +39,7 @@ BOARDS = {
         "zip": "hardware/right-pcb/k0d3ball35-right-gerbers.zip",
         "pcb": "hardware/right-pcb/k0d3ball35-right.kicad_pcb",
         "prefix": "k0d3ball35-right-",
-        "size": (117.8, 80.4),
+        "size": (121.0, 86.7),   # r2.3: the inner thumb key makes it the size of the left half
         "keys": 17,
         "protel": False,
         "outlines": 1,
@@ -443,7 +443,7 @@ def test_no_copper_inside_the_right_notch(raster_tools):
     r = _rasters("right", raster_tools)
     x0, y1 = r["origin"]
     w, h = r["size"]
-    cx, cy = 125.0, -124.0
+    cx, cy = 107.0, -126.0        # notch centre: layout (-13, 66) plus the page offset (120, 60)
     ys, xs = np.mgrid[0:h, 0:w]
     px, py = x0 + xs / DPMM, y1 - ys / DPMM
     inset = NOTCH_APOTHEM - 0.3

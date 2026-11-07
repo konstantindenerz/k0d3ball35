@@ -208,34 +208,46 @@ halves:
                                     # the gap between the cradle cup and the notch, folds over the board
                                     # edge at y = 49 and enters the connector from +y, so the lock stays
                                     # reachable with everything assembled (docs/08-trackball-module.md).
-      center: { x: -20.6, y: 46.5 }   # ball x - 7.6, which is the cradle's cable_ch_x: the FFC runs
-                                      # straight from the channel into the connector. y puts the mouth
-                                      # 0.5 mm short of the notch edge and clears D23's courtyard
+      center: { x: -20.6, y: 47.4 }   # ball x - 7.6, which is the cradle's cable_ch_x: the FFC runs
+                                      # straight from the channel into the connector. y keeps the
+                                      # mouth inside the notch edge and the body 0.5 mm clear of the
+                                      # index keycap, so the lock stays reachable
       rotation: 0
       side: top
+    silkscreen:                   # the thumb bridge is shorter here, so the wordmark is smaller.
+      logo:                       # The merge is shallow, so the whole block is repeated.
+        layer: B.SilkS
+        cell: 0.2                 # 0.2 mm is the thinnest stroke a fab holds
+        rotation: 90                # above the thumb cluster: the bridge itself is full here (J1,
+        center: { x: -40.0, y: 49.0 }   # the hand routes, H5). 1.9 mm to every pad, plated or not
     mounting_holes:
-      - { x: -52.0, y: 52.0 }     # above the inner thumb key; the left half's spot is in the pocket now
-    test_pads:                    # the global row at (-66, 57.5) lands on the inner thumb key's socket
-      start: { x: -69.0, y: 53.5 }  # since r2.3; this spot keeps about 1 mm to every part around it
-    stitching_vias:
-      - [-31.0, 57.0]             # thumb bridge, left of the notch (the r2.2 spot is inside it now)
+      - { x: -31.0, y: 49.0 }     # thumb bridge, left of the notch: the left half's spot (-32, 61)
+                                  # is 0.3 mm from the edge here and everything further in is
+                                  # either the battery well or a socket
+    test_pads:                    # the global row at (-66, 57.5) lands on the inner thumb key's
+      start: { x: -66.0, y: 45.0 }  # socket since r2.3. Down the inner edge instead, clear of the
+      direction: y                  # controller box boss and with the TPn labels clear of J2
+    stitching_vias: []          # the r2.2 spot (-14, 58) is inside the notch now and the strip
+                                # left of it carries the wordmark; the 6 mm grid covers the bridge
     # The thumb pair is the middle (10 deg) and inner (20 deg) key since r2.3, so the right board
     # needs the same hand routes the left one needs, laid out for the unmirrored board.
     # Found with a grid search over the free copper of each layer (drills, foreign pads, the board
     # edge and the other hand routes as obstacles), then verified independently; see the ticket.
+    # Found with a grid search over the free copper of each layer (every drill, every pad of
+    # another net, the board edge and the other hand routes as obstacles), then squared onto
+    # long runs with 45 degree corners and verified independently; see the ticket.
     manual_routes:
-      - { net: SW34, layer: B.Cu, width: 0.25,   # 20 deg key: anode to socket pad 2, past its pin hole
-          points: ["D34:2", [-55.5, 65.0], "SW34:pad2"] }
-      - { net: SW34, layer: F.Cu, width: 0.25,   # and the front copy of pad 2, around the far side
-          points: ["D34:2", [-67.0, 66.5], [-70.0, 66.0], "SW34:pad2f"] }
+      - { net: SW34, layer: B.Cu, width: 0.25,   # 20 deg key: anode to socket pad 2 on the back, past its pin hole
+          points: ["D34:2", [-55.25, 68.25], "SW34:pad2"] }
+      - { net: SW34, layer: F.Cu, width: 0.25,   # and the front copy of pad 2, around the far side of the switch
+          points: ["D34:2", [-62.0, 71.25], [-66.5, 66.75], [-70.0, 66.75], "SW34:pad2f"] }
       - { net: ROW3, layer: B.Cu, width: 0.25,   # thumb diode chain, below the SW34 link
-          points: ["D33:1", [-58.5, 72.5], "D34:1"] }
-      - { net: ROW3, layer: F.Cu, width: 0.25,   # controller to the thumb row, as on the left half
-          points: ["U1:20", [-49.0, 17.5], [-46.5, 56.5], [-45.5, 58.5], "D33:1"] }
+          points: ["D33:1", [-52.75, 67.5], [-57.5, 72.25], [-57.75, 72.5], "D34:1"] }
+      - { net: ROW3, layer: F.Cu, width: 0.25,   # controller to the thumb row, west of the index column
+          points: ["U1:20", [-46.5, 19.5], [-46.5, 56.75], [-44.25, 59.0], [-44.25, 64.25], [-42.75, 65.75], "D33:1"] }
       - { net: COL3, layer: B.Cu, width: 0.25,   # index column bus into the 10 deg key, left of J1
-          points: ["SW23:bus", [-25.0, 31.5], [-25.5, 36.0], [-34.0, 43.0], [-35.0, 43.5], "SW33:joiner"] }
+          points: ["SW23:bus", [-21.75, 28.25], [-25.25, 31.75], [-25.25, 35.5], [-33.0, 43.25], [-34.75, 43.25], [-45.0, 53.5], [-45.25, 53.75], "SW33:joiner"] }
       - { net: COL4, layer: B.Cu, width: 0.25,   # controller hole 11 to the inner column bus
-          points: ["U1:11", "SW24:bus"] }
-      - { net: COL4, layer: B.Cu, width: 0.25,   # and on down to the 20 deg key, between J3's netless
-          points: ["SW24:bus", [-43.5, 34.0], [-57.0, 48.5],       # hold-down pads, then between the
-                   [-57.0, 51.5], [-58.0, 54.5], "SW34:joiner"] }   # battery pads and the test pads
+          points: ["U1:11", [-58.25, 30.5], "SW24:bus"] }
+      - { net: COL4, layer: B.Cu, width: 0.25,   # and on down to the 20 deg key, past J3 and between the battery and test pads
+          points: ["SW24:bus", [-39.75, 30.5], [-58.5, 49.25], [-59.25, 49.25], [-59.5, 49.5], [-64.75, 54.75], [-64.75, 55.5], [-66.75, 57.5], "SW34:joiner"] }

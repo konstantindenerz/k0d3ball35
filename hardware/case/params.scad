@@ -106,7 +106,11 @@ ball_window_d   = 16.0;        // through the roof at the ball centre; < ball_d 
 lid_box_clear   = 0.3;         // lid skirt around the controller box walls
 
 // ---------------------------------------------------------------- lid hinge and tenting foot
-tent_deg        = 15;          // tilt of the half on the folded lid, inner edge up (input; the fold follows)
+tent_deg        = 18;          // tilt of the half on the folded lid. 15 no longer solves on the
+                               // right half since r2.3: the pocket pushes the hinge line to -31,
+                               // the kickstand gets shorter and needs a steeper fold, which drops
+                               // the outer plate's free end below the desk. 18 clears it by 2.3 mm
+                               // on the right and 7.8 on the left.
 hinge_fold_override = -1;      // > 0: fold shown by lid_folded instead of the solved one (collision test)
 foot_overhang   = 3.0;         // as a foot the hinge axis sits this far outside the inner tray wall (gen_case FOOT_OVERHANG)
 hinge_knuckle_d = 5.0;         // knuckle diameter = thickness of the hinge strip, flush with the roof top

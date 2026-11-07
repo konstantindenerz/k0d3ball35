@@ -13,7 +13,7 @@ from k0d3.netlist import FPC_PINS, HOLE_PIN, build_components, hole_net, net_nam
 
 SPEC = REPO / "docs" / "01-design-spec.md"
 KEYS = {"left": 18, "right": 17}
-THUMB_COLS = {"left": [2, 3, 4], "right": [2, 3]}
+THUMB_COLS = {"left": [2, 3, 4], "right": [3, 4]}   # r2.3: the ball takes the outer position
 
 
 @pytest.fixture(scope="module", params=HALVES)

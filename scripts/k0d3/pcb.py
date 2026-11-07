@@ -138,6 +138,8 @@ def build_pcb(layout: Layout, comps: list[Component], sheetfile: str) -> str:
             return (ox + c.x - 2.6, oy + c.y - 8.0)
         if c.kind == "diode":
             return r(-1.65 if what == "1" else 1.65, 0)
+        if c.kind == "fpc":                    # FH12-6S contact n, 0.5 mm pitch, pad 1 at local -1.25
+            return r(-1.25 + 0.5 * (int(what) - 1), -1.85)
         raise ValueError(pt)
     for i, route in enumerate(layout.cfg.get("manual_routes", [])):
         pts = [resolve(p) for p in route["points"]]
