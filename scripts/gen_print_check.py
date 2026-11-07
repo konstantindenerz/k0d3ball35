@@ -17,6 +17,7 @@ Usage: scripts/gen_print_check.py [left|right ...]
 """
 from __future__ import annotations
 
+import argparse
 import datetime
 import math
 import subprocess
@@ -26,7 +27,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from k0d3.footprints import nice_nano_tht
-from k0d3.geometry import HALVES, REPO, Layout, load_layout, octagon
+from k0d3.geometry import HALVES, LAYOUT_FILE, REPO, Layout, load_layout, octagon
 
 PAGE = (210.0, 297.0)          # A4 portrait, in millimetres; one SVG user unit is 1 mm
 MARGIN_X = 20.0
@@ -40,6 +41,7 @@ C_GRID = "#2CA02C"
 C_CTRL = "#E8762E"
 C_BATT = "#8E44AD"
 C_BALL = "#17A2B8"
+C_THUMB = "#3B4C8F"    # thumb travel: what the hand test on paper is about
 INK = "#111111"
 GHOST = "#B9B2A4"
 
@@ -95,7 +97,7 @@ def mm(value: float) -> str:
     return f"{value:.2f} mm".replace(".00 mm", ".0 mm")
 
 
-def stamp() -> str:
+def stamp(label: str = "") -> str:
     """Short commit and date for the sheet's corner: a printout on the desk has to say which
     state of the repository it came from. `-dirty` marks uncommitted changes, so a sheet made
     from work in progress can never be mistaken for one made from a commit."""
@@ -109,7 +111,8 @@ def stamp() -> str:
             rev += "-dirty"
     except (subprocess.CalledProcessError, FileNotFoundError):
         rev = "no commit"
-    return f"{rev}  ·  {datetime.date.today().isoformat()}"
+    draft = f"{label}  ·  " if label else ""
+    return f"{draft}{rev}  ·  {datetime.date.today().isoformat()}"
 
 
 def dim_h(s: Sheet, x1: float, x2: float, y: float, label: str, colour: str) -> None:
@@ -128,7 +131,7 @@ def dim_v(s: Sheet, y1: float, y2: float, x: float, label: str, colour: str, sid
 
 
 # ----------------------------------------------------------------- the sheet
-def build(layout: Layout) -> tuple[str, list[Dim]]:
+def build(layout: Layout, label: str = "") -> tuple[str, list[Dim]]:
     s = Sheet()
     cfg = layout.cfg
     sx = layout.board_sx
@@ -136,7 +139,8 @@ def build(layout: Layout) -> tuple[str, list[Dim]]:
     min_x, min_y = min(x for x, _ in ring), min(y for _, y in ring)
     width = max(x for x, _ in ring) - min_x
     height = max(y for _, y in ring) - min_y
-    ox, oy = MARGIN_X - min_x, BOARD_TOP - min_y
+    board_top = BOARD_TOP + (6.0 if label else 0.0)
+    ox, oy = MARGIN_X - min_x, board_top - min_y
 
     def P(x: float, y: float) -> tuple[float, float]:
         """Layout point to page point (board top view; the left half is mirrored in x)."""
@@ -147,10 +151,15 @@ def build(layout: Layout) -> tuple[str, list[Dim]]:
     # ---- header
     s.text(MARGIN_X, 14, f"{cfg['name']} {cfg['revision']} - {layout.half} half, 1:1 measuring sheet",
            size=5.0, weight="bold")
-    s.text(PAGE[0] - MARGIN_X, 14, stamp(), size=3.0, fill=GHOST, anchor="end")
-    s.text(MARGIN_X, 20, "Top view, keys up. Print at 100 %: no “fit to page”, no scaling. Measure the "
+    s.text(PAGE[0] - MARGIN_X, 14, stamp(label), size=3.0, fill=GHOST, anchor="end")
+    if label:
+        banner = f"DRAFT - {label} - not the committed layout"
+        s.add(f'<rect x="{MARGIN_X - 2:.1f}" y="16.4" width="{len(banner) * 3.6 * 0.56 + 5:.1f}" '
+              f'height="6.4" fill="{C_CAL}"/>')
+        s.text(MARGIN_X, 21, banner, size=3.6, fill="#FFFFFF", weight="bold")
+    s.text(MARGIN_X, 20 + (6 if label else 0), "Top view, keys up. Print at 100 %: no “fit to page”, no scaling. Measure the "
                          "red bars first - if they are off, nothing else counts.", size=3.0)
-    s.text(MARGIN_X, 24.5, "A steel ruler reads to about 0.5 mm, so the sheet only asks for long distances. "
+    s.text(MARGIN_X, 24.5 + (6 if label else 0), "A steel ruler reads to about 0.5 mm, so the sheet only asks for long distances. "
                            "Every value is generated from the layout file.", size=3.0)
 
     # ---- the board itself: outline solid, everything a part would cover in grey
@@ -170,8 +179,8 @@ def build(layout: Layout) -> tuple[str, list[Dim]]:
         s.circle(*P(h["x"], h["y"]), MOUNT_HOLE_D, stroke=INK, width=0.3)
 
     # ---- board outline, measured over the bounding box
-    dim_h(s, MARGIN_X, MARGIN_X + width, BOARD_TOP - 6, mm(width), C_BOARD)
-    dim_v(s, BOARD_TOP, BOARD_TOP + height, MARGIN_X + width + 8, mm(height), C_BOARD)
+    dim_h(s, MARGIN_X, MARGIN_X + width, board_top - 6, mm(width), C_BOARD)
+    dim_v(s, board_top, board_top + height, MARGIN_X + width + 8, mm(height), C_BOARD)
     dims.append(Dim("Board outline, widest point across", round(width, 2), C_BOARD))
     dims.append(Dim("Board outline, tallest point down", round(height, 2), C_BOARD))
 
@@ -237,9 +246,21 @@ def build(layout: Layout) -> tuple[str, list[Dim]]:
         dim_v(s, P(0, by - ball_d / 2)[1], P(0, by + ball_d / 2)[1], P(bx, 0)[0], mm(ball_d), C_BALL)
         dims.append(Dim("Notch octagon, across the flats", round(2 * apothem, 2), C_BALL))
         dims.append(Dim(f"Ball circle ({ball_d:g} mm POM ball)", round(ball_d, 2), C_BALL))
+        # the thumb's two travels: ball centre to each thumb key centre, drawn where the thumb moves
+        thumbs = sorted((k for k in layout.keys if k.kind == "thumb"), key=lambda k: -k.x)
+        for i, k in enumerate(thumbs):
+            d = math.dist((bx, by), (k.x, k.y))
+            a, b2 = P(bx, by), P(k.x, k.y)
+            s.path(f"M {a[0]:.3f},{a[1]:.3f} L {b2[0]:.3f},{b2[1]:.3f}", stroke=C_THUMB,
+                   width=0.3, dash="3 1.5")
+            t = 0.40 if i == 0 else 0.62          # not both at mid-line, they would collide
+            s.label(a[0] + (b2[0] - a[0]) * t, a[1] + (b2[1] - a[1]) * t + 1.0, mm(d), C_THUMB)
+            s.circle(*b2, 3.0, stroke=C_THUMB, width=0.4)
+            dims.append(Dim(f"Ball centre to thumb key {k.ref} ({'near' if i == 0 else 'far'})",
+                            round(d, 2), C_THUMB))
 
     # ---- calibration bars
-    y = BOARD_TOP + height + 16.0
+    y = board_top + height + 16.0
     s.text(MARGIN_X, y, "1  Calibration - measure these two first", size=3.6, weight="bold", fill=C_CAL)
     y += 9
     s.path(f"M {MARGIN_X:.3f},{y:.3f} L {MARGIN_X + 100:.3f},{y:.3f}", stroke=C_CAL, width=0.4)
@@ -294,21 +315,29 @@ def build(layout: Layout) -> tuple[str, list[Dim]]:
     return s.render(), dims
 
 
-def write(half: str) -> Path:
+def write(half: str, source: Path = LAYOUT_FILE, label: str = "") -> Path:
     import cairosvg
 
-    svg, _ = build(load_layout(half))
+    svg, _ = build(load_layout(half, source), label)
     OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / f"{half}-check-1to1.svg").write_text(svg)
-    pdf = OUT / f"{half}-check-1to1.pdf"
+    stem = f"{half}-{label}-check-1to1" if label else f"{half}-check-1to1"
+    (OUT / f"{stem}.svg").write_text(svg)
+    pdf = OUT / f"{stem}.pdf"
     # dpi=72 makes one SVG user unit one PDF point, so "210mm" on the page really is 210 mm
     cairosvg.svg2pdf(bytestring=svg.encode(), write_to=str(pdf), dpi=72)
     return pdf
 
 
 def main(argv: list[str]) -> int:
-    for half in (argv or list(HALVES)):
-        print("wrote", write(half).relative_to(REPO))
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("halves", nargs="*", default=list(HALVES), choices=list(HALVES) + [[]])
+    ap.add_argument("--layout", type=Path, default=LAYOUT_FILE,
+                    help="layout yaml to draw (default: the committed one); use a draft to try a candidate")
+    ap.add_argument("--label", default="",
+                    help="marks the sheet and its filename as a draft, e.g. --label variant-A")
+    args = ap.parse_args(argv)
+    for half in (args.halves or list(HALVES)):
+        print("wrote", write(half, args.layout, args.label).relative_to(REPO))
     return 0
 
 
