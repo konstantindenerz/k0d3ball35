@@ -25,17 +25,6 @@ case pocket right beside the thumb keys.
 > money you cannot get back. Treat everything here as a design sketch to read, not a build
 > guide to follow. Use at your own risk; there is no warranty of any kind.
 
-```prompt
-Photorealistic product photo, 35 mm lens, soft window light. Two halves of a low profile split
-keyboard on a light oak desk next to a closed unbranded laptop. Each half has 15 finger keys in a
-column-staggered 3x5 grid with an angular, stepped case outline that follows the stagger; the left
-half has three thumb keys fanned in an arc, the right half two thumb keys and, where its third
-would be, a matte white 19 mm trackball sitting low in a round pocket of the case. Keycaps are matte
-white and light grey low profile caps, the thumb keys are burnt orange. Cases are boxy, warm
-beige-grey 3D printed trays about 12 mm tall with a slightly taller rectangular controller box at
-the inner edge of each half. No cables anywhere. Shallow depth of field, the right half in focus.
-```
-
 ## Status
 
 | Subsystem | State | Where |
