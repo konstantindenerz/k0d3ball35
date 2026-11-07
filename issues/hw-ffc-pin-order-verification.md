@@ -20,7 +20,7 @@ A wrong cable type connects nothing at one end, a wrong order would swap 3V3 and
 
 ## Acceptance criteria
 
-- [x] Pin order on both boards drawn in one diagram with the cable in between, in `docs/08-trackball-module.md`
+- [x] Pin order on both boards drawn in one diagram with the cable in between, in `spec/08-trackball-module.md`
 - [ ] Physical check with a cable and two connectors on breakout boards, or a continuity test on the first PCBs before the sensor is connected
 - [x] `tests/test_ffc_pin_order.py` cross-checks main PCB connector nets against the sensor PCB connector nets
   (reads the pads of both boards, models the type B cable, pairs the pads and compares the nets)
@@ -66,7 +66,7 @@ Pads read from `hardware/right-pcb/k0d3ball35-right.kicad_pcb` and `hardware/sen
 | Pad 1 in the board frame | +x side | +x side |
 | Nets 1..6 | VCC, GND, TB_SCLK, TB_SDIO, TB_NCS, TB_MOT | MOT_J, NCS, SDIO, SCLK, GND, VCC |
 
-Mounting in the pocket (docs/08 sections 2.2 and 3.2) in one world frame, X/Y = right PCB board axes, Z up:
+Mounting in the pocket (spec/08 sections 2.2 and 3.2) in one world frame, X/Y = right PCB board axes, Z up:
 
 | | Right PCB | Sensor PCB |
 |---|---|---|

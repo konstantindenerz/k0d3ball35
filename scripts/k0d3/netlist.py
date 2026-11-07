@@ -2,7 +2,7 @@
 """Electrical description of the k0d3ball35 main PCBs (left and right half).
 
 The same component/net model feeds the schematic generator, the PCB generator and the
-tests, so the three can never disagree. Everything follows docs/01-design-spec.md.
+tests, so the three can never disagree. Everything follows spec/01-design-spec.md.
 
 Since r2 the two halves are separate, non-reversible PCBs with identical controller pin
 use. Controller holes are numbered like the physical Pro Micro footprint seen from the

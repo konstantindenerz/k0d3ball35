@@ -17,7 +17,7 @@ FW = ROOT / "firmware" / "zmk-config"
 CONFIG = FW / "config"
 SHIELD = CONFIG / "boards" / "shields" / "k0d3ball35"
 WORKFLOW = ROOT / ".github" / "workflows" / "firmware.yml"
-DOCS = ROOT / "docs" / "05-firmware.md"
+DOCS = ROOT / "spec" / "05-firmware.md"
 
 # inputs of zmkfirmware/zmk/.github/workflows/build-user-config.yml
 UPSTREAM_INPUTS = {"build_matrix_path", "config_path", "fallback_binary", "archive_name"}
@@ -86,12 +86,12 @@ def test_build_matrix_targets(matrix):
 
 
 def test_artifact_names_match_docs(matrix):
-    """docs/05-firmware.md lists the files of the k0d3ball35-firmware artifact."""
+    """spec/05-firmware.md lists the files of the k0d3ball35-firmware artifact."""
     docs = DOCS.read_text()
     for entry in matrix:
         name = entry["artifact-name"]
         assert re.fullmatch(r"[a-z0-9_]+-nice_nano_v2-zmk", name), name
-        assert f"`{name}.uf2`" in docs, f"{name}.uf2 not documented in docs/05-firmware.md"
+        assert f"`{name}.uf2`" in docs, f"{name}.uf2 not documented in spec/05-firmware.md"
 
 
 def test_west_manifest_pins_zmk_commit():

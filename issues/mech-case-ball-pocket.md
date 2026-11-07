@@ -41,7 +41,7 @@ transport, by the removable case lid (`mech-case-lid`), so the pocket itself nee
 - [x] Floor depth -11.6 mm under the module, two 2.2 mm holes 20 mm apart on the y axis for the M2 x 10 case screws (counterbored, 2.0 mm floor remains), drainage for dust optional
 - [ ] Test print of the pocket corner alone with the cradle and a scrap PCB with the notch: 0.3 mm gap all round, the module drops in and lifts out vertically with the board in place, FFC folds over the board edge into J1 without a crease
 - [x] 25 mm fallback documented as a parameter (notch apothem 16.5 mm, pocket 35 mm) but not printed
-- [x] Image prompt for the pocket detail in `docs/images/PROMPTS.md` (`img-case-pocket-detail`)
+- [x] Image prompt for the pocket detail in `spec/images/PROMPTS.md` (`img-case-pocket-detail`)
 
 ## Notes
 
@@ -55,7 +55,7 @@ block, case screws (-13, 56) and (-13, 76), cavity above the PCB plane is the no
 0.2 mm, rim +5.0 under the cup rim +6.575.
 `tests/test_case.py` checks the floor DXF against the cradle's and the rendered mesh against
 `hardware/trackball-cradle/stack.json`. Open: the test print with the cradle and a scrap PCB.
-See `docs/11-case.md`.
+See `spec/11-case.md`.
 
 2026-11-06 (r2.2): the pocket follows `mech-cradle-notch-relief` and `hw-j1-top-side`. Housing
 29 x 29 in a 30 x 30 well inside a 34 x 34 block, notch corner towards the keys square, no FFC

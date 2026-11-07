@@ -22,7 +22,7 @@ value, the scroll divisor and the auto mouse layer movement threshold must be fo
 - [ ] Default `res-cpi`, scroll tick and snipe CPI chosen on real hardware and recorded in the keymap
 - [ ] Per-axis scaling checked (move the ball 10 cm along x and along y, counts should match)
 - [ ] Auto mouse layer threshold checked against accidental palm contact with the lower ball
-- [ ] `docs/05-firmware.md` tuning section updated
+- [ ] `spec/05-firmware.md` tuning section updated
 
 ## Notes
 

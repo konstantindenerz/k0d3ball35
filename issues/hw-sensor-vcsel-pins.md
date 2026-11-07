@@ -27,7 +27,7 @@ Three things make this worth checking before the boards are ordered:
 
 - ERC cannot catch it. A two-pad net counts as connected, so `kicad-cli sch erc` reports zero violations
   and `--schematic-parity` is satisfied. The gate is blind to it by construction.
-- There is no second source of truth anywhere in the repo. `docs/08-trackball-module.md` section 2 lists a
+- There is no second source of truth anywhere in the repo. `spec/08-trackball-module.md` section 2 lists a
   component for every other pin of the part and lists nothing for `VCSEL_N`, so the intended topology was
   never written down and cannot be recovered from the design.
 - Nothing on the sensor board is covered by an electrical test. `tests/test_sensor_pcb_vs_cradle.py` checks
@@ -42,7 +42,7 @@ fifteen minutes with the datasheet.
 ## Acceptance criteria
 
 - [ ] Pins 1, 10, 15 and 16 compared one by one against the PMS0039 application circuit and the result
-      written into `docs/08-trackball-module.md` section 2, including what each pin is *supposed* to
+      written into `spec/08-trackball-module.md` section 2, including what each pin is *supposed* to
       connect to, so the next reader does not have to re-derive it
 - [ ] If a current-setting resistor or a GND reference on the cathode side is required, it is added to
       `PARTS` in `hardware/sensor-pcb/generate.py` and to the BOM before the order

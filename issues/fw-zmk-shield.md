@@ -20,7 +20,7 @@ revision, GitHub Actions build.
 
 - [ ] `k0d3ball35_left` and `k0d3ball35_right` build for `nice_nano//zmk` in CI, plus `settings_reset`
 - [ ] Pin assignments match the design spec table exactly
-- [ ] Keymap documented in `docs/05-firmware.md` with flashing and pairing steps
+- [ ] Keymap documented in `spec/05-firmware.md` with flashing and pairing steps
 - [ ] Sleep and idle timeouts set with battery life in mind
 
 ## Notes

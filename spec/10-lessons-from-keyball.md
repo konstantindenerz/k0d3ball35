@@ -3,7 +3,7 @@
 What the holykeebs Keyball39 (the board this project replaces on the user's desk) and
 other trackball splits do well, where they fall short, and what k0d3ball35 does about it.
 Every item cites its source. Sources are build logs, long-term reviews, GitHub discussions
-and vendor docs; "k0d3ball35 response" refers to decisions in `docs/01-design-spec.md`.
+and vendor docs; "k0d3ball35 response" refers to decisions in `spec/01-design-spec.md`.
 
 ## 1. The holykeebs Keyball39
 

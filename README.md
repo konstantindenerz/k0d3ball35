@@ -5,7 +5,7 @@ Keyball-inspired column stagger and thumb arc, Kailh Choc V1 hot-swap switches, 
 on each half, ZMK firmware, two flat angular PCBs (18 keys left, 17 keys right) and the ball in a
 case pocket right beside the thumb keys.
 
-![k0d3ball35 concept render: both halves on a desk, trackball in the right half's case pocket](docs/images/concept-render.png)
+![k0d3ball35 concept render: both halves on a desk, trackball in the right half's case pocket](spec/images/concept-render.png)
 
 *Concept render, not a photo of a finished build — generated from the prompt below.*
 
@@ -40,8 +40,8 @@ the inner edge of each half. No cables anywhere. Shallow depth of field, the rig
 
 | Subsystem | State | Where |
 |-----------|-------|-------|
-| Design specification | r2.3 (two PCBs, 35 keys, 19 mm ball pocket, battery bay under the controller on both halves) | [docs/01-design-spec.md](docs/01-design-spec.md) |
-| Layout generator | r2.3 done, per-half outputs, exact coordinates in [docs/02-layout.md](docs/02-layout.md) | [hardware/layout](hardware/layout) |
+| Design specification | r2.3 (two PCBs, 35 keys, 19 mm ball pocket, battery bay under the controller on both halves) | [spec/01-design-spec.md](spec/01-design-spec.md) |
+| Layout generator | r2.3 done, per-half outputs, exact coordinates in [spec/02-layout.md](spec/02-layout.md) | [hardware/layout](hardware/layout) |
 | Left PCB (KiCad 10) | r2.3 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/left-pcb](hardware/left-pcb) |
 | Right PCB (KiCad 10) | r2.3 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/right-pcb](hardware/right-pcb) |
 | Sensor PCB (PMW3610) | r1 done, ERC and DRC clean, gerbers exported, unchanged in r2 | [hardware/sensor-pcb](hardware/sensor-pcb) |
@@ -54,7 +54,7 @@ the inner edge of each half. No cables anywhere. Shallow depth of field, the rig
 Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 change itself is
 `hw-two-pcbs-r2`. Before the first PCB order, work through `hw-main-pcb-review-r1`,
 `test-fab-gerber-viewer`, `hw-19mm-ball-sourcing` and a cradle test print (see
-[docs/09-roadmap.md](docs/09-roadmap.md)).
+[spec/09-roadmap.md](spec/09-roadmap.md)).
 
 ![Right PCB, top](hardware/right-pcb/renders/right-pcb-top.png)
 
@@ -90,7 +90,8 @@ Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 
 ## Repository map
 
 ```
-docs/                 specification, layout, BOM, build guide, firmware, fabrication, testing
+spec/                 specification, layout, BOM, build guide, firmware, fabrication, testing
+docs/                 the published page: interactive 3D exploded view, built from the layout data
 hardware/layout/      layout source (yaml), generated points, outline DXFs and previews per half
 hardware/left-pcb/    KiCad project of the left PCB (18 keys), gerbers and renders
 hardware/right-pcb/   KiCad project of the right PCB (17 keys, FPC connector, pocket notch)
@@ -107,27 +108,27 @@ issues/               markdown tickets and the generated index
 
 | Document | Content |
 |----------|---------|
-| [00 Feasibility](docs/00-feasibility.md) | prior art, ball size research, risks, licensing, why this design |
-| [01 Design specification](docs/01-design-spec.md) | requirements, pin map, matrix, FPC interface, geometry contract |
-| [02 Layout](docs/02-layout.md) | key coordinates per half, stagger derivation, ball pocket |
-| [03 Bill of materials](docs/03-bom.md) | parts, quantities per half, sources |
-| [04 Build guide](docs/04-build-guide.md) | step by step assembly |
-| [05 Firmware](docs/05-firmware.md) | flashing, pairing, tuning, battery |
-| [06 Fabrication](docs/06-fabrication.md) | PCB order settings for both boards, gerber checklist |
-| [07 Testing](docs/07-testing.md) | automated checks and bench procedure |
-| [08 Trackball module](docs/08-trackball-module.md) | sensor board, lens distance, pocket mount, 19 versus 25 mm |
-| [09 Roadmap](docs/09-roadmap.md) | verification before ordering, case, dongle, sensor variants |
-| [10 Lessons from Keyball](docs/10-lessons-from-keyball.md) | holykeebs and Yowkees designs, known weaknesses and our response |
-| [11 Printed case](docs/11-case.md) | tray, controller box cap, ball pocket, hinged lid as transport cover and tenting foot |
-| [12 Order checklist](docs/12-order-checklist.md) | shop-by-shop parts list, what is ordered, JLCPCB and LCSC lines, printed parts, what waits for hardware |
-| [Image prompts](docs/images/PROMPTS.md) | every picture as a generation prompt |
+| [00 Feasibility](spec/00-feasibility.md) | prior art, ball size research, risks, licensing, why this design |
+| [01 Design specification](spec/01-design-spec.md) | requirements, pin map, matrix, FPC interface, geometry contract |
+| [02 Layout](spec/02-layout.md) | key coordinates per half, stagger derivation, ball pocket |
+| [03 Bill of materials](spec/03-bom.md) | parts, quantities per half, sources |
+| [04 Build guide](spec/04-build-guide.md) | step by step assembly |
+| [05 Firmware](spec/05-firmware.md) | flashing, pairing, tuning, battery |
+| [06 Fabrication](spec/06-fabrication.md) | PCB order settings for both boards, gerber checklist |
+| [07 Testing](spec/07-testing.md) | automated checks and bench procedure |
+| [08 Trackball module](spec/08-trackball-module.md) | sensor board, lens distance, pocket mount, 19 versus 25 mm |
+| [09 Roadmap](spec/09-roadmap.md) | verification before ordering, case, dongle, sensor variants |
+| [10 Lessons from Keyball](spec/10-lessons-from-keyball.md) | holykeebs and Yowkees designs, known weaknesses and our response |
+| [11 Printed case](spec/11-case.md) | tray, controller box cap, ball pocket, hinged lid as transport cover and tenting foot |
+| [12 Order checklist](spec/12-order-checklist.md) | shop-by-shop parts list, what is ordered, JLCPCB and LCSC lines, printed parts, what waits for hardware |
+| [Image prompts](spec/images/PROMPTS.md) | every picture as a generation prompt |
 
 ## Exploded view
 
 An interactive 3D exploded view of both halves (explode slider, half switch, section through the
-ball, layer toggles) lives in [`site/index.html`](site/index.html). It
+ball, layer toggles) lives in [`docs/index.html`](docs/index.html). It
 is generated from `points-left.json`, `points-right.json` and the cradle `stack.json` with
-`site/build.py`; the case, the pocket wall and the top frame in it are placeholders
+`docs/build.py`; the case, the pocket wall and the top frame in it are placeholders
 until the case phase.
 
 ## Quick start
@@ -165,7 +166,7 @@ override with `KICAD_CLI=` and `KPY=`. The sensor board has its own generator:
 `hardware/sensor-pcb/generate.py all` followed by `hardware/sensor-pcb/export.sh`.
 
 Firmware is built by GitHub Actions from `firmware/zmk-config`; see
-[docs/05-firmware.md](docs/05-firmware.md) for local builds and flashing.
+[spec/05-firmware.md](spec/05-firmware.md) for local builds and flashing.
 
 ```prompt
 Top-down studio render of the right half of a low profile split keyboard, white background, soft

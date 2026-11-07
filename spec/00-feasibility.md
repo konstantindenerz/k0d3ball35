@@ -175,7 +175,7 @@ Resulting licenses:
 
 | Part of the repository | License |
 |------------------------|---------|
-| `firmware/`, `scripts/`, `tests/`, `docs/`, `README.md` | MIT |
+| `firmware/`, `scripts/`, `tests/`, `spec/`, `README.md` | MIT |
 | `hardware/` (KiCad projects, Ergogen source, cradle CAD, gerbers) | CERN-OHL-P-2.0 |
 
 Commercial use is permitted under both. If kits are ever sold, the name should avoid implying an

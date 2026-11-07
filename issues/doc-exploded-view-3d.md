@@ -13,10 +13,10 @@ created: 2026-11-05
 
 Readers (and the case phase) need to see where case, PCB, controller, battery, sockets, cradle,
 sensor board and ball sit relative to each other before anything is printed. A single
-self-contained HTML page (`site/index.html`, three.js from cdnjs) animates the
+self-contained HTML page (`docs/index.html`, three.js from cdnjs) animates the
 stack of the right half from assembled to fully exploded, with labels, a section view through
 the ball and a left-half mirror toggle. The page is generated from the layout data by
-`site/build.py`, so it follows `hardware/layout/k0d3ball35.yaml`.
+`docs/build.py`, so it follows `hardware/layout/k0d3ball35.yaml`.
 
 ## Acceptance criteria
 

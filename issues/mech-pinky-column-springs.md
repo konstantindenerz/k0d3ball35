@@ -15,7 +15,7 @@ The pinky column is the most reported pain point on Keyball39 (joint load, obliq
 
 ## Acceptance criteria
 
-- [ ] docs/04-build-guide.md recommends 20 to 25 g springs or light switches for the outer column
+- [ ] spec/04-build-guide.md recommends 20 to 25 g springs or light switches for the outer column
 - [ ] BOM lists one light switch option
 
 ## Notes

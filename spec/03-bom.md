@@ -94,7 +94,7 @@ Quantities and LCSC codes follow the fab export `hardware/sensor-pcb/fab/k0d3bal
 | Qty | Part | Spec | Source | Price | Notes |
 |-----|------|------|--------|-------|-------|
 | 14 | Bumper | 10 mm round rubber feet, about 1 mm thick, or 3M SJ5302 clear bumpers | Amazon, 3M distributors | 3 to 8 EUR | Seven 10.5 mm recesses per half in the tray floor (`hardware/case/README.md`); they stop the halves from sliding completely |
-| about 220 g | Filament | PLA or PETG, matte | | 5 EUR | about 110 g per half for tray, cap and the two lid plates (`docs/11-case.md`) |
+| about 220 g | Filament | PLA or PETG, matte | | 5 EUR | about 110 g per half for tray, cap and the two lid plates (`spec/11-case.md`) |
 | 16 (pack of 20) | Magnet | 6 x 2 mm neodymium disc, N35 or better | Amazon DE | 5 to 8 EUR per pack | 8 per half for the lid as a foot (`issues/mech-case-lid.md`): 4 in the tray floor, 4 in the roof of the outer lid plate |
 | 2 | Hinge pin | 2 mm steel rod, about 80 mm long: 2 mm round bar ("Rundstahl 2 mm") or a 2 x 80 mm dowel pin, cut to length | hardware store, Amazon DE | 1 to 3 EUR | One per lid hinge (`hardware/case/README.md`); a piece of 1.75 mm filament works as a fallback with `-D hinge_pin_d=1.75` |
 | 1 | Flux pen, solder wick, 0.5 mm solder | | | | Needed for the FPC connectors |
@@ -120,7 +120,7 @@ exchange the boards lost the jumpers, the dead D0 and the empty ball cutout on t
 ## 10. Order plan
 
 The shop-by-shop checklist with quantities, part numbers and what is already ordered lives in
-[docs/12-order-checklist.md](12-order-checklist.md). Sequencing: the PCBs no longer wait for the
+[spec/12-order-checklist.md](12-order-checklist.md). Sequencing: the PCBs no longer wait for the
 cradle test print. The sensor height is set by `hardware/trackball-cradle/params.scad`, the right
 board's notch by the layout and its tests, and the only outcome that would change a PCB (25 mm ball
 instead of 19 mm) cannot be tested without the sensor PCB, so gating the order on the print was

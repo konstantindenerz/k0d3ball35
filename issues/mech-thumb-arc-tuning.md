@@ -16,7 +16,7 @@ Keyball owners report the thumb keys being hit by ball swipes and the arc not fi
 ## Acceptance criteria
 
 - [ ] Two arc variants printed as a flat switch-plate test piece
-- [ ] Decision recorded in docs/02-layout.md
+- [ ] Decision recorded in spec/02-layout.md
 - [ ] Manual routes in the layout file re-checked after a change
 
 ## Notes

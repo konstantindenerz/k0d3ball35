@@ -29,7 +29,7 @@ bay 21 x 41 mm centred (-53.9, 17.5), floor at -10.6 mm or the pocket level -11.
 - [x] Both halves printable without supports in CAD (`tests/test_case.py` sums the downward faces: only the USB, switch and LED openings, the magnet pockets and the boss chamfers remain); the test print is open
 - [x] Controller block: separate cap plate at +6.7 under / +8.7 top clears the controller top (+5.7) by 1 mm, LED window on the inner wall (position to verify on the controller)
 - [x] Battery well under the controller block on both halves: 10.0 mm below the PCB underside (-11.6, shared with the pocket floor) over the bay rectangle plus the J3 and RB1 courtyards
-- [x] Image prompts for renders in `docs/images/PROMPTS.md` (`img-case-exploded`, `img-case-tray-top`, `img-case-controller-box-section`)
+- [x] Image prompts for renders in `spec/images/PROMPTS.md` (`img-case-exploded`, `img-case-tray-top`, `img-case-controller-box-section`)
 
 ## Notes
 
@@ -44,4 +44,4 @@ numbers: wall 3.0, rim +5.0, key floor -4.6, well and pocket floor -11.6, unders
 standoffs 6.0 mm with M2 heat-set inserts (3.2 mm holes, 4 mm deep; `-D pcb_screws="pilot"` for
 self-tapping), controller box walls to +8.7 with a separate cap on two M2 screws in corner
 bosses, USB 11 x 5.8, switch slot 7 x 3, reset pin hole 3 mm, LED window 3 x 3. Open: test
-print and fit of both trays. See `docs/11-case.md`.
+print and fit of both trays. See `spec/11-case.md`.

@@ -21,8 +21,8 @@ the clip positions; the cradle's `lens_l` / `lens_w` (assembly dummy only) are s
 - [ ] A physical lens measured with calipers (length, width, height, clip positions, aperture offset)
 - [x] Footprint envelope in hardware/sensor-pcb/generate.py updated from the datasheet (12.90 x 8.25 flange, 10.29 x 6.55 body, 2026-11-06)
 - [ ] Cradle `lens_l` / `lens_w` in hardware/trackball-cradle/params.scad (21.5 x 11.5, assembly dummy only) shrunk after the measurement; pocket printed oversized until then
-- [ ] Numbers recorded in docs/08-trackball-module.md
+- [ ] Numbers recorded in spec/08-trackball-module.md
 
 ## Notes
 
-Order the lens with the first sensor batch; see the order plan in docs/03-bom.md.
+Order the lens with the first sensor batch; see the order plan in spec/03-bom.md.

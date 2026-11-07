@@ -1,6 +1,6 @@
 // k0d3ball35 printed case - the owner wordmark as a relief
 //
-// The cell grid comes from logo_data.scad (scripts/gen_logo.py reads docs/images/logo.png),
+// The cell grid comes from logo_data.scad (scripts/gen_logo.py reads spec/images/logo.png),
 // the millimetres from params.scad: one cell is logo_cell wide and logo_cell * logo_stretch
 // tall. Cell y counts from the top of the artwork, so the rows are flipped here.
 //

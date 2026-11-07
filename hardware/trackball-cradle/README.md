@@ -31,7 +31,7 @@ Requires OpenSCAD 2025 or newer with the Manifold backend (tested with 2026.10.1
 
 The 19.05 mm (3/4 inch) ball is the smallest size with a working precedent in keyboards
 (torabo-tsuki LP ships 19.05 mm POM balls, LiNEA40 uses 19 mm on a PMW3610); see
-`docs/00-feasibility.md`. Nothing smaller exists as a keyboard trackball.
+`spec/00-feasibility.md`. Nothing smaller exists as a keyboard trackball.
 
 ## Geometry and stack
 
@@ -129,7 +129,7 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 
 ### Interfaces that other parts of the project rely on
 
-- Right PCB (`docs/01-design-spec.md` section 5, `hardware/layout/output/points-right.json`):
+- Right PCB (`spec/01-design-spec.md` section 5, `hardware/layout/output/points-right.json`):
   ball centre (-13, +66), notch with apothem 15 mm around it (square corner towards the keys), no copper or parts
   needed around the notch. The cradle never touches the PCB.
 - Case (`issues/mech-case-ball-pocket.md`): pocket wall circle 32 mm around the ball centre
@@ -144,7 +144,7 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
   pocket is 3.8 mm deep and 24 x 23 mm wide, so the FPC connector and every other part sit on
   the component side facing the floor. Resulting stack from the ball surface: lens flange
   2.40 mm, lens-side PCB face 5.80 mm, component-side face 7.40 mm, sensor top 9.05 mm
-  (matches `docs/08-trackball-module.md`).
+  (matches `spec/08-trackball-module.md`).
 
 ## Printing
 

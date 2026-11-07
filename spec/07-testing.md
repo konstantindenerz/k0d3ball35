@@ -12,7 +12,7 @@ another step has not produced yet skip with a reason instead of failing.
 | Test file | What it checks |
 |-----------|----------------|
 | `tests/test_issues.py` | every ticket in `issues/` has valid frontmatter (type, priority, status, area, date), the file name matches its area, and `issues/README.md` equals the rendered index |
-| `tests/test_docs.py` | every relative markdown link resolves; every `docs/NN-*.md` named in the spec or README exists or is ticketed; no tool attribution strings; markdown is English (German marker heuristic); no image references without a file (pictures are prompt blocks) |
+| `tests/test_docs.py` | every relative markdown link resolves; every `spec/NN-*.md` named in the spec or README exists or is ticketed; no tool attribution strings; markdown is English (German marker heuristic); no image references without a file (pictures are prompt blocks) |
 | `tests/test_license.py` | MIT and CERN-OHL-P-2.0 texts present; every script and test carries an SPDX header |
 | `tests/test_kicad_gates.py` | `kicad-cli sch erc` and `kicad-cli pcb drc --schematic-parity` report zero errors for the left, right and sensor boards; reports are written to `build/*.json` |
 | `tests/test_geometry.py` | 18 keys left / 17 right, 18 x 17 pitch, stagger values per spec, thumb arc, no keycap overlap, cradle circle clear of caps and of the outline outside the notch (right only), points files up to date |
@@ -32,7 +32,7 @@ Current state: run `.venv/bin/pytest -q`; the KiCad gates run against the genera
 
 ### Hardware pipeline checks
 
-`scripts/build_board.sh <half>` runs the generators, ERC, the autorouter and DRC with schematic parity for one board and retries the route/DRC step until it is clean; a pre-route DRC catches collisions of the hand routes in the half's `manual_routes`. `scripts/export.sh <half>` refuses nothing by itself, so always run the DRC first. The exact commands are listed in [docs/06-fabrication.md](06-fabrication.md).
+`scripts/build_board.sh <half>` runs the generators, ERC, the autorouter and DRC with schematic parity for one board and retries the route/DRC step until it is clean; a pre-route DRC catches collisions of the hand routes in the half's `manual_routes`. `scripts/export.sh <half>` refuses nothing by itself, so always run the DRC first. The exact commands are listed in [spec/06-fabrication.md](06-fabrication.md).
 
 ### Where the gates run
 
@@ -107,4 +107,4 @@ If 4.1 shows a product id of 0x00 or 0xff, check the cable type (type B) and its
 
 A failed bench step becomes a ticket in `issues/` (type `bug`, area `hw` or `fw`) with the step
 number, the measured value and the serial of the PCB. See the convention in
-[docs/01-design-spec.md](01-design-spec.md), section 7.
+[spec/01-design-spec.md](01-design-spec.md), section 7.

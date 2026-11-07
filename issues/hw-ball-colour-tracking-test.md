@@ -16,7 +16,7 @@ Translucent, glossy white and some plastic small balls (25 mm reports; the r2 ba
 ## Acceptance criteria
 
 - [ ] Both BOM balls and one white ball tested on the assembled sensor board
-- [ ] Result recorded in docs/03-bom.md and docs/08-trackball-module.md
+- [ ] Result recorded in spec/03-bom.md and spec/08-trackball-module.md
 
 ## Notes
 

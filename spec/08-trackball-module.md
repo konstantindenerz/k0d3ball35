@@ -67,7 +67,7 @@ close to the pins as possible with short traces. The layout keeps them within 3 
 
 ### 2.2 Connector pin order, cable type and why J1 sits on the key side
 
-Right PCB connector J1 (fixed by `docs/01-design-spec.md`):
+Right PCB connector J1 (fixed by `spec/01-design-spec.md`):
 
 | Pin | 1 | 2 | 3 | 4 | 5 | 6 |
 |-----|---|---|---|---|---|---|
@@ -246,7 +246,7 @@ option. The r1 25 mm ball stood 12 mm proud, which is why the ball size was redu
 
 ### 3.3 Why 19.05 mm, and the 25 mm fallback
 
-Research summary (details and links in `docs/00-feasibility.md`, section 4a): torabo-tsuki LP
+Research summary (details and links in `spec/00-feasibility.md`, section 4a): torabo-tsuki LP
 ships with 25 or 19.05 mm POM balls on the same PMW3610-class sensor module, LiNEA40 tracks a
 19 mm ball with a PMW3610 directly on its PCB, and a seven-month review of the 19 mm torabo-tsuki
 LP reports no tracking problems. PandaKB sells a 19 mm phenolic ball made for split keyboards,
@@ -296,7 +296,7 @@ Image prompt: *Hands-on macro photo of someone pressing a small black optical se
 in a green PCB from the back side, a pair of tweezers holding a clear plastic lens next to it, soft
 workshop lighting, shallow depth of field.*
 
-The case side of this is in `docs/11-case.md` section 3: the two floor holes are countersunk at
+The case side of this is in `spec/11-case.md` section 3: the two floor holes are countersunk at
 90 degrees so the flat heads sit 0.2 mm inside the underside, and the lid's lip keeps clear of J1 and of the cable
 corridor on the key side of the board.
 

@@ -6,7 +6,7 @@ what a change needs before it is merged.
 ## Ground rules
 
 - All code, comments, documentation and ticket text are written in English.
-- `docs/01-design-spec.md` is the contract. If your change alters a pin, a dimension, the matrix or
+- `spec/01-design-spec.md` is the contract. If your change alters a pin, a dimension, the matrix or
   the FPC pinout, update the spec in the same change and file a ticket in `issues/`.
 - Hardware files are licensed under CERN-OHL-P-2.0, everything else under MIT. Do not import
   material under incompatible licenses (GPL hardware files from other keyboard projects included).

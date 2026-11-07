@@ -11,13 +11,13 @@ created: 2026-11-05
 
 ## Context
 
-docs/05-firmware.md gives datasheet-based runtime estimates. Real numbers depend on sleep settings, BLE interval,
+spec/05-firmware.md gives datasheet-based runtime estimates. Real numbers depend on sleep settings, BLE interval,
 sensor rest modes and the actual cells.
 
 ## Acceptance criteria
 
 - [ ] Current measured on both halves (idle, typing, trackball use) with the production config
-- [ ] docs/05-firmware.md estimates replaced by measured values
+- [ ] spec/05-firmware.md estimates replaced by measured values
 
 ## Notes
 

@@ -21,7 +21,7 @@ from k0d3.netlist import FPC_PINS, build_components, hole_net, net_classes
 from test_pcb_review import BOARDS, OFFSET, _load
 
 SHIELD = REPO / "firmware" / "zmk-config" / "config" / "boards" / "shields" / "k0d3ball35"
-SPEC = REPO / "docs" / "01-design-spec.md"
+SPEC = REPO / "spec" / "01-design-spec.md"
 
 
 @pytest.fixture(scope="module", params=HALVES)

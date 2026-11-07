@@ -16,7 +16,7 @@ The ball-zone outline ring used a 2 mm margin around the 34 mm cradle circle, wh
 ## Acceptance criteria
 
 - [x] `ball_margin` in hardware/layout/k0d3ball35.yaml raised to 3.5 mm (cradle radius 17 + 3.5)
-- [x] Geometry test passes, docs/01-design-spec.md section 5 states the margin
+- [x] Geometry test passes, spec/01-design-spec.md section 5 states the margin
 
 ## Notes
 

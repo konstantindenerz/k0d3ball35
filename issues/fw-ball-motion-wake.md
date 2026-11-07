@@ -16,7 +16,7 @@ Deep sleep is key-wake only. Moving the ball does not wake the keyboard; the fir
 ## Acceptance criteria
 
 - [ ] Decide whether the MOT line should be a wake source (costs idle current)
-- [ ] If implemented: documented in docs/05-firmware.md
+- [ ] If implemented: documented in spec/05-firmware.md
 
 ## Notes
 

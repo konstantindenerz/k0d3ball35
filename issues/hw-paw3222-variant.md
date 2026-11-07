@@ -19,7 +19,7 @@ trackball half without touching the main PCB.
 
 - [ ] Sensor board variant with the same 6-pin pinout and mounting holes
 - [ ] ZMK build using sekigon-gonnoc/zmk-driver-paw3222
-- [ ] Measured current comparison in `docs/08-trackball-module.md`
+- [ ] Measured current comparison in `spec/08-trackball-module.md`
 
 ## Notes
 

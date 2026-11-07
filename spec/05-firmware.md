@@ -185,7 +185,7 @@ level) and shown in ZMK Studio.
 ## 9. One pin set for both halves
 
 Since r2 each half is its own PCB and the controller footprint is wired identically on both, so
-there is one pin table (`docs/01-design-spec.md`, section 2) and one shared `kscan0` in
+there is one pin table (`spec/01-design-spec.md`, section 2) and one shared `kscan0` in
 `k0d3ball35.dtsi`:
 
 | Line | Both halves |
@@ -222,5 +222,5 @@ both halves are peripherals.
 
 `firmware/zmk-config/scripts/check_pins.py` compares the devicetree pin usage of both overlays
 (including the prepared left-ball set) against the single pin table in
-`docs/01-design-spec.md` and is run by `tests/test_firmware_pins.py`. The firmware itself is
+`spec/01-design-spec.md` and is run by `tests/test_firmware_pins.py`. The firmware itself is
 validated by building it (CI, or the Docker commands above).

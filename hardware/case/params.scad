@@ -104,7 +104,7 @@ foot_recess     = 0.5;
 // (pinky side, carries the ball window and the four roof magnets) and the inner plate
 // (controller and thumb side). Closed it is the transport cover; folded it goes under the half
 // shifted by foot_dx, the outer plate roof-up under the controller half on the floor magnets
-// and the inner plate as the kickstand beyond the inner edge. See docs/11-case.md section 7.
+// and the inner plate as the kickstand beyond the inner edge. See spec/11-case.md section 7.
 cap_top_z       = 11.0;        // Choc V1 keycap top
 lid_clear       = 3.0;         // roof underside over the caps; also room for the hinge strip
 lid_roof_t      = 3.0;         // takes the 2.4 mm magnet pockets plus the 0.6 mm skin

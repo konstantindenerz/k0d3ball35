@@ -17,7 +17,7 @@ the cradle decides the real directions.
 ## Acceptance criteria
 
 - [ ] Cursor moves in the expected direction on the first assembled right half
-- [ ] Overlay updated if needed, note added to docs/05-firmware.md
+- [ ] Overlay updated if needed, note added to spec/05-firmware.md
 
 ## Notes
 

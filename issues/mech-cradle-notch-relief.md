@@ -21,7 +21,7 @@ The r2 pocket mount could not be assembled in the documented order. Measured aga
 * The pocket well leaves 0.5 mm of clearance around the housing, so the module could not be
   tilted or slid in either: with the PCB screwed down there was no way to get it into its pocket,
   and no way to take it out again for service.
-* `docs/11-case.md` section 5 (PCB in step 3, cradle in step 5) and `docs/04-build-guide.md`
+* `spec/11-case.md` section 5 (PCB in step 3, cradle in step 5) and `spec/04-build-guide.md`
   chapter 11 therefore described an assembly that cannot be carried out.
 
 ## Decision

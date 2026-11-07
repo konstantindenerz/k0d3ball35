@@ -27,7 +27,7 @@ breakage from ZMK main surfaces early.
 
 - Local build of all three targets with `zmkfirmware/zmk-build-arm:stable` on the pinned ZMK
   commit `4dd95d78` (2026-10-09, Zephyr `v4.1.0+zmk-fixes`), identical to the commands in
-  `docs/05-firmware.md`: `right` 276 kB flash / 73 kB RAM, `left` 191 kB / 38 kB, `settings_reset`
+  `spec/05-firmware.md`: `right` 276 kB flash / 73 kB RAM, `left` 191 kB / 38 kB, `settings_reset`
   52 kB / 13 kB; `zmk.uf2` written for each. No devicetree or Kconfig errors.
 - Right half `.config` has `INPUT_PMW3610`, `SPI`, `ZMK_SPLIT_ROLE_CENTRAL`, `ZMK_STUDIO`,
   `ZMK_POINTING`; the final devicetree contains the `pixart,pmw3610` node and the
@@ -42,7 +42,7 @@ breakage from ZMK main surfaces early.
   binding; the input processors (`zip_temp_layer`, `zip_xy_to_scroll_mapper`,
   `zip_scroll_scaler`, `zip_xy_scaler`) and the `zmk,input-listener` / `zmk,input-split`
   bindings exist at the pinned commit. All `CONFIG_` symbols in the `.conf` files exist there.
-- Pin check `scripts/check_pins.py` passes against `docs/01-design-spec.md`;
+- Pin check `scripts/check_pins.py` passes against `spec/01-design-spec.md`;
   `tests/test_firmware_pins.py` and the new `tests/test_firmware_build_config.py` pass.
 
 Fixed on the way:
@@ -51,7 +51,7 @@ Fixed on the way:
   to `SHIELD_K0D3BALL35_*`. The build worked anyway because both files used the same wrong name,
   but it was a trap for anyone adding per-side Kconfig.
 - `build.yaml` artifact names now carry the `-zmk` suffix so the files in the artifact match
-  the table in `docs/05-firmware.md`.
+  the table in `spec/05-firmware.md`.
 - Central-only symbols (`ZMK_POINTING_SMOOTH_SCROLLING`, `ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_*`)
   moved from the shared `k0d3ball35.conf` to `k0d3ball35_right.conf`; they produced
   "unsatisfied dependencies" warnings in the left-half build.
@@ -81,4 +81,4 @@ Fixed on the way:
 
 ## Notes
 
-The local build command and the Docker image are in `docs/05-firmware.md`, section 1.
+The local build command and the Docker image are in `spec/05-firmware.md`, section 1.

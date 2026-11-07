@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""docs/03-bom.md must cover every placed part with at least the placed quantity (both halves)."""
+"""spec/03-bom.md must cover every placed part with at least the placed quantity (both halves)."""
 from __future__ import annotations
 
 import re
@@ -9,7 +9,7 @@ import pytest
 from k0d3.geometry import HALVES, REPO, load_layout
 from k0d3.netlist import build_components
 
-BOM = REPO / "docs" / "03-bom.md"
+BOM = REPO / "spec" / "03-bom.md"
 
 
 def _rows() -> list[dict]:
@@ -36,7 +36,7 @@ def _rows() -> list[dict]:
 def rows():
     r = _rows()
     if not r:
-        pytest.skip("docs/03-bom.md has no parsable tables")
+        pytest.skip("spec/03-bom.md has no parsable tables")
     return r
 
 
@@ -106,7 +106,7 @@ SENSOR_FAB_BOM = REPO / "hardware" / "sensor-pcb" / "fab" / "k0d3ball35-sensor-r
 
 
 def test_sensor_bom_matches_fab_export():
-    """Section 6 of docs/03-bom.md lists every LCSC code of the sensor board fab export with at
+    """Section 6 of spec/03-bom.md lists every LCSC code of the sensor board fab export with at
     least the exported quantity (summed over the rows that carry the code)."""
     import csv
 
@@ -126,7 +126,7 @@ def test_sensor_bom_matches_fab_export():
         if m:
             docs[m.group(0)] = docs.get(m.group(0), 0) + row["_qty"]
     missing = {code: qty for code, qty in fab.items() if docs.get(code, 0) < qty}
-    assert not missing, f"docs/03-bom.md section 6 short of the fab export: {missing} (docs: {docs})"
+    assert not missing, f"spec/03-bom.md section 6 short of the fab export: {missing} (docs: {docs})"
 
 
 def _rows_from(markdown: str) -> list[dict]:

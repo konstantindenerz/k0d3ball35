@@ -19,7 +19,7 @@ firmware scaffolds the node; this ticket makes it a tested build variant.
 
 - [ ] Build variant with the sensor on the left half
 - [ ] Build variant with a dongle central (nice!nano or XIAO) and both halves as peripherals
-- [ ] Latency and battery impact noted in `docs/05-firmware.md`
+- [ ] Latency and battery impact noted in `spec/05-firmware.md`
 
 ## Notes
 

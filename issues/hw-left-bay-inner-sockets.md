@@ -36,7 +36,7 @@ until this is resolved.
 
 ## Acceptance criteria
 
-- [x] Decision taken and recorded in docs/01-design-spec.md (battery section)
+- [x] Decision taken and recorded in spec/01-design-spec.md (battery section)
 - [x] Left board unchanged (no layout change), DRC clean
 - [x] `LEFT_BAY_SOCKET_INTRUSION` and the silk acceptance entry stay as the documented bound of the accepted overhang
 

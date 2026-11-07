@@ -57,7 +57,7 @@ CUTOUT_HALF_WIDTH = (9.65 - 1.05) / 2                # 4.30
 LENS_Z_MIN, LENS_Z_TYP, LENS_Z_MAX = 2.2, 2.4, 2.6   # lens reference plane to tracking surface
 PCB_TO_BASE_PLATE = 3.40                             # PCB lens-side face to lens reference plane
 SENSOR_ABOVE_PCB_COMPONENT_SIDE = 9.05 - 7.40        # 1.65, top of the package on the pin side
-SENSOR_BELOW_PCB_LENS_SIDE = 0.7                     # body protrusion on the lens side (docs/08)
+SENSOR_BELOW_PCB_LENS_SIDE = 0.7                     # body protrusion on the lens side (spec/08)
 # LM18-LSI figure 1: base flange 12.90 x 8.25 (reference surface), upper body 10.29 x 6.55,
 # 5.95 tall including the two 0.90 mm guide posts, base 2.12 thick.
 LENS_BASE_L, LENS_BASE_W = 12.90, 8.25

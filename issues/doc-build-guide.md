@@ -11,14 +11,14 @@ created: 2026-11-05
 
 ## Context
 
-`docs/04-build-guide.md` following the structure of the Keyball39 guide: parts check, tools,
+`spec/04-build-guide.md` following the structure of the Keyball39 guide: parts check, tools,
 diodes, sockets, FPC connector, switches, controller on sockets with the battery underneath, sensor
 board and lens, cradle and ceramic balls, ball, flashing, verification, finishing, troubleshooting.
 Every picture is a prompt block.
 
 ## Acceptance criteria
 
-- [x] All chapters written, each with an image prompt (`docs/04-build-guide.md`, 16 chapters)
+- [x] All chapters written, each with an image prompt (`spec/04-build-guide.md`, 16 chapters)
 - [x] Cross-references to BOM, firmware and testing docs resolve (checked by `tests/test_docs.py`)
 - [ ] Reviewed against the r2 PCB silkscreen on the first assembled boards
 

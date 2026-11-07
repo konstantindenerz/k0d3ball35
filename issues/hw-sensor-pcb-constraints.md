@@ -20,7 +20,7 @@ free within a 40 mm circle around the ball centre for the flange.
 
 - [x] hardware/sensor-pcb outline, holes and lens orientation match the cradle parameters
 - [x] Right PCB octagonal notch has an apothem of 15 mm (cradle clearance circle 28 mm + 1 mm) and no copper or parts inside it or within the edge clearance (`tests/test_pcb_review.py::test_octagonal_notch`)
-- [x] The printed cradle is 24.1 mm wide above the PCB plane (docs/02-layout.md), inside the 30 mm notch; housing 29 x 29 and the sensor board sit below the PCB plane and are checked against the board in `tests/test_sensor_pcb_vs_cradle.py`
+- [x] The printed cradle is 24.1 mm wide above the PCB plane (spec/02-layout.md), inside the 30 mm notch; housing 29 x 29 and the sensor board sit below the PCB plane and are checked against the board in `tests/test_sensor_pcb_vs_cradle.py`
 
 ## Notes
 

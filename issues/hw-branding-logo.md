@@ -17,15 +17,15 @@ case has no branding at all yet. The owner's logo should appear on the PCBs and 
 the keyboard is recognisable as this project.
 
 Logo source: the owner supplied the `kode` labyrinth wordmark as a two-colour PNG, stored as
-`docs/images/logo.png`. It is drawn on a strict cell grid, so `scripts/gen_logo.py` recovers the
+`spec/images/logo.png`. It is drawn on a strict cell grid, so `scripts/gen_logo.py` recovers the
 grid instead of tracing the bitmap: 18 x 35 cells, one stroke per cell. The crop cuts the frame
-off at the top; the generator mirrors the foot in to close it. `scripts/gen_logo.py` also writes `docs/images/logo.svg` from the same rectangles, so the
+off at the top; the generator mirrors the foot in to close it. `scripts/gen_logo.py` also writes `spec/images/logo.svg` from the same rectangles, so the
 vector master exists in the repo and nothing downstream has to touch the raster again.
 
 ## Acceptance criteria
 
-- [x] Logo file added to the repo (`docs/images/logo.png` and the generated
-      `docs/images/logo.svg`), ownership noted in `NOTICE`
+- [x] Logo file added to the repo (`spec/images/logo.png` and the generated
+      `spec/images/logo.svg`), ownership noted in `NOTICE`
 - [x] PCB: wordmark on the **back** silkscreen under the thumb bridge, centre (-35, 48.4),
       13.9 x 4.7 mm, 0.26 mm strokes, from a `silkscreen.logo` block in the layout yaml and
       emitted by `scripts/k0d3/pcb.py` as 34 filled `gr_poly` polygons from `k0d3.logo`. Not a
@@ -40,13 +40,13 @@ vector master exists in the repo and nothing downstream has to touch the raster 
 - [x] Silkscreen minimum feature respected: strokes and gaps are 0.26 mm, 1.7 times the 0.15 mm
       a fab holds; `tests/test_gerbers.py` mask overlap still 0 on all six faces and the rendered
       bottom layer shows strokes and gaps cleanly separated
-- [x] Image prompts in `docs/images/PROMPTS.md` updated (new `img-case-logo-cap`, the style
+- [x] Image prompts in `spec/images/PROMPTS.md` updated (new `img-case-logo-cap`, the style
       anchor and the hero shots show the engraved wordmark)
 
 ## Notes
 
 The case part is done (2026-11-06): generator, model, tests and docs are in `hardware/case/` and
-`docs/11-case.md` section 8. The PCB silkscreen is done (2026-11-06) with two deliberate deviations from the criteria above.
+`spec/11-case.md` section 8. The PCB silkscreen is done (2026-11-06) with two deliberate deviations from the criteria above.
 
 **Back face only, not both.** The mark is 18 x 35 cells, a 1 : 2.96 aspect. Measured against
 pads, courtyards and the existing silk, the widest free bands are about 5 mm tall on either

@@ -20,14 +20,14 @@ Own 22 x 25 mm sensor board: PMW3610DM-SUDU, LM18-LSI lens, 1.8 V LDO from 3.3 V
 - [x] Schematic and PCB in `hardware/sensor-pcb/`, ERC and DRC clean
 - [x] Connector pin order matches hw-ffc-pin-order-verification (desk check in that ticket and `tests/test_ffc_pin_order.py`; the check with a physical cable stays there)
 - [x] Lens envelope per the LM18-LSI drawing: 12.90 x 8.25 flange and 10.29 x 6.55 body on `Dwgs.User`, no lens holes (the guide posts engage the sensor body); sensor inserted from the ball side as in Keyball
-- [x] Gerbers exported, BOM lines in `docs/03-bom.md`
+- [x] Gerbers exported, BOM lines in `spec/03-bom.md`
 
 ## Notes
 
 2026-11-06: `build/k0d3ball35-sensor.drc.json` reports 0 violations, 0 unconnected items, 0 schematic
 parity issues; `build/k0d3ball35-sensor.erc.json` 0 violations. Gerbers (9 layers, PTH/NPTH drills, job
 file) in `hardware/sensor-pcb/gerbers/`, zip, BOM and CPL in `hardware/sensor-pcb/fab/`, BOM lines in
-`docs/03-bom.md` section 6.
+`spec/03-bom.md` section 6.
 
 Geometry against the cradle verified in `tests/test_sensor_pcb_vs_cradle.py` (table in
 `issues/hw-sensor-pcb-constraints.md`): outline 26 x 25, holes 20 mm apart with the optical centre between

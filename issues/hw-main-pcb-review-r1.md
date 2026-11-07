@@ -34,7 +34,7 @@ in the first pass are fixed and their regression tests run as plain tests (no `x
       GUI stays with the remaining hand checks)
 
 Additional items verified by the tests: every controller hole carries the net the pin table in
-`docs/01-design-spec.md` section 2 demands (RAW, GND, RST, VCC on holes 13 to 16 of the
+`spec/01-design-spec.md` section 2 demands (RAW, GND, RST, VCC on holes 13 to 16 of the
 right-hand row, sensor pins on `TB_*` on the right and on `TP_*` on the left), the pin labels
 next to the holes read the right names, the diodes all point cathode (pad 1) to the row net with
 the silkscreen bar on the cathode side and follow the switch rotation, both back-face socket pads
@@ -213,7 +213,7 @@ or countersunk screws from the back.
 8. Repeat steps 1, 2, 4, 5, 6 and 7 on `hardware/left-pcb/k0d3ball35-left.kicad_pro` (18 keys,
    nine test pads, no J1, the inner thumb key SW34 at 20 degrees is hand-routed).
 9. Close with the gerber viewer pass of `test-fab-gerber-viewer` and the drill counts in
-    `docs/06-fabrication.md`.
+    `spec/06-fabrication.md`.
 
 ### Routing review, scripted pass (2026-11-07)
 

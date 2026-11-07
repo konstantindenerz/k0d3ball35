@@ -2,7 +2,7 @@
 """Automated part of the manual board review (issues/hw-main-pcb-review-r1.md).
 
 The two routed boards are parsed as plain s-expressions (no pcbnew needed) and checked
-against docs/01-design-spec.md, the layout yaml and the reference geometry of the parts:
+against spec/01-design-spec.md, the layout yaml and the reference geometry of the parts:
 
 * hot-swap socket pads versus the kiswitch CPG135001S30 footprint, back face wired,
 * FH12-6S on the right board only, pin 1 and contact side,
@@ -36,7 +36,7 @@ from k0d3.netlist import FPC_PINS, HOLE_PIN, hole_net, spare_pad_nets
 
 OFFSET = (120.0, 60.0)
 BOARDS = {h: REPO / "hardware" / f"{h}-pcb" / f"k0d3ball35-{h}.kicad_pcb" for h in HALVES}
-SPEC = REPO / "docs" / "01-design-spec.md"
+SPEC = REPO / "spec" / "01-design-spec.md"
 EDGE_CLEARANCE = 0.3
 HOLE_RADIUS = 1.1
 
@@ -539,7 +539,7 @@ def test_controller_usb_overhang_per_spec(board, layout):
 
 # ----- battery bay ---------------------------------------------------------------------
 def test_owner_wordmark_on_back_silkscreen(board):
-    """The wordmark (docs/images/logo.svg) is a set of filled polygons on B.SilkS under the
+    """The wordmark (spec/images/logo.svg) is a set of filled polygons on B.SilkS under the
     thumb bridge: the same artwork as the case engraving, nowhere near a pad, and with strokes
     a fab can hold. Drawn board-level, so it adds no footprint and no schematic parity item."""
     from shapely.ops import unary_union

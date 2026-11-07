@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""Electrical model checks per half: matrix, controller holes, connectors, against docs/01-design-spec.md."""
+"""Electrical model checks per half: matrix, controller holes, connectors, against spec/01-design-spec.md."""
 from __future__ import annotations
 
 import re
@@ -11,7 +11,7 @@ from k0d3.footprints import all_footprints
 from k0d3.geometry import HALVES, REPO, load_layout
 from k0d3.netlist import FPC_PINS, HOLE_PIN, build_components, hole_net, net_names, spare_pad_nets
 
-SPEC = REPO / "docs" / "01-design-spec.md"
+SPEC = REPO / "spec" / "01-design-spec.md"
 KEYS = {"left": 18, "right": 17}
 THUMB_COLS = {"left": [2, 3, 4], "right": [3, 4]}   # r2.3: the ball takes the outer position
 
@@ -48,7 +48,7 @@ def _spec_pin_table() -> dict[str, str]:
     sec = text.split("## 2.")[1].split("## 3.")[0]
     tables = _spec_tables(sec)
     if len(tables) != 1 or re.search(r"\*\*Left half\*\*", sec):
-        pytest.skip("docs/01-design-spec.md section 2 still has the r1 two-table pin layout; "
+        pytest.skip("spec/01-design-spec.md section 2 still has the r1 two-table pin layout; "
                     "r2 expects one pin table valid for both halves")
     out = {}
     for row in tables[0][1:]:

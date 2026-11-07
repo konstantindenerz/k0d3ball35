@@ -28,7 +28,7 @@ Do these before paying for anything:
    `hw-19mm-ball-sourcing`, `hw-ball-colour-tracking-test`.
 6. FFC pin order with a physical cable and both connectors; the desk check is done and tested
    (`tests/test_ffc_pin_order.py`). Ticket `hw-ffc-pin-order-verification`.
-7. Then order: `hw-jlcpcb-order-r1`, shop by shop per `docs/12-order-checklist.md`.
+7. Then order: `hw-jlcpcb-order-r1`, shop by shop per `spec/12-order-checklist.md`.
 
 ## r2.3 (current revision)
 
@@ -65,7 +65,7 @@ under the half on magnets as a tenting foot. Depends on the final PCB outlines
 (`outline-left.dxf`, `outline-right.dxf`) and the cradle floor footprint
 (`hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`).
 Status 2026-11-06: case CAD done in `hardware/case/` (tray, controller cap, lid per half, pocket
-test part; `docs/11-case.md`). Next: pocket test print, then the right tray and the lid plates.
+test part; `spec/11-case.md`). Next: pocket test print, then the right tray and the lid plates.
 
 Tickets: `mech-case`, `mech-case-ball-pocket`, `mech-case-lid` (`mech-case-ball-dome` closed as superseded).
 

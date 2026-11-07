@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
 """Write the owner wordmark derivatives: hardware/case/logo_data.scad for the case model and
-docs/images/logo.svg as the vector master. The grid recovery itself lives in k0d3.logo.
+spec/images/logo.svg as the vector master. The grid recovery itself lives in k0d3.logo.
 
 Usage: scripts/gen_logo.py [scad] [svg]
 """

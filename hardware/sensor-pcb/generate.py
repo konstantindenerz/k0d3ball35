@@ -55,7 +55,7 @@ def uid():
 # is not mirrored and pin 1 ends up on the same side of the cable as pin 1 here: the order is
 # straight through, 1 to 1.  The cable is a type B FFC (contacts on opposite faces at its two
 # ends), which is what lets one bottom-contact connector look up at the board above it and the
-# other look down at the board below it without a twist.  See docs/08-trackball-module.md.
+# other look down at the board below it without a twist.  See spec/08-trackball-module.md.
 FPC_PINS = {1: "VCC", 2: "GND", 3: "SCLK", 4: "SDIO", 5: "NCS", 6: "MOT_J", "MP": "GND"}
 
 # Reference, symbol, value, footprint, {pin: net}
@@ -420,7 +420,7 @@ def write_schematic():
            f'  (uuid "{root}")', '  (paper "A3")',
            f'  (title_block (title "{TITLE}") (date "2026-11-05") (rev "{REV}") '
            '(company "k0d3ball35 project") (comment 1 "Licensed under CERN-OHL-P-2.0") '
-           '(comment 2 "FPC pin order is mirrored relative to the main PCB; see docs/08-trackball-module.md"))',
+           '(comment 2 "FPC pin order is mirrored relative to the main PCB; see spec/08-trackball-module.md"))',
            '  (lib_symbols']
     for n, d in S.items():
         out.append("    " + symbol_sexpr(n, d).replace("\n", "\n    "))

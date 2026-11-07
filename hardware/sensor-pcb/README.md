@@ -2,7 +2,7 @@
 
 26 x 25 mm, two layer, 1.6 mm FR4. Carries the PixArt PMW3610DM-SUDU laser sensor with its
 LM18-LSI lens, a 1.8 V regulator and a 6-pin 0.5 mm FPC connector to the main PCB.
-Design notes, stack-up and the FFC orientation rule are in `docs/08-trackball-module.md`.
+Design notes, stack-up and the FFC orientation rule are in `spec/08-trackball-module.md`.
 
 ## Files
 

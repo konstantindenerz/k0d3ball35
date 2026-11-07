@@ -13,7 +13,7 @@ created: 2026-11-05
 
 A written procedure a builder follows after soldering: continuity between controller pads and
 rows/columns, diode direction, matrix test in ZMK Studio or a key tester, sensor product ID read in
-the ZMK log, battery charging indicator, BLE pairing, CPI sanity. Drafted in `docs/07-testing.md`.
+the ZMK log, battery charging indicator, BLE pairing, CPI sanity. Drafted in `spec/07-testing.md`.
 
 ## Acceptance criteria
 

@@ -6,7 +6,7 @@ battery well under the controller block, a pocket for the trackball cradle besid
 PCB, and a hinged two-plate lid that covers keys and ball for transport (held by an inner lip)
 and folds under the half as a tenting foot (four magnets in the floor and in the lid roof, a
 2 mm steel pin in the hinge). Tickets: `issues/mech-case.md`, `issues/mech-case-ball-pocket.md`,
-`issues/mech-case-lid.md`; design notes in `docs/11-case.md`.
+`issues/mech-case-lid.md`; design notes in `spec/11-case.md`.
 
 Files
 
@@ -29,8 +29,8 @@ Files
 Requires OpenSCAD 2025 or newer with the Manifold backend (tested with 2026.10.11) and the
 repository venv for the data generator. `make case` at the top level builds everything,
 `make case-data` only refreshes `data.scad` after a layout change, `make -C hardware/case logo`
-only `logo_data.scad` and `docs/images/logo.svg` after a change to `docs/images/logo.png`. `make case` rewrites the STLs,
-which `site/index.html` embeds, so run `make exploded` after it - `tests/test_case.py`
+only `logo_data.scad` and `spec/images/logo.svg` after a change to `spec/images/logo.png`. `make case` rewrites the STLs,
+which `docs/index.html` embeds, so run `make exploded` after it - `tests/test_case.py`
 fails while the page is stale.
 
 ## Geometry

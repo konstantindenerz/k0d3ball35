@@ -5,7 +5,7 @@ as a generation prompt so that it can be produced with an image model or replace
 or render later.
 
 Convention: a document embeds an image as `![alt text](images/<id>.png)`. The `<id>` is the heading
-of the matching entry below. When a real file is added, put it at `docs/images/<id>.png` and keep
+of the matching entry below. When a real file is added, put it at `spec/images/<id>.png` and keep
 the prompt as documentation of the intended content.
 
 Style anchor for all photographic prompts: a low-profile split keyboard in two halves, each in a

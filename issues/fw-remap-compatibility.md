@@ -24,7 +24,7 @@ Possible paths:
 ## Acceptance criteria
 
 - [ ] A documented firmware variant that Remap can configure, in `firmware/` next to the ZMK config
-- [ ] docs/05-firmware.md explains which controller/firmware combination to pick
+- [ ] spec/05-firmware.md explains which controller/firmware combination to pick
 - [ ] PMW3610 driver availability stated for the chosen path
 
 ## Notes

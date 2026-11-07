@@ -107,7 +107,7 @@ module pocket_ring_2d() { offset(delta = pocket_wall) pocket_cavity_2d(); transl
 
 module well_2d() polygon(well(half));
 // J1 and the FFC lie on the key side of the PCB since r2.2: nothing of the case may sit on
-// them, in particular not the lid lip (docs/08-trackball-module.md).
+// them, in particular not the lid lip (spec/08-trackball-module.md).
 module fpc_keepout_2d() {
     if (len(fpc_box(half)) > 0) offset(delta = fpc_clear) polygon(fpc_box(half));
     if (len(cable_corridor(half)) > 0) offset(delta = fpc_clear) polygon(cable_corridor(half));

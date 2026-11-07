@@ -33,7 +33,7 @@ One cart; everything ships from the same warehouse.
 | [ ] | 2 | FPC connector, 6 pin 0.5 mm, bottom contact | 798-FH12-6S-0.5SH55 | open | one for the right PCB (J1, key side), one for the sensor PCB |
 | [ ] | 2 | Battery connector JST PH 2.0 side entry | 306-S2B-PH-SM4-TB | open | |
 | [ ] | 2 | Reset button, side actuated | 667-EVQ-P7A01P | open | |
-| [ ] | 1 (+1), optional | FFC cable 6 pos 0.5 mm, **type B** (opposite-side contacts), 30 to 40 mm | Molex 15166 series, 6 circuits, type B | open | type B is mandatory, a type A cable does not connect (`docs/08-trackball-module.md` 2.2); or take the AliExpress cable below |
+| [ ] | 1 (+1), optional | FFC cable 6 pos 0.5 mm, **type B** (opposite-side contacts), 30 to 40 mm | Molex 15166 series, 6 circuits, type B | open | type B is mandatory, a type A cable does not connect (`spec/08-trackball-module.md` 2.2); or take the AliExpress cable below |
 | [ ] | 2, optional | LDO 1.8 V SOT-23 | Torex XC6206P182MR | open | only if the LCSC lines are not ordered with the PCBs |
 
 ## 3. EU shops (open)
@@ -71,7 +71,7 @@ Upload the three zips, one order each, in the same cart:
 - `hardware/right-pcb/k0d3ball35-right-gerbers.zip`
 - `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip`
 
-Parameters from [docs/06](06-fabrication.md): 2 layers, quantity 5 per design, FR-4 TG 135 or
+Parameters from [spec/06](06-fabrication.md): 2 layers, quantity 5 per design, FR-4 TG 135 or
 higher, 1.6 mm, 1 oz, ENIG (lead-free HASL is acceptable for the two main boards, ENIG for the
 sensor board), tented vias, remove order number ("specify a location" or "yes"), white silkscreen.
 

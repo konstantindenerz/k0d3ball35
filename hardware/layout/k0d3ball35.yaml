@@ -140,7 +140,7 @@ outline:
 silkscreen:
   title: k0d3ball35
   revision_text: r2.3
-  # Owner wordmark (docs/images/logo.svg, see NOTICE) on the back silkscreen, under the thumb
+  # Owner wordmark (spec/images/logo.svg, see NOTICE) on the back silkscreen, under the thumb
   # bridge. That band is the only place on either face that is clear of pads and of the other
   # silkscreen on both halves; the front is boxed in between the title text and the reset and
   # JST courtyards. cell is the stroke width, the mark is 18 x 35 cells, so 0.26 gives
@@ -202,7 +202,7 @@ halves:
     fpc:                            # sensor daughterboard connector, KEY SIDE (r2.2): the cable climbs
                                     # the gap between the cradle cup and the notch, folds over the board
                                     # edge at y = 49 and enters the connector from +y, so the lock stays
-                                    # reachable with everything assembled (docs/08-trackball-module.md).
+                                    # reachable with everything assembled (spec/08-trackball-module.md).
       center: { x: -20.6, y: 47.4 }   # ball x - 7.6, which is the cradle's cable_ch_x: the FFC runs
                                       # straight from the channel into the connector. y keeps the
                                       # mouth inside the notch edge and the body 0.5 mm clear of the

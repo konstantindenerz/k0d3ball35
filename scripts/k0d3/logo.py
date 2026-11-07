@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 """Owner wordmark as a cell grid.
 
-The `kode` wordmark in docs/images/logo.png is drawn on a strict rectangular grid: every
+The `kode` wordmark in spec/images/logo.png is drawn on a strict rectangular grid: every
 stroke is one cell wide, every gap one cell. This script recovers that grid from the
 bitmap, turns the ink cells into a short list of axis-aligned rectangles and writes them as
 cell coordinates. All millimetres live in the SCAD sources, so `-D logo_cell=0.8` stays live.
@@ -15,7 +15,7 @@ full `bar / stub / stub / bar-with-gaps` foot. The missing rows are mirrored in 
 bottom so the frame closes.
 
 Writes two things from the same rectangles: hardware/case/logo_data.scad for the case model
-and docs/images/logo.svg as the vector master everything else can start from.
+and spec/images/logo.svg as the vector master everything else can start from.
 
 The CLI lives in scripts/gen_logo.py; scripts/k0d3/pcb.py uses polygons() for the
 silkscreen.
@@ -26,9 +26,9 @@ import math
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-DEFAULT_SRC = REPO / "docs" / "images" / "logo.png"
+DEFAULT_SRC = REPO / "spec" / "images" / "logo.png"
 DEFAULT_OUT = REPO / "hardware" / "case" / "logo_data.scad"
-DEFAULT_SVG = REPO / "docs" / "images" / "logo.svg"
+DEFAULT_SVG = REPO / "spec" / "images" / "logo.svg"
 
 THRESHOLD = 120     # grey level above which a pixel counts as ink (the artwork is two-tone)
 CORE = 0.6          # fraction of a cell sampled in its middle; the rest absorbs edge rounding

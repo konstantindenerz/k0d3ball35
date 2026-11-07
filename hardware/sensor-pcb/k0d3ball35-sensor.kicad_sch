@@ -1,7 +1,7 @@
 (kicad_sch (version 20250114) (generator "k0d3ball35_generate") (generator_version "9.0")
   (uuid "b5b07117-c10b-4583-8f9f-9a1bc67fb081")
   (paper "A3")
-  (title_block (title "k0d3ball35 trackball sensor board (PMW3610)") (date "2026-11-05") (rev "r1") (company "k0d3ball35 project") (comment 1 "Licensed under CERN-OHL-P-2.0") (comment 2 "FPC pin order is mirrored relative to the main PCB; see docs/08-trackball-module.md"))
+  (title_block (title "k0d3ball35 trackball sensor board (PMW3610)") (date "2026-11-05") (rev "r1") (company "k0d3ball35 project") (comment 1 "Licensed under CERN-OHL-P-2.0") (comment 2 "FPC pin order is mirrored relative to the main PCB; see spec/08-trackball-module.md"))
   (lib_symbols
     (symbol "k0d3ball35:PMW3610DM-SUDU"
       (pin_names (offset 1.016))

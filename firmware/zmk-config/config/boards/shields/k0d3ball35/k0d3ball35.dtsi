@@ -4,7 +4,7 @@
  * Shared devicetree for both halves. The keyboard is two separate PCBs:
  *   left  = 15 finger keys + 3 thumb keys (matrix row 3, columns 2, 3, 4)
  *   right = 15 finger keys + 2 thumb keys (matrix row 3, columns 3, 4) + PMW3610
- * Both controllers use the identical pin set (docs/01-design-spec.md section 2,
+ * Both controllers use the identical pin set (spec/01-design-spec.md section 2,
  * Pro Micro numbering of the nice!nano v2), so the kscan GPIOs live here; the
  * per-side overlays only add the column offset and the sensor.
  *

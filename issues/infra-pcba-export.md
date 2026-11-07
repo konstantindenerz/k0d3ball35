@@ -17,7 +17,7 @@ For builders who do not want to solder diodes and sockets, JLCPCB assembly needs
 
 - [ ] BOM export carries LCSC numbers for diodes, sockets, connectors, switch and reset button
 - [ ] Position file verified against the JLCPCB preview (rotation of the sockets)
-- [ ] Documented in docs/06-fabrication.md
+- [ ] Documented in spec/06-fabrication.md
 
 ## Notes
 

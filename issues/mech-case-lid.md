@@ -39,7 +39,7 @@ of the right half.
 - [x] Stop in the cut: below the axis the cut faces lean outward by `hinge_stop_deg` = half the solved fold (28.8 right, 21.9 left), meet flat on flat at the fold (`hinge_fold_deg` 57.6 right, 43.7 left) and carry the load; knuckle and groove never do
 - [x] Works as a foot on both halves in CAD: the folded lid shifted inward by `foot_dx` so the hinge axis sits 3 mm outside the inner tray wall, outer plate roof-up on the floor magnets under the controller half, inner plate folded down beyond the inner edge as the kickstand pointing towards the other half; the half stands on its outer bottom edge and on the hinge above the kickstand, no cantilever. Tilt `tent_deg` = 18 is the input, the fold is solved so the kickstand's lip edge reaches the desk; hinge axis 37.8 mm (right; 37.8 left) above the desk, kickstand reach 34.3 mm (53.2), free end of the outer plate 2.1 mm (7.7) above the desk (`tests/test_case.py` asserts more than 0.5); rubber feet stay usable without it. Rocking is checked on the print
 - [x] All four lid plates print without supports (roof down; only the pin hole and the knuckle halves past the line overhang); test print open
-- [x] Image prompts in `docs/images/PROMPTS.md` (`img-case-lid-transport`, `img-case-lid-foot`, `img-case-lid-folded`, `img-case-lid-hinge`)
+- [x] Image prompts in `spec/images/PROMPTS.md` (`img-case-lid-transport`, `img-case-lid-foot`, `img-case-lid-folded`, `img-case-lid-hinge`)
 
 ## Notes
 
@@ -52,7 +52,7 @@ pocket; keep the lid height a parameter.
 under +12.0, top +15.0; right roof under +18.1, top +21.1 (3 mm roof); skirt on the rim at +5.0
 with a notch over the controller box walls; four 6 x 2 mm magnets per part. `lid_mode="dome"`
 kept the right lid at the left height with a turret over the ball (optional). Open: test fit
-and the rocking check as a foot. See `docs/11-case.md`. (Heights superseded below.)
+and the rocking check as a foot. See `spec/11-case.md`. (Heights superseded below.)
 
 2026-11-06, later: the four 9 x 7 mm magnet pads on the outer wall are gone. Decision: the lid
 holds on top without magnets, by a 1.0 mm lip on the inside of the skirt that reaches 3.0 mm

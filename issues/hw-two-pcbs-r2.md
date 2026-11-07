@@ -14,7 +14,7 @@ created: 2026-11-06
 r1 used one reversible PCB for both halves. That forced three solder jumpers for the power rows, a
 sacrificed D0, a mirrored controller pin map on the left half, a dead 30 mm ball cutout on the left,
 and a 25 mm ball whose top sat 23 mm above the PCB. The user rejected it as not flat and compact
-enough. r2 (decided 2026-11-06, see `docs/01-design-spec.md`):
+enough. r2 (decided 2026-11-06, see `spec/01-design-spec.md`):
 
 - Two separate PCBs: left 15 finger + 3 thumb keys, right 15 finger + 2 thumb keys (the two outer
   ones at 0 and 10 degrees, same positions as on the left). 35 keys. Identical controller wiring on
@@ -24,7 +24,7 @@ enough. r2 (decided 2026-11-06, see `docs/01-design-spec.md`):
   117.8 x 80.4 mm.
 - 19.05 mm POM ball in a case pocket beside the right PCB (centre (+5, +64), octagonal notch with
   apothem 15 mm, pocket circle 32 mm, sensor board on the case floor 11.6 mm below the PCB top).
-  25 mm stays a cradle parameter. Research behind the size in `docs/00-feasibility.md` section 4a.
+  25 mm stays a cradle parameter. Research behind the size in `spec/00-feasibility.md` section 4a.
 - Ball top drops from about 23 to 17.1 mm above the PCB top.
 
 ## Acceptance criteria

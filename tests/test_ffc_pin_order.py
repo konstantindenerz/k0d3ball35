@@ -6,7 +6,7 @@ one sits on the KEY side of the right PCB: the cable climbs the gap between the 
 the PCB notch, folds over the board edge and goes into the mouth from +y, so the lock can be
 worked with everything assembled.  The test reads the pads of both connectors straight from the
 board files, places both boards in one world frame the way they are mounted in the ball pocket
-(docs/08-trackball-module.md sections 2.2 and 3.2) and pairs the pads that a straight, untwisted
+(spec/08-trackball-module.md sections 2.2 and 3.2) and pairs the pads that a straight, untwisted
 cable joins.  The nets on paired pads must match.
 
 World frame: X and Y are the right PCB's board axes (KiCad, +Y towards the user), Z up.

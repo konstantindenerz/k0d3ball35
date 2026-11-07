@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Build site/index.html from template.html and the layout data.
+"""Build docs/index.html from template.html and the layout data.
 
 Reads hardware/layout/output/points-left.json and points-right.json,
 hardware/layout/k0d3ball35.yaml, hardware/trackball-cradle/stack.json (19 mm pocket

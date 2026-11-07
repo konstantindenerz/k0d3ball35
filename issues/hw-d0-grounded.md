@@ -17,7 +17,7 @@ unusable on both halves.
 
 ## Acceptance criteria
 
-- [x] Documented in docs/01-design-spec.md and the shield README
+- [x] Documented in spec/01-design-spec.md and the shield README
 - [x] Firmware never configures P0.08
 
 ## Notes

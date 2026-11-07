@@ -6197,8 +6197,8 @@ L339.5174 263.1881
 " />
 </g><text x="300.9890" y="261.7522"
 textLength="101.7282" font-size="2.0000" lengthAdjust="spacingAndGlyphs"
-text-anchor="start" opacity="0" stroke-opacity="0">FPC pin order is mirrored relative to the main PCB; see docs/08-trackball-module.md</text>
-<g class="stroked-text"><desc>FPC pin order is mirrored relative to the main PCB; see docs/08-trackball-module.md</desc>
+text-anchor="start" opacity="0" stroke-opacity="0">FPC pin order is mirrored relative to the main PCB; see spec/08-trackball-module.md</text>
+<g class="stroked-text"><desc>FPC pin order is mirrored relative to the main PCB; see spec/08-trackball-module.md</desc>
 <path d="M301.9463 260.9024
 L301.4463 260.9024
 " />

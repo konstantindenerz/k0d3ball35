@@ -26,7 +26,7 @@ The tray and the box cap carry the owner wordmark as an engraved relief (section
 The layout facts (outline, holes, bay, courtyards, pocket, controller block) are generated
 from `hardware/layout/k0d3ball35.yaml` by `scripts/gen_case.py` into `hardware/case/data.scad`;
 every offset and height is a parameter in `params.scad`. `make case` renders everything;
-`make exploded` then refreshes the [interactive 3D view](../site/index.html), which embeds
+`make exploded` then refreshes the [interactive 3D view](../docs/index.html), which embeds
 the STLs and would otherwise still show the previous parts.
 
 ![Tray from above](images/img-case-tray-top.png)
@@ -76,7 +76,7 @@ turret; both render but are not part of the default build.
 ![Section through the pocket](images/img-case-pocket-detail.png)
 
 The cradle stands on the case floor in a well beside the right PCB
-(`docs/08-trackball-module.md`, `hardware/trackball-cradle/README.md`): the housing well is
+(`spec/08-trackball-module.md`, `hardware/trackball-cradle/README.md`): the housing well is
 30 x 30 mm (housing 29 x 29 plus 0.5 mm) in a 34 x 34 mm block, floor at -11.6, two 2.2 mm
 holes 20 mm apart on the y axis for the M2 x 10 case screws from below. The screws are
 countersunk flat heads (90 degrees): the underside opens into a 4.8 mm cone 1.3 mm deep
@@ -110,7 +110,7 @@ carries the wordmark (section 9).
 ## 5. Assembly order
 
 This order is the only one the hardware allows, and the build guide
-(`docs/04-build-guide.md`, chapter 12) follows it step by step.
+(`spec/04-build-guide.md`, chapter 12) follows it step by step.
 
 1. Press the seven M2 heat-set inserts (five standoffs, two bosses) with a soldering iron at
    about 200 C. Do this before anything else goes into the tray.
@@ -222,12 +222,12 @@ plate; the feet stay usable without the lid.
 ![Box cap with the engraved wordmark](images/img-case-logo-cap.png)
 
 The `kode` wordmark is drawn on a strict cell grid, one stroke per cell. `scripts/gen_logo.py`
-recovers that grid from `docs/images/logo.png`, completes the frame foot that the supplied crop
+recovers that grid from `spec/images/logo.png`, completes the frame foot that the supplied crop
 cut off and writes the ink as 34 cell rectangles into `hardware/case/logo_data.scad` (18 x 35
 cells, cell aspect 1.52). `logo.scad` scales them to millimetres and subtracts them; nothing
 about the artwork is hard-coded, so a redrawn logo only means re-running the generator.
 
-The same run writes `docs/images/logo.svg`, a 1 kB vector master in which one user unit is one
+The same run writes `spec/images/logo.svg`, a 1 kB vector master in which one user unit is one
 cell wide and `logo_aspect` units tall. That file, not the PNG, is what anything downstream
 should start from - the PCB silkscreen footprint, a web page, a sticker.
 `tests/test_case.py` rasterises it and compares it cell by cell with the grid.

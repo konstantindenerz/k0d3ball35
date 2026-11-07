@@ -11,13 +11,13 @@ created: 2026-11-05
 
 ## Context
 
-Keyball users rely on scroll snap (`SSNP_VRT`, `SSNP_HOR`, `SSNP_FRE`) and holykeebs on `HK_C_SCROLL`; scrolling with a free axis feels imprecise. See docs/10-lessons-from-keyball.md.
+Keyball users rely on scroll snap (`SSNP_VRT`, `SSNP_HOR`, `SSNP_FRE`) and holykeebs on `HK_C_SCROLL`; scrolling with a free axis feels imprecise. See spec/10-lessons-from-keyball.md.
 
 ## Acceptance criteria
 
 - [ ] Scroll layer locks to the dominant axis by default
 - [ ] Horizontal and free modes selectable from the system layer
-- [ ] Documented in docs/05-firmware.md
+- [ ] Documented in spec/05-firmware.md
 
 ## Notes
 

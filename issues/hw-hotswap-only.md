@@ -18,8 +18,8 @@ pad of the other face. Plated holes there short the column and switch nets, so a
 ## Acceptance criteria
 
 - [x] Footprint `SW_Choc_V1_HS_reversible` uses NPTH boss holes and DRC reports no shorts
-- [x] docs/01-design-spec.md R2 says hot-swap only
-- [ ] Solder-only variant tracked for a later revision (docs/09-roadmap.md)
+- [x] spec/01-design-spec.md R2 says hot-swap only
+- [ ] Solder-only variant tracked for a later revision (spec/09-roadmap.md)
 
 ## Notes
 

@@ -73,7 +73,7 @@ firmware: ## Build ZMK firmware locally with docker (CI is the reference build)
 	  scripts/build_firmware.sh; \
 	else \
 	  echo "docker not found. Firmware is built by .github/workflows/firmware.yml;"; \
-	  echo "see docs/05-firmware.md for a local west setup."; \
+	  echo "see spec/05-firmware.md for a local west setup."; \
 	fi
 
 test: ## Run the test suite
@@ -85,14 +85,14 @@ issues: ## Regenerate issues/README.md from the ticket frontmatter
 case-data: ## Regenerate hardware/case/data.scad (layout facts for the printed case)
 	$(MAKE) -C hardware/case data PYTHON=../../$(PY)
 
-case-logo: ## Regenerate logo_data.scad and docs/images/logo.svg from docs/images/logo.png
+case-logo: ## Regenerate logo_data.scad and spec/images/logo.svg from spec/images/logo.png
 	$(MAKE) -C hardware/case logo PYTHON=../../$(PY)
 
 case: ## Render the printed case: STLs, floor DXFs, previews and stack.json (needs OpenSCAD)
 	$(MAKE) -C hardware/case all PYTHON=../../$(PY)
 
-exploded: ## Rebuild site/index.html (embeds the case STLs; run after `make case`)
-	$(PY) site/build.py
+exploded: ## Rebuild docs/index.html (embeds the case STLs; run after `make case`)
+	$(PY) docs/build.py
 
 print-check: ## 1:1 measuring sheets per half into build/print (A4, print at 100 %)
 	$(PY) scripts/gen_print_check.py $(HALVES)

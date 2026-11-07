@@ -19,7 +19,7 @@ pinned; the same commands run locally through the Makefile.
 
 - [x] `.github/workflows/hardware.yml` green on a push touching `hardware/`
 - [x] Gerber zip per PCB downloadable as an artifact
-- [x] KiCad version documented in `docs/06-fabrication.md`
+- [x] KiCad version documented in `spec/06-fabrication.md`
 
 ## Notes
 

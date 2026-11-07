@@ -26,7 +26,7 @@ geometry is credited to kiswitch in `NOTICE`.
 
 PS1 is on both halves, so if the footprint is wrong both boards lose their power switch and neither can be
 turned off. The switches are already in hand (ordered from keycapsss), and
-`docs/12-order-checklist.md` already calls for a 1:1 paper check -- this ticket is only here to make that
+`spec/12-order-checklist.md` already calls for a 1:1 paper check -- this ticket is only here to make that
 check blocking rather than optional, and to record the anomaly so it is not re-discovered later.
 
 ## Acceptance criteria

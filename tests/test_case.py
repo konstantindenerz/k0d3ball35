@@ -29,8 +29,8 @@ CRADLE = ROOT / "hardware" / "trackball-cradle"
 SCAD = CASE / "case.scad"
 DATA = CASE / "data.scad"
 LOGO = CASE / "logo_data.scad"
-EXPLODED = ROOT / "site" / "index.html"
-LOGO_SVG = ROOT / "docs" / "images" / "logo.svg"
+EXPLODED = ROOT / "docs" / "index.html"
+LOGO_SVG = ROOT / "spec" / "images" / "logo.svg"
 PCB_T = 1.6
 BALL_D = 19.05
 # Four holes are shared; the fifth sits in the thumb cluster, whose shape differs per half
@@ -267,7 +267,7 @@ def test_logo_svg_is_fresh(tmp_path):
 
     out = tmp_path / "logo.svg"
     gen_logo.write_svg(out)
-    assert out.read_bytes() == LOGO_SVG.read_bytes(), "run `make case-logo` and commit docs/images/logo.svg"
+    assert out.read_bytes() == LOGO_SVG.read_bytes(), "run `make case-logo` and commit spec/images/logo.svg"
 
 
 def test_logo_svg_matches_the_grid(logo):
@@ -382,7 +382,7 @@ def test_stack_json(stack, cradle_stack):
 
 
 def test_exploded_view_carries_the_current_box_cap(stack):
-    """site/index.html embeds the case STLs as base64. `make case` rewrites those
+    """docs/index.html embeds the case STLs as base64. `make case` rewrites those
     STLs, so the committed page goes stale unless `make exploded` runs after it; the engraved
     wordmark is the cheapest thing to check for."""
     import base64

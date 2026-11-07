@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Check that the ZMK shield uses the pins defined in docs/01-design-spec.md.
+"""Check that the ZMK shield uses the pins defined in spec/01-design-spec.md.
 
 The keyboard is two separate PCBs with the identical controller pin set, so the
 spec section 2 carries ONE pin table valid for both halves. This script parses
@@ -25,7 +25,7 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
-SPEC = ROOT / "docs" / "01-design-spec.md"
+SPEC = ROOT / "spec" / "01-design-spec.md"
 SHIELD = ROOT / "firmware" / "zmk-config" / "config" / "boards" / "shields" / "k0d3ball35"
 KEYS = 35
 
@@ -167,7 +167,7 @@ def main() -> int:
     for e in errors:
         print("MISMATCH:", e)
     if not errors:
-        print("pins match docs/01-design-spec.md (one pin set for both halves)")
+        print("pins match spec/01-design-spec.md (one pin set for both halves)")
     return 1 if errors else 0
 
 

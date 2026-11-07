@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-The reversible main PCB per `docs/01-design-spec.md`: 3x5 + 3 thumb keys at 18 x 17 mm, Choc V1 hot-swap
+The reversible main PCB per `spec/01-design-spec.md`: 3x5 + 3 thumb keys at 18 x 17 mm, Choc V1 hot-swap
 plus solder pads, 1N4148W SOD-123 diodes, socketed Pro Micro footprint for nice!nano v2, 6-pin FPC
 connector, JST-PH battery pads plus bare-lead pads, MSK-12C02 power switch, reset button, ball zone
 cutout with cradle holes, M2 case mounting holes. Geometry comes from `hardware/layout/k0d3ball35.yaml`.
@@ -22,7 +22,7 @@ cutout with cradle holes, M2 case mounting holes. Geometry comes from `hardware/
 - [x] PCB routed, DRC clean with schematic parity (`make drc`), 2 layers, 1.6 mm
 - [x] Mirror check: left half equals the flipped right half (reversible), all footprints on one side
 - [x] Gerbers, drill, STEP and PNG renders exported into `hardware/main-pcb/`
-- [x] `docs/02-layout.md` and `docs/06-fabrication.md` updated
+- [x] `spec/02-layout.md` and `spec/06-fabrication.md` updated
 
 ## Notes
 

@@ -112,7 +112,7 @@ In the pocket mount the board lies on the case floor with the component side dow
 
 Sensor-board connector pin order is the SAME as on the main board: 1 VCC, 2 GND, 3 SCLK, 4 SDIO, 5 NCS,
 6 MOT. Both FH12-6S connectors are bottom contact, but the main board's sits on the key side and the sensor
-board's under its own board, so the type B cable joins pin 1 to pin 1 (`docs/08-trackball-module.md`
+board's under its own board, so the type B cable joins pin 1 to pin 1 (`spec/08-trackball-module.md`
 section 2.2). R3 (1 k in series with MOTION) and R2 (NCS pull-up) make a wrong cable non-destructive.
 
 Optical stack (datasheet lens-to-surface 2.2 to 2.6 mm, 2.4 mm typical):
@@ -195,7 +195,7 @@ the right half omits the outer one, whose place the ball takes:
 | thumb middle | (3,3) | -42.14 | +61.26 | 10 deg | yes | yes |
 | thumb inner | (3,4) | -61.91 | +66.19 | 20 deg | yes | yes |
 
-Exact values come out of the layout generator and are tabulated in `docs/02-layout.md`.
+Exact values come out of the layout generator and are tabulated in `spec/02-layout.md`.
 
 Ball pocket (right half only): ball centre (-13.0, +66.0), 5 mm outboard of the index column and
 29.5 mm from the middle thumb key. Until r2.3 it sat at (+5.0, +64.0), outboard of the whole
@@ -245,7 +245,7 @@ keeps the 0.3 mm copper-to-edge clearance.
 
 ### 5.1 Case interface
 
-The printed case (`hardware/case/`, `docs/11-case.md`) reads the layout through `load_layout()`
+The printed case (`hardware/case/`, `spec/11-case.md`) reads the layout through `load_layout()`
 and derives everything from it; the numbers below are the contract between PCB and case
 (z = 0 is the PCB top, mirrored in x for the left half):
 
