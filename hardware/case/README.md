@@ -30,7 +30,7 @@ Requires OpenSCAD 2025 or newer with the Manifold backend (tested with 2026.10.1
 repository venv for the data generator. `make case` at the top level builds everything,
 `make case-data` only refreshes `data.scad` after a layout change, `make -C hardware/case logo`
 only `logo_data.scad` and `docs/images/logo.svg` after a change to `docs/images/logo.png`. `make case` rewrites the STLs,
-which `docs/exploded-view/index.html` embeds, so run `make exploded` after it - `tests/test_case.py`
+which `site/index.html` embeds, so run `make exploded` after it - `tests/test_case.py`
 fails while the page is stale.
 
 ## Geometry

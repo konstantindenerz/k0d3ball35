@@ -91,8 +91,8 @@ case-logo: ## Regenerate logo_data.scad and docs/images/logo.svg from docs/image
 case: ## Render the printed case: STLs, floor DXFs, previews and stack.json (needs OpenSCAD)
 	$(MAKE) -C hardware/case all PYTHON=../../$(PY)
 
-exploded: ## Rebuild docs/exploded-view/index.html (embeds the case STLs; run after `make case`)
-	$(PY) docs/exploded-view/build.py
+exploded: ## Rebuild site/index.html (embeds the case STLs; run after `make case`)
+	$(PY) site/build.py
 
 print-check: ## 1:1 measuring sheets per half into build/print (A4, print at 100 %)
 	$(PY) scripts/gen_print_check.py $(HALVES)

@@ -125,9 +125,9 @@ issues/               markdown tickets and the generated index
 ## Exploded view
 
 An interactive 3D exploded view of both halves (explode slider, half switch, section through the
-ball, layer toggles) lives in [`docs/exploded-view/index.html`](docs/exploded-view/index.html). It
+ball, layer toggles) lives in [`site/index.html`](site/index.html). It
 is generated from `points-left.json`, `points-right.json` and the cradle `stack.json` with
-`docs/exploded-view/build.py`; the case, the pocket wall and the top frame in it are placeholders
+`site/build.py`; the case, the pocket wall and the top frame in it are placeholders
 until the case phase.
 
 ## Quick start

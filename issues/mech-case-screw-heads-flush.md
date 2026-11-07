@@ -15,7 +15,7 @@ The two M2 x 10 screws that hold the trackball cradle go in from below through t
 block of the right tray (`case_screws` (-13, 56) and (-13, 76)). The floor there is 2.5 mm thick
 and the counterbore is only 0.5 mm deep (`case_screw_cb_d` 4.5, `case_screw_cb_h` =
 `floor_t - 2.0`), so a 1.5 mm pan head stands 1 mm proud of the underside. In the exploded
-view (`docs/exploded-view`) the heads show as two grey discs floating under the pocket block
+view (`site/index.html`) the heads show as two grey discs floating under the pocket block
 and do not read as holes at all; on the printed part they would scratch the desk and the lid
 plate that lies against the floor in the foot position does not reach the block anyway, but a
 head standing proud is still wrong.

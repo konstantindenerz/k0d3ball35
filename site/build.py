@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Build docs/exploded-view/index.html from template.html and the layout data.
+"""Build site/index.html from template.html and the layout data.
 
 Reads hardware/layout/output/points-left.json and points-right.json,
 hardware/layout/k0d3ball35.yaml, hardware/trackball-cradle/stack.json (19 mm pocket
@@ -21,7 +21,7 @@ from pathlib import Path
 import yaml
 
 HERE = Path(__file__).resolve().parent
-REPO = HERE.parents[1]
+REPO = HERE.parent
 HALVES = ("left", "right")
 TEST_PADS = {"left": ["D0", "D1", "D2", "D3", "D9", "D10", "D14", "D15", "D16"], "right": ["D0", "D1", "D2", "D3", "D9"]}
 STACK_KEYS = ("ball_centre_z", "ball_top_above_pcb_top", "cup_outer_d", "lowest_plastic_z", "lowest_sensor_board_z",

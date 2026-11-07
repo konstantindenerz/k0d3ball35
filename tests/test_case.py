@@ -29,7 +29,7 @@ CRADLE = ROOT / "hardware" / "trackball-cradle"
 SCAD = CASE / "case.scad"
 DATA = CASE / "data.scad"
 LOGO = CASE / "logo_data.scad"
-EXPLODED = ROOT / "docs" / "exploded-view" / "index.html"
+EXPLODED = ROOT / "site" / "index.html"
 LOGO_SVG = ROOT / "docs" / "images" / "logo.svg"
 PCB_T = 1.6
 BALL_D = 19.05
@@ -382,7 +382,7 @@ def test_stack_json(stack, cradle_stack):
 
 
 def test_exploded_view_carries_the_current_box_cap(stack):
-    """docs/exploded-view/index.html embeds the case STLs as base64. `make case` rewrites those
+    """site/index.html embeds the case STLs as base64. `make case` rewrites those
     STLs, so the committed page goes stale unless `make exploded` runs after it; the engraved
     wordmark is the cheapest thing to check for."""
     import base64

@@ -26,7 +26,7 @@ The tray and the box cap carry the owner wordmark as an engraved relief (section
 The layout facts (outline, holes, bay, courtyards, pocket, controller block) are generated
 from `hardware/layout/k0d3ball35.yaml` by `scripts/gen_case.py` into `hardware/case/data.scad`;
 every offset and height is a parameter in `params.scad`. `make case` renders everything;
-`make exploded` then refreshes the [interactive 3D view](exploded-view/index.html), which embeds
+`make exploded` then refreshes the [interactive 3D view](../site/index.html), which embeds
 the STLs and would otherwise still show the previous parts.
 
 ![Tray from above](images/img-case-tray-top.png)
