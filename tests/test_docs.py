@@ -185,3 +185,62 @@ def test_assembly_order_is_the_same_in_both_documents(repo_root: Path, doc: str,
         found.append((name, where[0]))
     wrong = [(a, b) for (a, ia), (b, ib) in zip(found, found[1:]) if ia > ib]
     assert not wrong, f"{doc}: {wrong} come in the wrong order (steps {found})"
+
+
+# Positions that moved when the ball went inboard in r2.3. The values come from the generator,
+# never from this file; only which document has to mention them is written down here.
+_POSITION_DOCS = [
+    ("ball centre", "docs/02-layout.md", "ball"),
+    ("ball centre", "hardware/trackball-cradle/README.md", "ball"),
+    ("J1 position", "docs/01-design-spec.md", "fpc"),
+    ("J1 position", "docs/02-layout.md", "fpc"),
+    ("cradle screw 1", "docs/01-design-spec.md", "screw0"),
+    ("cradle screw 2", "docs/01-design-spec.md", "screw1"),
+]
+
+
+def _spellings(x: float, y: float) -> list[str]:
+    """Every way the docs legitimately write one coordinate pair."""
+    out = []
+    for xs in {f"{x:g}", f"{x:+g}"}:
+        for ys in {f"{y:g}", f"{y:+g}"}:
+            out += [f"({xs}, {ys})", f"({xs},{ys})"]
+            if float(x) == int(x) and float(y) == int(y):
+                out += [f"({xs}.0, {ys}.0)", f"({xs}.0,{ys}.0)"]
+    return out
+
+
+def _position_values(repo_root: Path) -> dict[str, tuple[float, float]]:
+    import json
+
+    right = json.loads((repo_root / "hardware/layout/output/points-right.json").read_text())
+    ball = right["trackball"]["center"]
+    fpc = right["fpc"]["center"]
+    s0, s1 = right["trackball"]["case_screws"]
+    return {
+        "ball": (ball["x"], ball["y"]),
+        "fpc": (fpc["x"], fpc["y"]),
+        "screw0": (s0[0], s0[1]),
+        "screw1": (s1[0], s1[1]),
+    }
+
+
+def test_docs_carry_the_generated_positions(repo_root: Path):
+    """Positions that moved in r2.3 must appear in the document that documents them.
+
+    The ball moved inboard to (-13, +66) and J1, the cradle screws and the right half's H5
+    followed it, but the prose kept the old values in five documents and four tickets. Nothing
+    noticed, because no test tied a number in a sentence to the generator. This does, for the
+    handful of positions a builder measures a physical part against.
+
+    It is a presence check, not a hunt for stale values: a superseded number may legitimately
+    survive beside the current one ("until r2.3 it sat at ..."), but the current one has to be
+    there.
+    """
+    values = _position_values(repo_root)
+    missing = []
+    for what, doc, key in _POSITION_DOCS:
+        text = (repo_root / doc).read_text(encoding="utf-8")
+        if not any(sp in text for sp in _spellings(*values[key])):
+            missing.append(f"{doc}: {what} {values[key]} not mentioned in any spelling")
+    assert not missing, "generated positions missing from the docs:\n" + "\n".join(missing)

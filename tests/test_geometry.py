@@ -217,3 +217,16 @@ def test_battery_bay_marked_on_both_pcbs(layout):
     text = pcb.read_text()
     assert f"{layout.cfg['battery']['cell']} cell" in text
     assert text.count('(layer "B.SilkS")') >= 4
+
+
+def test_silkscreen_revision_matches_the_layout_revision(layout):
+    """`revision_text` is etched onto the board, so it must equal `revision`.
+
+    Both boards shipped silkscreened `r2` while the geometry was r2.3, and the two r2 and r2.3
+    right boards are not interchangeable: 117.8 x 80.4 against 121.0 x 86.7 mm, a different ball
+    position and a different thumb pair. `test_silkscreen_texts` only asserts that the title
+    *contains* whatever the yaml says, so it could never notice the two drifting apart.
+    """
+    assert layout.cfg["silkscreen"]["revision_text"] == layout.cfg["revision"], (
+        "silkscreen revision_text %r does not match revision %r"
+        % (layout.cfg["silkscreen"]["revision_text"], layout.cfg["revision"]))
