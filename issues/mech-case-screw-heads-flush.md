@@ -46,3 +46,21 @@ M2 x 10 **countersunk** self-tapping screws (DIN 7982 ST2.2, head 4.4 mm; counte
 screws into heat-set inserts work too, their 3.8 mm head just sinks 0.3 mm deeper). Nothing was
 ordered yet, so the change costs nothing. Print check: the cone opens to the bed, so it needs no
 support; whether the head really disappears is on the test print with the rest of the fits.
+
+## Load path (r2.3 review, 2026-11-07)
+
+Worth recording because these two screws do three jobs at once: they hold the module down, they clamp
+the sensor board to the posts, and they set the board's seating plane, which is the optical Z
+(`hw-sensor-stack-height`). And the service procedure in the cradle README undoes them every time the
+ball or the lens is cleaned.
+
+Two numbers to watch on the first print:
+
+- `case_screw_cs_h` is 1.3 mm in a 2.5 mm floor, so **1.2 mm of floor** is left at the bore under a
+  4.4 mm countersunk head. Pulled snug into PLA that will eventually deform or pull through. A local
+  thickening on the inside of the floor around each bore (about 6 mm diameter, 1 mm tall) would put
+  the head on 2.2 mm instead.
+- M2 self-tapping into a printed 1.6 mm pilot is good for roughly three to five in-and-out cycles
+  before the thread strips. Heat-set inserts are already the default for the PCB standoffs
+  (`pcb_screws = "insert"`); making `flange_pilot_d = 3.2` the default for the cradle posts too, with
+  M2 x 10 countersunk machine screws, would match. The posts are 5 mm columns, so a 3.5 mm insert fits.

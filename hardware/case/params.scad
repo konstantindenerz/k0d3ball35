@@ -64,7 +64,9 @@ box_rebate      = 2.0;         // inner part of the tall walls lowered to box_ro
 box_fit         = 0.15;        // clearance between the cap plate and the rebate
 boss_in         = 0.5;         // boss screw axis this far inside the wall's inner face
 boss_skin       = 1.4;         // material around the insert hole
-usb_cut         = [11, 5.8];   // width, height; the cut ends at box_roof_under_z
+// The receptacle is about 9 x 3.3; the opening has to admit the plug's overmold, which is commonly
+// 12 mm wide and 7 mm tall on a charging cable. 11 mm was receptacle-sized, not cable-sized.
+usb_cut         = [12.5, 5.8]; // width, height; the cut ends at box_roof_under_z
 switch_slot     = [7, 3.0];    // slide switch lever: width along the wall, height under the PCB
 reset_hole_d    = 3.0;         // through the floor under RB1
 led_window      = [3, 3];      // width along the wall, height; in the inner (-x) wall

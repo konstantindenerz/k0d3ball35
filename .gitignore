@@ -26,6 +26,10 @@ hardware/layout/output/*
 !hardware/layout/output/outline-*.dxf
 !hardware/layout/output/preview-*.png
 
+# setuptools build artefacts from `pip install -e .`
+*.egg-info/
+build/lib/
+
 # OS / editors
 .DS_Store
 .idea/

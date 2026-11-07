@@ -31,6 +31,16 @@ bearing_az      = [60, 180, 300];  // azimuths (deg); keep 0 deg free for a tilt
 //   sensor PCB thickness                          : 1.60
 //   top of sensor package above the PCB           : 1.65 (9.05 - 7.40)
 lens_z          = 2.4;     // ball surface to lens reference plane (datasheet typ.)
+// Correction for the printed stack, in mm. The datasheet window is only 2.2 to 2.6, i.e. +-0.2
+// around lens_z, and every term that sets it is printed: the housing face the lens flange seats on,
+// and the three bearing seats that hold the ball. The bearing seats are the sensitive ones, because
+// they sit 35 degrees below the equator: a radial seat error d moves the ball centre by
+// d * cot(35) = 1.43 d, so 0.15 mm of seat error is 0.21 mm of lens distance and already out of
+// spec. Measure with the feeler gauge (see README, "Test-fit checklist"), then reprint with
+// lens_shim set: POSITIVE moves the sensor board away from the ball and increases the distance,
+// NEGATIVE moves it towards the ball and decreases it. With the pocket mount the module stands on
+// the floor, so a shim also raises the ball by the same amount.
+lens_shim       = 0;       // measured correction to lens_z; 0 = nominal
 lens_h          = 3.4;     // lens reference plane to sensor PCB (lens side)
 lens_l          = 21.5;    // LM18-LSI body length  (cavity gets +1.0 clearance)
 lens_w          = 11.5;    // LM18-LSI body width   (cavity gets +1.0 clearance)

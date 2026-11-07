@@ -193,7 +193,15 @@ below and lift the module out of the pocket. Keycaps and PCB stay where they are
 - Lens distance: with the ball out, lay a 2.0 mm feeler gauge on the lens aperture through
   the 9 mm hole and check that it is flush with the cup surface at the bottom (the ball
   rests 0.4 mm above the cup surface, so 2.0 mm gauge plus 0.4 mm design gap gives the
-  2.4 mm the datasheet asks for). Anything between 2.2 and 2.6 mm total is inside the window.
+  2.4 mm the datasheet asks for). The datasheet window is 2.2 to 2.6, but **aim for 2.3 to
+  2.5**: every error in this stack is printed, and the ones that matter push the distance
+  up, not down. If you are outside that, set `lens_shim` in `params.scad` to the measured
+  difference (negative moves the board towards the ball) and print the cradle again.
+  The sensitive term is the bearing seats, not the housing face. They sit 35 degrees below
+  the equator, so a radial seat error d lifts the ball centre by d * cot(35) = 1.43 d: 0.1 mm
+  of seat error is already 0.14 mm of lens distance, and 0.15 mm puts you out of spec. If the
+  gauge reads high, suspect the seats before the face -- check that each ceramic ball is fully
+  bottomed out in its hole.
 - Case screws: with the module standing on a 2 mm test floor, an M2 x 10 screw from below
   must reach at least 3 mm into the post (in the case it passes 2.5 mm floor less the 1.3 mm
   countersink, 2.25 mm gap and 1.6 mm board first); the sensor board must sit flat on the posts and not bow when the screws are snug.

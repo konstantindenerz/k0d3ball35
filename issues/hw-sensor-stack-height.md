@@ -31,3 +31,30 @@ Option (b) lets the ball bottom sit almost on the case floor; the sensor sees th
 Sensor angle (from docs/08 section 6, folded in here): decide between straight-up mounting (simplest; the cradle
 default) and an angled mount once the cradle prototype exists. The tilted cradle variant was evaluated and only
 pays off beyond 60 degrees (see mech-ball-height-23mm).
+
+## The tolerance stack (r2.3 review, 2026-11-07)
+
+The datasheet window is 2.2 / 2.4 / 2.6 mm, i.e. +-0.2 mm, and nothing in the design adjusts it: the
+lens flange seats on a printed housing face and the ball floats on three 2.0 mm ceramic balls pressed
+into printed radial seats.
+
+The bearing seats are the sensitive term, and they amplify. The bearings sit `bearing_elev` = 35
+degrees below the equator, so a radial protrusion error d moves the ball centre vertically by
+d * cot(35) = **1.43 d**:
+
+| bearing protrusion error | ball rises | resulting lens distance |
+|--------------------------|-----------|-------------------------|
+| +0.05 mm (half a layer)  | +0.07 mm  | 2.47 mm, inside |
+| +0.10 mm                 | +0.14 mm  | 2.54 mm, 0.06 mm left |
+| +0.15 mm                 | +0.21 mm  | **2.61 mm, out of spec** |
+
+0.15 mm of radial error on an FDM-printed 1.9 mm seat is entirely plausible -- the README itself says
+printed holes come out undersize and to ream them -- and it stacks with the printed housing face
+(+-0.1 to 0.2 mm in z at 0.12 mm layers). The nominal 2.40 sits dead centre of the window with no
+bias, while every realistic error pushes the distance up.
+
+Mitigation, since the cradle is a print and reprinting is free: `lens_shim` in
+`hardware/trackball-cradle/params.scad` (added 2026-11-07, default 0) shifts the sensor board along
+the axis, positive away from the ball. Measure with the feeler gauge, set the difference, reprint. The
+README acceptance window was tightened to 2.3 to 2.5 mm so there is room left when the real lens and a
+second print disagree.
