@@ -2,8 +2,21 @@
 
 // ---------------------------------------------------------------- tray
 module tray_body() {
-    translate([0, 0, base_z]) linear_extrude(-pcb_t - base_z + eps) outer_2d();
-    translate([0, 0, -pcb_t]) linear_extrude(rim_z + pcb_t) outer_top_2d();
+    // bottom: the first print layer, so its outer edge is broken (params.scad edge_chamfer)
+    translate([0, 0, base_z + edge_chamfer - eps]) linear_extrude(-pcb_t - base_z - edge_chamfer + 2 * eps) outer_2d();
+    chamfer_up(base_z, edge_chamfer) outer_2d();
+    // rim: the edge the hand touches and the lid skirt meets. Not under the controller box,
+    // whose walls stand on the rim - a chamfer there would undercut them.
+    translate([0, 0, -pcb_t]) linear_extrude(rim_z + pcb_t - rim_chamfer + eps) outer_top_2d();
+    chamfer_down(rim_z, rim_chamfer) difference() {
+        outer_top_2d();
+        if (controller_box) offset(delta = pcb_clear + wall) box_2d();
+    }
+    if (controller_box)
+        translate([0, 0, rim_z - rim_chamfer - eps]) linear_extrude(rim_chamfer + eps) intersection() {
+            outer_top_2d();
+            offset(delta = pcb_clear + wall) box_2d();
+        }
     if (controller_box)
         translate([0, 0, rim_z - eps]) linear_extrude(box_top_z - rim_z + eps) box_walls_2d();
 }

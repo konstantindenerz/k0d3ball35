@@ -46,7 +46,9 @@ function hinge_owner(i) = (i % 2 == 0) ? "outer" : "inner";
 // edge reaches the desk, solved by bisection. The stop faces are cut for exactly that fold.
 function _rot2(p, a) = [p[0] * cos(a) + p[1] * sin(a), -p[0] * sin(a) + p[1] * cos(a)];
 function _lip_in() = pcb_clear - lid_fit - lid_lip_chamfer;    // lip foot outside the PCB edge (negative: inside)
-function foot_pivot_x() = maxx(outline(half)) + pcb_clear + wall;             // tray's outer bottom edge
+// The half rocks on its outer bottom edge, and the broken edge moves that line inward by
+// edge_chamfer: with a sharp corner assumed, the model would hover a tenth above the desk.
+function foot_pivot_x() = maxx(outline(half)) + pcb_clear + wall - edge_chamfer;
 function foot_axis_x() = hx + foot_dx(half);                                   // hinge axis, board frame
 // hinge axis above the desk: the axis is hinge_knuckle_d / 2 under the roof top = tray underside
 function foot_hinge_h() = _rot2([foot_axis_x() - foot_pivot_x(), -hinge_knuckle_d / 2], tent_deg)[1];
@@ -109,6 +111,26 @@ module well_2d() polygon(well(half));
 module fpc_keepout_2d() {
     if (len(fpc_box(half)) > 0) offset(delta = fpc_clear) polygon(fpc_box(half));
     if (len(cable_corridor(half)) > 0) offset(delta = fpc_clear) polygon(cable_corridor(half));
+}
+
+// A broken outer edge, as a stack of inset slices: OpenSCAD has no offset in z, and a hull over
+// a non-convex outline would fill its steps. Each slice is chamfer_step tall, so the taper is
+// finer than a print layer and comes out as a clean 45 degree face.
+module chamfer_up(z0, c) {          // edge at the bottom of a body, material above it
+    if (c > 0) {
+    steps = max(1, ceil(c / chamfer_step));
+    dz = c / steps;
+    for (i = [0 : steps - 1])
+        translate([0, 0, z0 + i * dz]) linear_extrude(dz + eps) offset(delta = -(c - i * dz)) children(0);
+    }
+}
+module chamfer_down(z1, c) {        // edge at the top of a body, material below it
+    if (c > 0) {
+    steps = max(1, ceil(c / chamfer_step));
+    dz = c / steps;
+    for (i = [0 : steps - 1])
+        translate([0, 0, z1 - (i + 1) * dz]) linear_extrude(dz + eps) offset(delta = -(c - i * dz)) children(0);
+    }
 }
 
 module box_2d() {

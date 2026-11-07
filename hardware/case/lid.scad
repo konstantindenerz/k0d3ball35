@@ -11,7 +11,12 @@
 // below the axis leans outward by hinge_stop_deg (half the fold), so the two faces meet flat
 // on flat at the fold and carry the load.
 
-module lid_body(top) translate([0, 0, rim_z]) linear_extrude(top - rim_z) outer_top_2d();
+// The lid prints roof down, so the roof top is its first layer and gets the same broken edge
+// as the tray floor.
+module lid_body(top) {
+    translate([0, 0, rim_z]) linear_extrude(top - rim_z - edge_chamfer + eps) outer_top_2d();
+    chamfer_down(top, edge_chamfer) outer_top_2d();
+}
 
 module lid_cavity(top) {
     translate([0, 0, rim_z - 1]) linear_extrude(top - rim_z + 1) {

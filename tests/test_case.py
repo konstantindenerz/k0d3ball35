@@ -603,10 +603,13 @@ def test_render_lid(tmp_path, half, data):
     # roof magnets from the roof underside, same xy as the tray floor pockets, roof top closed
     hx = values["hinge_x"] * sx
     away = v[np.abs(v[:, 0] - hx) > values["hinge_knuckle_d"] / 2 + 1.0]     # the knuckles are round
-    pockets = circle_centres(away, values["lid_roof_under_z"] + 2.4)
+    pockets = circle_centres(away, values["lid_roof_under_z"] + 2.4, rings_only=True)
     expected = [((x - values["foot_dx"]) * sx, y) for x, y in data["foot_magnets"][half]]
     assert len(pockets) == 4 and same_points(pockets, expected), (pockets, expected)
-    assert circle_centres(away, values["lid_top_z"] - 0.3) == []
+    # nothing round breaks through the roof top: the magnet pockets stay buried under their skin.
+    # The broken outer edge of the roof puts the outline's own vertices in this plane, so only
+    # closed rings count here.
+    assert circle_centres(away, values["lid_top_z"] - 0.3, rings_only=True) == []
     top = v[np.abs(v[:, 2] - values["lid_top_z"]) < 0.02]
     assert all(np.hypot(top[:, 0] - mx, top[:, 1] - my).min() > 3.0 for mx, my in expected), "skin over the magnets"
     if half == "right":
@@ -620,7 +623,10 @@ def test_render_lid(tmp_path, half, data):
         assert values["ball_window_d"] < BALL_D
     # printed roof-down: no upward face below the roof top except the knuckle grooves in the skirt
     n, a, fz = mesh.face_normals, mesh.area_faces, mesh.triangles_center[:, 2]
-    assert a[(n[:, 2] > 0.7) & (fz < values["lid_top_z"] - 0.1)].sum() < OVERHANG_BUDGET_LID
+    # The roof top is the first print layer and its outer edge is broken, which puts a ring of
+    # 0.1 mm steps right under the top. Those are the chamfer, not overhangs to worry about, so
+    # the budget looks below them.
+    assert a[(n[:, 2] > 0.7) & (fz < values["lid_top_z"] - values["edge_chamfer"] - 0.05)].sum() < OVERHANG_BUDGET_LID
 
 
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")
@@ -724,7 +730,10 @@ def test_render_lid_as_foot(tmp_path, half, data):
     assert base > 3000.0, "the tray underside is tilted by foot_tilt_deg"
     on_desk = v[v[:, 2] < 0.05]
     xs = on_desk[:, 0] * sx
-    assert xs.max() > values["bbox_max_x"] + 3.0, "the tray's outer edge stands on the desk"
+    # the tray stands on its outer bottom edge, which the broken edge moves edge_chamfer inward
+    stands_at = values["bbox_max_x"] + 3.2 - values["edge_chamfer"]
+    assert abs(xs.max() - stands_at) < 0.15, \
+        f"the tray stands at {xs.max():.2f}, expected {stands_at:.2f} (outer wall minus the chamfer)"
     # The kickstand's contact is foot_reach beyond the inner tray wall - the number the stack
     # echoes and the docs quote as the free desk a half needs between the halves. Both are read
     # in the desk frame: the half is tilted about its outer edge, so the wall moves in x too.

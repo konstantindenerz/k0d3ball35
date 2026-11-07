@@ -15,6 +15,16 @@ mirror_left     = true;        // mirror x once at the top level for the left ha
 // ---------------------------------------------------------------- PCB and walls
 pcb_t           = 1.6;
 pcb_clear       = 0.2;         // gap between the PCB edge and the cavity wall
+// Broken edges. Both halves print with their large flat face on the bed - the tray floor down,
+// the lid roof down - and that first layer squashes out by a tenth or two (elephant's foot).
+// A 45 degree taper there keeps the part sitting flat and takes the sharp edge off the one that
+// rides on the desk. The rim gets a smaller one: it is what the hand touches when the lid is off
+// and what meets the lid skirt when it is on, where it reads as a shadow line instead of a seam.
+// The vertical corners stay sharp: the nozzle rounds them to about 0.2 mm anyway and the angular
+// outline is the point (corner_radius 0 in the layout file).
+edge_chamfer    = 0.5;         // tray bottom and lid roof, the two first layers
+rim_chamfer     = 0.3;         // top outer edge of the tray rim
+chamfer_step    = 0.1;         // a taper is stepped this finely, well under one print layer
 wall            = 3.0;         // case wall outside the PCB cavity
 under_pcb_clear = 3.0;         // cavity under the key area: hot-swap sockets 1.8 + diodes 1.1 + air
 rim_z           = 5.0;         // top of the tray walls (flush with the Choc keycap skirts)

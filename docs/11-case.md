@@ -31,6 +31,21 @@ the STLs and would otherwise still show the previous parts.
 
 ![Tray from above](images/img-case-tray-top.png)
 
+
+Broken edges (`edge_chamfer` 0.5 mm, `rim_chamfer` 0.3 mm in `params.scad`): both parts print
+with a large flat face on the bed - the tray floor down, the lid roof down - and that first layer
+squashes out by a tenth or two. A 45 degree taper on those two outer edges keeps the half sitting
+flat, takes the sharp edge off the line that rides on the desk, and gives the lid a lead-in. The
+rim gets a smaller one: it is what the hand touches with the lid off and what meets the lid skirt
+with the lid on, where it reads as a shadow line rather than a seam. It stops short of the
+controller box, whose walls stand on the rim. The vertical corners stay sharp - the nozzle rounds
+them to about 0.2 mm anyway and the angular outline is the point. The taper is built as a stack of
+inset slices `chamfer_step` (0.1 mm) tall, finer than a print layer: OpenSCAD has no offset in z
+and a hull over this outline would fill its steps.
+
+Consequence worth knowing: the half now rocks on the chamfered line, `edge_chamfer` inside the
+outer wall, so `foot_pivot_x` and everything the foot solve derives from it moved by that much.
+
 ## 2. Heights
 
 z = 0 is the PCB top, from `hardware/case/stack.json`:
