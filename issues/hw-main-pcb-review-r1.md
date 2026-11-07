@@ -262,3 +262,20 @@ done
 
 Print at 100 % (no "fit to page") and check the 20 mm hole spacing of the controller or two socket
 bosses with a ruler before trusting the sheet.
+
+## r2.3 rework (2026-11-07)
+
+The ball moved inboard and the right half swapped its thumb pair
+(`hw-ball-inboard-r2-3`), so the right board was regenerated and rerouted from scratch and the
+left one got its hand routes re-laid on the 45 degree grid. Everything automated in this ticket
+was rerun and is green; the hand checks below are due again on the new boards, with two items
+that have moved:
+
+* the socket paper check now applies to SW33 and SW34 on the right (10 and 20 degrees), not SW32
+  and SW33,
+* J1 sits at (-20.6, 47.4) with the notch edge at y 51, so step 3 looks at a different place.
+
+New since the rework, and worth a look in the GUI: the seven hand routes of the right board and
+the nine of the left. They were placed by a grid search over the free copper of each layer and
+are checked by `tests/test_generated_tracks.py` against drills, foreign pads, the board edge,
+each other and the 45 degree grid - but a human should still look at them once.
