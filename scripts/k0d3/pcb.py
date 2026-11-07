@@ -255,7 +255,7 @@ def project_json(name: str, comps: list[Component], half: str) -> str:
                 "defaults": {"board_outline_line_width": 0.05, "copper_line_width": 0.2, "silk_line_width": 0.12, "silk_text_size_h": 1.0, "silk_text_size_v": 1.0, "silk_text_thickness": 0.15},
                 "rules": {
                     "min_clearance": 0.127, "min_connection": 0.127, "min_copper_edge_clearance": 0.3, "min_hole_clearance": 0.25,
-                    "min_hole_to_hole": 0.25, "min_microvia_diameter": 0.2, "min_microvia_drill": 0.1, "min_resolved_spokes": 2,
+                    "min_hole_to_hole": 0.5, "min_microvia_diameter": 0.2, "min_microvia_drill": 0.1, "min_resolved_spokes": 2,
                     "min_silk_clearance": 0.0, "min_text_height": 0.6, "min_text_thickness": 0.08, "min_through_hole_diameter": 0.3,
                     "min_track_width": 0.15, "min_via_annular_width": 0.1, "min_via_diameter": 0.5, "solder_mask_clearance": 0.0,
                     "solder_mask_min_width": 0.0, "use_height_for_length_calcs": True,

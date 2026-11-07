@@ -143,10 +143,21 @@ clearances, `dsn` gives duplicate pad numbers unique names, bakes footprint rota
 drops the pours (GND is routed as a normal net) and exports the DSN, `route` runs freerouting,
 `import` strips the placement block from the SES and imports the tracks, `finish` widens undersized
 tracks to their net class, fills the pours, adds GND vias on a 6 mm grid wherever both pours have
-copper and removes vias that would only anchor islands. A grid point is skipped when its drill
-would come closer to an existing hole than the board's `min_hole_to_hole` (0.25 mm): copper
-clearance says nothing about two holes on the same net, and the router does put vias next to GND
-pads and on top of grid points (`tests/test_pcb_review.py::test_drills_keep_the_board_minimum_hole_to_hole`).
+copper, and then removes any unlocked GND via whose hole still crowds another hole
+(`drop_crowded_ground_vias`).
+
+Hole spacing needs that second pass because nothing else enforces it. The board's
+`min_hole_to_hole` is **0.5 mm**, which is JLCPCB's figure rather than KiCad's default, and a grid
+point is skipped when its drill would land closer than that to an existing hole. But KiCad's own
+`hole_to_hole` rule skips pairs on the *same* net, and the pour ties every stitching via to the
+controller's ground pads -- so a via beside a GND pad or another GND via is invisible to DRC. That
+is how a 0.3 mm via once ended up 0.498 mm inside a 1.0 mm pad hole
+(`issues/hw-main-pcb-review-r1.md`). Freerouting is not told about hole spacing either: `prepare`
+only inflates copper clearance for the router copy, so the router's own vias can land too close and
+`stitch_ground` cannot move a via it did not place. The removal pass is what closes that gap, and
+`tests/test_pcb_review.py::test_drills_keep_the_board_minimum_hole_to_hole` checks the result
+net-agnostically. If a violation survives -- a locked via from the layout file against a pad, say --
+`finish` refuses to save and names the pair, because that needs a layout change.
 
 Design rules: clearance 0.2 mm, tracks 0.25 mm everywhere except RAW and the battery at 0.4 mm.
 The sensor bus is 0.25 mm too since r2.3: a track centred on an FH12 contact still clears the

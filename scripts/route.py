@@ -168,24 +168,90 @@ def finish(pcb: Path) -> None:
                 fixed += 1
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     rules = pro["board"]["design_settings"]["rules"]
-    added = stitch_ground(board, hole_gap_mm=rules.get("min_hole_to_hole", 0.25))
+    gap = rules.get("min_hole_to_hole", 0.5)
+    added = stitch_ground(board, hole_gap_mm=gap)
+    dropped, left = drop_crowded_ground_vias(board, gap)
     pcbnew.ZONE_FILLER(board).Fill(board.Zones())
     pcbnew.SaveBoard(str(pcb), board)
-    print("widened tracks:", fixed, "| GND stitching vias added:", added, "| saved", pcb)
+    print("widened tracks:", fixed, "| GND stitching vias added:", added,
+          "| crowded GND vias dropped:", dropped, "| saved", pcb)
+    if left:
+        print("hole spacing still violated, these need a layout change:")
+        for line in left:
+            print("   ", line)
+        raise SystemExit(1)
 
 
-def drop_floating_ground_vias(board) -> int:
-    """Remove GND vias whose connected cluster contains no pad (they would only anchor islands)."""
-    c = board.GetConnectivity()
-    c.Build(board)
-    removed = 0
-    for v in list(board.GetTracks()):
-        if v.GetClass() != "PCB_VIA" or v.GetNetname() != "GND" or v.IsLocked():
+def _all_holes(board):
+    """Every drilled hole on the board as (x_nm, y_nm, radius_nm, label, item_or_None).
+
+    `item` is set only for vias, i.e. only for the holes this script may remove.
+    """
+    holes = []
+    for t in board.GetTracks():
+        if t.GetClass() != "PCB_VIA":
             continue
-        if len(c.GetConnectedPads(v)) == 0:
-            board.Remove(v)
-            removed += 1
-    return removed
+        holes.append((t.GetPosition().x, t.GetPosition().y, t.GetDrillValue() / 2,
+                      f"via {t.GetNetname()}", t))
+    for fp in board.GetFootprints():
+        for pad in fp.Pads():
+            d = pad.GetDrillSize()
+            if d.x <= 0:
+                continue
+            holes.append((pad.GetPosition().x, pad.GetPosition().y, min(d.x, d.y) / 2,
+                          f"{fp.GetReference()} pad {pad.GetNumber()}", None))
+    return holes
+
+
+def drop_crowded_ground_vias(board, gap_mm: float) -> tuple[int, list[str]]:
+    """Remove unlocked GND vias whose hole wall comes closer than `gap_mm` to another hole.
+
+    Nothing else enforces this. KiCad's `hole_to_hole` rule skips pairs on the same net, and
+    the pour ties every stitching via to the controller's ground pads, so a grid via that lands
+    beside a GND pad or another GND via is invisible to DRC -- which is how a 0.3 mm via once
+    ended up 0.498 mm inside a 1.0 mm pad hole (issues/hw-main-pcb-review-r1.md). Freerouting is
+    not told about hole spacing either; `prepare()` only inflates copper clearance for the router
+    copy. `stitch_ground()` keeps its own grid points apart, but it runs before the router's vias
+    are known on a reroute and cannot move a via it did not place.
+
+    Only unlocked GND vias are removed: a locked via is a position declared in the layout file,
+    and a pad cannot move. Violations that survive are returned so the caller can report them
+    instead of saving a board that quietly breaks the rule.
+    """
+    gap = pcbnew.FromMM(gap_mm)
+    removed = 0
+    while True:
+        holes = _all_holes(board)
+        worst = None
+        for i in range(len(holes)):
+            for j in range(i + 1, len(holes)):
+                ax, ay, ar, alabel, aitem = holes[i]
+                bx, by, br, blabel, bitem = holes[j]
+                d = math.hypot(ax - bx, ay - by) - ar - br
+                if d >= gap:
+                    continue
+                if worst is None or d < worst[0]:
+                    worst = (d, holes[i], holes[j])
+        if worst is None:
+            return removed, []
+        _, a, b = worst
+        # prefer removing an unlocked GND via; a locked via or a pad stays
+        victim = next((h for h in (a, b)
+                       if h[4] is not None and not h[4].IsLocked() and h[4].GetNetname() == "GND"),
+                      None)
+        if victim is None:
+            left = []
+            holes = _all_holes(board)
+            for i in range(len(holes)):
+                for j in range(i + 1, len(holes)):
+                    d = math.hypot(holes[i][0] - holes[j][0], holes[i][1] - holes[j][1]) \
+                        - holes[i][2] - holes[j][2]
+                    if d < gap:
+                        left.append(f"{holes[i][3]} <-> {holes[j][3]}: "
+                                    f"{pcbnew.ToMM(d):.3f} mm, need {gap_mm}")
+            return removed, left
+        board.Remove(victim[4])
+        removed += 1
 
 
 def _point_to_segment(p, a, b) -> float:

@@ -40,13 +40,13 @@ the inner edge of each half. No cables anywhere. Shallow depth of field, the rig
 
 | Subsystem | State | Where |
 |-----------|-------|-------|
-| Design specification | r2 (two PCBs, 35 keys, 19 mm ball pocket, battery bay under the controller on both halves) | [docs/01-design-spec.md](docs/01-design-spec.md) |
-| Layout generator | r2 done, per-half outputs, exact coordinates in [docs/02-layout.md](docs/02-layout.md) | [hardware/layout](hardware/layout) |
-| Left PCB (KiCad 10) | r2 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/left-pcb](hardware/left-pcb) |
-| Right PCB (KiCad 10) | r2 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/right-pcb](hardware/right-pcb) |
+| Design specification | r2.3 (two PCBs, 35 keys, 19 mm ball pocket, battery bay under the controller on both halves) | [docs/01-design-spec.md](docs/01-design-spec.md) |
+| Layout generator | r2.3 done, per-half outputs, exact coordinates in [docs/02-layout.md](docs/02-layout.md) | [hardware/layout](hardware/layout) |
+| Left PCB (KiCad 10) | r2.3 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/left-pcb](hardware/left-pcb) |
+| Right PCB (KiCad 10) | r2.3 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/right-pcb](hardware/right-pcb) |
 | Sensor PCB (PMW3610) | r1 done, ERC and DRC clean, gerbers exported, unchanged in r2 | [hardware/sensor-pcb](hardware/sensor-pcb) |
-| Trackball cradle | r2 pocket mount for 19.05 mm done (25 mm pocket and r1 cutout as variants), test print pending | [hardware/trackball-cradle](hardware/trackball-cradle) |
-| Firmware (ZMK) | r2 in progress: 35 keys, one shared pin set | [firmware/zmk-config](firmware/zmk-config) |
+| Trackball cradle | r2.3 pocket mount for 19.05 mm done (25 mm pocket and r1 cutout as variants), test print pending | [hardware/trackball-cradle](hardware/trackball-cradle) |
+| Firmware (ZMK) | r2.3 in progress: 35 keys, one shared pin set | [firmware/zmk-config](firmware/zmk-config) |
 | Documentation | build guide, firmware, fabrication, testing written for r2 | [docs](docs) |
 | Case | later phase; pocket geometry specified | [issues/mech-case.md](issues/mech-case.md), [issues/mech-case-ball-pocket.md](issues/mech-case-ball-pocket.md) |
 | Tests and CI | pytest suite, workflows ready for GitHub | [tests](tests), [.github/workflows](.github/workflows) |

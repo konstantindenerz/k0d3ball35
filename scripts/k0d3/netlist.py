@@ -107,7 +107,7 @@ def build_components(layout: Layout) -> list[Component]:
     comps.append(Component("U1", "nice!nano v2", "nice_nano_v2_THT",
                            {str(h): nets[h] for h in nets}, "mcu",
                            *place(c["center"]["x"], c["center"]["y"], c["rotation"]),
-                           "nice!nano v2 / SuperMini nRF52840 on 1.27 mm sockets, component side up, USB at the top"))
+                           "nice!nano v2 / SuperMini nRF52840 on 2.54 mm sockets, component side up, USB at the top"))
     f = cfg.get("fpc")
     if f:
         side = f.get("side", "bottom")
@@ -119,7 +119,7 @@ def build_components(layout: Layout) -> list[Component]:
                                f"Sensor daughterboard, 6-pin 0.5 mm FPC, {side} side",
                                {"side": side}))
     b = cfg["battery_pads"]
-    comps.append(Component("J2", "BAT", "BatteryPads_2x1.8mm_P2.0mm",
+    comps.append(Component("J2", "BAT", "BatteryPads_2x1.8mm_P2.54mm",
                            {"1": "BAT+", "2": "GND"}, "battery", *place(b["center"]["x"], b["center"]["y"], b["rotation"]),
                            "Battery solder pads, B+ / B-"))
     bj = cfg["battery_jst"]

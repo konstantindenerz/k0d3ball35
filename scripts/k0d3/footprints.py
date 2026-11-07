@@ -301,7 +301,7 @@ def battery_pads() -> Footprint:
            Text("+", -1.27, -1.8, "B.SilkS", 0.8), Text("-", 1.27, -1.8, "B.SilkS", 0.8)]
     gfx += rect_lines(0, 0, 4.6, 2.6, "F.CrtYd", 0.05) + rect_lines(0, 0, 4.6, 2.6, "B.CrtYd", 0.05)
     # reference above the polarity marks: below the pads it would collide with the test pad labels
-    return Footprint("BatteryPads_2x1.8mm_P2.0mm", "Battery solder pads, B+ square pad, 2.54 mm pitch", "through_hole", pads, gfx, "F.SilkS", (0, -3.0))
+    return Footprint("BatteryPads_2x1.8mm_P2.54mm", "Battery solder pads, B+ square pad, 2.54 mm pitch", "through_hole", pads, gfx, "F.SilkS", (0, -3.0))
 
 
 def jst_ph_sm4_reversible() -> Footprint:

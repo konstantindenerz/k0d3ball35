@@ -816,12 +816,15 @@ def test_gnd_zones_have_no_slivers(board):
 
 
 def test_drills_keep_the_board_minimum_hole_to_hole(board, half):
-    """No two holes closer than the board's `min_hole_to_hole` (0.25 mm), whatever their nets.
+    """No two holes closer than the board's `min_hole_to_hole` (0.5 mm), whatever their nets.
 
     KiCad only reports this between different nets, but a drill that close to another breaks
     whether or not the copper belongs together: the autorouter put a GND via 0.2256 mm from a
-    GND stitching via on the right board (see the ticket). `route.stitch_ground` now skips
-    grid points that land next to an existing hole.
+    GND stitching via on the right board, and a 0.3 mm via 0.498 mm inside U1's 1.0 mm pad hole
+    (see the ticket). The limit is read from the project file, which carries JLCPCB's 0.5 mm
+    rather than KiCad's default, so this test follows it. `route.stitch_ground` skips grid points
+    that land next to an existing hole, and `route.drop_crowded_ground_vias` removes the ones the
+    router placed itself, which no input to freerouting can prevent.
     """
     import json
 
