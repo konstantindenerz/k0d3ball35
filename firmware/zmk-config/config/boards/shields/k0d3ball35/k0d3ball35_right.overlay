@@ -1,5 +1,6 @@
 /*
- * Right half (split central, 15 finger + 2 thumb keys, carries the PMW3610
+ * Right half (split central, 15 finger + 2 thumb keys - the inner pair since r2.3,
+ * the outer position is the ball pocket - carries the PMW3610
  * trackball sensor for the 19.05 mm ball).
  *
  * Row and column pins are shared with the left half and live in k0d3ball35.dtsi

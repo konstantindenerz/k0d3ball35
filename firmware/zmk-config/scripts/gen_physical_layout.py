@@ -12,7 +12,8 @@ the mirror axis).
 
 Keys are emitted in matrix-transform order (k0d3ball35.dtsi): three finger rows,
 each left pinky..inner then right inner..pinky, followed by the thumb keys (left
-outer, middle, inner, then right middle, outer). 35 keys in total.
+outer, middle, inner, then right inner, middle - the right half has no outer
+thumb key since r2.3, the ball pocket is there). 35 keys in total.
 
 Run with --json to emit the keymap-editor layout instead of devicetree.
 

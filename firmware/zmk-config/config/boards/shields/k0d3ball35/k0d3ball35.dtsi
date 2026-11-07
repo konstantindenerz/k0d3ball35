@@ -3,12 +3,13 @@
  *
  * Shared devicetree for both halves. The keyboard is two separate PCBs:
  *   left  = 15 finger keys + 3 thumb keys (matrix row 3, columns 2, 3, 4)
- *   right = 15 finger keys + 2 thumb keys (matrix row 3, columns 2, 3) + PMW3610
+ *   right = 15 finger keys + 2 thumb keys (matrix row 3, columns 3, 4) + PMW3610
  * Both controllers use the identical pin set (docs/01-design-spec.md section 2,
  * Pro Micro numbering of the nice!nano v2), so the kscan GPIOs live here; the
  * per-side overlays only add the column offset and the sensor.
  *
- * Matrix cells (3,0) and (3,1) are empty on both halves, (3,4) only on the right.
+ * Matrix cells (3,0) and (3,1) are empty on both halves, (3,2) only on the right: since r2.3
+ * the ball sits where the right half's outer thumb key used to be.
  */
 
 #include <dt-bindings/zmk/matrix_transform.h>
@@ -34,10 +35,11 @@
 RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4)    RC(0,9) RC(0,8) RC(0,7) RC(0,6) RC(0,5)
 RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)    RC(1,9) RC(1,8) RC(1,7) RC(1,6) RC(1,5)
 RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4)    RC(2,9) RC(2,8) RC(2,7) RC(2,6) RC(2,5)
-                RC(3,2) RC(3,3) RC(3,4)    RC(3,8) RC(3,7)
+                RC(3,2) RC(3,3) RC(3,4)    RC(3,9) RC(3,8)
         >;
         // Thumb row, left to right on the desk: left outer, middle, inner (0/10/20 deg),
-        // then right middle (col 3 -> 8 with the col-offset) and right outer (col 2 -> 7).
+        // then right inner (col 4 -> 9 with the col-offset) and right middle (col 3 -> 8).
+        // The right half has no outer thumb key; the ball pocket is there.
     };
 
     kscan0: kscan {

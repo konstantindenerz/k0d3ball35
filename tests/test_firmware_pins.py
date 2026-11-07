@@ -67,11 +67,13 @@ def test_matrix_pins_are_shared_and_identical():
 
 
 def test_matrix_transform_has_35_cells_with_two_right_thumbs():
+    """Since r2.3 the right half keeps the two INNER thumb keys (cols 3 and 4, mapped to 8 and 9
+    by the col-offset); the outer position belongs to the ball pocket."""
     dtsi = _strip((SHIELD / "k0d3ball35.dtsi").read_text())
     cells = re.findall(r"RC\((\d),(\d)\)", dtsi)
     assert len(cells) == KEYS
     thumbs = [c for c in cells if c[0] == "3"]
-    assert thumbs == [("3", "2"), ("3", "3"), ("3", "4"), ("3", "8"), ("3", "7")]
+    assert thumbs == [("3", "2"), ("3", "3"), ("3", "4"), ("3", "9"), ("3", "8")]
     right = (SHIELD / "k0d3ball35_right.overlay").read_text()
     assert "col-offset = <5>" in right
 

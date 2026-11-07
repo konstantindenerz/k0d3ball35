@@ -9,10 +9,10 @@
  *  20 21 22 23 24     25 26 27 28 29
  *        30 31 32     33 34
  *
- * Thumbs: 30 left outer, 31 left middle, 32 left inner; 33 right middle (next to
- * the centre), 34 right outer (next to the trackball). The right half has no
- * inner thumb key, so RET/SYM sits on the right middle thumb and BSPC/SCROLL on
- * the right outer one; DEL lives on the NAV layer.
+ * Thumbs: 30 left outer, 31 left middle, 32 left inner; 33 right inner (nearest
+ * the other half), 34 right middle (next to the trackball). Since r2.3 the right
+ * half has no OUTER thumb key - the ball pocket is there - so RET/SYM sits on the
+ * right inner thumb and BSPC/SCROLL on the right middle one; DEL lives on NAV.
  */
 
 #include <behaviors.dtsi>

@@ -152,11 +152,12 @@ def main() -> int:
         errors.append("right overlay must set col-offset = <5>")
     if dtsi.count("RC(") != KEYS:
         errors.append(f"matrix transform has {dtsi.count('RC(')} cells, expected {KEYS}")
-    for cell in ("RC(3,2)", "RC(3,3)", "RC(3,4)", "RC(3,8)", "RC(3,7)"):
+    for cell in ("RC(3,2)", "RC(3,3)", "RC(3,4)", "RC(3,9)", "RC(3,8)"):
         if cell not in dtsi:
             errors.append(f"matrix transform lacks thumb cell {cell}")
-    if "RC(3,9)" in dtsi:
-        errors.append("matrix transform maps RC(3,9); the right half has no inner thumb key")
+    if "RC(3,7)" in dtsi:
+        errors.append("matrix transform maps RC(3,7); the right half has no outer thumb key "
+                      "since r2.3, the ball pocket is there")
     layouts = (SHIELD / "k0d3ball35-layouts.dtsi").read_text()
     if layouts.count("&key_physical_attrs") != KEYS:
         errors.append(f"physical layout lists {layouts.count('&key_physical_attrs')} keys, expected {KEYS}")
