@@ -5,12 +5,14 @@ in millimetres, the PDF page box comes out as A4 in points, every legend value i
 from the layout, and nothing is drawn off the page."""
 from __future__ import annotations
 
+import json
+import math
 import re
 import zlib
 
 import pytest
 
-from gen_print_check import PAGE, build, stamp
+from gen_print_check import PAGE, ball_top_above_pcb, build, stamp
 from k0d3.footprints import nice_nano_tht
 from k0d3.geometry import HALVES, REPO, load_layout
 
@@ -25,6 +27,12 @@ def sheet(half):
     layout = load_layout(half)
     svg, dims = build(layout)
     return layout, svg, {d.name: d.value for d in dims}
+
+
+def _prose(svg: str) -> str:
+    """The sheet's running text, re-joined: textwrap splits a paragraph over several <text>
+    elements, so a phrase like "make print-plots" is not findable in the raw markup."""
+    return " ".join(re.findall(r"<text[^>]*>([^<]*)</text>", svg))
 
 
 def test_page_is_a4_in_millimetres(sheet):
@@ -84,12 +92,25 @@ def test_dimensions_are_the_layout_values(sheet):
         assert not [k for k in dims if "Ball" in k or "Notch" in k], "no pocket on the left half"
 
 
+# The two ball-surface reaches are marked on the drawing by a tick where the travel line crosses
+# the ball circle, not by a number: a fourth figure in that corner would sit on the octagon.
+TICK_ONLY = ", what the thumb covers"
+
+
 def test_every_legend_value_is_printed_on_the_board(sheet):
-    """A legend line without its dimension on the drawing would send the user hunting."""
+    """A legend line without its dimension on the drawing would send the user hunting.
+
+    The legend prints the value itself, so presence in the markup proves nothing - what counts is
+    a second occurrence, the one on the drawing.
+    """
     _, svg, dims = sheet
     for name, value in dims.items():
         text = f"{value:.2f} mm".replace(".00 mm", ".0 mm")
-        assert svg.count(f">{text}<") + svg.count(f">{text} =") >= 1, f"{name} ({text}) not drawn"
+        drawn = svg.count(f">{text}<") + svg.count(f">{text} =") - 1      # minus the legend line
+        if name.endswith(TICK_ONLY):
+            assert drawn == 0, f"{name}: marked by a tick, a number there would crowd the pocket"
+        else:
+            assert drawn >= 1, f"{name} ({text}) is in the legend but not on the drawing"
 
 
 def test_nothing_is_drawn_off_the_page(sheet):
@@ -124,3 +145,52 @@ def test_pdf_page_box_is_a4_at_one_to_one(tmp_path, half):
         width_mm = (box[2] - box[0]) * 25.4 / 72
         height_mm = (box[3] - box[1]) * 25.4 / 72
         assert abs(width_mm - PAGE[0]) < 0.05 and abs(height_mm - PAGE[1]) < 0.05, (width_mm, height_mm)
+
+
+def test_thumb_reach_is_measured_to_the_ball_surface(sheet):
+    """The thumb touches the ball's near surface, not its centre.
+
+    `issues/mech-thumb-arc-tuning.md` is the only open finding whose fix would be a layout change,
+    and this sheet is its test method, so the sheet has to print the distance the thumb actually
+    covers. The centre distance alone reads as reachable when it is not.
+    """
+    layout, _, dims = sheet
+    if not layout.has_ball:
+        assert not [k for k in dims if "surface" in k], "no ball, no surface reach on the left half"
+        return
+    bx, by = layout.ball_center
+    r = layout.cfg["trackball"]["ball_diameter"] / 2
+    thumbs = sorted((k for k in layout.keys if k.kind == "thumb"), key=lambda k: -k.x)
+    assert len(thumbs) == 2
+    for i, k in enumerate(thumbs):
+        d = math.dist((bx, by), (k.x, k.y))
+        near = "near" if i == 0 else "far"
+        assert dims[f"Ball centre to thumb key {k.ref} ({near})"] == round(d, 2)
+        assert dims[f"Ball surface to thumb key {k.ref} ({near}), what the thumb covers"] == \
+            round(d - r, 2)
+
+
+def test_stack_height_for_the_motion_test_comes_from_the_cradle(sheet):
+    """The sheet asks the reader to stand something as tall as the ball on the circle and swipe.
+
+    That height has to follow the cradle rather than be typed into the generator, so choosing the
+    25 mm fallback (issues/hw-25mm-cradle-fallback.md) updates the paper by itself.
+    """
+    layout, svg, _ = sheet
+    if not layout.has_ball:
+        assert "tall on the ball circle" not in _prose(svg)
+        return
+    ball_d = layout.cfg["trackball"]["ball_diameter"]
+    variants = json.loads((REPO / "hardware" / "trackball-cradle" / "stack.json").read_text())["variants"]
+    expected = next(v["ball_top_above_pcb_top"] for v in variants.values()
+                    if math.isclose(v["ball_d"], ball_d, abs_tol=1e-6))
+    assert ball_top_above_pcb(ball_d) == expected
+    assert f"{expected:.1f} mm" in _prose(svg), "the stack height is not printed on the sheet"
+
+
+def test_the_sheet_points_at_the_plot_target_for_footprints(sheet):
+    """Footprints are checked on the part-check plots, which are a make target, not a snippet."""
+    layout, svg, _ = sheet
+    prose = _prose(svg)
+    assert "make print-plots" in prose
+    assert f"build/print/{layout.half}-bottom-1to1.pdf" in prose

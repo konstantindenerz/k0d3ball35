@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import json
 import math
 import subprocess
 import sys
@@ -34,6 +35,7 @@ MARGIN_X = 20.0
 BOARD_TOP = 36.0
 MOUNT_HOLE_D = 2.2             # footprints.mounting_hole, M2 clearance
 OUT = REPO / "build" / "print"
+CRADLE_STACK = REPO / "hardware" / "trackball-cradle" / "stack.json"
 
 C_CAL = "#D62728"              # calibration: everything else depends on it
 C_BOARD = "#1F77B4"
@@ -113,6 +115,20 @@ def stamp(label: str = "") -> str:
         rev = "no commit"
     draft = f"{label}  ·  " if label else ""
     return f"{draft}{rev}  ·  {datetime.date.today().isoformat()}"
+
+
+def ball_top_above_pcb(ball_d: float) -> float:
+    """How far the ball's top stands above the PCB top, from the cradle's own stack.json.
+
+    The paper sheet asks the reader to stand something that tall on the ball circle and try the
+    thumb motion, so the number has to follow the cradle rather than be typed here: picking the
+    25 mm fallback (issues/hw-25mm-cradle-fallback.md) then changes the sheet by itself.
+    """
+    variants = json.loads((CRADLE_STACK).read_text())["variants"]
+    for name, v in variants.items():
+        if math.isclose(v["ball_d"], ball_d, abs_tol=1e-6):
+            return v["ball_top_above_pcb_top"]
+    raise KeyError(f"no cradle variant for a {ball_d} mm ball in {CRADLE_STACK}: {sorted(variants)}")
 
 
 def dim_h(s: Sheet, x1: float, x2: float, y: float, label: str, colour: str) -> None:
@@ -253,11 +269,20 @@ def build(layout: Layout, label: str = "") -> tuple[str, list[Dim]]:
             a, b2 = P(bx, by), P(k.x, k.y)
             s.path(f"M {a[0]:.3f},{a[1]:.3f} L {b2[0]:.3f},{b2[1]:.3f}", stroke=C_THUMB,
                    width=0.3, dash="3 1.5")
-            t = 0.40 if i == 0 else 0.62          # not both at mid-line, they would collide
+            t = 0.55 if i == 0 else 0.80          # clear of the pocket, and not both at mid-line
             s.label(a[0] + (b2[0] - a[0]) * t, a[1] + (b2[1] - a[1]) * t + 1.0, mm(d), C_THUMB)
             s.circle(*b2, 3.0, stroke=C_THUMB, width=0.4)
             dims.append(Dim(f"Ball centre to thumb key {k.ref} ({'near' if i == 0 else 'far'})",
                             round(d, 2), C_THUMB))
+            # the thumb touches the ball's near surface, not its centre, so mark where the travel
+            # line crosses the circle: that tick is the distance the thumb actually has to cover
+            f = (ball_d / 2) / d
+            cross = (a[0] + (b2[0] - a[0]) * f, a[1] + (b2[1] - a[1]) * f)
+            nx, ny = (b2[1] - a[1]) / d, -(b2[0] - a[0]) / d
+            s.path(f"M {cross[0] - nx * 1.6:.3f},{cross[1] - ny * 1.6:.3f} "
+                   f"L {cross[0] + nx * 1.6:.3f},{cross[1] + ny * 1.6:.3f}", stroke=C_THUMB, width=0.4)
+            dims.append(Dim(f"Ball surface to thumb key {k.ref} ({'near' if i == 0 else 'far'}), "
+                            "what the thumb covers", round(d - ball_d / 2, 2), C_THUMB))
 
     # ---- calibration bars
     y = board_top + height + 16.0
@@ -283,7 +308,7 @@ def build(layout: Layout, label: str = "") -> tuple[str, list[Dim]]:
         s.text(MARGIN_X + 5, y, d.name, size=3.0)
         s.text(MARGIN_X + 118, y, mm(d.value), size=3.0, anchor="end", weight="bold")
         s.text(MARGIN_X + 122, y, "measured: . . . . . . . . mm", size=3.0, fill=GHOST)
-        y += 5.2
+        y += 4.9
     vx = MARGIN_X + 166
     s.path(f"M {vx:.3f},{vbar_top:.3f} L {vx:.3f},{vbar_top + 50:.3f}", stroke=C_CAL, width=0.4)
     for dy in (0, 50):
@@ -299,15 +324,21 @@ def build(layout: Layout, label: str = "") -> tuple[str, list[Dim]]:
         "few per cent is a printer scaling problem, not a layout one - fix the print and measure again.",
         "Part footprints are NOT checked here. Pad shapes and hole patterns of the hot-swap socket, the "
         "switch, the FH12-6S and the slide switch need the real parts laid on the plot of the board "
-        f"underside, build/print/{layout.half}-bottom-1to1.pdf (step 2 of issues/hw-main-pcb-review-r1.md).",
+        f"underside: run make print-plots, which writes build/print/{layout.half}-bottom-1to1.pdf "
+        "(step 2b of issues/hw-main-pcb-review-r1.md).",
         f"The grey squares are the keycap ({kw:g} x {kh:g}) and the switch body ({body:g}). Put your hand "
-        + ("on the sheet: the thumb should reach the ball circle without the wrist moving. That is the one "
-           "judgement worth making before any board is ordered."
+        + (f"on the sheet: stack something {ball_top_above_pcb(cfg['trackball']['ball_diameter']):.1f} mm "
+           "tall on the ball circle, a real Choc switch with its keycap on the near thumb key, and try the "
+           "swipe. The thumb has to reach the ball surface - the tick across each dashed line, not the "
+           "circle's centre - with the wrist still. That is the one judgement worth making before any "
+           "board is ordered (issues/mech-thumb-arc-tuning.md)."
            if layout.has_ball else
            "on the sheet and check that every key is within reach; print the right half as well to see "
            "the thumb against the ball circle."),
     ):
-        for line in textwrap.wrap(para, 108):
+        # no hyphen breaks: this paragraph is full of command names and paths, and "make print-
+        # plots" across two lines is not a command anybody can run
+        for line in textwrap.wrap(para, 108, break_on_hyphens=False, break_long_words=False):
             s.text(MARGIN_X, y, line, size=2.8)
             y += 4.0
         y += 1.2
