@@ -318,9 +318,14 @@ def jst_ph_sm4_reversible() -> Footprint:
 
 def msk12c02_reversible() -> Footprint:
     # The three terminal pads sit at -2.25 / +0.75 / +2.25, i.e. gaps of 3.00 and 1.50 mm, and are not
-    # centred on the body, while the two locating holes below are symmetric at +-1.5. No datasheet or
-    # drawing reference for these coordinates exists in the repo, so they are unverified: check a physical
-    # switch on the 1:1 plot before ordering (issues/hw-msk12c02-pad-pitch.md).
+    # centred on the body, while the two locating holes below are symmetric at +-1.5. That asymmetry is
+    # the part, not a transcription slip: every coordinate here matches KiCad's own
+    # Button_Switch_SMD.pretty/SW_SPDT_Shouhan_MSK12C02.kicad_mod, which cites the SHOU-HAN MSK12C02
+    # datasheet (LCSC C431540). Deliberate deviations from upstream: the fab rectangle is 7.0 x 3.0
+    # rather than 6.7 x 2.8 (it is a clearance envelope here, not a body drawing) and the four mounting
+    # tabs stay unnamed where upstream calls them `SH` (they carry no net). test_footprints.py pins the
+    # numbers; a real switch still goes on the 1:1 plot once the parts arrive
+    # (issues/hw-msk12c02-pad-pitch.md, issues/hw-main-pcb-review-r1.md step 2b).
     pads_f = [Pad("1", "smd", "roundrect", -2.25, -1.95, 0.6, 1.3, F_SMD, rratio=0.25),
               Pad("2", "smd", "roundrect", 0.75, -1.95, 0.6, 1.3, F_SMD, rratio=0.25),
               Pad("3", "smd", "roundrect", 2.25, -1.95, 0.6, 1.3, F_SMD, rratio=0.25),

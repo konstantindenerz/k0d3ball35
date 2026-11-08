@@ -29,6 +29,13 @@ kiswitch (formerly perigoso/keyswitch-kicad-library)
   https://github.com/kiswitch/kiswitch - MIT (scripts), CC-BY-SA 4.0 (library data)
   Kailh Choc V1 switch and hot-swap socket footprints, included in hardware/lib.
 
+KiCad footprint library
+  https://gitlab.com/kicad/libraries/kicad-footprints - CC-BY-SA 4.0 with the KiCad library
+  exception (a design using a footprint is not a derivative work)
+  SW_SPDT_Shouhan_MSK12C02 was the reference for the MSK-12C02 slide switch pad geometry in
+  scripts/k0d3/footprints.py, which upstream in turn took from the SHOU-HAN MSK12C02 datasheet
+  (LCSC C431540). The footprint is regenerated from those numbers here, no file is copied.
+
 marbastlib (ebastler, MarvFPV)
   https://github.com/ebastler/marbastlib - CERN-OHL-P-2.0
   Controller, connector and battery footprints, included in hardware/lib.

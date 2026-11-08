@@ -216,3 +216,23 @@ def test_library_files_match(fps):
         assert len(pads) == len(fp.pads), name
         numbers = sorted(p[1].strip('"') for p in pads)
         assert numbers == sorted(p.number for p in fp.pads)
+
+
+def test_msk12c02_terminals_match_the_datasheet_footprint():
+    """PS1's three terminals are asymmetric (3.00 then 1.50 mm) and off-centre on the body.
+
+    That looked like a misplaced pad (issues/hw-msk12c02-pad-pitch.md) until it was compared with
+    KiCad's own Button_Switch_SMD.pretty/SW_SPDT_Shouhan_MSK12C02.kicad_mod, which carries exactly
+    these coordinates and cites the SHOU-HAN MSK12C02 datasheet (LCSC C431540). Pinning them here
+    keeps the comment in footprints.py load-bearing: nobody gets to "tidy" the terminals onto a
+    symmetric 1.5 mm pitch without a datasheet that says so.
+    """
+    fp = all_footprints(HOLE_PIN)["SW_SPDT_MSK12C02_reversible"]
+    front = [p for p in fp.pads if _copper(p, "F.Cu")]
+    terminals = sorted(((p.x, p.y, p.w, p.h) for p in front if p.number), key=lambda t: t[0])
+    assert terminals == [(-2.25, -1.95, 0.6, 1.3), (0.75, -1.95, 0.6, 1.3), (2.25, -1.95, 0.6, 1.3)]
+    tabs = sorted((p.x, p.y, p.w, p.h) for p in front if not p.number)
+    assert tabs == [(-3.675, -1.1, 1.05, 0.7), (-3.675, 1.1, 1.05, 0.7),
+                    (3.675, -1.1, 1.05, 0.7), (3.675, 1.1, 1.05, 0.7)]
+    holes = sorted((p.x, p.y, p.drill) for p in fp.pads if p.kind == "np_thru_hole")
+    assert holes == [(-1.5, 0, 0.85), (1.5, 0, 0.85)]
