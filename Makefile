@@ -23,7 +23,7 @@ BUILD      := build
 SCHS := $(wildcard $(HALF_SCHS) $(SENSOR_SCH))
 PCBS := $(wildcard $(HALF_PCBS) $(SENSOR_PCB))
 
-.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case exploded print-check clean help
+.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case exploded print print-check print-plots clean help
 
 all: layout board erc drc gerbers
 
@@ -94,8 +94,13 @@ case: ## Render the printed case: STLs, floor DXFs, previews and stack.json (nee
 exploded: ## Rebuild docs/index.html (embeds the case STLs; run after `make case`)
 	$(PY) docs/build.py
 
+print: print-check print-plots ## Everything to print on paper before the order
+
 print-check: ## 1:1 measuring sheets per half into build/print (A4, print at 100 %)
 	$(PY) scripts/gen_print_check.py $(HALVES)
+
+print-plots: ## 1:1 part-check plots of each board face into build/print (A4, print at 100 %)
+	KICAD_CLI=$(KICAD_CLI) $(PY) scripts/gen_print_plots.py $(HALVES)
 
 docs-check: ## Run only the documentation and ticket checks
 	$(PY) -m pytest -q tests/test_docs.py tests/test_issues.py tests/test_license.py
