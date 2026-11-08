@@ -183,18 +183,25 @@ or countersunk screws from the back.
    and (right) the notch and ball circle dimensioned in colour, plus a 100 mm and a 50 mm
    calibration bar. It settles two things a ruler can settle - that the print is really 1:1 and that
    the geometry carries the layout's numbers - and the hand check: thumb to ball circle. It does not
-   check a single footprint; that is the paper check below. `tests/test_print_check.py` keeps the
-   printed numbers tied to the layout and the PDF page box at A4.
-2b. **Sockets, 1:1 paper check (needs the parts):** `File > Plot`, layers `B.Cu`, `B.Fab`, `B.SilkS`, `Edge.Cuts`,
-   mirrored, PDF, scale 1:1; print, place a real CPG135001S30 with its two bosses in the 3.05 mm
-   circles of SW22: both solder legs must land on the two pads and the body must stay inside the
-   dashed 15 x 6.9 outline. Repeat for a thumb key (SW33, rotated 10 degrees) and for SW00 at the
-   top edge. The MSK12C02 goes on the same print: pins on the three 0.6 x 1.3 pads, tabs on the
-   1.05 x 0.7 pads, actuator past the edge line after the fix.
-3. **FH12-6S:** on the same print put the connector on J1 with the contact side (the long side
-   with the leads) towards the keys and the cable mouth towards the notch. The `1` mark must sit
-   at the pinky-side contact. Confirm the mirrored pin order on the sensor board per
-   `hw-ffc-pin-order-verification` before soldering anything.
+   check a single footprint; that is the paper check below. It does print the thumb's reach to the
+   ball surface and the height to stack on the ball circle, which is what `mech-thumb-arc-tuning`
+   needs. `tests/test_print_check.py` keeps the printed numbers tied to the layout and the PDF
+   page box at A4.
+2b. **Parts on paper, 1:1 (needs the parts):** `make print-plots` writes
+   `build/print/<half>-bottom-1to1.pdf` and `<half>-top-1to1.pdf`, A4 per face, the board at 1:1
+   with the pads as outlines carrying their numbers, a 100 mm calibration bar and a red ring round
+   each part this step names. Print at 100 %, measure the bar, then place a real CPG135001S30 with
+   its two bosses in the 3.05 mm circles of SW22 on the **bottom** sheet: both solder legs must
+   land on the two pads and the body must stay inside the dashed 15 x 6.9 outline. Repeat for a
+   thumb key (SW33, rotated 10 degrees) and for SW00 at the top edge. The MSK12C02 goes on the
+   same sheet: pins on the three 0.6 x 1.3 pads, tabs on the 1.05 x 0.7 pads, actuator past the
+   edge line. That last one also closes `hw-msk12c02-pad-pitch`, whose terminal spacing is
+   deliberately asymmetric.
+3. **FH12-6S:** J1 sits on the key side since r2.2, so it is on the **top** sheet, not the bottom
+   one. Put the connector on it with the contact side (the long side with the leads) towards the
+   keys and the cable mouth towards the notch. The `1` mark must sit at the pinky-side contact.
+   Confirm the mirrored pin order on the sensor board per `hw-ffc-pin-order-verification` before
+   soldering anything.
 4. **Controller:** in the 3D viewer look at the top edge above U1 from a low angle: the controller
    outline ends at y -3.35 versus the edge at -4.75 (both in the layout frame); after the decision
    on defect 2 the USB-C shell must either overhang or the case gets a window flush with the edge.
@@ -245,23 +252,20 @@ just run `tests/test_pcb_review.py`, which now carries the two assertions that m
 Use `kicad-cli pcb render` outputs in `hardware/left-pcb/renders/` and `hardware/right-pcb/renders/`
 for a first look, then the GUI. Title kept for history; it covers both r2 boards.
 
-1:1 PDFs for the paper check (step 2) are produced into `build/print/` (gitignored, so regenerate
-after a checkout):
+Both sheet families are produced into `build/print/` (gitignored, so regenerate after a
+checkout). `make print` runs both; `make print-check` is the measuring sheet of step 2 and
+`make print-plots` the part-check plots of step 2b.
 
-```sh
-mkdir -p build/print
-for h in left right; do
-  /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli pcb export pdf \
-    --layers B.Cu,B.Fab,B.SilkS,Edge.Cuts --mirror --scale 1 --exclude-refdes \
-    --drill-shape-opt 2 --mode-single -o build/print/$h-bottom-1to1.pdf hardware/$h-pcb/k0d3ball35-$h.kicad_pcb
-  /Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli pcb export pdf \
-    --layers F.Cu,F.Fab,F.SilkS,Edge.Cuts --scale 1 --drill-shape-opt 2 --mode-single \
-    -o build/print/$h-top-1to1.pdf hardware/$h-pcb/k0d3ball35-$h.kicad_pcb
-done
-```
+This ticket used to carry a `kicad-cli pcb export pdf` snippet here. It did not work and is
+deliberately not coming back: the generated boards set `(paper "A3")`, so every exported PDF was
+420 x 297 mm and an A4 printer either scaled it - destroying the one property the sheet needs - or
+clipped it, and the `B.Cu` layer flooded the page with the GND pour over the very pads the sheet
+is for. `scripts/gen_print_plots.py` plots the fab layers through the SVG exporter, whose
+`--page-size-mode 2` crops to the board, and re-pages the result onto A4 at 1:1.
 
-Print at 100 % (no "fit to page") and check the 20 mm hole spacing of the controller or two socket
-bosses with a ruler before trusting the sheet.
+Print at 100 % (no "fit to page"), measure the calibration bar first, and cross-check the two
+sheets against each other: held against a window the outlines must coincide and the measuring
+sheet's key grid must fall on the plot's switch holes.
 
 ## r2.3 rework (2026-11-07)
 

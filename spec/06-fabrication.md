@@ -94,8 +94,13 @@ The sensor board has its own `hardware/sensor-pcb/export.sh` with the same outpu
 - [ ] Ticket `hw-gnd-stitching-review` closed (pours and auto-placed vias looked at in KiCad)
 - [ ] `make print-check`, both sheets printed at 100 %: the 100 mm and 50 mm calibration bars
       measure exactly, then the board, key grid, controller, battery bay and pocket dimensions
-      printed on the sheet (`scripts/gen_print_check.py`, A4 per half). This needs no parts; the
-      footprint check against real sockets is step 2b of `hw-main-pcb-review-r1`
+      printed on the sheet (`scripts/gen_print_check.py`, A4 per half). This needs no parts, and
+      it carries the thumb reach to the ball surface that `mech-thumb-arc-tuning` asks for
+- [ ] `make print-plots`, the four part-check sheets printed at 100 %: the real hot-swap socket,
+      the MSK-12C02 and the FH12-6S laid on their pads (`scripts/gen_print_plots.py`, A4 per half
+      and face, step 2b of `hw-main-pcb-review-r1`). Needs the parts in hand
+- [ ] The two sheet families cross-checked against each other: held against a window the outlines
+      coincide and the key grid falls on the switch holes
 - [ ] Ticket `hw-main-pcb-review-r1` closed (manual review of both boards in the KiCad GUI)
 - [ ] Ticket `hw-ffc-pin-order-verification` resolved for the sensor board
 - [ ] Quantity 5 for all three boards, 1.6 mm, ENIG or HASL as decided

@@ -48,5 +48,11 @@ the old key centre at (-21.78, 59.65)) but not of its centre, which is 8.8 mm fu
 
 This is the only review finding whose fix is a layout change, so it has to be answered before the
 PCB order rather than after. Print both sheets from `make print-check`, put a real Choc switch with
-an MBK cap on them, stack something 17 mm tall at the ball position and try the motion. Variant C of
-the outline artefact (right thumb pair pulled 4 mm outward) is the fallback.
+an MBK cap on them, stack something 17.1 mm tall at the ball position and try the motion. Variant C
+of the outline artefact (right thumb pair pulled 4 mm outward) is the fallback.
+
+**2026-11-08:** the sheet now carries what this decision needs instead of leaving it to be worked
+out on the desk. Each travel line gets a tick where it crosses the ball circle and a legend line
+for the reach to that crossing (SW33 20.0 mm, SW34 39.39 mm) - the centre distance alone reads as
+reachable when it is not - and section 3 names the stack height, read from the cradle's
+`stack.json`, so the 25 mm fallback would change the paper by itself.

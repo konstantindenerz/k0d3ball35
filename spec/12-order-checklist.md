@@ -15,8 +15,8 @@ cannot be tested without the sensor PCB in hand. The exposure is one right-hand 
 
 | Done | Qty | Part | Exact number | Shop | Status | You do |
 |------|-----|------|--------------|------|--------|--------|
-| [x] | 35 (+4) | Choc hot-swap socket | Kailh CPG135001S30 | https://keycapsss.com | ordered | 1:1 paper check of one socket on the printed PCB plot (`issues/hw-main-pcb-review-r1.md`) |
-| [x] | 2 | Power switch | MSK-12C02 | https://keycapsss.com | ordered | 1:1 paper check: pins on the three pads, actuator past the edge line |
+| [x] | 35 (+4) | Choc hot-swap socket | Kailh CPG135001S30 | https://keycapsss.com | ordered | 1:1 paper check of one socket on `make print-plots` (`issues/hw-main-pcb-review-r1.md` step 2b) |
+| [x] | 2 | Power switch | MSK-12C02 | https://keycapsss.com | ordered | 1:1 paper check on `make print-plots`: pins on the three pads (spacing 3.00 then 1.50 mm, asymmetric by design), actuator past the edge line |
 | [x] | 4 | Controller socket strip 1 x 12 | Mill-Max 315-43-112 | https://keycapsss.com | ordered | |
 | [x] | 48 | Socket pins | Mill-Max 3320-0-00-15-00-00-03-0 | https://keycapsss.com | ordered | |
 | [x] | 35 (+10) | Diode | 1N4148W SOD-123 | https://keycapsss.com | ordered | |
@@ -121,7 +121,7 @@ These cannot be done from the files and are the remaining steps before, during a
 order:
 
 - JLCPCB upload preview of the three zips, then the order (`issues/hw-jlcpcb-order-r1.md`)
-- 1:1 paper check of a socket and the MSK12C02 on the printed plot (`issues/hw-main-pcb-review-r1.md`)
+- 1:1 paper check of a socket and the MSK12C02 on `make print-plots` (`issues/hw-main-pcb-review-r1.md` step 2b)
 - KiCad 3D viewer pass of both main boards (same ticket)
 - GitHub push so CI builds the firmware and runs the suite (`issues/infra-ci-firmware.md`, `issues/infra-ci-hardware.md`)
 - Cradle and pocket test prints, lens gap with a feeler gauge (`issues/hw-sensor-stack-height.md`)
