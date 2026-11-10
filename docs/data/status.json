@@ -18,6 +18,15 @@
     "status": "open",
     "created": "2026-11-07",
     "path": "issues/hw-sensor-vcsel-pins.md"
+   },
+   {
+    "slug": "mech-case-stl-mirrored",
+    "title": "Case and cradle STLs are the mirror image of the boards",
+    "type": "bug",
+    "area": "mech",
+    "status": "open",
+    "created": "2026-11-10",
+    "path": "issues/mech-case-stl-mirrored.md"
    }
   ],
   "P1": [
@@ -386,6 +395,15 @@
     "path": "issues/infra-pcba-export.md"
    },
    {
+    "slug": "mech-cradle-bearing-seat-skin",
+    "title": "Bearing seats in the cradle start exactly at the cup surface",
+    "type": "bug",
+    "area": "mech",
+    "status": "open",
+    "created": "2026-11-10",
+    "path": "issues/mech-cradle-bearing-seat-skin.md"
+   },
+   {
     "slug": "mech-cradle-btu-variant",
     "title": "Ball transfer unit cradle variant",
     "type": "feature",
@@ -433,10 +451,10 @@
   ]
  },
  "ticket_counts": {
-  "P0": 2,
+  "P0": 3,
   "P1": 13,
   "P2": 16,
-  "P3": 16
+  "P3": 17
  },
  "before_ordering": {
   "source": "spec/09-roadmap.md",
