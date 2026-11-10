@@ -168,67 +168,6 @@ def test_keymap_labels_and_combos(keymap):
     assert {m["layer"] for m in keymap["pointer"]["modes"]} == {"Scroll", "Snipe"}
 
 
-def _md_table_rows_per_section(md: str) -> dict[str, int]:
-    out: dict[str, int] = {}
-    section = None
-    lines = md.splitlines()
-    for i, line in enumerate(lines):
-        h = re.match(r"^##\s+(?:\d+\.\s+)?(.+)$", line)
-        if h:
-            section = h[1].strip()
-            out[section] = 0
-        elif section and line.startswith("|") and not re.match(r"^\|[\s:|-]+\|\s*$", line):
-            is_header = i + 1 < len(lines) and re.match(r"^\|[\s:|-]+\|\s*$", lines[i + 1])
-            if not is_header:
-                out[section] += 1
-    return out
-
-
-def test_bom_rows_equal_the_markdown_tables():
-    bom = json.loads((DATA / "bom.json").read_text())
-    want = _md_table_rows_per_section((ROOT / "spec/03-bom.md").read_text())
-    got = {s["title"]: sum(len(b["table"]["rows"]) for b in s["blocks"] if "table" in b) for s in bom["sections"]}
-    assert got == want
-    for s in bom["sections"]:
-        for b in s["blocks"]:
-            if "table" in b:
-                assert all(len(r) == len(b["table"]["header"]) for r in b["table"]["rows"]), s["title"]
-
-
-def test_bom_cost_and_guide_follow_their_sources():
-    bom = json.loads((DATA / "bom.json").read_text())
-    md = (ROOT / "spec/03-bom.md").read_text()
-    totals = md.split("## 9. Totals", 1)[1].split("\n## ", 1)[0]
-    rows = re.findall(r"^\| ([^|*]+?) \| (\d+) \|$", totals, flags=re.M)
-    c = bom["cost"]
-    assert [(g["label"], g["eur"]) for g in c["groups"]] == [(l, float(v)) for l, v in rows]
-    assert f"**{c['total_text']}**" in totals
-    assert abs(sum(g["eur"] for g in c["groups"]) - c["total"]) <= 10, "groups no longer add up to the total"
-    guide = (ROOT / "spec/04-build-guide.md").read_text()
-    g = bom["guide"]
-    assert [ch["number"] for ch in g["chapters"]] == [int(n) for n in re.findall(r"^## (\d+)\.", guide, flags=re.M)]
-    assert g["chapters"][1]["anchor"] == "1-parts-and-tools-check"
-    assert g["time"] and g["time"] in " ".join(guide.split())
-    assert len(g["tools"]) >= 5 and all(t.split()[0] in guide for t in g["tools"])
-    site = json.loads((DATA / "site.json").read_text())
-    assert next(f for f in site["facts"] if f["id"] == "cost")["value"] == c["total"]
-
-
-def test_status_tickets_equal_the_tracker():
-    sys.path.insert(0, str(ROOT / "scripts"))
-    import issues  # noqa: E402
-
-    tickets, problems = issues.load_tickets()
-    assert not problems
-    status = json.loads((DATA / "status.json").read_text())
-    want = {(t.slug, t.priority) for t in tickets if t.status in ("open", "in-progress")}
-    got = {(t["slug"], p) for p, g in status["tickets"].items() for t in g}
-    assert got == want
-    steps = status["before_ordering"]["steps"]
-    roadmap = (ROOT / "spec/09-roadmap.md").read_text()
-    section = roadmap.split("## r2 verification before ordering", 1)[1].split("\n## ", 1)[0]
-    assert [s["number"] for s in steps] == [int(n) for n in re.findall(r"^(\d+)\.\s", section, flags=re.M)]
-    assert all(s["state"] in ("done", "partly", "open") for s in steps)
 
 
 def test_site_facts_match_their_sources(site):
@@ -236,24 +175,24 @@ def test_site_facts_match_their_sources(site):
     right = json.loads((ROOT / "hardware/layout/output/points-right.json").read_text())
     left = json.loads((ROOT / "hardware/layout/output/points-left.json").read_text())
     assert facts["keys"]["value"] == len(left["keys"]) + len(right["keys"]) == 35
-    assert (facts["pitch"]["x"], facts["pitch"]["y"]) == (right["pitch"]["x"], right["pitch"]["y"])
+    assert facts["keys"]["pitch"] == [right["pitch"]["x"], right["pitch"]["y"]]
     assert facts["ball"]["value"] == right["trackball"]["ball_diameter"] == 19.05
     overlay = (ROOT / "firmware/zmk-config/config/boards/shields/k0d3ball35/k0d3ball35_right.overlay").read_text()
     assert f'"pixart,{facts["ball"]["sensor"].lower()}"' in overlay
-    assert f'res-cpi = <{facts["ball"]["cpi"]}>' in overlay
-    stack = json.loads((ROOT / "hardware/trackball-cradle/stack.json").read_text())["variants"]["19mm-pocket"]
-    assert facts["ball_top"]["value"] == stack["ball_top_above_pcb_top"]
     assert facts["battery"]["cell"] == right["battery"]["cell"]
     assert facts["battery"]["value"] == right["battery"]["capacity_mah"]
     assert "nice!nano v2" in facts["controller"]["text"]
     assert "Choc V1" in facts["switch"]["text"]
-    assert facts["firmware"]["revision"] in (ROOT / "firmware/zmk-config/config/west.yml").read_text()
+    st = site["status"]
+    assert st["pcbs_ordered"] == ("status: done" in (ROOT / st["order_ticket"]).read_text())
+    assert f"**{st['cost']}**" in (ROOT / "spec/03-bom.md").read_text()
+    for d in site["docs"]:
+        assert (ROOT / d["path"]).is_file(), d["path"]
     for f in site["facts"]:
         assert (ROOT / f["source"]).is_file(), f["source"]
-    lic = {l["id"]: l["path"] for l in site["licences"]}
-    assert lic == {"MIT": "LICENSE", "CERN-OHL-P-2.0": "LICENSE-HARDWARE"}
+    footer = (ROOT / "docs/index.html").read_text()
+    assert "MIT" in footer and "CERN-OHL-P-2.0" in footer
     assert (ROOT / "LICENSE").read_text().startswith("MIT License")
-    assert "CERN Open Hardware Licence Version 2 - Permissive" in (ROOT / "LICENSE-HARDWARE").read_text()[:200]
 
 
 # ---------------------------------------------------------------- PCBs tab (make pcb-3d)
@@ -364,7 +303,7 @@ def test_parts_lists_every_stl(parts):
     assert not listed & excluded_paths
     groups = {g["id"] for g in parts["groups"]}
     for p in parts["parts"]:
-        assert p["group"] in groups and p["name"] and p["role"] and p["print_notes"]
+        assert p["group"] in groups and p["name"] and p["role"] and (ROOT / p["doc"]).is_file()
         assert p["id"] == p["path"].rsplit("/", 1)[1][:-4]
     # the closed and folded lid pairs are display meshes, everything else is printed
     for p in parts["parts"]:
@@ -379,9 +318,6 @@ def test_parts_facts_match_the_meshes(parts):
         assert p["bbox_min"] == pytest.approx([round(v, 2) for v in lo], abs=0.006), p["id"]
         assert p["bbox_max"] == pytest.approx([round(v, 2) for v in hi], abs=0.006), p["id"]
         assert p["triangles"] == len(m.faces), p["id"]
-        vol = abs(m.volume) / 1000
-        assert p["volume_cm3"] == pytest.approx(vol, abs=0.006), p["id"]
-        assert p["mass_g_solid"] == pytest.approx(vol * parts["density_pla_g_cm3"], abs=0.06), p["id"]
         assert p["watertight"] == bool(m.is_watertight), p["id"]
 
 

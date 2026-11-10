@@ -27,10 +27,6 @@
   {
    "id": "keymap",
    "title": "Keymap"
-  },
-  {
-   "id": "build",
-   "title": "Build & BOM"
   }
  ],
  "facts": [
@@ -40,22 +36,18 @@
    "value": 35,
    "left": 18,
    "right": 17,
-   "text": "35: left 18 (15 + 3 thumb), right 17 (15 + 2 thumb)",
+   "text": "35: left 18 (3 thumb), right 17 (2 thumb), 18 x 17 mm pitch",
+   "pitch": [
+    18.0,
+    17.0
+   ],
    "source": "hardware/layout/output/points-right.json"
   },
   {
    "id": "switch",
    "label": "Switches",
-   "text": "Kailh Choc V1 (PG1350) in hot-swap sockets (CPG135001S30); hot-swap only, like the Keyball",
+   "text": "Kailh Choc V1 (PG1350) in hot-swap sockets (CPG135001S30)",
    "source": "spec/01-design-spec.md"
-  },
-  {
-   "id": "pitch",
-   "label": "Key pitch",
-   "x": 18.0,
-   "y": 17.0,
-   "text": "18 x 17 mm, Keyball39 column stagger and thumb arc",
-   "source": "hardware/layout/k0d3ball35.yaml"
   },
   {
    "id": "ball",
@@ -63,77 +55,78 @@
    "value": 19.05,
    "sensor": "PMW3610",
    "cpi": 600,
-   "text": "19.05 mm POM ball on the right half, PMW3610 sensor at 600 CPI on a daughterboard",
+   "text": "19.05 mm ball on the right half, PMW3610 sensor",
    "source": "hardware/layout/output/points-right.json"
-  },
-  {
-   "id": "ball_top",
-   "label": "Ball top above PCB",
-   "value": 17.1,
-   "text": "17.1 mm",
-   "source": "hardware/trackball-cradle/stack.json"
   },
   {
    "id": "controller",
    "label": "Controller",
-   "text": "nRF52840 Pro Micro form factor (nice!nano v2 or SuperMini), BLE split, ZMK",
+   "text": "nRF52840 Pro Micro form factor (nice!nano v2 or SuperMini), Bluetooth split, ZMK",
    "source": "spec/01-design-spec.md"
-  },
-  {
-   "id": "firmware",
-   "label": "Firmware",
-   "revision": "4dd95d7840eb3d5a3f59bb29fbf1ab054715ef85",
-   "features": [
-    "keys",
-    "pointer",
-    "studio"
-   ],
-   "text": "ZMK, pinned to 4dd95d7; keys, pointer, ZMK Studio",
-   "source": "firmware/zmk-config/config/west.yml"
   },
   {
    "id": "battery",
    "label": "Battery",
    "cell": "LP552035",
    "value": 350,
-   "text": "LP552035 LiPo, 350 mAh, one per half in a bay under the PCB",
+   "text": "350 mAh LiPo per half",
    "source": "hardware/layout/output/points-right.json"
   },
   {
    "id": "half",
-   "label": "PCB per half",
+   "label": "Size per half",
    "x": 121.0,
    "y": 86.7,
-   "text": "121.0 x 86.7 mm, two different boards (left, right) and a sensor board",
+   "z": 22.8,
+   "text": "121 x 87 mm, 22.8 mm high with the case",
    "source": "hardware/layout/output/points-right.json"
-  },
-  {
-   "id": "case_height",
-   "label": "Case height",
-   "value": 22.8,
-   "text": "22.8 mm from the tray bottom to the controller cap",
-   "source": "hardware/case/stack.json"
-  },
-  {
-   "id": "cost",
-   "label": "Parts cost",
-   "value": 240,
-   "text": "about 240 EUR for one keyboard, PCBs in batches of five included",
-   "source": "spec/03-bom.md"
   }
  ],
- "licences": [
+ "status": {
+  "pcbs_ordered": false,
+  "order_ticket": "issues/hw-jlcpcb-order-r1.md",
+  "cost": "about 240 EUR"
+ },
+ "docs": [
   {
-   "id": "MIT",
-   "name": "MIT License",
-   "scope": "firmware, scripts, documentation",
-   "path": "LICENSE"
+   "path": "README.md",
+   "title": "README",
+   "text": "What the project is, the repository map, the make targets."
   },
   {
-   "id": "CERN-OHL-P-2.0",
-   "name": "CERN Open Hardware Licence Version 2 - Permissive",
-   "scope": "hardware",
-   "path": "LICENSE-HARDWARE"
+   "path": "spec/01-design-spec.md",
+   "title": "Design spec",
+   "text": "Requirements and the decisions behind them."
+  },
+  {
+   "path": "spec/03-bom.md",
+   "title": "Bill of materials",
+   "text": "Every part with source and price."
+  },
+  {
+   "path": "spec/12-order-checklist.md",
+   "title": "Order checklist",
+   "text": "Shop by shop, what is bought and what is not."
+  },
+  {
+   "path": "spec/04-build-guide.md",
+   "title": "Build guide",
+   "text": "Tools, soldering order, assembly, checks."
+  },
+  {
+   "path": "spec/05-firmware.md",
+   "title": "Firmware",
+   "text": "ZMK build, flashing, pairing, trackball tuning."
+  },
+  {
+   "path": "spec/09-roadmap.md",
+   "title": "Roadmap",
+   "text": "What is done and what comes before the first order."
+  },
+  {
+   "path": "issues/README.md",
+   "title": "Issues",
+   "text": "Open tickets by priority."
   }
  ]
 }

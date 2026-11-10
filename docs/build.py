@@ -22,7 +22,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 # one module per data file in docs/gen/, in the order they are written
-GENERATORS = ("site", "layout", "parts", "pcbs", "keymap", "bom", "status")
+GENERATORS = ("site", "layout", "parts", "pcbs", "keymap")
 
 
 def render(data: dict) -> str:

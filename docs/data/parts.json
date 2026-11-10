@@ -1,6 +1,4 @@
 {
- "density_pla_g_cm3": 1.24,
- "mass_note": "Mass of the solid mesh in PLA (1.24 g/cm3): an upper bound, a print with 20 to 30 % infill weighs much less.",
  "groups": [
   {
    "id": "right",
@@ -29,9 +27,9 @@
    "path": "hardware/case/stl/tray-right.stl",
    "group": "right",
    "name": "Tray, right",
-   "role": "The case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, five standoffs for M2 heat-set inserts, four foot magnet pockets from below. Carries the pocket for the trackball cradle.",
+   "role": "The case body the PCB sits in, with the pocket for the trackball cradle.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Flat on the bed, cavities open upwards; the only bridges are the USB opening (11 mm), the switch slot, the LED window and the magnet pockets.",
+   "doc": "hardware/case/README.md",
    "previews": [
     "hardware/case/preview/assembly-right.png",
     "hardware/case/preview/box-right.png",
@@ -54,8 +52,6 @@
     22.8
    ],
    "triangles": 9976,
-   "volume_cm3": 91.64,
-   "mass_g_solid": 113.6,
    "watertight": false,
    "non_manifold_edges": 2
   },
@@ -64,9 +60,9 @@
    "path": "hardware/case/stl/box-cap-right.stl",
    "group": "right",
    "name": "Controller box cap, right",
-   "role": "Roof of the controller box: a 2 mm plate in the rebate plus an L-shaped skirt towards the keys and the thumb keys, held by two M2 screws in the corner bosses. The wordmark is engraved 0.6 mm into the plate.",
+   "role": "Screwed roof over the controller, with the engraved wordmark.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down (plate on the bed). A filament change at 0.6 mm gives a two-colour wordmark.",
+   "doc": "hardware/case/README.md",
    "previews": [
     "hardware/case/preview/assembly-right.png",
     "hardware/case/preview/box-right.png",
@@ -88,8 +84,6 @@
     8.4
    ],
    "triangles": 924,
-   "volume_cm3": 3.88,
-   "mass_g_solid": 4.8,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -98,9 +92,9 @@
    "path": "hardware/case/stl/lid-outer-right.stl",
    "group": "right",
    "name": "Lid, outer plate, right",
-   "role": "The pinky-side half of the transport cover. Carries the 16 mm ball window, the four roof magnets and the even hinge knuckles; folded, it lies under the half as the tenting foot.",
+   "role": "Pinky-side half of the hinged lid.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down; the magnet pockets print as plain holes on a 0.6 mm skin. Joined to the inner plate by a 2 mm steel pin.",
+   "doc": "hardware/case/README.md",
    "previews": [
     "hardware/case/preview/lid-hinge-right.png",
     "hardware/case/preview/lid-on-right.png"
@@ -121,8 +115,6 @@
     15.01
    ],
    "triangles": 5506,
-   "volume_cm3": 29.16,
-   "mass_g_solid": 36.2,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -131,9 +123,9 @@
    "path": "hardware/case/stl/lid-inner-right.stl",
    "group": "right",
    "name": "Lid, inner plate, right",
-   "role": "The controller and thumb-side half of the transport cover with the odd hinge knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot.",
+   "role": "Thumb-side half of the hinged lid.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down. Joined to the outer plate by a 2 mm steel pin.",
+   "doc": "hardware/case/README.md",
    "previews": [
     "hardware/case/preview/lid-hinge-right.png",
     "hardware/case/preview/lid-on-right.png"
@@ -154,8 +146,6 @@
     15.01
    ],
    "triangles": 2406,
-   "volume_cm3": 15.79,
-   "mass_g_solid": 19.6,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -163,10 +153,10 @@
    "id": "lid-right",
    "path": "hardware/case/stl/lid-right.stl",
    "group": "right",
-   "name": "Lid, closed pair, right",
-   "role": "Both lid plates closed on the tray, as held on top by the inner lip. One mesh of the two plates for the assembled and exploded views.",
+   "name": "Lid, closed, right",
+   "role": "Both lid plates closed over the keys for transport.",
    "printed": false,
-   "print_notes": "Display only, do not print: print lid-outer and lid-inner instead.",
+   "doc": "hardware/case/README.md",
    "previews": [
     "hardware/case/preview/lid-hinge-right.png",
     "hardware/case/preview/lid-on-right.png"
@@ -187,8 +177,6 @@
     15.01
    ],
    "triangles": 7992,
-   "volume_cm3": 44.95,
-   "mass_g_solid": 55.7,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -197,9 +185,9 @@
    "path": "hardware/case/stl/lid-folded-right.stl",
    "group": "right",
    "name": "Lid, folded as foot, right",
-   "role": "Both lid plates in the folded position under the tray, tilting the half by 18 degrees as a tenting foot.",
+   "role": "Both lid plates folded under the half as a tenting foot.",
    "printed": false,
-   "print_notes": "Display only, do not print: print lid-outer and lid-inner instead.",
+   "doc": "hardware/case/README.md",
    "previews": [
     "hardware/case/preview/lid-folded-right.png",
     "hardware/case/preview/lid-foot-right.png"
@@ -220,8 +208,6 @@
     47.91
    ],
    "triangles": 8068,
-   "volume_cm3": 44.95,
-   "mass_g_solid": 55.7,
    "watertight": false,
    "non_manifold_edges": 12
   },
@@ -230,9 +216,9 @@
    "path": "hardware/case/stl/tray-left.stl",
    "group": "left",
    "name": "Tray, left",
-   "role": "The case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, five standoffs for M2 heat-set inserts, four foot magnet pockets from below.",
+   "role": "The case body the PCB sits in.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Flat on the bed, cavities open upwards; the only bridges are the USB opening (11 mm), the switch slot, the LED window and the magnet pockets.",
+   "doc": "hardware/case/README.md",
    "previews": [
     "hardware/case/preview/assembly-left.png"
    ],
@@ -252,8 +238,6 @@
     22.8
    ],
    "triangles": 7966,
-   "volume_cm3": 90.13,
-   "mass_g_solid": 111.8,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -262,9 +246,9 @@
    "path": "hardware/case/stl/box-cap-left.stl",
    "group": "left",
    "name": "Controller box cap, left",
-   "role": "Roof of the controller box: a 2 mm plate in the rebate plus an L-shaped skirt towards the keys and the thumb keys, held by two M2 screws in the corner bosses. The wordmark is engraved 0.6 mm into the plate.",
+   "role": "Screwed roof over the controller, with the engraved wordmark.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down (plate on the bed). A filament change at 0.6 mm gives a two-colour wordmark.",
+   "doc": "hardware/case/README.md",
    "previews": [
     "hardware/case/preview/assembly-left.png",
     "hardware/case/preview/cap-logo-right.png"
@@ -285,8 +269,6 @@
     8.4
    ],
    "triangles": 922,
-   "volume_cm3": 3.88,
-   "mass_g_solid": 4.8,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -295,9 +277,9 @@
    "path": "hardware/case/stl/lid-outer-left.stl",
    "group": "left",
    "name": "Lid, outer plate, left",
-   "role": "The pinky-side half of the transport cover. Carries the four roof magnets and the even hinge knuckles; folded, it lies under the half as the tenting foot.",
+   "role": "Pinky-side half of the hinged lid.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down; the magnet pockets print as plain holes on a 0.6 mm skin. Joined to the inner plate by a 2 mm steel pin.",
+   "doc": "hardware/case/README.md",
    "previews": [],
    "bbox_min": [
     -49.55,
@@ -315,8 +297,6 @@
     15.01
    ],
    "triangles": 4668,
-   "volume_cm3": 20.0,
-   "mass_g_solid": 24.8,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -325,9 +305,9 @@
    "path": "hardware/case/stl/lid-inner-left.stl",
    "group": "left",
    "name": "Lid, inner plate, left",
-   "role": "The controller and thumb-side half of the transport cover with the odd hinge knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot.",
+   "role": "Thumb-side half of the hinged lid.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down. Joined to the outer plate by a 2 mm steel pin.",
+   "doc": "hardware/case/README.md",
    "previews": [],
    "bbox_min": [
     10.5,
@@ -345,8 +325,6 @@
     15.01
    ],
    "triangles": 3340,
-   "volume_cm3": 22.05,
-   "mass_g_solid": 27.3,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -354,10 +332,10 @@
    "id": "lid-left",
    "path": "hardware/case/stl/lid-left.stl",
    "group": "left",
-   "name": "Lid, closed pair, left",
-   "role": "Both lid plates closed on the tray, as held on top by the inner lip. One mesh of the two plates for the assembled and exploded views.",
+   "name": "Lid, closed, left",
+   "role": "Both lid plates closed over the keys for transport.",
    "printed": false,
-   "print_notes": "Display only, do not print: print lid-outer and lid-inner instead.",
+   "doc": "hardware/case/README.md",
    "previews": [],
    "bbox_min": [
     -49.55,
@@ -375,8 +353,6 @@
     15.01
    ],
    "triangles": 8032,
-   "volume_cm3": 42.04,
-   "mass_g_solid": 52.1,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -385,9 +361,9 @@
    "path": "hardware/case/stl/lid-folded-left.stl",
    "group": "left",
    "name": "Lid, folded as foot, left",
-   "role": "Both lid plates in the folded position under the tray, tilting the half by 18 degrees as a tenting foot.",
+   "role": "Both lid plates folded under the half as a tenting foot.",
    "printed": false,
-   "print_notes": "Display only, do not print: print lid-outer and lid-inner instead.",
+   "doc": "hardware/case/README.md",
    "previews": [],
    "bbox_min": [
     -49.55,
@@ -405,8 +381,6 @@
     54.8
    ],
    "triangles": 8020,
-   "volume_cm3": 42.04,
-   "mass_g_solid": 52.1,
    "watertight": false,
    "non_manifold_edges": 5
   },
@@ -415,9 +389,9 @@
    "path": "hardware/case/stl/pocket-test-right.stl",
    "group": "test",
    "name": "Pocket test, right",
-   "role": "The 50 x 50 mm corner of the right tray around the ball pocket, to check the fit of the cradle and the PCB notch before printing the whole tray.",
+   "role": "The corner of the right tray around the ball pocket, to test the cradle fit.",
    "printed": true,
-   "print_notes": "0.12 mm layers, otherwise as the tray. Print it with the cradle and a scrap PCB with the notch before the full tray.",
+   "doc": "hardware/case/README.md",
    "previews": [
     "hardware/case/preview/section-right.png"
    ],
@@ -437,8 +411,6 @@
     19.11
    ],
    "triangles": 3666,
-   "volume_cm3": 13.9,
-   "mass_g_solid": 17.2,
    "watertight": false,
    "non_manifold_edges": 3
   },
@@ -447,9 +419,9 @@
    "path": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
    "group": "cradle",
    "name": "Cradle, 19.05 mm ball, pocket",
-   "role": "The r2 default: cup with three static ceramic bearings for a 19.05 mm ball and the housing for the PMW3610 sensor board, standing on the case floor in the pocket beside the right PCB.",
+   "role": "Cup on three ceramic bearings with the sensor board housing. The default.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.12 mm layers, 3 perimeters, 30 % infill, no supports. Upright, housing down, open side on the bed. Press in three 2 mm ZrO2 bearing balls and deburr the rim.",
+   "doc": "hardware/trackball-cradle/README.md",
    "previews": [
     "hardware/trackball-cradle/preview/assembly-19mm-pocket.png",
     "hardware/trackball-cradle/preview/section-19mm-pocket.png"
@@ -470,8 +442,6 @@
     18.18
    ],
    "triangles": 7720,
-   "volume_cm3": 4.94,
-   "mass_g_solid": 6.1,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -480,9 +450,9 @@
    "path": "hardware/trackball-cradle/stl/cradle-25mm-pocket.stl",
    "group": "cradle",
    "name": "Cradle, 25 mm ball, pocket",
-   "role": "Fallback for a 25 mm ball in the same pocket. Needs a PCB notch apothem of 16.5 mm and a 35 mm pocket, i.e. a different PCB.",
+   "role": "Fallback for a 25 mm ball; needs a different PCB notch.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.12 mm layers, 3 perimeters, 30 % infill, no supports. Upright, housing down, open side on the bed. Press in three 2 mm ZrO2 bearing balls and deburr the rim.",
+   "doc": "hardware/trackball-cradle/README.md",
    "previews": [
     "hardware/trackball-cradle/preview/assembly-25mm-pocket.png"
    ],
@@ -502,8 +472,6 @@
     21.15
    ],
    "triangles": 7798,
-   "volume_cm3": 6.73,
-   "mass_g_solid": 8.3,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -512,9 +480,9 @@
    "path": "hardware/trackball-cradle/stl/cradle-25mm-cutout.stl",
    "group": "cradle",
    "name": "Cradle, 25 mm ball, PCB cutout (r1)",
-   "role": "The r1 design: sits in a 30 mm round cutout of the PCB with a 40 mm flange under the board. Kept for reference.",
+   "role": "The r1 design, kept for reference.",
    "printed": true,
-   "print_notes": "PETG or PLA, 0.12 mm layers, 3 perimeters, 30 % infill, no supports. Upright, housing down, open side on the bed. Press in three 2 mm ZrO2 bearing balls and deburr the rim.",
+   "doc": "hardware/trackball-cradle/README.md",
    "previews": [
     "hardware/trackball-cradle/preview/section-25mm-cutout.png"
    ],
@@ -534,8 +502,6 @@
     17.3
    ],
    "triangles": 9348,
-   "volume_cm3": 7.34,
-   "mass_g_solid": 9.1,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -544,9 +510,9 @@
    "path": "hardware/trackball-cradle/stl/retainer-19mm.stl",
    "group": "retainer",
    "name": "Retainer, 19.05 mm ball",
-   "role": "Optional clip-on ring with two claws over the ball's shoulders, away from the thumb, so the ball stays in when the half is turned over. Snaps onto the cup rim and comes off by hand.",
+   "role": "Optional clip-on ring that keeps the ball in when the half is turned over.",
    "printed": true,
-   "print_notes": "PETG (the snap fingers bend 2.3 %, which PLA only just takes), 0.12 mm layers, upright as exported, no supports.",
+   "doc": "hardware/trackball-cradle/README.md",
    "previews": [
     "hardware/trackball-cradle/preview/assembly-19mm-pocket.png"
    ],
@@ -566,8 +532,6 @@
     11.6
    ],
    "triangles": 2656,
-   "volume_cm3": 0.54,
-   "mass_g_solid": 0.7,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -576,9 +540,9 @@
    "path": "hardware/trackball-cradle/stl/retainer-25mm.stl",
    "group": "retainer",
    "name": "Retainer, 25 mm ball",
-   "role": "The same clip-on ring for the 25 mm cups (pocket and cutout variant).",
+   "role": "The same ring for the 25 mm cups.",
    "printed": true,
-   "print_notes": "PETG (the snap fingers bend 2.3 %, which PLA only just takes), 0.12 mm layers, upright as exported, no supports.",
+   "doc": "hardware/trackball-cradle/README.md",
    "previews": [
     "hardware/trackball-cradle/preview/assembly-25mm-pocket.png"
    ],
@@ -598,8 +562,6 @@
     13.16
    ],
    "triangles": 2492,
-   "volume_cm3": 0.73,
-   "mass_g_solid": 0.9,
    "watertight": true,
    "non_manifold_edges": 0
   }

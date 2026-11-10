@@ -18,7 +18,9 @@ keymap on the page. The site becomes a project page with one tab ("sheet") per a
 
 ## Decisions
 
-- Tabs: Overview, Explorer (the exploded view), Case, Trackball, PCBs, Keymap, Build & BOM.
+- Tabs: Overview, Explorer (the exploded view), Case, Trackball, PCBs, Keymap. A Build & BOM tab
+  was built and dropped again: the page shows the 3D files and links to the markdown instead of
+  repeating it (BOM, build guide, roadmap and tickets stay in the repository).
 - The page is static: hand-written `docs/index.html`, one ES module per tab in `docs/js/tabs/`,
   shared viewer in `docs/js/viewer.js`, data files in `docs/data/` written by `docs/build.py`
   (`make site`). No bundler; three.js from jsDelivr, pinned.
@@ -34,7 +36,7 @@ keymap on the page. The site becomes a project page with one tab ("sheet") per a
 - [x] Trackball tab: cradle variants, retainer, ball, stack heights
 - [x] PCBs tab: KiCad GLB per board, layer view, fab downloads (`make pcb-3d`)
 - [x] Keymap tab generated from the ZMK keymap
-- [x] Build & BOM tab generated from `spec/03-bom.md` and the tickets
+- [x] Overview links to the markdown (BOM, build guide, firmware, roadmap, issues) instead of repeating it
 - [x] Overview tab
 - [x] `tests/test_site.py` covers the data, the asset paths and the shell
 - [x] README, `spec/11-case.md` and `hardware/case/README.md` point at the new targets

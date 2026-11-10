@@ -117,12 +117,12 @@ issues/               markdown tickets and the generated index
 The project page, [`docs/index.html`](docs/index.html), is published with GitHub Pages from
 `docs/` on `main`. One tab per area: an overview, the interactive 3D exploded view of both halves
 (explode slider, half switch, section through the ball, lid modes), the real printed parts of the
-case and the trackball cradle, the three boards in 3D and as layer plots, the keymap and the parts
-list with what is still open before ordering.
+case and the trackball cradle, the three boards in 3D and as layer plots and the keymap. The page
+shows the files; the markdown keeps the details, and the overview links to it.
 
 The page is static. It shows the real files: STLs and the KiCad GLBs are fetched from the
 repository (raw.githubusercontent.com, branch `main`), nothing is copied into `docs/`. The data the
-tabs need (layout, part facts, keymap, BOM, tickets) is generated into `docs/data/` by
+tabs need (layout, part facts, keymap, board facts) is generated into `docs/data/` by
 `docs/build.py`: run `make site` after a change to the layout, the case, the boards, the keymap,
 the BOM or the tickets; `tests/test_site.py` fails while the data is stale. `make site-serve`
 serves the page with the files of the working tree at http://localhost:8000/docs/, which previews

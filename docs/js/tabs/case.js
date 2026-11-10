@@ -99,7 +99,7 @@ function groupList(g, hidden = false) {
   return `<div class="case-group" data-group="${esc(g.id)}"${hidden ? ' hidden' : ''}><h3>${esc(g.label)}</h3><ul class="picklist">${parts.map((p) => `
     <li><button type="button" data-part="${esc(p.id)}" aria-pressed="false">
       <span>${esc(p.name.replace(/, (left|right)$/, ''))}</span>
-      <small>${p.printed ? fmt(p.mass_g_solid, p.mass_g_solid < 10 ? 1 : 0) + ' g' : 'display'}</small>
+      ${p.printed ? '' : '<small>display</small>'}
     </button></li>`).join('')}</ul></div>`;
 }
 
@@ -116,12 +116,6 @@ function partList() {
 function showHalf(half) {
   root.querySelectorAll('.case-group[data-group]').forEach((el) => { if (HALVES.includes(el.dataset.group)) el.hidden = el.dataset.group !== half; });
   root.querySelectorAll('input[name="case-half"]').forEach((i) => { i.checked = i.value === half; });
-}
-
-function meshFact(p) {
-  if (p.watertight) return 'closed';
-  if (p.non_manifold_edges) return `closed, ${p.non_manifold_edges} edge${p.non_manifold_edges > 1 ? 's' : ''} shared by 4 faces`;
-  return 'open';
 }
 
 function renderPanel(p) {
@@ -143,13 +137,8 @@ function renderPanel(p) {
     <p class="case-role">${esc(p.role)}</p>
     <dl class="dims">
       <dt>Size x · y · z</dt><dd>${fmt(sx, 2)} × ${fmt(sy, 2)} × ${fmt(sz, 2)} mm</dd>
-      <dt>Lowest · highest z</dt><dd>${fmt(p.bbox_min[2], 2)} · ${fmt(p.bbox_max[2], 2)} mm</dd>
-      <dt>Volume</dt><dd>${fmt(p.volume_cm3, 2)} cm³</dd>
-      <dt title="${esc(data.mass_note)}">Mass, solid PLA (upper bound)</dt><dd>${fmt(p.mass_g_solid, 1)} g</dd>
-      <dt>Triangles</dt><dd>${p.triangles.toLocaleString('en-US')}</dd>
-      <dt>Mesh</dt><dd>${esc(meshFact(p))}</dd>
     </dl>
-    <p class="note"><b>Printing.</b> ${esc(p.print_notes)}</p>
+    <p class="note">${p.printed ? 'Print settings, inserts and assembly' : 'What it shows and which plates to print'}: <a href="${esc(githubUrl(p.doc))}" target="_blank" rel="noopener">${esc(p.doc)}</a></p>
     <div class="actions">
       <button class="btn primary" type="button" data-act="download">Download ${esc(stemOf(p))}</button>
       <a class="btn" href="${esc(githubUrl(p.path))}" rel="noopener">View on GitHub</a>
@@ -217,7 +206,7 @@ export async function mount(section, c) {
         <h1 class="display">Case</h1>
         <p class="case-lede">Each half is a tray with a screwed controller box cap and a two-plate lid that covers
         the keys for transport and folds under the half as a tenting foot. Pick a part to turn it, cut it open
-        and download its STL. Sizes are measured from the files.</p>
+        and download its STL.</p>
       </header>
       <nav class="case-parts" aria-label="Parts">${partList()}</nav>
       <section class="case-detail" aria-live="polite"></section>

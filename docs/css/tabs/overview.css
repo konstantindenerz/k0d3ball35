@@ -1,79 +1,39 @@
 /* SPDX-License-Identifier: MIT
-   Overview tab: the landing sheet. Hero with the render, a spec block and a notes block in the
-   manner of a drawing, the sheet index, licences. */
+   Overview tab: hero with the render, a few facts, links into the repository. */
 
 .ov a { color: var(--ink); }
 .ov-hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(20px, 4vw, 48px); align-items: center; }
 @media (max-width: 900px) { .ov-hero { grid-template-columns: minmax(0, 1fr); } .ov-fig { order: -1; } }
 .ov-name { font-size: clamp(36px, 6vw, 68px); }
 .ov-what { margin: 14px 0 0; font: 500 clamp(17px, 1.7vw, 20px)/1.4 var(--sans); max-width: 34ch; text-wrap: pretty; }
-.ov-more { margin: 12px 0 20px; color: var(--muted); max-width: 52ch; text-wrap: pretty; }
+.ov-status { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 14px 0 20px; font-size: 13px; color: var(--muted); }
+.ov-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--signal); align-self: center; }
 .ov .btn.primary { color: var(--accent-ink); }
+.ov-views { margin: 14px 0 0; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.ov-views a { font-weight: 500; }
 
 .ov-fig { margin: 0; border: 1px solid var(--ink); background: var(--sheet); padding: 6px; border-radius: var(--radius); }
 .ov-fig img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
-.ov-fig figcaption { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; padding: 8px 4px 2px; font-size: 12px; color: var(--muted); }
-.ov-fig figcaption span { font: 500 10px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); }
+.ov-fig figcaption { padding: 8px 4px 2px; font-size: 12px; color: var(--muted); }
 
-.ov-block { margin-top: 40px; }
+.ov-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 clamp(20px, 4vw, 48px); margin-top: 44px; }
+@media (max-width: 860px) { .ov-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; } }
 .ov-bh { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font: 500 10px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .ov-bh::after { content: ""; flex: 1; border-top: 1px solid var(--line); }
 
-.ov-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 0 clamp(20px, 3vw, 36px); }
-@media (max-width: 1000px) { .ov-grid { grid-template-columns: minmax(0, 1fr); } }
-.ov-table th[scope="row"] { font: 600 13px/1.35 var(--sans); letter-spacing: 0; text-transform: none; color: var(--ink); white-space: nowrap; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
-.ov-table tr:last-child th { border-bottom: 0; }
-.ov-table td { text-wrap: pretty; }
-.ov-table td.ov-src { font: 500 11px var(--mono); text-wrap: nowrap; white-space: nowrap; }
-.ov-src a { color: var(--muted) !important; }
-.ov-src a:hover { color: var(--ink) !important; }
-@media (max-width: 560px) {
-  .ov-table thead { display: none; }
-  .ov-table tr { display: grid; grid-template-columns: minmax(0, 1fr); border-bottom: 1px solid var(--line); padding: 6px 0; }
-  .ov-table tr:last-child { border-bottom: 0; }
-  table.data.ov-table td, table.data.ov-table th[scope="row"] { border: 0; padding: 2px 10px 2px 0; white-space: normal; }
+.ov-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); margin: 0; }
+.ov-facts dt, .ov-facts dd { margin: 0; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.ov-facts dt { font-weight: 600; padding-right: 20px; }
+.ov-facts dd { text-wrap: pretty; }
+@media (max-width: 480px) {
+  .ov-facts { grid-template-columns: minmax(0, 1fr); }
+  .ov-facts dt { border-bottom: 0; padding-bottom: 0; }
+  .ov-facts dd { padding-top: 2px; }
 }
 
-.ov-stages { list-style: none; margin: 0; padding: 0; display: grid; }
-.ov-stage { position: relative; display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; padding: 0 0 14px; }
-.ov-stage:not(:last-child)::before { content: ""; position: absolute; left: 10px; top: 22px; bottom: 0; border-left: 1.5px solid var(--line); }
-.ov-stage-done:not(:last-child)::before { border-left-color: var(--accent); }
-.ov-stage p { margin: 0; }
-.ov-stage-mark { width: 21px; height: 21px; border: 1.5px solid var(--line); border-radius: 50%; display: grid; place-items: center;
-                 font: 700 12px/1 var(--sans); background: var(--paper); position: relative; }
-.ov-stage-done .ov-stage-mark { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.ov-stage-partly .ov-stage-mark { border-color: var(--signal); background: linear-gradient(90deg, var(--signal) 50%, var(--paper) 50%); }
-.ov-now .ov-stage-mark { box-shadow: 0 0 0 3px var(--signal-soft); }
-.ov-stage-t { font: 600 14px/1.3 var(--sans); }
-.ov-stage-open:not(.ov-now) .ov-stage-t { color: var(--muted); font-weight: 500; }
-.ov-stage-d { font-size: 13px; color: var(--muted); text-wrap: pretty; margin-top: 2px !important; }
-.ov-tag { font: 500 10px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--signal); border: 1px solid var(--signal); border-radius: 2px; padding: 2px 4px; margin-left: 6px; vertical-align: 1px; }
-.ov-blockers { margin-top: 4px; padding: 12px 14px; background: var(--sheet); border: 1px solid var(--line); border-left: 3px solid var(--danger); border-radius: var(--radius); font-size: 13px; }
-.ov-blockers p { margin: 0; }
-.ov-bl-h { font-weight: 600; }
-.ov-bl-h small { font: 500 11px var(--mono); color: var(--danger); margin-left: 4px; }
-.ov-bl { list-style: none; margin: 6px 0 8px; padding: 0; display: grid; gap: 6px; }
-.ov-bl li { text-wrap: pretty; }
-.ov-bl span { font: 500 11px var(--mono); color: var(--muted); }
-.ov-bl-more { color: var(--muted); }
+.ov-docs { list-style: none; margin: 0; padding: 0; }
+.ov-docs li { display: grid; grid-template-columns: 10.5em minmax(0, 1fr); gap: 2px 16px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.ov-docs b { font-weight: 600; }
+.ov-docs span { color: var(--muted); font-size: 13px; text-wrap: pretty; }
+@media (max-width: 480px) { .ov-docs li { grid-template-columns: minmax(0, 1fr); } }
 
-.ov-sheets { display: grid; border-top: 1px solid var(--ink); }
-.ov-sheet { display: grid; grid-template-columns: 2.4em minmax(9em, 2fr) minmax(0, 7fr) 1.5em; gap: 4px 16px; align-items: baseline;
-            padding: 12px 6px; border-bottom: 1px solid var(--line); text-decoration: none; }
-.ov-sheet:hover { background: var(--sheet); }
-.ov-sheet:hover .ov-sheet-go { color: var(--signal); transform: translateX(3px); }
-.ov-sheet-n { font: 500 12px var(--mono); color: var(--signal); }
-.ov-sheet-t { font: 700 17px/1.2 var(--display); font-stretch: 112%; }
-.ov-sheet-d { color: var(--muted); font-size: 13px; text-wrap: pretty; }
-.ov-sheet-go { color: var(--muted); font: 500 14px var(--mono); transition: transform .15s, color .15s; }
-@media (max-width: 640px) {
-  .ov-sheet { grid-template-columns: 2.4em minmax(0, 1fr) 1.5em; }
-  .ov-sheet-d { grid-column: 2; grid-row: 2; }
-  .ov-sheet-go { grid-column: 3; grid-row: 1; }
-}
-
-.ov-lic ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 4px; font-size: 13px; }
-.ov-lic li a { font: 500 11px var(--mono); color: var(--muted); margin-left: 6px; }
-.ov-lic p { margin: 0; font-size: 13px; }
-
-@media (prefers-reduced-motion: reduce) { .ov-sheet-go { transition: none; } .ov-sheet:hover .ov-sheet-go { transform: none; } }

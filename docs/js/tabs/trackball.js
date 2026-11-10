@@ -291,25 +291,19 @@ function renderPanel() {
 
   root.querySelector('.tb-retention').innerHTML = retainer ? `
     <h2>Ball retention</h2>
-    <p class="tb-text">Without the retainer the ball rests in the cup by gravity and ${r.without_retainer_trapped ? 'still cannot fall out' : 'falls out when the half is turned over'}.
-    With <span class="mono">${esc(retainer.id)}.stl</span> clipped on, two claws over the ball's shoulders ${r.trapped ? 'keep it in' : 'do <b>not</b> keep it in'};
-    the thumb side stays open. Checked by <span class="mono">retention.py</span> (configuration-space flood fill).</p>
     ${dims([
-      ['Ball trapped with retainer', r.trapped ? 'yes' : 'no'],
-      ['Looseness it still tolerates', `${fmt(r.guaranteed_margin, 2)} mm`, 'Combined print error, undersized ball and claw flex before the ball could escape'],
-      ['Lift before a claw touches', `${fmt(r.ball_lift_play, 2)} mm`],
-      ['Claw gap to the ball at rest', `${fmt(r.rest_gap, 2)} mm`],
-      ['Open sector for the thumb', `${fmt(r.open_sector_deg, 0)}°`],
-      r.boss_clearance != null && ['Arch clearance over the bearing bosses', `${fmt(r.boss_clearance, 2)} mm`],
+      ['Without the retainer', r.without_retainer_trapped ? 'ball stays in' : 'ball falls out upside down'],
+      ['With the retainer clipped on', r.trapped ? 'ball stays in' : 'ball falls out'],
+      ['Print error it tolerates', `${fmt(r.guaranteed_margin, 2)} mm`],
     ])}` : '<h2>Ball retention</h2><p class="tb-text">No retainer for this variant.</p>';
 
   const dl = (p) => `<div class="tb-file"><span class="mono">${esc(p.path.split('/').pop())}</span>
-      <span class="tb-file-meta">${fmt(p.size[0], 1)} × ${fmt(p.size[1], 1)} × ${fmt(p.size[2], 1)} mm · ${fmt(p.mass_g_solid, 1)} g solid</span>
+      <span class="tb-file-meta">${fmt(p.size[0], 1)} × ${fmt(p.size[1], 1)} × ${fmt(p.size[2], 1)} mm</span>
       <span class="actions"><button class="btn primary" type="button" data-download="${esc(p.path)}">Download STL</button>
       <a class="btn" href="${esc(githubUrl(p.path))}" rel="noopener">GitHub</a>
-      <a class="btn" href="#case/${esc(p.id)}">Facts</a></span></div>`;
+      <a class="btn" href="#case/${esc(p.id)}">On its own</a></span></div>`;
   root.querySelector('.tb-downloads').innerHTML = `<h2>Files</h2>${dl(cradle)}${retainer ? dl(retainer) : ''}
-    <p class="note">${esc(cradle.print_notes)}${retainer ? ` Retainer: ${esc(retainer.print_notes)}` : ''}</p>`;
+    <p class="note">Print settings and fitting the bearings: <a href="${esc(githubUrl(cradle.doc))}" target="_blank" rel="noopener">${esc(cradle.doc)}</a></p>`;
 
   const previews = v.previews.map((path) => {
     const pv = data.previews.find((x) => x.path === path);

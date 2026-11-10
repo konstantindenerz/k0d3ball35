@@ -3,10 +3,10 @@
 Trackball tabs.
 
 Reads hardware/case/stl/*.stl and hardware/trackball-cradle/stl/*.stl (measured with trimesh:
-bounding box, triangles, volume, watertightness), hardware/trackball-cradle/stack.json and
+bounding box, triangles, watertightness), hardware/trackball-cradle/stack.json and
 retention.json, and names the preview renders in hardware/case/preview and
-hardware/trackball-cradle/preview. Names, roles and print notes are short summaries of
-hardware/case/README.md, spec/11-case.md and hardware/trackball-cradle/README.md.
+hardware/trackball-cradle/preview. Each part gets a name and one line; how to print and fit it
+stays in hardware/case/README.md and hardware/trackball-cradle/README.md, which the page links.
 
 Every STL in the two folders has an entry in PARTS or in EXCLUDED (with the reason), otherwise
 build() fails, so a new part cannot silently stay off the page.
@@ -21,7 +21,6 @@ CASE_STL = "hardware/case/stl"
 CRADLE_STL = "hardware/trackball-cradle/stl"
 CASE_PREVIEW = "hardware/case/preview"
 CRADLE_PREVIEW = "hardware/trackball-cradle/preview"
-PLA_DENSITY = 1.24   # g/cm3
 
 GROUPS = (
     ("right", "Right half"),
@@ -31,91 +30,33 @@ GROUPS = (
     ("retainer", "Ball retainer"),
 )
 
-CASE_PRINT = "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports."
-CRADLE_PRINT = "PETG or PLA, 0.12 mm layers, 3 perimeters, 30 % infill, no supports."
+# where the details live: the page names a part, the README says how to print and fit it
+DOCS = {"right": "hardware/case/README.md", "left": "hardware/case/README.md", "test": "hardware/case/README.md",
+        "cradle": "hardware/trackball-cradle/README.md", "retainer": "hardware/trackball-cradle/README.md"}
 
-# stem -> group, name, role, printed (True = a part to print, False = display only), print notes
-PARTS: dict[str, tuple[str, str, str, bool, str]] = {}
+# stem -> group, name, one line on what it is, printed (True = a part to print, False = display only)
+PARTS: dict[str, tuple[str, str, str, bool]] = {}
 
 
 def _half(half: str) -> None:
-    ball = " Carries the pocket for the trackball cradle." if half == "right" else ""
-    window = " Carries the 16 mm ball window," if half == "right" else " Carries"
-    PARTS[f"tray-{half}"] = (
-        half, f"Tray, {half}",
-        "The case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery "
-        "well, controller box walls, five standoffs for M2 heat-set inserts, four foot magnet pockets "
-        f"from below.{ball}",
-        True, f"{CASE_PRINT} Flat on the bed, cavities open upwards; the only bridges are the USB "
-        "opening (11 mm), the switch slot, the LED window and the magnet pockets.")
-    PARTS[f"box-cap-{half}"] = (
-        half, f"Controller box cap, {half}",
-        "Roof of the controller box: a 2 mm plate in the rebate plus an L-shaped skirt towards the keys "
-        "and the thumb keys, held by two M2 screws in the corner bosses. The wordmark is engraved 0.6 mm "
-        "into the plate.",
-        True, f"{CASE_PRINT} Roof down (plate on the bed). A filament change at 0.6 mm gives a "
-        "two-colour wordmark.")
-    PARTS[f"lid-outer-{half}"] = (
-        half, f"Lid, outer plate, {half}",
-        f"The pinky-side half of the transport cover.{window} the four roof magnets and the even "
-        "hinge knuckles; folded, it lies under the half as the tenting foot.",
-        True, f"{CASE_PRINT} Roof down; the magnet pockets print as plain holes on a 0.6 mm skin. "
-        "Joined to the inner plate by a 2 mm steel pin.")
-    PARTS[f"lid-inner-{half}"] = (
-        half, f"Lid, inner plate, {half}",
-        "The controller and thumb-side half of the transport cover with the odd hinge knuckles; folded "
-        "down beyond the inner edge it is the kickstand of the tenting foot.",
-        True, f"{CASE_PRINT} Roof down. Joined to the outer plate by a 2 mm steel pin.")
-    PARTS[f"lid-{half}"] = (
-        half, f"Lid, closed pair, {half}",
-        "Both lid plates closed on the tray, as held on top by the inner lip. One mesh of the two plates "
-        "for the assembled and exploded views.",
-        False, "Display only, do not print: print lid-outer and lid-inner instead.")
-    PARTS[f"lid-folded-{half}"] = (
-        half, f"Lid, folded as foot, {half}",
-        "Both lid plates in the folded position under the tray, tilting the half by 18 degrees as a "
-        "tenting foot.",
-        False, "Display only, do not print: print lid-outer and lid-inner instead.")
+    PARTS[f"tray-{half}"] = (half, f"Tray, {half}", "The case body the PCB sits in"
+                             + (", with the pocket for the trackball cradle." if half == "right" else "."), True)
+    PARTS[f"box-cap-{half}"] = (half, f"Controller box cap, {half}", "Screwed roof over the controller, with the engraved wordmark.", True)
+    PARTS[f"lid-outer-{half}"] = (half, f"Lid, outer plate, {half}", "Pinky-side half of the hinged lid.", True)
+    PARTS[f"lid-inner-{half}"] = (half, f"Lid, inner plate, {half}", "Thumb-side half of the hinged lid.", True)
+    PARTS[f"lid-{half}"] = (half, f"Lid, closed, {half}", "Both lid plates closed over the keys for transport.", False)
+    PARTS[f"lid-folded-{half}"] = (half, f"Lid, folded as foot, {half}", "Both lid plates folded under the half as a tenting foot.", False)
 
 
 for _h in ("right", "left"):
     _half(_h)
 
-PARTS["pocket-test-right"] = (
-    "test", "Pocket test, right",
-    "The 50 x 50 mm corner of the right tray around the ball pocket, to check the fit of the cradle "
-    "and the PCB notch before printing the whole tray.",
-    True, "0.12 mm layers, otherwise as the tray. Print it with the cradle and a scrap PCB with the notch "
-    "before the full tray.")
-
-_CRADLE_NOTE = (f"{CRADLE_PRINT} Upright, housing down, open side on the bed. Press in three 2 mm ZrO2 "
-                "bearing balls and deburr the rim.")
-PARTS["cradle-19mm-pocket"] = (
-    "cradle", "Cradle, 19.05 mm ball, pocket",
-    "The r2 default: cup with three static ceramic bearings for a 19.05 mm ball and the housing for the "
-    "PMW3610 sensor board, standing on the case floor in the pocket beside the right PCB.",
-    True, _CRADLE_NOTE)
-PARTS["cradle-25mm-pocket"] = (
-    "cradle", "Cradle, 25 mm ball, pocket",
-    "Fallback for a 25 mm ball in the same pocket. Needs a PCB notch apothem of 16.5 mm and a 35 mm "
-    "pocket, i.e. a different PCB.",
-    True, _CRADLE_NOTE)
-PARTS["cradle-25mm-cutout"] = (
-    "cradle", "Cradle, 25 mm ball, PCB cutout (r1)",
-    "The r1 design: sits in a 30 mm round cutout of the PCB with a 40 mm flange under the board. Kept "
-    "for reference.",
-    True, _CRADLE_NOTE)
-_RET_NOTE = ("PETG (the snap fingers bend 2.3 %, which PLA only just takes), 0.12 mm layers, upright as "
-             "exported, no supports.")
-PARTS["retainer-19mm"] = (
-    "retainer", "Retainer, 19.05 mm ball",
-    "Optional clip-on ring with two claws over the ball's shoulders, away from the thumb, so the ball "
-    "stays in when the half is turned over. Snaps onto the cup rim and comes off by hand.",
-    True, _RET_NOTE)
-PARTS["retainer-25mm"] = (
-    "retainer", "Retainer, 25 mm ball",
-    "The same clip-on ring for the 25 mm cups (pocket and cutout variant).",
-    True, _RET_NOTE)
+PARTS["pocket-test-right"] = ("test", "Pocket test, right", "The corner of the right tray around the ball pocket, to test the cradle fit.", True)
+PARTS["cradle-19mm-pocket"] = ("cradle", "Cradle, 19.05 mm ball, pocket", "Cup on three ceramic bearings with the sensor board housing. The default.", True)
+PARTS["cradle-25mm-pocket"] = ("cradle", "Cradle, 25 mm ball, pocket", "Fallback for a 25 mm ball; needs a different PCB notch.", True)
+PARTS["cradle-25mm-cutout"] = ("cradle", "Cradle, 25 mm ball, PCB cutout (r1)", "The r1 design, kept for reference.", True)
+PARTS["retainer-19mm"] = ("retainer", "Retainer, 19.05 mm ball", "Optional clip-on ring that keeps the ball in when the half is turned over.", True)
+PARTS["retainer-25mm"] = ("retainer", "Retainer, 25 mm ball", "The same ring for the 25 mm cups.", True)
 
 # STLs in the two folders that the page does not list, with the reason
 EXCLUDED: dict[str, str] = {}
@@ -160,7 +101,6 @@ def measure(path) -> dict:
 
     m = trimesh.load(path, force="mesh")
     lo, hi = m.bounds
-    vol = abs(m.volume) / 1000.0
     import numpy as np
 
     _, uses = np.unique(m.edges_sorted, axis=0, return_counts=True)
@@ -169,8 +109,6 @@ def measure(path) -> dict:
         "bbox_max": [_r(v) for v in hi],
         "size": [_r(b - a) for a, b in zip(lo, hi)],
         "triangles": int(len(m.faces)),
-        "volume_cm3": _r(vol),
-        "mass_g_solid": _r(vol * PLA_DENSITY, 1),
         "watertight": bool(m.is_watertight),
         # edges shared by more than two faces: two surfaces touching along a line (closed, but not
         # strictly manifold); slicers take that, the volume stays valid
@@ -192,10 +130,10 @@ def build() -> dict:
     group_order = [g for g, _ in GROUPS]
     parts = []
     for stem in sorted(PARTS, key=lambda s: (group_order.index(PARTS[s][0]), list(PARTS).index(s))):
-        group, name, role, printed, notes = PARTS[stem]
+        group, name, role, printed = PARTS[stem]
         parts.append({
             "id": stem, "path": stems[stem], "group": group, "name": name, "role": role,
-            "printed": printed, "print_notes": notes,
+            "printed": printed, "doc": DOCS[group],
             "previews": sorted(p for p, (_, shows) in PREVIEWS.items() if stem in shows),
             **measure(REPO / stems[stem]),
         })
@@ -214,9 +152,6 @@ def build() -> dict:
             "previews": previews,
         })
     return {
-        "density_pla_g_cm3": PLA_DENSITY,
-        "mass_note": "Mass of the solid mesh in PLA (1.24 g/cm3): an upper bound, a print with 20 to 30 % "
-                     "infill weighs much less.",
         "groups": [{"id": g, "label": label} for g, label in GROUPS],
         "parts": parts,
         "excluded": dict(sorted(EXCLUDED.items())),
