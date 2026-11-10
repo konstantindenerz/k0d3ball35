@@ -49,20 +49,8 @@ function solid(geom, colourVar, fallback, cutVar = '--tb-cut', cutFallback = '#1
   return g;
 }
 
-/** viewer.fit frames the bounding sphere in the vertical field of view; on a stage narrower than
- *  it is tall the sides would be cut, so the camera backs off by the aspect ratio. */
-function frame(dir) {
-  viewer.fit(dir);
-  const a = viewer.camera.aspect;
-  if (a < 1) {
-    const t = viewer.controls.target;
-    viewer.camera.position.sub(t).multiplyScalar(1 / a).add(t);
-    viewer.camera.far /= a;
-    viewer.camera.updateProjectionMatrix();
-    viewer.controls.update();
-    viewer.requestRender();
-  }
-}
+/** viewer.fit fits the narrower field of view itself, portrait stages included. */
+function frame(dir) { viewer.fit(dir); }
 
 async function stlGeometry(path) {
   if (!geomCache.has(path)) {

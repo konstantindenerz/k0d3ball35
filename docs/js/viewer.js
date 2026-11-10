@@ -173,6 +173,8 @@ export class ModelViewer {
     this._refreshGrid();
     this.requestRender();
   }
+  /** Take an object out of the scene without disposing it, to show it again later with add(). */
+  detach(obj) { this.content.remove(obj); this._refreshGrid(); this.requestRender(); return obj; }
   clear() { [...this.content.children].forEach((c) => this.remove(c)); }
 
   // ---------------------------------------------------------------- view
@@ -187,7 +189,10 @@ export class ModelViewer {
     const r = box.getSize(new THREE.Vector3()).length() / 2;
     const dirs = { iso: [0.55, -0.85, 0.75], top: [0, -0.001, 1], bottom: [0, 0.001, -1], front: [0, -1, 0.12], side: [1, 0, 0.12] };
     const d = new THREE.Vector3(...(dirs[dir] || dirs.iso)).normalize();
-    const dist = r / Math.sin(THREE.MathUtils.degToRad(this.camera.fov / 2)) * 1.08;
+    // fit the narrower of the two fields of view, so portrait stages (phones) keep the sides
+    const vfov = THREE.MathUtils.degToRad(this.camera.fov);
+    const hfov = 2 * Math.atan(Math.tan(vfov / 2) * this.camera.aspect);
+    const dist = r / Math.sin(Math.min(vfov, hfov) / 2) * 1.08;
     this.camera.position.copy(c).addScaledVector(d, dist);
     this.camera.near = Math.max(0.1, dist / 200);
     this.camera.far = dist * 20;
