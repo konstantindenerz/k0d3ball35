@@ -403,3 +403,14 @@ def test_every_sheet_says_the_design_is_untested():
     for tab in ("case", "trackball", "pcbs"):
         assert 'class="untested"' in (DOCS / "js" / "tabs" / f"{tab}.js").read_text(), tab
     assert "Work in progress" in (ROOT / "README.md").read_text()
+
+
+def test_wordmark_uses_kode_mono():
+    """The name in the title block is set in Kode Mono (OFL, slashed zero, so k0d3 never reads as kOd3);
+    headings keep Archivo and the font is actually requested from Google Fonts."""
+    html = (DOCS / "index.html").read_text()
+    css = (DOCS / "css/site.css").read_text()
+    assert "family=Kode+Mono:wght@700" in html
+    assert re.search(r'--wordmark:\s*"Kode Mono"', css)
+    assert re.search(r"\.tb-name span \{[^}]*var\(--wordmark\)", css)
+    assert re.search(r"\.display \{[^}]*var\(--display\)", css)

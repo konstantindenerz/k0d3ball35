@@ -24,6 +24,7 @@
   --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
   --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
   --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --wordmark: "Kode Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, monospace; /* name only, slashed 0 */
 
   --chrome-h: 108px;     /* title block + sheet tabs, set exactly by main.js */
   --gutter: clamp(16px, 3vw, 32px);
@@ -63,7 +64,7 @@ img { max-width: 100%; }
 .tb-key { font: 500 9px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .tb-val { font: 500 13px/1.25 var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tb-name { display: flex; align-items: center; padding-left: var(--gutter); text-decoration: none; }
-.tb-name span { font: 700 22px/1 var(--display); font-stretch: 125%; letter-spacing: -.01em; }
+.tb-name span { font: 700 22px/1 var(--wordmark); letter-spacing: 0; }
 .tb-title .tb-val { font-family: var(--sans); font-weight: 500; }
 .tb-actions { display: flex; align-items: center; gap: 6px; padding-right: var(--gutter); }
 .tb-sheet .tb-val b { color: var(--signal); font-weight: 600; }
