@@ -1,0 +1,488 @@
+{
+ "source": "make pcb-3d (scripts/export_site_pcbs.py), make gerbers, hardware/sensor-pcb/export.sh",
+ "glb_frame": "glTF as KiCad writes it: Y up, metres, KiCad board coordinates (x right, -y up)",
+ "boards": [
+  {
+   "id": "left",
+   "name": "Left PCB",
+   "stem": "k0d3ball35-left",
+   "folder": "hardware/left-pcb",
+   "files": {
+    "kicad_pcb": "hardware/left-pcb/k0d3ball35-left.kicad_pcb",
+    "glb": "hardware/left-pcb/renders/k0d3ball35-left.glb",
+    "outline": "hardware/left-pcb/renders/layers/outline.svg",
+    "render_top": "hardware/left-pcb/renders/left-pcb-top.png",
+    "render_bottom": "hardware/left-pcb/renders/left-pcb-bottom.png",
+    "step": "hardware/left-pcb/k0d3ball35-left.step",
+    "gerbers": "hardware/left-pcb/k0d3ball35-left-gerbers.zip"
+   },
+   "layers": [
+    {
+     "id": "B.Silkscreen",
+     "label": "Back silkscreen",
+     "side": "back",
+     "kind": "silk",
+     "color": "#ECE8DA",
+     "path": "hardware/left-pcb/renders/layers/B.Silkscreen.svg"
+    },
+    {
+     "id": "B.Mask",
+     "label": "Back solder mask",
+     "side": "back",
+     "kind": "mask",
+     "color": "#1E5A3E",
+     "path": "hardware/left-pcb/renders/layers/B.Mask.svg"
+    },
+    {
+     "id": "B.Cu",
+     "label": "Back copper",
+     "side": "back",
+     "kind": "copper",
+     "color": "#C27C45",
+     "path": "hardware/left-pcb/renders/layers/B.Cu.svg"
+    },
+    {
+     "id": "F.Cu",
+     "label": "Front copper",
+     "side": "front",
+     "kind": "copper",
+     "color": "#D9A843",
+     "path": "hardware/left-pcb/renders/layers/F.Cu.svg"
+    },
+    {
+     "id": "F.Mask",
+     "label": "Front solder mask",
+     "side": "front",
+     "kind": "mask",
+     "color": "#1E5A3E",
+     "path": "hardware/left-pcb/renders/layers/F.Mask.svg"
+    },
+    {
+     "id": "F.Silkscreen",
+     "label": "Front silkscreen",
+     "side": "front",
+     "kind": "silk",
+     "color": "#F6F3E8",
+     "path": "hardware/left-pcb/renders/layers/F.Silkscreen.svg"
+    },
+    {
+     "id": "Edge.Cuts",
+     "label": "Board edge",
+     "side": "both",
+     "kind": "edge",
+     "color": null,
+     "path": "hardware/left-pcb/renders/layers/Edge.Cuts.svg"
+    }
+   ],
+   "viewbox": [
+    -1.0,
+    -1.0,
+    122.9785,
+    88.7022
+   ],
+   "size_mm": [
+    120.98,
+    86.7
+   ],
+   "thickness_mm": 1.6,
+   "copper_layers": 2,
+   "finish": "ENIG",
+   "keys": 18,
+   "notes": "18 keys, no sensor connector",
+   "facts": [
+    [
+     "Outline",
+     "121.0 x 86.7 mm"
+    ],
+    [
+     "Thickness",
+     "1.6 mm"
+    ],
+    [
+     "Copper layers",
+     "2"
+    ],
+    [
+     "Copper weight",
+     "1 oz"
+    ],
+    [
+     "Surface finish",
+     "ENIG"
+    ],
+    [
+     "Key positions",
+     "18"
+    ],
+    [
+     "Footprints",
+     "55"
+    ],
+    [
+     "Track segments",
+     "717"
+    ],
+    [
+     "Vias",
+     "91"
+    ]
+   ],
+   "parts": [
+    {
+     "ref": "U1",
+     "role": "Controller",
+     "value": "nice!nano v2",
+     "footprint": "nice_nano_v2_THT",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "J3",
+     "role": "Battery connector",
+     "value": "S2B-PH-SM4-TB",
+     "footprint": "JST_PH_S2B-PH-SM4-TB_reversible",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "J2",
+     "role": "Battery pads",
+     "value": "BAT",
+     "footprint": "BatteryPads_2x1.8mm_P2.54mm",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "PS1",
+     "role": "Power switch",
+     "value": "MSK12C02",
+     "footprint": "SW_SPDT_MSK12C02_reversible",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "RB1",
+     "role": "Reset button",
+     "value": "EVQ-P7A01P",
+     "footprint": "SW_SPST_EVQP7A_reversible",
+     "side": "front (key side)"
+    }
+   ]
+  },
+  {
+   "id": "right",
+   "name": "Right PCB",
+   "stem": "k0d3ball35-right",
+   "folder": "hardware/right-pcb",
+   "files": {
+    "kicad_pcb": "hardware/right-pcb/k0d3ball35-right.kicad_pcb",
+    "glb": "hardware/right-pcb/renders/k0d3ball35-right.glb",
+    "outline": "hardware/right-pcb/renders/layers/outline.svg",
+    "render_top": "hardware/right-pcb/renders/right-pcb-top.png",
+    "render_bottom": "hardware/right-pcb/renders/right-pcb-bottom.png",
+    "step": "hardware/right-pcb/k0d3ball35-right.step",
+    "gerbers": "hardware/right-pcb/k0d3ball35-right-gerbers.zip"
+   },
+   "layers": [
+    {
+     "id": "B.Silkscreen",
+     "label": "Back silkscreen",
+     "side": "back",
+     "kind": "silk",
+     "color": "#ECE8DA",
+     "path": "hardware/right-pcb/renders/layers/B.Silkscreen.svg"
+    },
+    {
+     "id": "B.Mask",
+     "label": "Back solder mask",
+     "side": "back",
+     "kind": "mask",
+     "color": "#1E5A3E",
+     "path": "hardware/right-pcb/renders/layers/B.Mask.svg"
+    },
+    {
+     "id": "B.Cu",
+     "label": "Back copper",
+     "side": "back",
+     "kind": "copper",
+     "color": "#C27C45",
+     "path": "hardware/right-pcb/renders/layers/B.Cu.svg"
+    },
+    {
+     "id": "F.Cu",
+     "label": "Front copper",
+     "side": "front",
+     "kind": "copper",
+     "color": "#D9A843",
+     "path": "hardware/right-pcb/renders/layers/F.Cu.svg"
+    },
+    {
+     "id": "F.Mask",
+     "label": "Front solder mask",
+     "side": "front",
+     "kind": "mask",
+     "color": "#1E5A3E",
+     "path": "hardware/right-pcb/renders/layers/F.Mask.svg"
+    },
+    {
+     "id": "F.Silkscreen",
+     "label": "Front silkscreen",
+     "side": "front",
+     "kind": "silk",
+     "color": "#F6F3E8",
+     "path": "hardware/right-pcb/renders/layers/F.Silkscreen.svg"
+    },
+    {
+     "id": "Edge.Cuts",
+     "label": "Board edge",
+     "side": "both",
+     "kind": "edge",
+     "color": null,
+     "path": "hardware/right-pcb/renders/layers/Edge.Cuts.svg"
+    }
+   ],
+   "viewbox": [
+    -1.0,
+    -1.0,
+    122.9785,
+    88.7022
+   ],
+   "size_mm": [
+    120.98,
+    86.7
+   ],
+   "thickness_mm": 1.6,
+   "copper_layers": 2,
+   "finish": "ENIG",
+   "keys": 17,
+   "notes": "17 keys, FPC connector on the key side, notch for the ball pocket",
+   "facts": [
+    [
+     "Outline",
+     "121.0 x 86.7 mm"
+    ],
+    [
+     "Thickness",
+     "1.6 mm"
+    ],
+    [
+     "Copper layers",
+     "2"
+    ],
+    [
+     "Copper weight",
+     "1 oz"
+    ],
+    [
+     "Surface finish",
+     "ENIG"
+    ],
+    [
+     "Key positions",
+     "17"
+    ],
+    [
+     "Ball pocket notch",
+     "octagon, apothem 15 mm"
+    ],
+    [
+     "Footprints",
+     "50"
+    ],
+    [
+     "Track segments",
+     "768"
+    ],
+    [
+     "Vias",
+     "93"
+    ]
+   ],
+   "parts": [
+    {
+     "ref": "U1",
+     "role": "Controller",
+     "value": "nice!nano v2",
+     "footprint": "nice_nano_v2_THT",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "J1",
+     "role": "Sensor cable connector",
+     "value": "FH12-6S-0.5SH",
+     "footprint": "FPC_0.5mm_6P_FH12-6S_top",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "J3",
+     "role": "Battery connector",
+     "value": "S2B-PH-SM4-TB",
+     "footprint": "JST_PH_S2B-PH-SM4-TB_reversible",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "J2",
+     "role": "Battery pads",
+     "value": "BAT",
+     "footprint": "BatteryPads_2x1.8mm_P2.54mm",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "PS1",
+     "role": "Power switch",
+     "value": "MSK12C02",
+     "footprint": "SW_SPDT_MSK12C02_reversible",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "RB1",
+     "role": "Reset button",
+     "value": "EVQ-P7A01P",
+     "footprint": "SW_SPST_EVQP7A_reversible",
+     "side": "front (key side)"
+    }
+   ]
+  },
+  {
+   "id": "sensor",
+   "name": "Sensor PCB",
+   "stem": "k0d3ball35-sensor",
+   "folder": "hardware/sensor-pcb",
+   "files": {
+    "kicad_pcb": "hardware/sensor-pcb/k0d3ball35-sensor.kicad_pcb",
+    "glb": "hardware/sensor-pcb/renders/k0d3ball35-sensor.glb",
+    "outline": "hardware/sensor-pcb/renders/layers/outline.svg",
+    "render_top": "hardware/sensor-pcb/renders/k0d3ball35-sensor-top.png",
+    "render_bottom": "hardware/sensor-pcb/renders/k0d3ball35-sensor-bottom.png",
+    "step": "hardware/sensor-pcb/renders/k0d3ball35-sensor.step",
+    "gerbers": "hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip"
+   },
+   "layers": [
+    {
+     "id": "B.Silkscreen",
+     "label": "Back silkscreen",
+     "side": "back",
+     "kind": "silk",
+     "color": "#ECE8DA",
+     "path": "hardware/sensor-pcb/renders/layers/B.Silkscreen.svg"
+    },
+    {
+     "id": "B.Mask",
+     "label": "Back solder mask",
+     "side": "back",
+     "kind": "mask",
+     "color": "#1E5A3E",
+     "path": "hardware/sensor-pcb/renders/layers/B.Mask.svg"
+    },
+    {
+     "id": "B.Cu",
+     "label": "Back copper",
+     "side": "back",
+     "kind": "copper",
+     "color": "#C27C45",
+     "path": "hardware/sensor-pcb/renders/layers/B.Cu.svg"
+    },
+    {
+     "id": "F.Cu",
+     "label": "Front copper",
+     "side": "front",
+     "kind": "copper",
+     "color": "#D9A843",
+     "path": "hardware/sensor-pcb/renders/layers/F.Cu.svg"
+    },
+    {
+     "id": "F.Mask",
+     "label": "Front solder mask",
+     "side": "front",
+     "kind": "mask",
+     "color": "#1E5A3E",
+     "path": "hardware/sensor-pcb/renders/layers/F.Mask.svg"
+    },
+    {
+     "id": "F.Silkscreen",
+     "label": "Front silkscreen",
+     "side": "front",
+     "kind": "silk",
+     "color": "#F6F3E8",
+     "path": "hardware/sensor-pcb/renders/layers/F.Silkscreen.svg"
+    },
+    {
+     "id": "Edge.Cuts",
+     "label": "Board edge",
+     "side": "both",
+     "kind": "edge",
+     "color": null,
+     "path": "hardware/sensor-pcb/renders/layers/Edge.Cuts.svg"
+    }
+   ],
+   "viewbox": [
+    -1.0,
+    -1.0,
+    28.0,
+    27.0
+   ],
+   "size_mm": [
+    26.0,
+    25.0
+   ],
+   "thickness_mm": 1.6,
+   "copper_layers": 2,
+   "finish": "ENIG",
+   "keys": null,
+   "notes": "",
+   "facts": [
+    [
+     "Outline",
+     "26.0 x 25.0 mm"
+    ],
+    [
+     "Thickness",
+     "1.6 mm"
+    ],
+    [
+     "Copper layers",
+     "2"
+    ],
+    [
+     "Surface finish",
+     "ENIG"
+    ],
+    [
+     "Sensor slot",
+     "16.96 x 8.60 mm"
+    ],
+    [
+     "Footprints",
+     "24"
+    ],
+    [
+     "Track segments",
+     "215"
+    ],
+    [
+     "Vias",
+     "21"
+    ]
+   ],
+   "parts": [
+    {
+     "ref": "U1",
+     "role": "Optical sensor",
+     "value": "PMW3610DM-SUDU",
+     "footprint": "PMW3610DM-SUDU",
+     "side": "back (ball side)"
+    },
+    {
+     "ref": "U2",
+     "role": "1.8 V regulator",
+     "value": "XC6206P182MR",
+     "footprint": "SOT-23",
+     "side": "front"
+    },
+    {
+     "ref": "J1",
+     "role": "Cable connector",
+     "value": "FPC 6P 0.5mm",
+     "footprint": "FPC_0.5mm_6P_FH12-6S",
+     "side": "front"
+    }
+   ]
+  }
+ ]
+}
