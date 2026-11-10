@@ -4,6 +4,7 @@ no tool attribution."""
 from __future__ import annotations
 
 import re
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -12,7 +13,8 @@ import issues
 
 LINK_RE = re.compile(r"(?<!!)\[[^\]]*\]\(([^)\s]+)\)")
 SPEC_DOC_RE = re.compile(r"`spec/(\d\d-[a-z0-9-]+\.md)`")
-TEXT_SUFFIXES = {".md", ".py", ".sh", ".yml", ".yaml", ".toml", ".txt", ".scad", ".conf", ".keymap", ".overlay", ".dtsi", ".cfg", ".mk", ".json"}
+TEXT_SUFFIXES = {".md", ".py", ".sh", ".yml", ".yaml", ".toml", ".txt", ".scad", ".conf", ".keymap", ".overlay", ".dtsi", ".cfg", ".mk", ".json",
+                 ".js", ".html", ".css", ".svg"}  # the project page in docs/ too
 # matched case insensitively, so a lowercase host name in a URL is caught too
 FORBIDDEN_WORDS = ("claude", "anthropic", "ai-generated", "ai generated", "copilot", "chatgpt")
 GERMAN_WORDS = ("und", "nicht", "oder", "für", "ist", "auch", "wird", "werden", "eine", "einen", "das", "die", "der")
@@ -108,6 +110,21 @@ def test_no_tool_attribution(repo_root: Path, tracked_files: list[Path]):
         for word in FORBIDDEN_WORDS:
             if word in lowered:
                 hits.append(f"{path.relative_to(repo_root)}: '{word}'")
+    assert not hits, "\n".join(hits)
+
+
+def test_no_tool_attribution_in_commits(repo_root: Path):
+    """Commit messages and authors stay free of tool names and co-author trailers (as far as the
+    checkout's history reaches: CI clones shallow, a local run sees everything)."""
+    log = subprocess.run(["git", "log", "--format=%H%x00%an %ae%x00%B%x1e"], cwd=repo_root,
+                         capture_output=True, text=True, check=True).stdout
+    hits = []
+    for entry in filter(str.strip, log.split("\x1e")):
+        sha, author, body = entry.strip().split("\x00", 2)
+        lowered = f"{author}\n{body}".lower()
+        for word in FORBIDDEN_WORDS + ("co-authored-by",):
+            if word in lowered:
+                hits.append(f"{sha[:10]}: '{word}'")
     assert not hits, "\n".join(hits)
 
 
