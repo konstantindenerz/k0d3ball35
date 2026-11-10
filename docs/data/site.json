@@ -113,6 +113,13 @@
    "value": 22.8,
    "text": "22.8 mm from the tray bottom to the controller cap",
    "source": "hardware/case/stack.json"
+  },
+  {
+   "id": "cost",
+   "label": "Parts cost",
+   "value": 240,
+   "text": "about 240 EUR for one keyboard, PCBs in batches of five included",
+   "source": "spec/03-bom.md"
   }
  ],
  "licences": [

@@ -195,6 +195,25 @@ def test_bom_rows_equal_the_markdown_tables():
                 assert all(len(r) == len(b["table"]["header"]) for r in b["table"]["rows"]), s["title"]
 
 
+def test_bom_cost_and_guide_follow_their_sources():
+    bom = json.loads((DATA / "bom.json").read_text())
+    md = (ROOT / "spec/03-bom.md").read_text()
+    totals = md.split("## 9. Totals", 1)[1].split("\n## ", 1)[0]
+    rows = re.findall(r"^\| ([^|*]+?) \| (\d+) \|$", totals, flags=re.M)
+    c = bom["cost"]
+    assert [(g["label"], g["eur"]) for g in c["groups"]] == [(l, float(v)) for l, v in rows]
+    assert f"**{c['total_text']}**" in totals
+    assert abs(sum(g["eur"] for g in c["groups"]) - c["total"]) <= 10, "groups no longer add up to the total"
+    guide = (ROOT / "spec/04-build-guide.md").read_text()
+    g = bom["guide"]
+    assert [ch["number"] for ch in g["chapters"]] == [int(n) for n in re.findall(r"^## (\d+)\.", guide, flags=re.M)]
+    assert g["chapters"][1]["anchor"] == "1-parts-and-tools-check"
+    assert g["time"] and g["time"] in " ".join(guide.split())
+    assert len(g["tools"]) >= 5 and all(t.split()[0] in guide for t in g["tools"])
+    site = json.loads((DATA / "site.json").read_text())
+    assert next(f for f in site["facts"] if f["id"] == "cost")["value"] == c["total"]
+
+
 def test_status_tickets_equal_the_tracker():
     sys.path.insert(0, str(ROOT / "scripts"))
     import issues  # noqa: E402

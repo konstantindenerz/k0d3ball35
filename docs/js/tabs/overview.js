@@ -14,7 +14,7 @@ const SHEETS = {
   trackball: (d) => `The cradle for the ${d.ball} mm ball on three ceramic bearings, the sensor board below it and the stack heights.`,
   pcbs: () => 'Left, right and sensor board in 3D and as copper, silkscreen and outline layers.',
   keymap: (d) => `The ZMK keymap on the real key positions: ${d.layers} layers, ${d.combos} combos, the automatic mouse layer.`,
-  build: (d) => `${d.bomRows} lines of parts with sources and prices, the ${d.steps} checks before ordering, ${d.tickets} open tickets.`,
+  build: (d) => `${d.cost} for one keyboard, the tools and the build chapters, ${d.bomRows} lines of parts with sources, the ${d.steps} checks before ordering, ${d.tickets} open tickets.`,
 };
 
 const fact = (site, id) => (site.facts || []).find((f) => f.id === id) || {};
@@ -31,11 +31,12 @@ export async function mount(section, ctx) {
   const openTickets = Object.values(status.tickets).reduce((a, g) => a + g.length, 0);
   const counts = {
     ball: ball.value, layers: keymap.layers.length, combos: keymap.combos.length, steps: bo.steps.length, tickets: openTickets,
-    bomRows: bom.sections.reduce((a, s) => a + s.blocks.reduce((b, x) => b + (x.table ? x.table.rows.length : 0), 0), 0),
+    cost: bom.cost.total_text.replace(/^about/, 'About'),
+    bomRows: bom.sections.filter((s) => s.number !== bom.cost.section).reduce((a, s) => a + s.blocks.reduce((b, x) => b + (x.table ? x.table.rows.length : 0), 0), 0),
   };
 
-  const specRows = (site.facts || []).map((f, i) => `
-    <tr><td class="ov-n">${i + 1}</td><th scope="row">${esc(f.label)}</th><td>${esc(f.text)}</td>
+  const specRows = (site.facts || []).map((f) => `
+    <tr><th scope="row">${esc(f.label)}</th><td>${esc(f.text)}</td>
       <td class="ov-src"><a href="${githubUrl(f.source)}" target="_blank" rel="noopener" title="${esc(f.source)}">${esc(f.source.split('/').pop())}</a></td></tr>`).join('');
 
   const sheetRows = site.tabs.filter((t) => t.id !== 'overview').map((t) => {
@@ -47,16 +48,32 @@ export async function mount(section, ctx) {
       <span class="ov-sheet-go" aria-hidden="true">→</span></a>`;
   }).join('');
 
+  // the project's stages in the order they happen; the first one not done is where it stands
+  const designDone = bo.steps[0]?.state === 'done';
   const ordered = pcb.status === 'done';
-  const statusLines = [
-    `Revision <b>${esc(site.revision)}</b>: work in progress, the geometry still changes between revisions.`,
-    ordered
-      ? `The first PCBs are ordered (<a href="${githubUrl(pcb.path)}" target="_blank" rel="noopener">${esc(pcb.slug)}</a>).`
-      : `<b>Not ordered yet.</b> No PCB has been fabricated; the order is ticket <a href="${githubUrl(pcb.path)}" target="_blank" rel="noopener">${esc(pcb.slug)}</a>, status ${esc(pcb.status)}.`,
-    `Checks before ordering: ${done} of ${bo.steps.length} done${partly ? `, ${partly} partly done` : ''}. <a href="#build/before">See them</a>.`,
-    `Parts: ${status.order.done} of ${status.order.total} lines of the order checklist bought.`,
-    `${openTickets} tickets open or in progress, ${status.ticket_counts.P0 || 0} of them blockers. <a href="#build/tickets">List</a>.`,
+  const stages = [
+    { title: 'Design', state: designDone ? 'done' : 'open',
+      text: 'Layout, schematics, routed PCBs, case and cradle models, firmware.' },
+    { title: 'Checks before ordering', state: done === bo.steps.length ? 'done' : (done || partly) ? 'partly' : 'open',
+      text: `${done} of ${bo.steps.length} done${partly ? `, ${partly} partly` : ''}.`, href: '#build/before' },
+    { title: 'Order', state: ordered && status.order.done === status.order.total ? 'done' : (ordered || status.order.done) ? 'partly' : 'open',
+      text: `PCBs ${ordered ? 'ordered' : 'not ordered yet'}; ${status.order.done} of ${status.order.total} lines of the order checklist bought.`,
+      link: [pcb.path, pcb.slug] },
+    { title: 'Build', state: 'open', text: 'Solder, print, assemble, flash. Starts when the boards arrive.' },
+    { title: 'In daily use', state: 'open', text: 'Typing on it, tuning the keymap and the trackball.' },
   ];
+  const now = stages.findIndex((s) => s.state !== 'done');
+  const stageRows = stages.map((s, i) => `
+    <li class="ov-stage ov-stage-${s.state}${i === now ? ' ov-now' : ''}"${i === now ? ' aria-current="step"' : ''}>
+      <span class="ov-stage-mark" aria-hidden="true">${s.state === 'done' ? '✓' : ''}</span>
+      <div><p class="ov-stage-t">${esc(s.title)}${i === now ? ' <span class="ov-tag">now</span>' : ''}</p>
+      <p class="ov-stage-d">${esc(s.text)}${s.href ? ` <a href="${s.href}">Details</a>` : ''}${s.link ? ` <a href="${githubUrl(s.link[0])}" target="_blank" rel="noopener">${esc(s.link[1])}</a>` : ''}</p></div>
+    </li>`).join('');
+  const blockers = status.tickets.P0 || [];
+  const blockerList = blockers.length
+    ? `<p class="ov-bl-h">Blocking the next step <small>${blockers.length}</small></p>
+       <ul class="ov-bl">${blockers.map((t) => `<li><a href="${githubUrl(t.path)}" target="_blank" rel="noopener">${esc(t.title)}</a> <span>${esc(t.area)}</span></li>`).join('')}</ul>`
+    : '<p class="ov-bl-h">Nothing blocks the next step.</p>';
 
   const lic = (site.licences || []).map((l) => `<li><b>${esc(l.id)}</b> for ${esc(l.scope)} <a href="${githubUrl(l.path)}" target="_blank" rel="noopener">${esc(l.path)}</a></li>`).join('');
   const repo = `https://github.com/${site.github}`;
@@ -81,12 +98,13 @@ export async function mount(section, ctx) {
       <section class="ov-block ov-spec" aria-labelledby="ovSpecH">
         <h2 class="ov-bh" id="ovSpecH">Specification</h2>
         <div class="table-wrap"><table class="data ov-table">
-          <thead><tr><th scope="col">#</th><th scope="col">Item</th><th scope="col">Value</th><th scope="col">From</th></tr></thead>
+          <thead><tr><th scope="col">Item</th><th scope="col">Value</th><th scope="col">Source</th></tr></thead>
           <tbody>${specRows}</tbody></table></div>
       </section>
       <section class="ov-block ov-status" aria-labelledby="ovStatusH">
-        <h2 class="ov-bh" id="ovStatusH">Status</h2>
-        <ol class="ov-notes">${statusLines.map((l) => `<li>${l}</li>`).join('')}</ol>
+        <h2 class="ov-bh" id="ovStatusH">Status · revision ${esc(site.revision)}</h2>
+        <ol class="ov-stages">${stageRows}</ol>
+        <div class="ov-blockers">${blockerList}<p class="ov-bl-more">${openTickets} tickets open in total. <a href="#build/tickets">All tickets</a></p></div>
       </section>
     </div>
 

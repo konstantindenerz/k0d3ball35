@@ -29,6 +29,7 @@ RIGHT_OVERLAY = "firmware/zmk-config/config/boards/shields/k0d3ball35/k0d3ball35
 ZMK_YML = "firmware/zmk-config/config/boards/shields/k0d3ball35/k0d3ball35.zmk.yml"
 WEST = "firmware/zmk-config/config/west.yml"
 DESIGN = "spec/01-design-spec.md"
+BOM = "spec/03-bom.md"
 
 
 def _num(v: float) -> str:
@@ -76,6 +77,8 @@ def facts() -> list[dict]:
     rc = case["right"]
     case_h = rc["box_top_z"] - rc["base_z"]
     switch = req["Switches"]
+    from .bom import cost, parse_sections
+    price = cost(parse_sections((REPO / BOM).read_text())[1])
 
     return [
         {"id": "keys", "label": "Keys", "value": n["left"] + n["right"], "left": n["left"], "right": n["right"],
@@ -104,6 +107,8 @@ def facts() -> list[dict]:
          "source": POINTS.format(half="right")},
         {"id": "case_height", "label": "Case height", "value": round(case_h, 1),
          "text": f"{_num(case_h)} mm from the tray bottom to the controller cap", "source": CASE_STACK},
+        {"id": "cost", "label": "Parts cost", "value": price["total"],
+         "text": f"{price['total_text']} for one keyboard, PCBs in batches of five included", "source": BOM},
     ]
 
 

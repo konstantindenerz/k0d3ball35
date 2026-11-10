@@ -1263,5 +1263,155 @@
     }
    ]
   }
- ]
+ ],
+ "cost": {
+  "section": 9,
+  "groups": [
+   {
+    "label": "PCBs delivered (three designs, 5 each)",
+    "eur": 90.0
+   },
+   {
+    "label": "Controllers (nice!nano) and sockets",
+    "eur": 48.0
+   },
+   {
+    "label": "Switches, sockets, keycaps",
+    "eur": 53.0
+   },
+   {
+    "label": "Per-half electronics",
+    "eur": 8.0
+   },
+   {
+    "label": "Batteries",
+    "eur": 10.0
+   },
+   {
+    "label": "Sensor board parts, connectors, cable",
+    "eur": 12.0
+   },
+   {
+    "label": "Ball, ceramic balls, hardware",
+    "eur": 10.0
+   },
+   {
+    "label": "Finishing",
+    "eur": 5.0
+   }
+  ],
+  "total_text": "about 240 EUR",
+  "total": 240,
+  "notes": [
+   [
+    "With SuperMini controllers: about 220 EUR. The spare PCB sets reduce a second build to roughly 150 EUR. Two separate main PCBs cost one more 5-piece batch than the r1 reversible board did; in exchange the boards lost the jumpers, the dead D0 and the empty ball cutout on the left."
+   ]
+  ]
+ },
+ "guide": {
+  "source": "spec/04-build-guide.md",
+  "time": "Plan two evenings for the electronics and one for the trackball module and firmware",
+  "tools": [
+   "temperature-controlled soldering iron, chisel tip 1.5 to 2 mm and a fine conical tip",
+   "0.5 mm solder (leaded 63/37 is the easiest), flux pen or gel flux, solder wick, isopropyl alcohol",
+   "fine tweezers (ESD safe), small side cutters, a toothpick",
+   "multimeter with diode mode and continuity beep",
+   "M2 screwdriver (PH00 or a 1.5 mm hex, depending on the screws), 1.9 to 2.0 mm drill bit for reaming the bearing seats",
+   "2.0 mm feeler gauge, or a stack of paper measured with calipers (for the lens distance check)",
+   "3D printer (0.12 mm layers, PETG or PLA) or a print service for the cradle",
+   "a USB-C data cable, a computer with a file manager and a browser"
+  ],
+  "chapters": [
+   {
+    "number": 0,
+    "title": "Read first",
+    "anchor": "0-read-first"
+   },
+   {
+    "number": 1,
+    "title": "Parts and tools check",
+    "anchor": "1-parts-and-tools-check"
+   },
+   {
+    "number": 2,
+    "title": "Identify the halves",
+    "anchor": "2-identify-the-halves"
+   },
+   {
+    "number": 3,
+    "title": "Diodes",
+    "anchor": "3-diodes"
+   },
+   {
+    "number": 4,
+    "title": "Hot-swap sockets",
+    "anchor": "4-hot-swap-sockets"
+   },
+   {
+    "number": 5,
+    "title": "Controller sockets and header pins",
+    "anchor": "5-controller-sockets-and-header-pins"
+   },
+   {
+    "number": 6,
+    "title": "Power switch, reset button, FPC connector",
+    "anchor": "6-power-switch-reset-button-fpc-connector"
+   },
+   {
+    "number": 7,
+    "title": "Battery",
+    "anchor": "7-battery"
+   },
+   {
+    "number": 8,
+    "title": "Flash the firmware",
+    "anchor": "8-flash-the-firmware"
+   },
+   {
+    "number": 9,
+    "title": "Smoke test before closing",
+    "anchor": "9-smoke-test-before-closing"
+   },
+   {
+    "number": 10,
+    "title": "Sensor board and lens",
+    "anchor": "10-sensor-board-and-lens"
+   },
+   {
+    "number": 11,
+    "title": "Trackball cradle",
+    "anchor": "11-trackball-cradle"
+   },
+   {
+    "number": 12,
+    "title": "Case and closing up",
+    "anchor": "12-case-and-closing-up"
+   },
+   {
+    "number": 13,
+    "title": "Switches and keycaps",
+    "anchor": "13-switches-and-keycaps"
+   },
+   {
+    "number": 14,
+    "title": "Pairing and trackball tuning",
+    "anchor": "14-pairing-and-trackball-tuning"
+   },
+   {
+    "number": 15,
+    "title": "Troubleshooting",
+    "anchor": "15-troubleshooting"
+   },
+   {
+    "number": 16,
+    "title": "Maintenance",
+    "anchor": "16-maintenance"
+   },
+   {
+    "number": 17,
+    "title": "Printable checklist",
+    "anchor": "17-printable-checklist"
+   }
+  ]
+ }
 }

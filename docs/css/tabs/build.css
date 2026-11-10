@@ -14,6 +14,30 @@
 .bld-h span { font: 500 11px var(--mono); color: var(--signal); border: 1px solid var(--signal); border-radius: 2px; padding: 3px 6px; letter-spacing: .1em; }
 .bld .sub { margin: 26px 0 8px; font: 500 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 
+/* one keyboard */
+.kit { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 8px clamp(20px, 4vw, 48px); }
+@media (max-width: 860px) { .kit { grid-template-columns: minmax(0, 1fr); } }
+.kit-total { margin: 0; font: 400 17px/1.3 var(--sans); }
+.kit-total b { font: 700 clamp(30px, 4vw, 42px)/1 var(--display); font-stretch: 112%; letter-spacing: -.01em; margin-right: 6px; }
+.kit-var { margin: 8px 0 14px; color: var(--muted); max-width: 60ch; text-wrap: pretty; }
+table.cost { width: 100%; border-collapse: collapse; font-size: 13px; }
+.cost th { text-align: left; font-weight: 500; padding: 5px 12px 5px 0; white-space: nowrap; width: 1%; }
+.cost td { padding: 5px 0; }
+.cost td.num { text-align: right; font: 500 12px var(--mono); white-space: nowrap; padding-left: 10px; width: 1%; }
+.cost-bar { min-width: 80px; }
+.cost-bar span { display: block; height: 10px; background: var(--accent); border-radius: 0 4px 4px 0; min-width: 2px; }
+.cost tr:hover th, .cost tr:hover td.num { color: var(--ink); font-weight: 600; }
+.cost tr:hover .cost-bar span { background: color-mix(in srgb, var(--accent) 80%, var(--ink)); }
+.kit-side .sub:first-child { margin-top: 0; }
+.kit-side p { margin: 0; }
+.kit-tools { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 13px; }
+.kit-tools li { text-wrap: pretty; }
+.kit-ch { list-style: none; margin: 0 0 18px; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0 20px; }
+.kit-ch a { display: flex; gap: 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line); text-decoration: none; font-size: 13px; }
+.kit-ch a:hover { color: var(--signal); }
+.kit-ch span { font: 500 11px var(--mono); color: var(--muted); min-width: 1.6em; }
+@media (max-width: 560px) { .cost th { white-space: normal; width: 45%; } }
+
 /* parts */
 .bom-intro p { color: var(--muted); margin: 0 0 6px; }
 .bom-filter { position: sticky; top: var(--chrome-h); z-index: 5; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;

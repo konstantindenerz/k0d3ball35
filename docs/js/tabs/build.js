@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-// Build & BOM tab: the parts list of spec/03-bom.md, the roadmap steps before ordering, the open
-// tickets and the guides. Everything comes from data/bom.json and data/status.json.
-// Sub route: #build/<parts|before|tickets|guides> scrolls to that section.
+// Build & BOM tab: what one keyboard costs and takes (cost per group, time, tools, the build guide's
+// chapters), the parts list of spec/03-bom.md, the roadmap steps before ordering and the open
+// tickets. Everything comes from data/bom.json and data/status.json.
+// Sub route: #build/<kit|parts|before|tickets> scrolls to that section.
 
 import { esc, githubUrl, loadData } from '../assets.js';
 
 const GUIDES = [
-  ['spec/04-build-guide.md', 'Build guide', 'Step by step assembly of both halves and the trackball module.'],
   ['spec/12-order-checklist.md', 'Order checklist', 'Shop by shop: what to buy, what is already ordered, the JLCPCB and LCSC lines.'],
   ['spec/05-firmware.md', 'Firmware', 'Building and flashing ZMK, pairing, the layer table, trackball tuning.'],
 ];
@@ -36,12 +36,47 @@ function tableHtml(t) {
   return `<div class="table-wrap"><table class="data bom-table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
+// sections of the BOM that are not parts: the totals are drawn in "One keyboard", the order plan is prose
+const notParts = (bom, s) => s.number === bom.cost.section || /^order plan$/i.test(s.title);
+
+function kitHtml(bom) {
+  const c = bom.cost;
+  const g = bom.guide;
+  const max = Math.max(...c.groups.map((x) => x.eur));
+  const bars = [...c.groups].sort((a, b) => b.eur - a.eur).map((x) => `
+    <tr title="${esc(x.label)}: ${x.eur} EUR"><th scope="row">${esc(x.label)}</th>
+      <td class="cost-bar"><span style="width:${(100 * x.eur / max).toFixed(1)}%"></span></td>
+      <td class="num">${x.eur} EUR</td></tr>`).join('');
+  // the notes start with the cheaper variants; the rest explains the r1 -> r2 board change
+  const variants = runText(c.notes[0] || []).split(/(?<=\.)\s+/).slice(0, 2).join(' ');
+  const chapters = g.chapters.map((ch) => `<li><a href="${githubUrl(g.source)}#${esc(ch.anchor)}" target="_blank" rel="noopener"><span>${ch.number}</span>${esc(ch.title)}</a></li>`).join('');
+  return `
+    <div class="kit">
+      <div class="kit-cost">
+        <p class="kit-total"><b>${esc(c.total_text)}</b> for one keyboard</p>
+        <p class="kit-var">${esc(variants)}</p>
+        <div class="table-wrap"><table class="cost" aria-label="Cost per group in EUR">
+          <tbody>${bars}</tbody></table></div>
+        <p class="note">Groups of the totals in <a href="${githubUrl(bom.source)}" target="_blank" rel="noopener">${esc(bom.source)}</a>, rounded there. The PCBs come in batches of five, so one order leaves spares.</p>
+      </div>
+      <div class="kit-side">
+        <h3 class="sub">Time</h3>
+        <p>${esc(g.time || '')}.</p>
+        <h3 class="sub">Tools</h3>
+        <ul class="kit-tools">${g.tools.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+      </div>
+    </div>
+    <h3 class="sub">Build guide, chapter by chapter</h3>
+    <ol class="kit-ch">${chapters}</ol>
+    ${guidesHtml()}`;
+}
+
 function partsHtml(bom) {
-  const secs = bom.sections.map((s) => {
+  const secs = bom.sections.filter((s) => !notParts(bom, s)).map((s) => {
     const blocks = s.blocks.map((b) => (b.table ? tableHtml(b.table) : `<p class="bom-text">${runHtml(b.text)}</p>`)).join('');
     return `<section class="bom-sec" aria-labelledby="bom-s${s.number}"><h3 id="bom-s${s.number}"><span class="bom-n">${s.number ?? ''}</span>${esc(s.title)}</h3>${blocks}</section>`;
   }).join('');
-  const rows = bom.sections.reduce((a, s) => a + s.blocks.reduce((b, x) => b + (x.table ? x.table.rows.length : 0), 0), 0);
+  const rows = bom.sections.filter((s) => !notParts(bom, s)).reduce((a, s) => a + s.blocks.reduce((b, x) => b + (x.table ? x.table.rows.length : 0), 0), 0);
   return `
     <div class="bom-intro prose">${bom.intro.map((b) => `<p>${runHtml(b.text)}</p>`).join('')}</div>
     <div class="bom-filter">
@@ -83,7 +118,7 @@ function ticketsHtml(st) {
       <span class="tk-meta">${esc(t.area)} · ${esc(t.type)}${t.status === 'in-progress' ? ' · <b class="tk-prog">in progress</b>' : ''}</span></li>`).join('');
     const body = `<ul class="tk-list">${list}</ul>`;
     const head = `<span class="tk-p tk-${p}">${p}</span> ${PRIORITY[p] ?? ''} <small>${g.length}</small>`;
-    return p === 'P3'
+    return p === 'P2' || p === 'P3'
       ? `<details class="tk-group"><summary>${head}</summary>${body}</details>`
       : `<div class="tk-group"><h3>${head}</h3>${body}</div>`;
   }).join('');
@@ -122,16 +157,16 @@ export async function mount(section) {
   <div class="page bld">
     <p class="eyebrow">Sheet 7 · Build and bill of materials</p>
     <h1 class="display">Build &amp; BOM</h1>
-    <p class="lede">What one keyboard needs, what has to be checked before anything is ordered, and what is still open. Taken from the spec and the tickets in the repository.</p>
+    <p class="lede">What one keyboard costs and takes to build, every part with its source, and what is still open before the first order.</p>
     <nav class="bld-toc" aria-label="On this sheet">
-      <a href="#build/parts">Parts</a><a href="#build/before">Before ordering</a><a href="#build/tickets">Open tickets <small>${open}</small></a><a href="#build/guides">Guides</a>
+      <a href="#build/kit">One keyboard</a><a href="#build/parts">Parts</a><a href="#build/before">Before ordering</a><a href="#build/tickets">Open tickets <small>${open}</small></a>
     </nav>
-    <section class="bld-sec" id="bld-parts" aria-labelledby="bldPartsH"><h2 class="bld-h" id="bldPartsH"><span>A</span>Parts</h2>${partsHtml(bom)}</section>
-    <section class="bld-sec" id="bld-before" aria-labelledby="bldBeforeH"><h2 class="bld-h" id="bldBeforeH"><span>B</span>Before ordering</h2>${stepsHtml(st)}</section>
-    <section class="bld-sec" id="bld-tickets" aria-labelledby="bldTicketsH"><h2 class="bld-h" id="bldTicketsH"><span>C</span>Open tickets</h2>
-      <p class="lede">${open} tickets open or in progress in <a href="${githubUrl('issues/README.md')}" target="_blank" rel="noopener">issues/</a>, by priority.</p>
+    <section class="bld-sec" id="bld-kit" aria-labelledby="bldKitH"><h2 class="bld-h" id="bldKitH"><span>A</span>One keyboard</h2>${kitHtml(bom)}</section>
+    <section class="bld-sec" id="bld-parts" aria-labelledby="bldPartsH"><h2 class="bld-h" id="bldPartsH"><span>B</span>Parts</h2>${partsHtml(bom)}</section>
+    <section class="bld-sec" id="bld-before" aria-labelledby="bldBeforeH"><h2 class="bld-h" id="bldBeforeH"><span>C</span>Before ordering</h2>${stepsHtml(st)}</section>
+    <section class="bld-sec" id="bld-tickets" aria-labelledby="bldTicketsH"><h2 class="bld-h" id="bldTicketsH"><span>D</span>Open tickets</h2>
+      <p class="lede">${open} tickets open or in progress in <a href="${githubUrl('issues/README.md')}" target="_blank" rel="noopener">issues/</a>. Blockers and must-haves first; the rest is folded.</p>
       <div class="tk">${ticketsHtml(st)}</div></section>
-    <section class="bld-sec" id="bld-guides" aria-labelledby="bldGuidesH"><h2 class="bld-h" id="bldGuidesH"><span>D</span>Guides</h2>${guidesHtml()}</section>
   </div>`;
   root = section.querySelector('.bld');
   const q = root.querySelector('#bomQ');
