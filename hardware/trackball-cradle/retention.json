@@ -1,0 +1,57 @@
+{
+  "grid_mm": 0.2,
+  "sample_mm": 0.12,
+  "variants": {
+    "19mm-pocket": {
+      "ball_d": 19.05,
+      "ball_centre_z": 7.575,
+      "without_retainer_trapped": false,
+      "trapped": true,
+      "critical_margin": 1.015625,
+      "guaranteed_margin": 0.6692148384862245,
+      "ball_lift_play": 0.82,
+      "rest_gap": 0.3893976556860981,
+      "pull_off_min_gap": 0.3893976556860981,
+      "above_rim_max_abs_az": 100.50529986358262,
+      "open_sector_deg": 158.98940027283476,
+      "retainer_top_z": 12.575625000000004,
+      "retainer_bottom_z": 0.9750000014901152,
+      "retainer_outer_r": 12.924999997019771,
+      "boss_clearance": 1.0053586803172394
+    },
+    "25mm-pocket": {
+      "ball_d": 25.0,
+      "ball_centre_z": 10.55,
+      "without_retainer_trapped": false,
+      "trapped": true,
+      "critical_margin": 1.234375,
+      "guaranteed_margin": 0.8879648384862245,
+      "ball_lift_play": 0.8,
+      "rest_gap": 0.38621962300762114,
+      "pull_off_min_gap": 0.38621962300762114,
+      "above_rim_max_abs_az": 95.69069516791954,
+      "open_sector_deg": 168.6186096641609,
+      "retainer_top_z": 17.112500000000008,
+      "retainer_bottom_z": 3.9500000029802314,
+      "retainer_outer_r": 15.899999998509887,
+      "boss_clearance": null
+    },
+    "25mm-cutout": {
+      "ball_d": 25.0,
+      "ball_centre_z": 10.55,
+      "without_retainer_trapped": false,
+      "trapped": true,
+      "critical_margin": 1.25,
+      "guaranteed_margin": 0.9035898384862245,
+      "ball_lift_play": 0.8,
+      "rest_gap": 0.38621962300762114,
+      "pull_off_min_gap": 0.38621962300762114,
+      "above_rim_max_abs_az": 95.69069516791954,
+      "open_sector_deg": 168.6186096641609,
+      "retainer_top_z": 17.112500000000008,
+      "retainer_bottom_z": 3.9500000029802314,
+      "retainer_outer_r": 15.899999998509887,
+      "boss_clearance": null
+    }
+  }
+}
