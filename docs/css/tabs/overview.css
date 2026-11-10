@@ -3,7 +3,7 @@
 
 .ov a { color: var(--ink); }
 .ov-hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(20px, 4vw, 48px); align-items: center; }
-@media (max-width: 900px) { .ov-hero { grid-template-columns: minmax(0, 1fr); } .ov-fig { order: -1; } }
+@media (max-width: 900px) { .ov-hero { grid-template-columns: minmax(0, 1fr); row-gap: 28px; } .ov-fig { order: -1; } }
 .ov-name { font-family: var(--wordmark); font-stretch: normal; letter-spacing: 0; font-size: clamp(36px, 6vw, 68px); }
 .ov-what { margin: 14px 0 0; font: 500 clamp(17px, 1.7vw, 20px)/1.4 var(--sans); max-width: 34ch; text-wrap: pretty; }
 .ov-status { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 14px 0 20px; font-size: 13px; color: var(--muted); }
@@ -12,9 +12,13 @@
 .ov-views { margin: 14px 0 0; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
 .ov-views a { font-weight: 500; }
 
-.ov-fig { margin: 0; border: 1px solid var(--ink); background: var(--sheet); padding: 6px; border-radius: var(--radius); }
-.ov-fig img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
-.ov-fig figcaption { padding: 8px 4px 2px; font-size: 12px; color: var(--muted); }
+/* the render fills its frame edge to edge; one hairline, the caption is a drawing label under it */
+.ov-fig { margin: 0; min-width: 0; }
+.ov-fig img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover;
+              border: 1px solid var(--line); border-radius: var(--radius); background: var(--stage); }
+.ov-fig figcaption { display: flex; align-items: center; gap: 8px; margin-top: 8px;
+                     font: 500 10px/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.ov-fig figcaption::before { content: ""; flex: none; width: 14px; border-top: 1px solid var(--signal); }
 
 .ov-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 clamp(20px, 4vw, 48px); margin-top: 44px; }
 @media (max-width: 860px) { .ov-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; } }
