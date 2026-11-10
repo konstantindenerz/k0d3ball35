@@ -1,2 +1,84 @@
 /* SPDX-License-Identifier: MIT
-   Keymap tab. */
+   Keymap tab: both halves as one SVG, a layer switcher, combos and the layer notes. */
+
+.km .lede a { color: var(--ink); }
+.km-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 22px 0 14px; }
+.km-seg small { font: 500 10px/1 var(--mono); opacity: .7; margin-right: 2px; }
+.km-keyhint { margin: 0; font: 500 11px var(--mono); color: var(--muted); }
+
+.km-board { background: var(--sheet); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(8px, 2vw, 20px);
+            background-size: 24px 24px; background-position: -1px -1px;
+            background-image: linear-gradient(color-mix(in srgb, var(--line) 45%, transparent) 1px, transparent 1px),
+                               linear-gradient(90deg, color-mix(in srgb, var(--line) 45%, transparent) 1px, transparent 1px); }
+.km-svg { display: block; width: 100%; height: auto; max-height: max(320px, calc(100vh - var(--chrome-h) - 140px)); margin: 0 auto; overflow: visible; }
+
+.km-outline { fill: color-mix(in srgb, var(--paper) 70%, transparent); stroke: var(--muted); stroke-width: .35; stroke-dasharray: 2 1.2; }
+.km-half-label { font: 500 3px var(--mono); letter-spacing: .3em; fill: var(--muted); }
+.km-pocket { fill: none; stroke: var(--muted); stroke-width: .35; }
+.km-ball { fill: var(--chip); stroke: var(--ink); stroke-width: .5; }
+.km-ball-label { font: 500 2.6px var(--mono); fill: var(--muted); }
+
+.km-key .km-cap { fill: var(--paper); stroke: var(--ink); stroke-width: .4; transition: fill .12s, stroke .12s; }
+.km-key { cursor: default; }
+.km-key text { pointer-events: none; }
+.km-tap-t { font-family: var(--sans); font-weight: 600; fill: var(--ink); }
+.km-hold { font: 500 2.7px var(--mono); letter-spacing: .04em; fill: var(--muted); text-transform: uppercase; }
+.km-flag { font: 600 2.1px var(--mono); letter-spacing: .1em; fill: var(--signal); }
+.km-key:hover .km-cap { stroke: var(--focus); stroke-width: .7; }
+
+.km-key.k-trans .km-cap { fill: transparent; stroke: var(--line); stroke-dasharray: 1.2 .8; }
+.km-key.k-trans .km-tap-t, .km-key.k-trans .km-hold { opacity: .32; }
+.km-key.k-none .km-cap { fill: transparent; stroke: var(--line); }
+.km-key.k-mod .km-tap-t { font-family: var(--mono); font-weight: 500; }
+.km-key.k-mouse .km-cap { fill: color-mix(in srgb, var(--accent) 16%, var(--paper)); stroke: var(--accent); }
+.km-key.k-bt .km-tap-t, .km-key.k-output .km-tap-t, .km-key.k-system .km-tap-t { font-family: var(--mono); font-weight: 500; }
+.km-key.k-switch .km-cap { fill: var(--signal-soft); stroke: var(--signal); stroke-width: .6; }
+.km-key.k-switch .km-hold { fill: var(--signal); font-weight: 600; }
+.km-key.k-held .km-cap { stroke: var(--signal); stroke-width: 1.1; stroke-dasharray: none; fill: var(--signal-soft); }
+.km-key.k-held .km-tap-t { opacity: .55; }
+.km-key.k-lit .km-cap { stroke: var(--focus); stroke-width: 1.2; stroke-dasharray: none; }
+
+.km-detail { min-height: 2.6em; margin: 10px 0 0; font-size: 13px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.km-detail b { font-weight: 600; text-transform: capitalize; }
+.km-detail code, .km code { font: 500 12px var(--mono); color: var(--muted); }
+.km-detail-hint { color: var(--muted); }
+.km-mono { font: 500 12px var(--mono); color: var(--muted); }
+
+.km-legend { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--muted); }
+.km-legend li { display: flex; align-items: center; gap: 6px; }
+.km-legend .sw { display: inline-block; width: 16px; height: 13px; border-radius: 2px; border: 1px solid var(--ink); background: var(--paper); }
+.km-legend .sw-switch { background: var(--signal-soft); border-color: var(--signal); }
+.km-legend .sw-held { background: var(--signal-soft); border: 2px solid var(--signal); }
+.km-legend .sw-trans { background: transparent; border: 1px dashed var(--muted); }
+.km-legend .sw-mouse { background: color-mix(in srgb, var(--accent) 16%, var(--paper)); border-color: var(--accent); }
+
+.km-cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--ink); }
+@media (max-width: 760px) { .km-cols { grid-template-columns: minmax(0, 1fr); } }
+.km-dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; margin: 0; font-size: 13px; }
+.km-dl dt { font: 500 10px/1.9 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.km-dl dd { margin: 0; text-wrap: pretty; }
+.km-dl dd code { display: block; margin-top: 2px; }
+@media (max-width: 460px) { .km-dl { grid-template-columns: minmax(0, 1fr); gap: 0; } .km-dl dd { margin-bottom: 8px; } }
+
+.km-combos { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 8px; }
+.km-combos li { display: grid; gap: 2px; }
+.km-combo { display: inline-flex; align-items: center; gap: 6px; width: fit-content; font: 500 13px var(--sans); color: var(--ink);
+            background: transparent; border: 1px solid transparent; border-radius: var(--radius); padding: 2px 4px; margin-left: -5px; cursor: default; }
+.km-combo:hover, .km-combo:focus-visible { border-color: var(--line); background: var(--chip); }
+.km-combo b { font-weight: 600; }
+.km kbd { display: inline-block; min-width: 1.9em; text-align: center; font: 600 12px/1 var(--sans); padding: 4px 5px; border: 1px solid var(--ink);
+          border-bottom-width: 2px; border-radius: 3px; background: var(--paper); }
+.km-plus, .km-arrow { color: var(--muted); font: 500 12px var(--mono); }
+.km-combo-meta { font-size: 12px; color: var(--muted); }
+.km-combo-meta code { font-size: 11px; }
+
+.km-all { margin-top: 28px; }
+.km-all summary { cursor: pointer; font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 6px 0; }
+.km-all summary:hover { color: var(--ink); }
+.km-all .table-wrap { margin-top: 10px; }
+.km-table th[scope="row"] { font: 400 12px var(--sans); letter-spacing: 0; text-transform: capitalize; color: var(--ink); white-space: nowrap; }
+.km-table th[scope="row"] small, .km-table td small { font: 500 10px var(--mono); color: var(--muted); text-transform: uppercase; }
+.km-table td { white-space: nowrap; }
+.km-table .km-t-trans { color: var(--line); }
+
+@media (prefers-reduced-motion: reduce) { .km-key .km-cap { transition: none; } }
