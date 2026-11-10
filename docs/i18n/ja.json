@@ -96,6 +96,7 @@
  "Cut the part open with a plane": "平面でパーツを断面表示",
  "Design spec": "設計仕様",
  "Design stage: nothing ordered or built yet.": "設計段階：まだ何も発注・製作していません。",
+ "Designed and built by": "設計・製作",
  "Dimensions": "寸法",
  "Display only, not for printing": "表示専用、印刷用ではありません",
  "Do not order the PCBs, print the parts or buy components against this design yet.": "この設計に基づくPCBの発注、パーツの印刷、部品の購入はまだ行わないでください。",

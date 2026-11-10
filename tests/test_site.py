@@ -453,3 +453,70 @@ def test_i18n_shell_offers_every_language():
     assert 'id="langBtn"' in html and 'id="langMenu"' in html
     for lang in ["ja", "zh-CN", "ru"]:
         assert f'"i18n/{lang}":' in html, f"index.html versions block lacks i18n/{lang}; run `make site`"
+
+
+# ---------------------------------------------------------------- attribution and link previews
+@pytest.fixture(scope="module")
+def index() -> str:
+    return (DOCS / "index.html").read_text()
+
+
+@pytest.fixture(scope="module")
+def site_data() -> dict:
+    return json.loads((DATA / "site.json").read_text())
+
+
+def _meta(html: str, attr: str, value: str) -> str | None:
+    m = re.search(rf'<meta {attr}="{re.escape(value)}" content="([^"]*)">', html)
+    return m.group(1) if m else None
+
+
+def test_the_footer_names_the_maker(index, site_data):
+    """A visitor who reaches the bottom of the page should know whose project this is."""
+    author = site_data["author"]
+    footer = index[index.index('<footer class="foot">'):index.index("</footer>")]
+    assert author["name"] in footer, "the footer does not name the author"
+    assert f'href="{author["url"]}"' in footer, "the author's name is not linked"
+    assert "Designed and built by" in footer
+    assert "MIT" in footer and "CERN-OHL-P-2.0" in footer, "the licence line must survive"
+
+
+def test_the_page_declares_its_author_and_canonical_url(index, site_data):
+    assert _meta(index, "name", "author") == site_data["author"]["name"]
+    canonical = re.search(r'<link rel="canonical" href="([^"]*)">', index)
+    assert canonical and canonical.group(1) == site_data["site"]
+
+
+def test_link_previews_are_absolute_and_agree_with_the_generator(index, site_data):
+    """A scraper runs no JavaScript and resolves no relative path, so these must be absolute.
+
+    The base URL lives once, in docs/gen/site.py, and reaches site.json from there; this holds
+    the hand-written head to it so the domain cannot drift between the two.
+    """
+    site = site_data["site"]
+    og = {m.group(1): m.group(2)
+          for m in re.finditer(r'<meta property="og:([\w:]+)" content="([^"]*)">', index)}
+    assert og["type"] == "website" and og["site_name"]
+    assert og["url"] == site
+    for key in ("title", "description", "image:alt"):
+        assert og[key].strip(), f"og:{key} is empty"
+    assert site_data["author"]["name"] in og["description"], "the preview text drops the author"
+    assert og["image"].startswith(site), "og:image must be absolute and on the published site"
+    assert _meta(index, "name", "twitter:card") == "summary_large_image"
+
+
+def test_the_share_card_is_the_image_the_page_promises(index, site_data):
+    """The card is committed, not rebuilt here: type rendering depends on the fonts installed.
+
+    What must hold is that the file exists where og:image points and really has the dimensions
+    the head declares - a scraper that is lied to about the size crops or rejects the image.
+    """
+    Image = pytest.importorskip("PIL.Image")
+    og = {m.group(1): m.group(2)
+          for m in re.finditer(r'<meta property="og:([\w:]+)" content="([^"]*)">', index)}
+    card = DOCS / og["image"][len(site_data["site"]):]
+    assert card.is_file(), f"og:image points at {card}, which is not in docs/"
+    with Image.open(card) as im:
+        assert (im.width, im.height) == (int(og["image:width"]), int(og["image:height"]))
+        assert im.format == "JPEG" and og["image:type"] == "image/jpeg"
+    assert card.stat().st_size < 1_000_000, "a preview image over 1 MB is refused by some scrapers"

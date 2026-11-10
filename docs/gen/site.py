@@ -19,6 +19,12 @@ import yaml
 from . import REPO
 
 GITHUB = "konstantindenerz/k0d3ball35"
+# Where the page is published. The head's canonical, og:url and og:image are absolute - a link
+# preview has no page to resolve a relative path against - so the domain is written here once and
+# tests/test_site.py holds index.html to it.
+SITE = "https://konstantin-denerz.com/k0d3ball35/"
+AUTHOR = "Konstantin Denerz"
+AUTHOR_URL = "https://konstantin-denerz.com"
 # id, title in the tab bar; the order is the order of the sheets in the title block
 TABS = (("overview", "Overview"), ("explorer", "Explorer"), ("case", "Case"), ("trackball", "Trackball"),
         ("pcbs", "PCBs"), ("keymap", "Keymap"))
@@ -120,6 +126,8 @@ def build() -> dict:
         "name": right["name"],
         "revision": right["revision"],
         "github": GITHUB,
+        "site": SITE,
+        "author": {"name": AUTHOR, "url": AUTHOR_URL},
         "ref": "main",
         "tabs": [{"id": i, "title": t} for i, t in TABS],
         "facts": facts(),
