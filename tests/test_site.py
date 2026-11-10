@@ -235,3 +235,168 @@ def test_site_facts_match_their_sources(site):
     assert lic == {"MIT": "LICENSE", "CERN-OHL-P-2.0": "LICENSE-HARDWARE"}
     assert (ROOT / "LICENSE").read_text().startswith("MIT License")
     assert "CERN Open Hardware Licence Version 2 - Permissive" in (ROOT / "LICENSE-HARDWARE").read_text()[:200]
+
+
+# ---------------------------------------------------------------- PCBs tab (make pcb-3d)
+def _glb(path: Path) -> tuple[dict, bytes]:
+    """Minimal GLB reader: header, JSON chunk, BIN chunk."""
+    import struct
+
+    data = path.read_bytes()
+    magic, version, length = struct.unpack_from("<4sII", data, 0)
+    assert magic == b"glTF" and version == 2, f"{path.name}: not a glTF 2 binary"
+    assert length == len(data), f"{path.name}: header length {length} != file size {len(data)}"
+    off, js, bin_ = 12, None, b""
+    while off < length:
+        clen, ctype = struct.unpack_from("<II", data, off)
+        if ctype == 0x4E4F534A:
+            js = json.loads(data[off + 8: off + 8 + clen])
+        elif ctype == 0x004E4942:
+            bin_ = data[off + 8: off + 8 + clen]
+        off += 8 + clen
+    assert js is not None
+    return js, bin_
+
+
+@pytest.fixture(scope="module")
+def pcbs() -> dict:
+    return json.loads((DATA / "pcbs.json").read_text())
+
+
+def test_pcbs_names_three_boards_with_existing_files(pcbs, tracked):
+    assert [b["id"] for b in pcbs["boards"]] == ["left", "right", "sensor"]
+    for b in pcbs["boards"]:
+        paths = [*b["files"].values(), *(l["path"] for l in b["layers"])]
+        for p in paths:
+            assert (ROOT / p).is_file(), f"{b['id']}: {p} missing"
+            assert p in tracked, f"{b['id']}: {p} not committed"
+        assert {l["id"] for l in b["layers"]} == {"F.Cu", "B.Cu", "F.Silkscreen", "B.Silkscreen", "F.Mask", "B.Mask", "Edge.Cuts"}
+    # the Case and Trackball tabs load the sensor board from this exact path
+    assert pcbs["boards"][2]["files"]["glb"] == "hardware/sensor-pcb/renders/k0d3ball35-sensor.glb"
+
+
+def test_pcb_layer_svgs_share_one_viewbox(pcbs):
+    """The layer plot stacks the SVGs of a board, so they must have one coordinate frame."""
+    for b in pcbs["boards"]:
+        files = [b["files"]["outline"], *(l["path"] for l in b["layers"])]
+        boxes = {p: re.search(r'viewBox="([^"]+)"', (ROOT / p).read_text()).group(1) for p in files}
+        assert len(set(boxes.values())) == 1, f"{b['id']}: {boxes}"
+        assert [float(v) for v in next(iter(boxes.values())).split()] == b["viewbox"]
+        for p in files:
+            text = (ROOT / p).read_text()
+            assert not re.search(r"20\d\d-\d\d-\d\dT\d\d:", text), f"{p}: plot date left in, re-runs would churn git"
+
+
+def test_pcb_glbs_are_gltf2_and_match_the_outline(pcbs):
+    import numpy as np
+
+    for b in pcbs["boards"]:
+        js, bin_ = _glb(ROOT / b["files"]["glb"])
+        assert "generated_at" not in js["asset"].get("extras", {}), "export timestamp left in"
+        # world bounds of every POSITION accessor, with the node translations KiCad writes (no rotations or scales)
+        lo, hi = np.full(3, np.inf), np.full(3, -np.inf)
+
+        def walk(i, t):
+            nonlocal lo, hi
+            n = js["nodes"][i]
+            assert "matrix" not in n and "rotation" not in n and "scale" not in n or b["id"] == "sensor"
+            t = t + np.array(n.get("translation", [0, 0, 0]))
+            if "mesh" in n and js["meshes"][n["mesh"]].get("name", "").startswith(b["stem"]):
+                for p in js["meshes"][n["mesh"]]["primitives"]:
+                    a = js["accessors"][p["attributes"]["POSITION"]]
+                    lo = np.minimum(lo, t + a["min"])
+                    hi = np.maximum(hi, t + a["max"])
+            for c in n.get("children", []):
+                walk(c, t)
+
+        for r in js["scenes"][js.get("scene", 0)]["nodes"]:
+            walk(r, np.zeros(3))
+        size = (hi - lo) * 1000   # metres -> mm; glTF Y up, so the board plane is x/z
+        w, h = b["size_mm"]
+        assert abs(size[0] - w) < 0.3 and abs(size[2] - h) < 0.3, f"{b['id']}: GLB {size[0]:.2f} x {size[2]:.2f} vs outline {w} x {h}"
+        assert abs(size[1] - b["thickness_mm"]) < 0.2, f"{b['id']}: GLB board stack {size[1]:.2f} mm"
+        assert len(bin_) >= sum(v["byteLength"] for v in js["bufferViews"])
+
+
+def test_makefile_has_pcb_3d():
+    mk = (ROOT / "Makefile").read_text()
+    assert re.search(r"^pcb-3d:.*## ", mk, re.M), "pcb-3d target with help text"
+    assert re.search(r"^\.PHONY:.*\bpcb-3d\b", mk, re.M)
+    assert "scripts/export_site_pcbs.py" in mk
+
+
+# ---------------------------------------------------------------- parts.json (Case and Trackball tabs)
+PART_DIRS = ("hardware/case/stl", "hardware/trackball-cradle/stl")
+
+
+@pytest.fixture(scope="module")
+def parts() -> dict:
+    return json.loads((DATA / "parts.json").read_text())
+
+
+def test_parts_lists_every_stl(parts):
+    """Every STL of the case and the cradle is on the page or excluded with a reason."""
+    on_disk = {str(p.relative_to(ROOT)) for d in PART_DIRS for p in (ROOT / d).glob("*.stl")}
+    listed = {p["path"] for p in parts["parts"]}
+    excluded = parts["excluded"]
+    assert all(isinstance(r, str) and r.strip() for r in excluded.values()), "every exclusion needs a reason"
+    excluded_paths = {p for p in on_disk if p.rsplit("/", 1)[1][:-4] in excluded}
+    assert on_disk == listed | excluded_paths, (sorted(on_disk - listed - excluded_paths), sorted(listed - on_disk))
+    assert not listed & excluded_paths
+    groups = {g["id"] for g in parts["groups"]}
+    for p in parts["parts"]:
+        assert p["group"] in groups and p["name"] and p["role"] and p["print_notes"]
+        assert p["id"] == p["path"].rsplit("/", 1)[1][:-4]
+    # the closed and folded lid pairs are display meshes, everything else is printed
+    for p in parts["parts"]:
+        assert p["printed"] == (not re.fullmatch(r"lid-(folded-)?(left|right)", p["id"])), p["id"]
+
+
+def test_parts_facts_match_the_meshes(parts):
+    trimesh = pytest.importorskip("trimesh")
+    for p in parts["parts"]:
+        m = trimesh.load(ROOT / p["path"], force="mesh")
+        lo, hi = m.bounds
+        assert p["bbox_min"] == pytest.approx([round(v, 2) for v in lo], abs=0.006), p["id"]
+        assert p["bbox_max"] == pytest.approx([round(v, 2) for v in hi], abs=0.006), p["id"]
+        assert p["triangles"] == len(m.faces), p["id"]
+        vol = abs(m.volume) / 1000
+        assert p["volume_cm3"] == pytest.approx(vol, abs=0.006), p["id"]
+        assert p["mass_g_solid"] == pytest.approx(vol * parts["density_pla_g_cm3"], abs=0.06), p["id"]
+        assert p["watertight"] == bool(m.is_watertight), p["id"]
+
+
+def test_parts_previews_exist(parts, tracked):
+    paths = {pv["path"] for pv in parts["previews"]}
+    paths |= {x for p in parts["parts"] for x in p["previews"]}
+    paths |= {x for v in parts["trackball"]["variants"] for x in v["previews"]}
+    assert paths
+    for path in sorted(paths):
+        assert (ROOT / path).is_file() and path.endswith(".png"), path
+        assert path in tracked, f"{path} is not committed"
+    known = {pv["path"] for pv in parts["previews"]}
+    assert paths == known, "every preview a part names has a caption"
+
+
+def test_trackball_numbers_equal_stack_json(parts):
+    stack = json.loads((ROOT / "hardware/trackball-cradle/stack.json").read_text())["variants"]
+    retention = json.loads((ROOT / "hardware/trackball-cradle/retention.json").read_text())["variants"]
+    tb = parts["trackball"]
+    ids = [v["id"] for v in tb["variants"]]
+    assert set(ids) == set(stack) and tb["default"] == "19mm-pocket"
+    by_id = {p["id"]: p for p in parts["parts"]}
+    for v in tb["variants"]:
+        s = stack[v["id"]]
+        for key in ("ball_d", "ball_centre_z", "rim_z", "lens_reference_plane_dist", "ball_top_above_pcb_top",
+                    "bearing_contact_z", "sensor_pcb_plane_z"):
+            assert v["stack"][key] == pytest.approx(s[key], abs=0.0006), (v["id"], key)
+        for key, val in v["retention"].items():
+            ref = retention[v["id"]][key]
+            assert val == (pytest.approx(ref, abs=0.0006) if isinstance(ref, float) else ref), (v["id"], key)
+        assert v["cradle"] in by_id and by_id[v["cradle"]]["group"] == "cradle"
+        assert v["retainer"] in by_id and by_id[v["retainer"]]["group"] == "retainer"
+        # the cradle STL is in the stack frame: its rim is at rim_z and the ball centre on the z axis
+        c = by_id[v["cradle"]]
+        assert c["bbox_max"][2] == pytest.approx(s["rim_z"], abs=0.01)
+        assert c["bbox_min"][2] == pytest.approx(s["lowest_plastic_z"], abs=0.01)
+        assert abs(c["bbox_min"][0] + c["bbox_max"][0]) < 0.02 and abs(c["bbox_min"][1] + c["bbox_max"][1]) < 0.02
