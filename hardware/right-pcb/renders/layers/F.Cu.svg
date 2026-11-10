@@ -16972,7 +16972,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="58.2785" cy="16.9800" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="47.6285" cy="16.7500" r="1.1000" /> 
 </g>
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
@@ -16981,7 +16981,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="40.2785" cy="36.2100" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="33.1285" cy="47.2100" r="0.8500" /> 
 <circle cx="33.6285" cy="43.4100" r="1.5250" /> 
 <circle cx="38.6285" cy="41.3100" r="1.5250" /> 
@@ -16998,7 +16998,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="76.2785" cy="48.7500" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="69.1285" cy="25.7500" r="0.8500" /> 
 <circle cx="69.6285" cy="21.9500" r="1.5250" /> 
 <circle cx="74.6285" cy="19.8500" r="1.5250" /> 
@@ -17009,7 +17009,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="72.4285" cy="17.7500" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="51.1285" cy="10.9800" r="0.8500" /> 
 <circle cx="51.6285" cy="7.1800" r="1.5250" /> 
 <circle cx="56.6285" cy="5.0800" r="1.5250" /> 
@@ -17020,7 +17020,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="54.4285" cy="2.9800" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="65.6285" cy="48.7500" r="1.1000" /> 
 </g>
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
@@ -17029,7 +17029,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="58.2785" cy="33.9800" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="51.1285" cy="27.9800" r="0.8500" /> 
 <circle cx="51.6285" cy="24.1800" r="1.5250" /> 
 <circle cx="56.6285" cy="22.0800" r="1.5250" /> 
@@ -17052,7 +17052,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="94.2785" cy="52.9400" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="6.1285" cy="37.2500" r="0.4250" /> 
 <circle cx="6.1285" cy="40.2500" r="0.4250" /> 
 </g>
@@ -17068,7 +17068,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="40.2785" cy="53.2100" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="87.1285" cy="12.9400" r="0.8500" /> 
 <circle cx="87.6285" cy="9.1400" r="1.5250" /> 
 <circle cx="92.6285" cy="7.0400" r="1.5250" /> 
@@ -17079,7 +17079,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="90.4285" cy="4.9400" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="33.1285" cy="30.2100" r="0.8500" /> 
 <circle cx="33.6285" cy="26.4100" r="1.5250" /> 
 <circle cx="38.6285" cy="24.3100" r="1.5250" /> 
@@ -17090,7 +17090,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="36.4285" cy="22.2100" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="101.6285" cy="19.5500" r="1.1000" /> 
 </g>
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
@@ -17099,7 +17099,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="112.2785" cy="25.1900" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="87.1285" cy="46.9400" r="0.8500" /> 
 <circle cx="87.6285" cy="43.1400" r="1.5250" /> 
 <circle cx="92.6285" cy="41.0400" r="1.5250" /> 
@@ -17110,7 +17110,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="90.4285" cy="38.9400" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="69.1285" cy="8.7500" r="0.8500" /> 
 <circle cx="69.6285" cy="4.9500" r="1.5250" /> 
 <circle cx="74.6285" cy="2.8500" r="1.5250" /> 
@@ -17127,7 +17127,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="35.1554" cy="75.6325" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="69.1285" cy="42.7500" r="0.8500" /> 
 <circle cx="69.6285" cy="38.9500" r="1.5250" /> 
 <circle cx="74.6285" cy="36.8500" r="1.5250" /> 
@@ -17138,7 +17138,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="72.4285" cy="34.7500" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="33.1285" cy="13.2100" r="0.8500" /> 
 <circle cx="33.6285" cy="9.4100" r="1.5250" /> 
 <circle cx="38.6285" cy="7.3100" r="1.5250" /> 
@@ -17149,7 +17149,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="36.4285" cy="5.2100" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="105.1285" cy="53.1900" r="0.8500" /> 
 <circle cx="105.6285" cy="49.3900" r="1.5250" /> 
 <circle cx="110.6285" cy="47.2900" r="1.5250" /> 
@@ -17166,7 +17166,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="18.8985" cy="59.2500" r="0.5000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="105.1285" cy="19.1900" r="0.8500" /> 
 <circle cx="105.6285" cy="15.3900" r="1.5250" /> 
 <circle cx="110.6285" cy="13.2900" r="1.5250" /> 
@@ -17177,7 +17177,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="108.4285" cy="11.1900" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="27.0721" cy="70.9651" r="0.8500" /> 
 <circle cx="26.9046" cy="67.1360" r="1.5250" /> 
 <circle cx="31.4640" cy="64.1996" r="1.5250" /> 
@@ -17188,7 +17188,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="28.9327" cy="62.5136" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="87.1285" cy="29.9400" r="0.8500" /> 
 <circle cx="87.6285" cy="26.1400" r="1.5250" /> 
 <circle cx="92.6285" cy="24.0400" r="1.5250" /> 
@@ -17199,7 +17199,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="90.4285" cy="21.9400" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="105.1285" cy="36.1900" r="0.8500" /> 
 <circle cx="105.6285" cy="32.3900" r="1.5250" /> 
 <circle cx="110.6285" cy="30.2900" r="1.5250" /> 
@@ -17288,7 +17288,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="24.2485" cy="34.4200" r="0.5000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="7.5502" cy="76.8211" r="0.8500" /> 
 <circle cx="6.7204" cy="73.0793" r="1.5250" /> 
 <circle cx="10.7006" cy="69.3958" r="1.5250" /> 
@@ -17317,7 +17317,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="40.2785" cy="19.2100" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="101.6285" cy="53.2500" r="1.1000" /> 
 <circle cx="51.1285" cy="44.9800" r="0.8500" /> 
 <circle cx="51.6285" cy="41.1800" r="1.5250" /> 
@@ -17335,7 +17335,7 @@ Z" />
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="112.2785" cy="59.1900" r="0.2000" /> 
 </g>
-<g style="fill:currentColor; fill-opacity:1.0000; stroke:none;">
+<g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">
 <circle cx="43.6285" cy="57.7500" r="1.1000" /> 
 </g>
 <g style="fill:var(--hole, #FFFFFF); fill-opacity:1.0000; stroke:none;">

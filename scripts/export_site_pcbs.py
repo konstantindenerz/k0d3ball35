@@ -14,7 +14,7 @@ Per board (left, right, sensor):
       B.Silkscreen, F.Mask, B.Mask, Edge.Cuts) from `kicad-cli pcb export svg --page-size-mode 2`,
       plus outline.svg (the board shape filled, holes and slots cut out). Every file of a board
       gets the same viewBox: the board outline plus 1 mm, so the plots stack. Colours are reduced
-      to currentColor (the plot) and var(--hole) (drill holes on copper), so the page colours
+      to currentColor (the plot) and var(--hole) (drill holes on copper, plated and not), so the page colours
       each layer itself. The plot date in <title> is replaced by the board and layer name.
 
 Needs kicad-cli and KiCad's own Python (pcbnew, for the board outline):
@@ -205,7 +205,7 @@ def clean_svg(text: str, view: tuple[float, float, float, float], title: str) ->
                   f'width="{_num(w)}mm" height="{_num(h)}mm" viewBox="{_num(x)} {_num(y)} {_num(w)} {_num(h)}"', text, count=1)
     text = re.sub(r"<title>.*?</title>", f"<title>{title}</title>", text, count=1, flags=re.S)
     text = re.sub(r"#000000\b", "currentColor", text)
-    text = re.sub(r"#FFFFFF\b", "var(--hole, #FFFFFF)", text)
+    text = re.sub(r"#FFFFFF\b|HOLE", "var(--hole, #FFFFFF)", text)
     assert not re.search(r"(?<!--hole, )#[0-9A-Fa-f]{6}\b", text), f"{title}: unexpected colour left"
     assert not re.search(r"20\d\d-\d\d-\d\dT", text), f"{title}: timestamp left"
     return text
@@ -224,6 +224,17 @@ def outline_svg(polys: list[dict], origin: tuple[float, float], view, title: str
             f'width="{_num(w)}mm" height="{_num(h)}mm" viewBox="{_num(x)} {_num(y)} {_num(w)} {_num(h)}">\n'
             f"<title>{title}</title>\n"
             f'<path style="fill:currentColor; fill-rule:evenodd; stroke:none;" d="{" ".join(d)}" />\n</svg>\n')
+
+
+def plot_layer(pcb: Path, klayer: str, drill: str, tmp: Path) -> str:
+    out = tmp / f"{klayer}-{drill}.svg"
+    run([KICAD_CLI, "pcb", "export", "svg", "--mode-single", "--layers", klayer, "--page-size-mode", "2",
+         "--exclude-drawing-sheet", "--black-and-white", "--drill-shape-opt", drill, "-o", str(out), str(pcb)])
+    return out.read_text()
+
+
+def _untitled(svg: str) -> str:
+    return re.sub(r"<title>.*?</title>", "", svg, count=1, flags=re.S)
 
 
 def first_point(svg: str) -> tuple[float, float]:
@@ -249,11 +260,15 @@ def export_board(board: str, tmp: Path) -> None:
     view = (-MARGIN, -MARGIN, maxx - minx + 2 * MARGIN, maxy - miny + 2 * MARGIN)
 
     for fname, klayer in LAYERS.items():
-        out = tmp / f"{fname}.svg"
-        drill = "2" if klayer.endswith(".Cu") else "0"
-        run([KICAD_CLI, "pcb", "export", "svg", "--mode-single", "--layers", klayer, "--page-size-mode", "2",
-             "--exclude-drawing-sheet", "--black-and-white", "--drill-shape-opt", drill, "-o", str(out), str(pcb)])
-        text = out.read_text()
+        text = plot_layer(pcb, klayer, "0", tmp)
+        if klayer.endswith(".Cu"):
+            # drill holes on copper: KiCad appends them after the copper (white for plated, black for
+            # NPTH in black-and-white mode). Plot again with holes and recolour the appended tail.
+            with_holes = plot_layer(pcb, klayer, "2", tmp)
+            head, tail = _untitled(text).rsplit("</g>", 1)[0], _untitled(with_holes)
+            assert tail.startswith(head), f"{board} {klayer}: hole plot does not extend the copper plot"
+            holes = re.sub(r"#(000000|FFFFFF)\b", "HOLE", tail[len(head):])
+            text = with_holes[: len(with_holes) - len(tail) + len(head)] + holes
         if klayer == "Edge.Cuts":
             # the plot frame starts at the outline's lower-left corner; check that before relying on it
             fx, fy = first_point(text)
