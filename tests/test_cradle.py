@@ -2,9 +2,10 @@
 """Checks for the parametric trackball cradle (hardware/trackball-cradle).
 
 r2 mounts the module in a case pocket beside the right PCB (``mount = "pocket"``) with a
-19.05 mm ball; the 25 mm pocket and the r1 cutout mount stay as variants. The cradle has no
-retainer: the rim stays ``rim_drop`` below the equator and the case lid keeps the ball in
-for transport. The housing has no screw ears: the two case screws (M2 x 10) come up through
+19.05 mm ball; the 25 mm pocket and the r1 cutout mount stay as variants. The cup has nothing
+above its rim: the rim stays ``rim_drop`` below the equator. Keeping the ball in when the half is
+turned over is the job of the optional clip-on retainer (``part = "retainer"``, two claws away
+from the thumb, checked by ``retention.py``) or of the case lid. The housing has no screw ears: the two case screws (M2 x 10) come up through
 the case floor and the sensor board into the sensor posts, so the floor footprint is the bare
 housing. The OpenSCAD dependent tests are skipped when no OpenSCAD binary is available.
 """
@@ -27,7 +28,6 @@ LENS_Z_MIN, LENS_Z_MAX = 2.2, 2.6
 LENS_H, SENSOR_PCB_T = 3.4, 1.6
 PCB_T = 1.6
 RIM_DROP = 1.0   # params.scad rim_drop: cup rim this far below the ball equator
-CLAW_KEYS = {"claw_top_z", "retainer_ball_play"}
 HOUSING_X, HOUSING_Y = 29.0, 29.0   # sensor board 26 x 25 plus walls (1.5 on x, 2 on y)
 CASE_SCREW_SP = 20.0                # sensor_hole_sp: the case screws go into the sensor posts
 EAR_RE = re.compile(r"\bears?\b", re.I)
@@ -69,17 +69,19 @@ def test_sources_present():
     assert re.search(r'^mount\s*=\s*"pocket"', params, re.M), "pocket mount must be the default"
     assert re.search(r"^ball_d\s*=\s*19\.05", params, re.M), "19.05 mm ball must be the default"
     assert re.search(r"^rim_drop\s*=\s*1\.0", params, re.M)
-    # no retainer anywhere: no claw ring parameters, no retainer part, no peg holes
+    # the retainer is a separate, optional part: the cradle module never grows claws, and the
+    # old peg-in-hole ring (removed 2026-11-06) does not come back
     scad = SCAD.read_text()
-    for name in ("retainer_t", "retainer_claws", "claw_w", "claw_h", "claw_grip", "peg_d", "peg_h"):
+    for name in ("retainer_claw_az", "retainer_claw_h", "retainer_fingers", "retainer_nub"):
+        assert re.search(rf"^{name}\s*=", params, re.M), name
+    for name in ("peg_d", "peg_h", "retainer_claws"):
         assert not re.search(rf"^{name}\s*=", params, re.M), name
-    assert "module retainer" not in scad
-    assert 'part == "retainer"' not in scad
     assert "peg" not in scad.lower()
-    assert "claw" not in scad.lower()
+    assert "module retainer()" in scad and 'part == "retainer"' in scad
+    cradle_body = re.search(r"^module cradle\(\) \{\n(.*?)^\}", scad, re.M | re.S).group(1)
+    assert "retainer" not in cradle_body
     makefile = (CRADLE / "Makefile").read_text()
-    assert "retainer" not in makefile
-    assert not list((CRADLE / "stl").glob("retainer*"))
+    assert "stl/retainer-19mm.stl" in makefile and "retention.json" in makefile
 
 
 def test_no_screw_ears():
@@ -106,8 +108,7 @@ def test_stack_json_values(stack):
         assert abs(v["sensor_pcb_plane_dist"] - (v["ball_d"] / 2 + v["lens_reference_plane_dist"] + LENS_H)) < 1e-6, name
         # nothing below the agreed envelope (case floor 10 mm under the PCB underside)
         assert min(v["lowest_plastic_z"], v["lowest_sensor_board_z"]) >= -(PCB_T + v["depth_below_pcb_bottom"]) - 1e-6, name
-        # no retainer: the rim stays rim_drop below the equator so the ball lifts out freely
-        assert not CLAW_KEYS & set(v), name
+        # open cup: the rim stays rim_drop below the equator so the ball lifts out freely
         assert abs(v["rim_below_equator"] - RIM_DROP) < 1e-6, name
         assert abs((v["ball_centre_z"] - v["rim_z"]) - RIM_DROP) < 1e-6, name
         assert v["rim_z"] < v["ball_centre_z"] < v["ball_top_above_pcb_top"], name
