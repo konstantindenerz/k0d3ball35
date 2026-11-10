@@ -23,7 +23,7 @@ BUILD      := build
 SCHS := $(wildcard $(HALF_SCHS) $(SENSOR_SCH))
 PCBS := $(wildcard $(HALF_PCBS) $(SENSOR_PCB))
 
-.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case site pcb-3d exploded site-serve print print-check print-plots clean help
+.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case site share-card pcb-3d exploded site-serve print print-check print-plots clean help
 
 all: layout board erc drc gerbers
 
@@ -104,6 +104,9 @@ SITE_HOST ?= 127.0.0.1
 site-serve: ## Serve the page with the working-tree files (SITE_HOST=0.0.0.0 for the LAN)
 	@echo "http://localhost:$(SITE_PORT)/docs/"
 	$(PY) scripts/site_serve.py $(SITE_PORT) $(SITE_HOST)
+
+share-card: ## Regenerate docs/img/share-card.jpg (the link preview of the project page)
+	$(PY) scripts/gen_share_card.py
 
 print: print-check print-plots ## Everything to print on paper before the order
 
