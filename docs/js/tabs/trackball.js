@@ -307,6 +307,7 @@ function renderPanel() {
       <a class="btn" href="${esc(githubUrl(p.path))}" rel="noopener">GitHub</a>
       <a class="btn" href="#case/${esc(p.id)}">On its own</a></span></div>`;
   root.querySelector('.tb-downloads').innerHTML = `<h2>Files</h2>${dl(cradle)}${retainer ? dl(retainer) : ''}
+    <p class="untested">Untested: not printed, no ball has run in it yet.</p>
     <p class="note">Print settings and fitting the bearings: <a href="${esc(githubUrl(cradle.doc))}" target="_blank" rel="noopener">${esc(cradle.doc)}</a></p>`;
 
   const previews = v.previews.map((path) => {

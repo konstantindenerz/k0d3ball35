@@ -138,6 +138,7 @@ function renderPanel(p) {
     <dl class="dims">
       <dt>Size x · y · z</dt><dd>${fmt(sx, 2)} × ${fmt(sy, 2)} × ${fmt(sz, 2)} mm</dd>
     </dl>
+    ${p.printed ? '<p class="untested">Untested: not printed or fit-checked yet. Print the pocket test first.</p>' : ''}
     <p class="note">${p.printed ? 'Print settings, inserts and assembly' : 'What it shows and which plates to print'}: <a href="${esc(githubUrl(p.doc))}" target="_blank" rel="noopener">${esc(p.doc)}</a></p>
     <div class="actions">
       <button class="btn primary" type="button" data-act="download">Download ${esc(stemOf(p))}</button>

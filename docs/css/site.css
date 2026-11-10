@@ -56,7 +56,7 @@ img { max-width: 100%; }
 
 /* ------------------------------------------------------------ title block */
 .chrome { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--paper); }
-.titleblock { display: grid; grid-template-columns: auto minmax(0, 1fr) repeat(3, auto) auto; border-bottom: 1px solid var(--ink); }
+.titleblock { display: grid; grid-template-columns: auto minmax(0, 1fr) repeat(4, auto) auto; border-bottom: 1px solid var(--ink); }
 .titleblock > * { border-right: 1px solid var(--line); padding: 8px 14px; min-width: 0; }
 .titleblock > :last-child { border-right: 0; }
 .tb-cell { display: flex; flex-direction: column; justify-content: center; gap: 1px; }
@@ -67,6 +67,27 @@ img { max-width: 100%; }
 .tb-title .tb-val { font-family: var(--sans); font-weight: 500; }
 .tb-actions { display: flex; align-items: center; gap: 6px; padding-right: var(--gutter); }
 .tb-sheet .tb-val b { color: var(--signal); font-weight: 600; }
+
+/* release status, stamped like on a drawing that is not released for construction */
+.tb-status { align-items: flex-start; }
+.tb-stamp { --stamp: color-mix(in srgb, var(--signal) 60%, var(--ink)); margin-top: 2px; padding: 3px 7px 2px; border: 0; border-radius: 2px; background: transparent; cursor: pointer;
+            font: 600 10px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; white-space: nowrap; color: var(--stamp);
+            box-shadow: inset 0 0 0 1.5px var(--stamp), inset 0 0 0 3px var(--paper), inset 0 0 0 3.75px var(--stamp);
+            transform: rotate(-2deg); transition: background .15s, transform .15s; }
+.tb-stamp:hover, .tb-stamp:focus-visible { background: var(--signal-soft); transform: rotate(0deg); }
+.wip-pop { inset: auto; top: calc(var(--chrome-h) + 8px); right: var(--gutter); left: auto; margin: 0; max-width: min(26rem, calc(100vw - 2 * var(--gutter)));
+           padding: 14px 16px; color: var(--ink); background: var(--sheet); border: 1px solid var(--ink); border-left: 3px solid var(--signal);
+           border-radius: var(--radius); box-shadow: 0 10px 30px rgb(0 0 0 / .18); font-size: 13px; line-height: 1.45; }
+.wip-pop p { margin: 0 0 8px; text-wrap: pretty; }
+.wip-pop .wip-h { font-weight: 600; }
+.wip-pop .wip-links { margin: 0; font-size: 12px; }
+.wip-pop a { color: var(--ink); }
+/* next to a download: the file is untested */
+.untested { display: flex; gap: 8px; align-items: baseline; margin: 8px 0 0; font: 500 11px/1.4 var(--mono); color: var(--muted); }
+.untested::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); transform: translateY(-1px); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tb-stamp { --stamp: var(--signal); } }
+:root[data-theme="dark"] .tb-stamp { --stamp: var(--signal); }
+@media (prefers-reduced-motion: reduce) { .tb-stamp { transition: none; } }
 
 .sheets { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; padding: 0 var(--gutter); border-bottom: 1px solid var(--line); }
 .sheets::-webkit-scrollbar { display: none; }
@@ -79,12 +100,20 @@ img { max-width: 100%; }
 .sheets a[aria-current="page"]::before { content: ""; position: absolute; left: -1px; right: -1px; top: 0; height: 3px; background: var(--signal); }
 .sheets a[aria-current="page"] small { color: var(--signal); opacity: 1; }
 
+@media (max-width: 1200px) {
+  .titleblock { grid-template-columns: auto minmax(0, 1fr) repeat(3, auto) auto; }
+  .tb-units { display: none !important; }
+}
 @media (max-width: 900px) {
-  .titleblock { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .titleblock { grid-template-columns: auto minmax(0, 1fr) auto auto; }
   .tb-title, .tb-units { display: none !important; }
 }
 @media (max-width: 520px) {
-  .tb-rev { display: none !important; }
+  .tb-rev, .tb-sheet, .tb-status .tb-key, .stamp-stage { display: none !important; }
+  .titleblock > * { padding: 8px 10px; }
+  .tb-status { justify-content: center; align-items: center; }
+  .tb-actions { gap: 4px; padding-right: var(--gutter); }
+  .titleblock { grid-template-columns: auto minmax(0, 1fr) auto; }
   .tb-name span { font-size: 18px; }
 }
 

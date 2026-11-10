@@ -196,6 +196,7 @@ function render() {
       <button class="btn" type="button" data-dl="${esc(f.kicad_pcb)}">KiCad board<small>${kib(s.kicad_pcb)}</small></button>
       <button class="btn" type="button" data-dl="${esc(f.glb)}">GLB (3D view)<small>${kib(s.glb)}</small></button>
     </div>
+    <p class="untested">Untested: never fabricated. Do not order from these files yet.</p>
     <p class="pcb-gh"><a href="${githubTreeUrl(b.folder)}" rel="noopener">View ${esc(b.folder)}/ on GitHub</a></p>`;
   els.files.querySelectorAll('[data-dl]').forEach((btn) => btn.addEventListener('click', async () => {
     btn.disabled = true;

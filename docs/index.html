@@ -9,16 +9,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <!-- versions -->
-<link rel="stylesheet" href="css/site.css?v=8e86fedc08">
+<link rel="stylesheet" href="css/site.css?v=8f61e0c34e">
 <link rel="stylesheet" href="css/tabs/overview.css?v=3557809b76">
 <link rel="stylesheet" href="css/tabs/explorer.css?v=0da9304b94">
 <link rel="stylesheet" href="css/tabs/case.css?v=5818763ed8">
 <link rel="stylesheet" href="css/tabs/trackball.css?v=1a20a4b8b0">
 <link rel="stylesheet" href="css/tabs/pcbs.css?v=574cc23b2a">
 <link rel="stylesheet" href="css/tabs/keymap.css?v=4fa9538c5a">
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/","./js/assets.js":"./js/assets.js?v=ba42af58cf","./js/main.js":"./js/main.js?v=1293694510","./js/tabs/case.js":"./js/tabs/case.js?v=928d4726d8","./js/tabs/explorer.js":"./js/tabs/explorer.js?v=46f1bbdcbd","./js/tabs/keymap.js":"./js/tabs/keymap.js?v=8de784ab09","./js/tabs/overview.js":"./js/tabs/overview.js?v=4f9e445178","./js/tabs/pcbs.js":"./js/tabs/pcbs.js?v=5cb22532d9","./js/tabs/trackball.js":"./js/tabs/trackball.js?v=5588cb7b05","./js/viewer.js":"./js/viewer.js?v=8c70391971"}}</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/","./js/assets.js":"./js/assets.js?v=ba42af58cf","./js/main.js":"./js/main.js?v=9074180341","./js/tabs/case.js":"./js/tabs/case.js?v=1d9ba79eb1","./js/tabs/explorer.js":"./js/tabs/explorer.js?v=46f1bbdcbd","./js/tabs/keymap.js":"./js/tabs/keymap.js?v=8de784ab09","./js/tabs/overview.js":"./js/tabs/overview.js?v=4f9e445178","./js/tabs/pcbs.js":"./js/tabs/pcbs.js?v=3b3eebf8ea","./js/tabs/trackball.js":"./js/tabs/trackball.js?v=1a719a5635","./js/viewer.js":"./js/viewer.js?v=8c70391971"}}</script>
 <script type="application/json" id="dataVersions">{"keymap":"6d6b1f8e73","layout":"7fb937bea2","parts":"3183771b72","pcbs":"5dae326a1f","site":"b3339cd2ec","versions":"bd1060be78"}</script>
-<script type="module" src="js/main.js?v=1293694510"></script>
+<script type="module" src="js/main.js?v=9074180341"></script>
 <!-- /versions -->
 </head>
 <body>
@@ -27,6 +27,7 @@
     <a class="tb-name" href="#overview" aria-label="k0d3ball35, overview"><span>k0d3ball35</span></a>
     <div class="tb-cell tb-title"><span class="tb-key">Title</span><span class="tb-val">Wireless split keyboard, 35 Choc keys, 19 mm trackball</span></div>
     <div class="tb-cell tb-rev"><span class="tb-key">Rev</span><span class="tb-val" id="tbRev">r2.3</span></div>
+    <div class="tb-cell tb-status"><span class="tb-key">Status</span><button class="tb-stamp" id="wipBtn" type="button" popovertarget="wip" aria-label="Status: preliminary, untested. What that means"><span class="stamp-stage">Preliminary · </span>untested</button></div>
     <div class="tb-cell tb-units"><span class="tb-key">Units</span><span class="tb-val">mm</span></div>
     <div class="tb-cell tb-sheet"><span class="tb-key">Sheet</span><span class="tb-val" id="tbSheet"><b>1</b> of 6</span></div>
     <div class="tb-actions">
@@ -42,6 +43,12 @@
     <a href="#pcbs" data-tab="pcbs"><small>5</small>PCBs</a>
     <a href="#keymap" data-tab="keymap"><small>6</small>Keymap</a>
   </nav>
+  <div class="wip-pop" id="wip" popover>
+    <p class="wip-h">Work in progress: do not build from these files yet</p>
+    <p>Nothing here has been fabricated, printed or tested in hardware. Footprints, dimensions, the parts list and the firmware still change between revisions.</p>
+    <p>Do not order the PCBs, print the parts or buy components against this design yet.</p>
+    <p class="wip-links"><a href="https://github.com/konstantindenerz/k0d3ball35#readme" target="_blank" rel="noopener">Full notice in the README</a> · <a href="https://github.com/konstantindenerz/k0d3ball35/blob/main/spec/09-roadmap.md" target="_blank" rel="noopener">Roadmap</a></p>
+  </div>
 </header>
 <main id="main">
   <section class="tab" id="tab-overview" data-title="Overview" aria-label="Overview" hidden></section>

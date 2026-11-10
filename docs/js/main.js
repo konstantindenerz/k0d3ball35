@@ -100,5 +100,11 @@ new ResizeObserver(setChromeHeight).observe(chrome);
 setChromeHeight();
 try { [site] = await Promise.all([loadData('site'), loadVersions()]); } catch (e) { console.error(e); site = {}; }
 if (site.revision) document.getElementById('tbRev').textContent = site.revision;
+// the release stamp follows the order ticket: preliminary until the PCBs are ordered
+if (site.status?.pcbs_ordered) {
+  const stamp = document.getElementById('wipBtn');
+  stamp.querySelector('.stamp-stage').textContent = 'Prototype · ';
+  stamp.setAttribute('aria-label', 'Status: prototype, untested. What that means');
+}
 addEventListener('hashchange', route);
 route();

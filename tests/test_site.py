@@ -391,3 +391,15 @@ def test_trackball_numbers_equal_stack_json(parts):
         assert c["bbox_max"][2] == pytest.approx(s["rim_z"], abs=0.01)
         assert c["bbox_min"][2] == pytest.approx(s["lowest_plastic_z"], abs=0.01)
         assert abs(c["bbox_min"][0] + c["bbox_max"][0]) < 0.02 and abs(c["bbox_min"][1] + c["bbox_max"][1]) < 0.02
+
+
+def test_every_sheet_says_the_design_is_untested():
+    """Like the README's notice: a release stamp in the title block on every sheet, a short
+    explanation behind it, and an 'untested' line next to every download."""
+    html = (DOCS / "index.html").read_text()
+    assert 'popovertarget="wip"' in html and 'id="wip" popover' in html
+    assert "Preliminary · </span>untested" in html
+    assert "fabricated, printed or tested" in html and "README" in html
+    for tab in ("case", "trackball", "pcbs"):
+        assert 'class="untested"' in (DOCS / "js" / "tabs" / f"{tab}.js").read_text(), tab
+    assert "Work in progress" in (ROOT / "README.md").read_text()
