@@ -1,2 +1,61 @@
 /* SPDX-License-Identifier: MIT
-   Case tab. */
+   Case tab: one printed part at a time. Layout, panel, .picklist, .dims, .seg, .btn and the viewer
+   overlays come from site.css; this file adds the part colours, the HUD line, the stacked tool rows
+   and the render strip. */
+
+:root {
+  --case-part: #C9CFC4;   /* printed plastic */
+  --case-cut: #1E5A3E;    /* inside of the mesh, seen where the section plane opens it */
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --case-part: #9AA59D; --case-cut: #5FB487; }
+}
+:root[data-theme="dark"] { --case-part: #9AA59D; --case-cut: #5FB487; }
+
+.case .stage canvas:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
+
+/* HUD: file name in mono, print / display badge */
+.case .case-hud { pointer-events: none; }
+.case .case-file-line { margin: 4px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+.case .case-file { font: 500 15px/1.2 var(--mono); color: var(--ink); overflow-wrap: anywhere; }
+.case .case-file-kind, .case .case-kind { font: 500 10px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+                                          border: 1px solid currentColor; border-radius: 2px; padding: 3px 6px; }
+.case .print { color: var(--accent); }
+.case .show { color: var(--signal); }
+
+/* tools: section row above the view row, both right-aligned, wrapping on narrow stages */
+.case .case-tools { flex-direction: column; align-items: flex-end; left: 12px; }
+.case .case-tool-row, .case .case-clip-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; align-items: center; }
+.case .case-clip-row { background: color-mix(in srgb, var(--sheet) 88%, transparent); border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 8px; }
+.case .case-clip-row input[type=range] { width: min(220px, 40vw); }
+.case .case-clip-at { font: 500 12px var(--mono); font-variant-numeric: tabular-nums; min-width: 9ch; text-align: right; }
+.case .btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* panel */
+.case .case-panel header .display { margin-top: 2px; }
+.case .case-lede { margin: 8px 0 0; color: var(--muted); font-size: 13px; text-wrap: pretty; }
+.case .case-parts { display: grid; gap: 12px; }
+.case .case-halfswitch { display: flex; grid-column: 1 / -1; }
+.case .case-group h3 { margin: 0 0 4px; font: 600 12px/1.2 var(--sans); color: var(--ink); border-bottom: 1px solid var(--line); padding-bottom: 4px; }
+.case .case-detail { display: grid; gap: 12px; }
+.case .case-detail h2 { margin: 0; }
+.case .case-name { margin: -6px 0 0; font: 600 17px/1.25 var(--sans); }
+.case .case-kind { justify-self: start; margin: -4px 0 0; }
+.case .case-role { margin: 0; font-size: 13px; text-wrap: pretty; }
+.case .case-detail .note { margin: 0; }
+
+/* render strip */
+.case .case-previews { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.case .case-previews a { display: grid; gap: 4px; text-decoration: none; color: var(--muted); font-size: 11px; line-height: 1.3; }
+.case .case-previews img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; background: var(--stage);
+                           border: 1px solid var(--line); border-radius: var(--radius); }
+.case .case-previews a:hover img { border-color: var(--ink); }
+
+@media (max-width: 860px) {
+  .case .case-parts { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); align-items: start; }
+  .case .case-previews { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+@media (max-width: 520px) {
+  .case .case-file { font-size: 13px; }
+  .case .case-tools { right: 8px; left: 8px; bottom: 8px; }
+}
