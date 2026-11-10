@@ -63,6 +63,11 @@
 :root:lang(ja) { word-break: auto-phrase; }
 :is(:lang(ja), :lang(zh)) :is(.tb-key, .tb-stamp, .eyebrow, .panel h2, .lang-h) { letter-spacing: .04em; }
 :is(:lang(ja), :lang(zh)) .display { letter-spacing: .01em; line-height: 1.15; }
+/* Russian: Archivo has no Cyrillic, so headings take Plex Sans glyph by glyph (Latin stays Archivo);
+   Plex has no width axis, and the longer words get a little less negative tracking. */
+:root:lang(ru) { --display: "Archivo", "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif; }
+:lang(ru) .display { letter-spacing: -.005em; hyphens: auto; }
+:lang(ru) :is(.tb-key, .eyebrow, .panel h2, .lang-h) { letter-spacing: .08em; }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }

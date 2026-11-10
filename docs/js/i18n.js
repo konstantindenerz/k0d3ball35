@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Page language: English is the source, Japanese and Simplified Chinese are catalogs in docs/i18n/.
+// Page language: English is the source, Japanese, Simplified Chinese and Russian are catalogs in docs/i18n/.
 //
 // The English text is the key (gettext style): the code keeps `t('Download {name}', { name })`
 // readable, a catalog maps that exact text to its translation, and a text the catalog lacks stays
@@ -10,12 +10,13 @@
 // The language is picked once per page load: ?lang=, then the saved choice, then the browser
 // languages, then English. Switching reloads the page: every tab builds its DOM once.
 
-export const LANGS = ['en', 'ja', 'zh-CN'];
+export const LANGS = ['en', 'ja', 'zh-CN', 'ru'];
 /** short code in the title block button, full name in the menu */
 export const LANG_LABELS = {
   en: ['EN', 'English'],
   ja: ['JA', '日本語'],
   'zh-CN': ['ZH', '简体中文'],
+  ru: ['RU', 'Русский'],
 };
 const KEY = 'k0d3-lang';
 
@@ -23,6 +24,7 @@ function normalise(code) {
   const c = String(code || '').toLowerCase();
   if (c.startsWith('ja')) return 'ja';
   if (c.startsWith('zh')) return 'zh-CN';
+  if (c.startsWith('ru')) return 'ru';
   if (c.startsWith('en')) return 'en';
   return null;
 }

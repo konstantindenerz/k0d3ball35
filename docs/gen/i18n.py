@@ -17,7 +17,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 DOCS = Path(__file__).resolve().parents[1]
-LANGS = ("ja", "zh-CN")
+LANGS = ("ja", "zh-CN", "ru")
 CATALOGS = DOCS / "i18n"
 
 T_LITERAL = re.compile(r"(?<![\w.$])t\(\s*'((?:[^'\\\n]|\\.)*)'")

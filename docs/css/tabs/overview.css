@@ -6,8 +6,9 @@
 @media (max-width: 900px) { .ov-hero { grid-template-columns: minmax(0, 1fr); row-gap: 28px; } .ov-fig { order: -1; } }
 .ov-name { font-family: var(--wordmark); font-stretch: normal; letter-spacing: 0; font-size: clamp(36px, 6vw, 68px); }
 .ov-what { margin: 14px 0 0; font: 500 clamp(17px, 1.7vw, 20px)/1.4 var(--sans); max-width: 34ch; text-wrap: pretty; }
-.ov-status { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 14px 0 20px; font-size: 13px; color: var(--muted); }
-.ov-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--signal); align-self: center; }
+/* running text, not a flex row: a long status sentence wraps inside the line instead of dropping below the dot */
+.ov-status { margin: 14px 0 20px; font-size: 13px; line-height: 1.6; color: var(--muted); text-wrap: pretty; }
+.ov-dot { display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--signal); vertical-align: 0; }
 .ov .btn.primary { color: var(--accent-ink); }
 .ov-views { margin: 14px 0 0; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
 .ov-views a { font-weight: 500; }

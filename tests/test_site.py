@@ -433,7 +433,7 @@ def test_i18n_keys_are_extractable():
     assert len(i18n.keys()) > 300
 
 
-@pytest.mark.parametrize("lang", ["ja", "zh-CN"])
+@pytest.mark.parametrize("lang", ["ja", "zh-CN", "ru"])
 def test_i18n_catalog_complete(lang):
     """Every page text has a translation, none is left over, the {placeholders} match.
     `python docs/build.py --i18n` lists what to add or drop."""
@@ -447,9 +447,9 @@ def test_i18n_catalog_complete(lang):
 
 def test_i18n_shell_offers_every_language():
     js = (DOCS / "js/i18n.js").read_text()
-    for lang in ["en", "ja", "zh-CN"]:
-        assert f"'{lang}'" in js
+    for lang in ["en", "ja", "zh-CN", "ru"]:
+        assert f"'{lang}'" in js or f"  {lang}: [" in js
     html = (DOCS / "index.html").read_text()
     assert 'id="langBtn"' in html and 'id="langMenu"' in html
-    for lang in ["ja", "zh-CN"]:
+    for lang in ["ja", "zh-CN", "ru"]:
         assert f'"i18n/{lang}":' in html, f"index.html versions block lacks i18n/{lang}; run `make site`"
