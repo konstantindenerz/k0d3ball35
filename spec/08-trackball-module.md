@@ -238,11 +238,14 @@ option. The r1 25 mm ball stood 12 mm proud, which is why the ball size was redu
   (`issues/mech-lm18-lens-outline-measurement.md`).
 * The PCB does not need to be square to the ball axis in the horizontal plane; the optical centre
   must be on the ball axis within about 0.5 mm, Z within the 2.2 to 2.6 mm window.
-* No retainer. The cup rim ends 1 mm below the ball equator all round and there is no claw ring,
+* The cup is open. The cup rim ends 1 mm below the ball equator all round and the cup has no claw,
   lip or peg above it: the ball rests on the three bearings by gravity, the thumb reaches it at
-  its widest point from every side, and it lifts straight out for cleaning. In transport the
-  removable case lid covers keys and ball (`issues/mech-case-lid.md`); a bare half without its
-  lid should travel without the ball.
+  its widest point, and it lifts straight out for cleaning. An optional clip-on retainer
+  (`issues/mech-ball-retainer-clip.md`) keeps the ball in when the half is turned over: two
+  claws 0.4 mm off the ball at +-80 degrees, none in the 159 degree sector facing the thumb,
+  checked by `hardware/trackball-cradle/retention.py` (trapped with at least 0.67 mm of
+  combined looseness). It comes off by pinching the claws and pulling up. Without it the
+  removable case lid covers keys and ball in transport (`issues/mech-case-lid.md`).
 
 ### 3.3 Why 19.05 mm, and the 25 mm fallback
 

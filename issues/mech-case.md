@@ -35,7 +35,8 @@ bay 21 x 41 mm centred (-53.9, 17.5), floor at -10.6 mm or the pocket level -11.
 
 Blocked by hw-two-pcbs-r2 (final outlines) and mech-case-ball-pocket. Each half also gets a
 removable lid that covers keys and ball for transport and attaches under the half as a foot
-(`mech-case-lid`); the cradle has no ball retainer, so the lid is what keeps the ball in a bag.
+(`mech-case-lid`); the cradle cup is open, so the lid (or the optional clip-on retainer,
+`mech-ball-retainer-clip`) is what keeps the ball in a bag.
 The lid holds on top by an inner lip; the tray only provides the four magnet pockets in the
 floor for the foot position.
 

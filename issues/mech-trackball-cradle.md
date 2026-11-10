@@ -34,3 +34,5 @@ Depends on hw-sensor-stack-height for the final sensor orientation.
 2026-11-06: `mount = "pocket"` added for r2: the module stands on the case floor beside the right PCB (housing 29 x 29 mm, cable slot towards the keys), 19.05 mm default, ball top +17.1 mm, 24.1 mm wide above the PCB (fits the 15 mm notch apothem); 25 mm pocket needs a 16.5 mm apothem. Test print still pending.
 
 2026-11-06: screw ears dropped. The two sensor posts are drilled through and take the case screws (M2 x 10 from below through floor and sensor board, 20 mm apart on the y axis, `case_screw_sp` in `stack.json`); the floor footprint is the bare 29 x 29 mm housing, so the case pocket below the PCB plane is a 34 x 34 mm rounded rectangle (`mech-case-ball-pocket`).
+
+2026-11-10: optional clip-on retainer back as a separate part (`mech-ball-retainer-clip`): two claws at +-80 degrees, none on the thumb side, snap fingers into pockets in the cup wall; the cup gained a rim chamfer and four pockets, still nothing above the rim. Checked by `retention.py` / `retention.json`.

@@ -32,8 +32,10 @@ phase has to provide that pocket. All numbers come from `hardware/layout/output/
 Where the housing lies under the PCB (towards the keys), it shares the general case cavity; the
 case floor there must also be at -11.6 mm or deeper. The pocket wall must stay below the cup rim
 (+6.6 mm) or at least leave the thumb side open so the thumb reaches the ball at its equator
-(+7.6 mm) from the inner side. The cradle has no retainer: the ball is held by gravity and, in
-transport, by the removable case lid (`mech-case-lid`), so the pocket itself needs no lip.
+(+7.6 mm) from the inner side. The cup is open: the ball is held by gravity and, in transport,
+by the removable case lid (`mech-case-lid`) or the optional clip-on retainer on the cup
+(`mech-ball-retainer-clip`), so the pocket itself needs no lip. The retainer stays inside a
+25.9 mm circle, i.e. 1.1 mm inside the 28 mm pocket cavity, and its claws end at +12.6 mm.
 
 ## Acceptance criteria
 

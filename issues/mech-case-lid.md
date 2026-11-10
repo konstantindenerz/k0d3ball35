@@ -11,11 +11,12 @@ created: 2026-11-06
 
 ## Context
 
-The trackball cradle has no retainer by design (`hardware/trackball-cradle/README.md`, "Ball
+The trackball cradle's cup is open by design (`hardware/trackball-cradle/README.md`, "Ball
 retention"): the cup rim stops 1 mm below the ball equator so the thumb reaches the ball from
 every side, and the ball sits on its three bearings by gravity alone. That is fine on the desk and
-wrong in a bag, where the ball would roll out of the open cup. This ticket is the reason the
-retainer could go.
+wrong in a bag, where the ball would roll out of the open cup. This ticket was the reason the r1
+claw ring could go; since 2026-11-10 an optional clip-on retainer (`mech-ball-retainer-clip`)
+covers the case where the lid is off.
 
 Each half gets a removable lid that
 
@@ -43,9 +44,9 @@ of the right half.
 
 ## Notes
 
-Depends on `mech-case` and `mech-case-ball-pocket`. The cradle has no retainer by design, see the
-cradle README; if the lid turns out impractical, the fallback is a shallow bayonet ring on the cup
-rim, not a change to the cup. The 25 mm fallback ball (+23.05 mm) only needs a taller lid over the
+Depends on `mech-case` and `mech-case-ball-pocket`. The cup is open by design, see the cradle
+README; the optional clip-on retainer (`mech-ball-retainer-clip`) clears the closed lid roof by
+1.4 mm and the hinge strip, so lid and retainer can be used together. The 25 mm fallback ball (+23.05 mm) only needs a taller lid over the
 pocket; keep the lid height a parameter.
 
 2026-11-06: CAD done in `hardware/case/lid.scad`. One height per half at the time: left roof

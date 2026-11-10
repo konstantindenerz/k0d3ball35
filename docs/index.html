@@ -300,7 +300,8 @@ function build(half) {
     g.add(cyl(S.cup_outer_d / 2, S.rim_z - S.housing_top_z, M.cradle, bx, (S.rim_z + S.housing_top_z) / 2, bz));         // cup skirt
     const bowl = new THREE.Mesh(new THREE.SphereGeometry(ball.d / 2 + 1.2, 48, 24, 0, Math.PI * 2, Math.PI / 2 + 0.25, Math.PI / 2 - 0.25), M.cradle);
     bowl.position.set(bx, S.ball_centre_z, bz); g.add(bowl);
-    // no retainer: the cup rim stays 1 mm below the equator, the later lid keeps the ball in transport
+    // open cup: the rim stays 1 mm below the equator; the optional clip-on retainer (two claws,
+    // hardware/trackball-cradle part "retainer") is not drawn here, the lid keeps the ball in transport
     for (const a of [60, 180, 300]) {                                                                    // 2 mm ZrO2 bearings, 35 deg below the equator
       const t = THREE.MathUtils.degToRad(a), r = (ball.d / 2 + 1) * Math.cos(THREE.MathUtils.degToRad(35));
       { const m = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), M.bearing); m.position.set(bx + r * Math.cos(t), S.bearing_contact_z - 0.5, bz + r * Math.sin(t)); g.add(m); }

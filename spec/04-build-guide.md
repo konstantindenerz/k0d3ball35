@@ -80,7 +80,8 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 1 set | sensor-board passives: XC6206P182MR, 0603 capacitors and resistors as listed in the BOM | sensor board | 10 |
 | 1 (+1) | 19.05 mm (3/4 inch) POM trackball, or the PandaKB TB19 phenolic ball | right half | 11 |
 | 3 (+3) | 2.0 mm ZrO2 ceramic bearing balls | cradle | 11 |
-| 1 | printed cradle (`hardware/trackball-cradle/stl/cradle-19mm-pocket.stl`) | right half, case pocket; no retainer, the case lid keeps the ball in for transport | 11 |
+| 1 | printed cradle (`hardware/trackball-cradle/stl/cradle-19mm-pocket.stl`) | right half, case pocket | 11 |
+| 1 (optional) | printed retainer (`hardware/trackball-cradle/stl/retainer-19mm.stl`), PETG | clips onto the cup, keeps the ball in when the half is turned over | 11 |
 | 2 | M2 x 10 self-tapping countersunk screws (or M2 x 10 countersunk machine screws + heat-set inserts) | case screws: from below through the case floor and the sensor board into the cradle posts | 11 |
 | 2 (optional) | M2 x 5 self-tapping screws | bench test: sensor board in the cradle posts before the case exists | 11 |
 | 35 (+2) | Kailh Choc V1 switch (PG1350) | | 12 |
@@ -332,9 +333,11 @@ Checkpoint: no shorts, 1.8 V present, lens clipped on straight with the aperture
 ## 11. Trackball cradle
 
 Print `cradle-19mm-pocket.stl` upright (housing down), 0.12 mm layers, 3 perimeters, 30 percent
-infill, no supports, PETG or PLA. There is no retainer to print: the cup rim ends 1 mm below the
-ball equator and the ball is held by gravity; the removable case lid (`issues/mech-case-lid.md`)
-covers it for transport. Deburr the rim, it is the only printed edge near the ball. Full details
+infill, no supports, PETG or PLA. The cup rim ends 1 mm below the ball equator and the ball is
+held by gravity. If the ball should stay in when the half is lifted or turned over, also print
+`retainer-19mm.stl` (upright, PETG): a ring that clips onto the cup with two claws over the ball's
+shoulders and none on the thumb side; otherwise the case lid (`issues/mech-case-lid.md`) covers
+the ball for transport. Deburr the rim, it is the only printed edge near the ball. Full details
 and the test-fit list are in the
 [cradle README](../hardware/trackball-cradle/README.md). The module stands on the case floor in
 the pocket beside the right PCB. Its 29 x 29 mm housing has no screw ears: the two case screws go
@@ -383,8 +386,12 @@ case exists, a scrap of 2 mm material with two 2.2 mm holes 20 mm apart works as
 8. Right half on USB: the cursor must move when you roll a finger on the cup's bearings. Then
    drop the ball in. Nothing holds it: it must spin freely in every direction and a strip of
    paper must pass between the ball and the rim all the way round.
-9. Lift the ball out with two fingers and put it back. For transport the case lid goes on
-   (`issues/mech-case-lid.md`); until the case exists, carry the half without the ball.
+9. Lift the ball out with two fingers and put it back. Optional retainer: set it on with the
+   claws to the left and right of the ball (it only fits one way round) and press until the
+   four fingers click; turn the half over, the ball stays in. To take the ball out, pinch the
+   two claws, pull the ring straight up, then turn the half over into your palm. Without the
+   retainer the case lid goes on for transport (`issues/mech-case-lid.md`); until the case
+   exists, carry the half without the ball.
 
 ![Trackball module mounted beside the right half](images/img-build-step-ball.png)
 
@@ -487,7 +494,9 @@ reconnect after a power cycle.
 | cursor moves the wrong way | axis config | `invert-x` / `invert-y`, `&zip_xy_swap_mapper` |
 | mouse layer opens while typing | timing | raise `require-prior-idle-ms`, check `excluded-positions` |
 | short battery life on the right half | `force-awake` on, slide switch not in the battery line, sensor always tracking | disable `force-awake`, confirm 0 V at RAW with the switch off, make sure nothing (lid, pocket wall) presses the ball onto the bearings |
-| ball falls out when the half is carried | by design, there is no retainer | put the case lid on for transport (`issues/mech-case-lid.md`) or carry the half without the ball; a bayonet ring is the fallback described in the cradle README |
+| ball falls out when the half is carried | the cup is open by design | clip on the optional retainer (`retainer-19mm.stl`), or put the case lid on for transport (`issues/mech-case-lid.md`) |
+| retainer clips on too hard or rattles | print tolerance on the 0.25 mm snap undercut | change `retainer_nub` in the cradle `params.scad` by 0.05 mm and reprint the ring |
+| thumb catches a retainer claw | ring on the wrong way round, or a hand that sweeps wide | the wide fingers go towards the pinky side; otherwise run without the ring (the lid still covers transport) |
 | ball rubs on the PCB notch | cradle not centred in the pocket | loosen the two floor screws, centre the cup in the notch, retighten |
 | module will not go into the pocket | wrong print or a scrap board with the old octagonal notch; the corner towards the keys must be square | reprint the tray and check the notch against `hardware/layout/output/outline-right.dxf` |
 | FFC creases at the board edge | too little radius in the fold, or the cable is too long and bows in the pocket | 30 to 40 mm cable, let it arc above the board before pressing it down, deburr the board edge |
@@ -499,7 +508,7 @@ forward 0.5 to 0.7 V.
 
 ## 16. Maintenance
 
-* **Ball.** Lift the ball out (nothing holds it), wipe it with a lint-free cloth and a little
+* **Ball.** Take the retainer off if fitted (pinch the claws, pull up), lift the ball out, wipe it with a lint-free cloth and a little
   isopropyl alcohol, brush the three bearings with a dry brush. Every few weeks, more with dry skin.
   POM balls pick up skin oil faster than phenolic ones.
 * **Bearings.** If the ball starts scraping, a bearing has shifted. Reseat it and re-glue at the

@@ -2,9 +2,12 @@
 
 Parametric OpenSCAD model of the trackball holder: a cup with three static ceramic
 bearings, a housing for the PMW3610 sensor daughterboard underneath, and, since r2, a base
-that stands on the case floor in a pocket beside the right PCB. There is no retainer: the
+that stands on the case floor in a pocket beside the right PCB. The cup itself is open: the
 rim stays below the ball equator, the ball rests in the cup by gravity and lifts straight
-out for cleaning. The removable case lid (`issues/mech-case-lid.md`) covers it in transport.
+out for cleaning. An optional clip-on retainer puts two claws over the ball's shoulders, away
+from the thumb, so the ball stays in when the half is turned over; it comes off by hand
+("Ball retention" below). Without it the case lid (`issues/mech-case-lid.md`) covers the ball
+in transport.
 
 Files
 
@@ -14,7 +17,8 @@ Files
 | `params.scad` | every dimension, documented; `mount` and `ball_d` pick the variant |
 | `Makefile` | builds STL, DXF (floor footprint / PCB cutout), PNG previews and `stack.json` |
 | `stack.py` | collects the computed stack heights into `stack.json` |
-| `stl/` | printable parts: 19.05 mm pocket (default), 25 mm pocket (fallback), 25 mm cutout (r1) |
+| `retention.py` | checks that the retainer keeps the ball in and stays off it, writes `retention.json` (`make retention`, about a minute) |
+| `stl/` | printable parts: 19.05 mm pocket (default), 25 mm pocket (fallback), 25 mm cutout (r1), and the optional retainer per ball size |
 | `dxf/` | 2D footprint on the case floor per pocket variant, PCB clearance for the cutout variant |
 | `preview/` | rendered section and assembly views |
 
@@ -25,9 +29,9 @@ Requires OpenSCAD 2025 or newer with the Manifold backend (tested with 2026.10.1
 
 | `mount` | `ball_d` | Where it sits | STL | Status |
 |---------|----------|---------------|-----|--------|
-| `pocket` | 19.05 | case pocket beside the right PCB, PCB notch apothem 15 mm | `cradle-19mm-pocket.stl` | r2 default |
-| `pocket` | 25 | same, but needs a PCB notch apothem of 16.5 mm and a 35 mm pocket | `cradle-25mm-pocket.stl` | fallback, different PCB |
-| `cutout` | 25 | through a 30 mm round cutout of the PCB, flange under the PCB | `cradle-25mm-cutout.stl` | r1, kept for reference |
+| `pocket` | 19.05 | case pocket beside the right PCB, PCB notch apothem 15 mm | `cradle-19mm-pocket.stl` (+ `retainer-19mm.stl`) | r2 default |
+| `pocket` | 25 | same, but needs a PCB notch apothem of 16.5 mm and a 35 mm pocket | `cradle-25mm-pocket.stl` (+ `retainer-25mm.stl`) | fallback, different PCB |
+| `cutout` | 25 | through a 30 mm round cutout of the PCB, flange under the PCB | `cradle-25mm-cutout.stl` (+ `retainer-25mm.stl`, the same ring) | r1, kept for reference |
 
 The 19.05 mm (3/4 inch) ball is the smallest size with a working precedent in keyboards
 (torabo-tsuki LP ships 19.05 mm POM balls, LiNEA40 uses 19 mm on a PMW3610); see
@@ -110,13 +114,44 @@ the straight-down stack is already 6 mm lower than r1 was, so the topic is close
 
 ### Ball retention
 
-There is none, by design. The cup rim stops `rim_drop` = 1 mm below the equator all around
-(`rim_z` = ball centre minus 1 mm, `rim_below_equator` in `stack.json`), so the thumb reaches
-the ball at its widest point from every side and nothing above the rim can touch it. The ball
-sits on the three bearings by gravity and lifts straight out for cleaning. In use the half
-lies flat and the ball cannot leave the cup; for transport the removable case lid
-(`issues/mech-case-lid.md`) covers keys and ball, which is why a claw ring, lip or bayonet
-retainer was dropped. If you carry a bare half without the lid, take the ball out first.
+The cup has nothing above its rim: the rim stops `rim_drop` = 1 mm below the equator all
+around (`rim_below_equator` in `stack.json`), the ball sits on the three bearings by gravity
+and lifts straight out. Flat on the desk that is all it needs. To keep the ball in when the
+half is lifted or turned over there is an **optional clip-on retainer** (`part = "retainer"`,
+`stl/retainer-19mm.stl`, `issues/mech-ball-retainer-clip.md`):
+
+- **Two claws, none on the thumb side.** The claws are pieces of a spherical shell 0.4 mm off
+  the ball (the same `ball_gap` as the cup), 6 mm wide, at +-80 degrees from +x, i.e. on the
+  user and the key side of the ball. They rise to 5 mm above the ball centre (+12.6 mm, about
+  1.6 mm above the Choc caps and 4.5 mm below the ball top). The thumb comes from -x (the thumb
+  keys sit at -171 and 180 degrees seen from the ball); above the rim a sector of 159 degrees
+  around that direction carries nothing, so the thumb still reaches the ball at its equator.
+- **Why two claws hold.** The rim only 1 mm below the equator means the ball cannot move
+  sideways unless it first lifts a long way, and the claws stop it lifting. `retention.py`
+  checks this properly: it samples the cup and the ring meshes and flood-fills the
+  configuration space of the ball centre. A third claw on the far side adds nothing; claws
+  closer than about +-70 degrees to +x hold noticeably worse. With the defaults the ball stays
+  trapped with **at least 0.67 mm** of combined looseness (print error, an undersized ball,
+  claws flexing; the bound already pays for the analysis grid) and can lift 0.82 mm before it
+  touches a claw. The open cup without the ring lets the ball out in the same analysis, which
+  is the check that the method can see an escape at all.
+- **It does not touch the ball in use.** 0.39 mm from the ball at rest (0.4 less facets);
+  nothing of the ring is near the optical path.
+- **Taking it off and the ball out.** Pinch the two claws between thumb and finger and pull
+  straight up: four snap fingers let go of their pockets (0.25 mm undercut, 30 degree release
+  face). Pulling up only ever moves the claws away from the ball (`pull_off_min_gap` in
+  `retention.json`), so the ball stays where it is. Then turn the half over into your palm, or
+  lift the ball out with two fingers. Back on: drop the ball in, set the ring on with the claws
+  on the left and right of the ball, press until it clicks.
+- **It only fits one way round.** The fingers at 30 and 330 degrees are 3 mm wide, the ones at
+  150 and 210 degrees 2 mm; a wide finger does not go into a narrow pocket, so the claws cannot
+  end up on the thumb side.
+- **What the cup carries for it.** A 0.8 mm 45 degree chamfer on the outer edge of the rim,
+  which the ring sits on and centres itself by, and four pockets in the outer wall at the nub
+  height (z +0.9 to +2.6). Both are outside the ball side of the rim, so the cup works the same
+  without the ring. The ring's skirt arches over the bearing bosses (1.0 mm clearance), stays
+  1 mm inside the tray's 28 mm pocket and 1.4 mm under the closed lid roof, and is 1.8 mm away
+  from the FFC corridor. `make retention` and `tests/test_retainer.py` check all of this.
 
 ### Bearings
 
@@ -148,15 +183,22 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
 
 ## Printing
 
-- Material: PETG or PLA, any colour.
+- Material: PETG or PLA, any colour. The retainer in PETG: its snap fingers bend 2.3 percent when
+  they ride over the cup wall, which PETG takes easily and PLA only just.
 - Layer height 0.12 mm, 3 perimeters, 30 percent infill, no supports.
 - Cradle: print upright (housing down, open side on the bed), the cup interior and the lens
   cavity are closed at 45 degree or steeper angles. The three bearing bosses print as small overhangs on the
   outside, fine at 0.12 mm. The cable slot bridges the key-facing wall at the board plane in two
   spans of about 8 mm (the vertical cable channel interrupts it in the middle); both print fine at
   0.12 mm, add a support blocker only if your printer sags.
+- Retainer: print upright as exported (finger tips and skirt on the bed), 0.12 mm layers, no
+  supports: the claw backs are 45 degree buttresses, the claws lean in at most 31 degrees, the
+  arches over the bearing bosses have 45 degree flanks. The only flat overhangs are short
+  bridges: 2 mm over each arch and 0.6 mm over each finger slit. If it clips on too hard or too loose,
+  change `retainer_nub` (0.45, undercut = nub - 0.2 fit) by 0.05 and print again.
 - Deburr the rim with a fingernail or a fine file: it is the only printed edge near the ball
-  and a stray strand of filament there is what makes a ball scrape.
+  and a stray strand of filament there is what makes a ball scrape. Same for the inside of the
+  two claws.
 
 ## Assembly
 
@@ -178,6 +220,8 @@ and fix each one with a dot of cyanoacrylate at the rim of the seat (not under t
    tight: the screws clamp the board and hold the module at the same time.
 5. Fold the cable over the PCB edge into J1 on the key side, contacts down, close the lock.
 6. Drop the ball in. It must spin freely in every direction without touching the rim.
+7. Optional: set the retainer on, claws to the left and right of the ball (the wide fingers
+   towards +x, away from the thumb), and press it down until the four fingers click.
 
 For service the order reverses: open the lock, pull the cable out of J1, undo the two screws from
 below and lift the module out of the pocket. Keycaps and PCB stay where they are.
@@ -188,8 +232,11 @@ below and lift the module out of the pocket. Keycaps and PCB stay where they are
 - Rim clearance: with the ball in, a strip of paper slides between the ball and the rim all
   the way round; the ball must touch only the three bearings. The equator stands 1 mm above
   the rim.
-- Lift the ball out with two fingers: nothing holds it. (It is retained in transport by the
-  case lid, not by the cradle.)
+- Without the retainer: lift the ball out with two fingers, nothing holds it.
+- With the retainer: the ball still spins freely and never touches a claw (paper strip between
+  claw and ball). Turn the module over and shake it: the ball stays in. Pinch the claws, pull:
+  the ring comes off with a moderate pull and the ball stays seated. If the ring is too tight or
+  rattles, tune `retainer_nub` (see Printing).
 - Lens distance: with the ball out, lay a 2.0 mm feeler gauge on the lens aperture through
   the 9 mm hole and check that it is flush with the cup surface at the bottom (the ball
   rests 0.4 mm above the cup surface, so 2.0 mm gauge plus 0.4 mm design gap gives the
@@ -214,7 +261,8 @@ below and lift the module out of the pocket. Keycaps and PCB stay where they are
 - Cable path: the FFC must run from the sensor connector through the slot, up the channel and
   over the board edge into J1 without a crease; the free gap beside the cup is 2.95 mm.
 - Thumb clearance: check that the thumb reaches the ball at its equator from the inner side
-  without touching the rim.
+  without touching the rim, and, with the retainer on, that a long swipe in every direction
+  does not catch a claw.
 - Flash the firmware and watch the cursor: a 19 mm ball at 600 cpi should move the cursor
   about one screen width per half turn. Jitter at rest means the lens is not seated.
 
@@ -223,9 +271,8 @@ below and lift the module out of the pocket. Keycaps and PCB stay where they are
 - The ball top at +17.1 mm (19 mm ball) is set by physics (sensor straight below the ball,
   floor at -11.6). The next levers are a thinner sensor stack (PAW3222 module, 3.3 mm from
   board to ball) or a deeper floor under the pocket only.
-- No retainer: the ball only stays in while the half lies flat or the case lid is on
-  (`issues/mech-case-lid.md`). If that turns out to be a nuisance, a shallow bayonet ring on
-  the rim is the fallback; the cup geometry does not change.
+- Retainer: the snap force and the claw feel under a real thumb are the open questions; the
+  analysis answers retention and clearance, not comfort. Test print with the cradle.
 - Bearing seat size is tuned for FDM; resin prints will need `bearing_fit` set to 0.
 
 ## Image prompts
@@ -248,4 +295,13 @@ cup with three tiny ceramic balls on a plain
 rectangular housing, a 26 x 25 mm sensor board with a lens sliding in from below, a flat
 ribbon cable leaving sideways through a slot, two long M2 screws coming up through a beige
 case floor and the sensor board into the housing, isometric, pastel colours, labelled parts.
+```
+
+```prompt
+Close-up product render of a small 3D printed clip-on ring around a 19 mm white trackball in a
+keyboard case pocket: an orange ring sitting flush on the cup rim with two curved claws rising
+over the ball's shoulders on the left and right, each claw following the ball with a thin gap,
+the side facing the thumb completely open down to the rim, four short snap fingers below the
+ring hooking into small pockets in the cup wall, a thumb approaching the ball from the open
+side, soft studio light, matte PETG texture, white background.
 ```

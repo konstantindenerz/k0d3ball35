@@ -20,9 +20,10 @@ Do these before paying for anything:
    and MSK12C02, routing eyeball. Tickets `hw-main-pcb-review-r1`, `hw-gnd-stitching-review`
    (non-blocking).
 4. In parallel with the order (no longer a gate): cradle test print and sensor fit, print
-   `hardware/trackball-cradle/stl/cradle-19mm-pocket.stl` (there is no retainer), fit a sensor
+   `hardware/trackball-cradle/stl/cradle-19mm-pocket.stl` and the optional `retainer-19mm.stl`, fit a sensor
    board (or a 26 x 25 mm dummy), check the lens gap with a feeler gauge; the ball must spin
-   without touching the rim. Tickets `hw-sensor-stack-height`, `mech-lm18-lens-outline-measurement`.
+   without touching the rim, and with the retainer clipped on it must stay in upside down. Tickets
+   `hw-sensor-stack-height`, `mech-lm18-lens-outline-measurement`, `mech-ball-retainer-clip`.
 5. Ball sourcing and tracking: order a pack of 3/4 inch POM balls (and a PandaKB TB19) and a bag of
    2 mm ZrO2 balls now, test them on the sensor board as soon as it exists. Tickets
    `hw-19mm-ball-sourcing`, `hw-ball-colour-tracking-test`.
@@ -60,7 +61,7 @@ with the LED window, USB-C opening, power switch slot and reset hole (the contro
 +5.7 mm now, so raising the box is a styling choice), a 9 mm deep battery well under the
 controller block on both halves for the LP552035 cell (`battery` block in `points-*.json`), a 32 mm
 pocket beside the right PCB for the ball with the sensor board on its floor, bumper recesses. A hinged two-plate lid per half covers keys and ball
-for transport (the cradle has no retainer, the lid is what keeps the ball in a bag) and folds
+for transport (the cup is open; the lid, or the optional clip-on retainer, keeps the ball in a bag) and folds
 under the half on magnets as a tenting foot. Depends on the final PCB outlines
 (`outline-left.dxf`, `outline-right.dxf`) and the cradle floor footprint
 (`hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf`).
