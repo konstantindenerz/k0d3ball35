@@ -30,7 +30,19 @@
       "cup_outer_d": 23.05,
       "envelope_d_above_pcb": 24.1003,
       "notch_apothem": 15.0,
-      "pcb_cutout_d": 30.0
+      "pcb_cutout_d": 30.0,
+      "bearing_boss_top_z": 2.25036,
+      "retainer_claw_az": 80.0,
+      "retainer_top_z": 12.5756,
+      "retainer_top_above_rim": 6.00063,
+      "retainer_outer_d": 25.85,
+      "retainer_bottom_z": 0.975,
+      "retainer_ball_gap": 0.4,
+      "retainer_ball_play": 0.850173,
+      "retainer_claw_tip_r": 8.57318,
+      "retainer_open_deg": 159.034,
+      "retainer_snap_undercut": 0.25,
+      "retainer_finger_strain": 0.0231481
     },
     "25mm-pocket": {
       "mount_pocket": 1.0,
@@ -61,7 +73,19 @@
       "cup_outer_d": 29.0,
       "envelope_d_above_pcb": 29.0,
       "notch_apothem": 16.5,
-      "pcb_cutout_d": 33.0
+      "pcb_cutout_d": 33.0,
+      "bearing_boss_top_z": 3.51897,
+      "retainer_claw_az": 80.0,
+      "retainer_top_z": 17.1125,
+      "retainer_top_above_rim": 7.5625,
+      "retainer_outer_d": 31.8,
+      "retainer_bottom_z": 3.95,
+      "retainer_ball_gap": 0.4,
+      "retainer_ball_play": 0.826089,
+      "retainer_claw_tip_r": 11.106,
+      "retainer_open_deg": 168.657,
+      "retainer_snap_undercut": 0.25,
+      "retainer_finger_strain": 0.0231481
     },
     "25mm-cutout": {
       "mount_pocket": 0.0,
@@ -89,7 +113,19 @@
       "cup_outer_d": 29.0,
       "envelope_d_above_pcb": 29.0,
       "notch_apothem": 15.0,
-      "pcb_cutout_d": 30.0
+      "pcb_cutout_d": 30.0,
+      "bearing_boss_top_z": 3.51897,
+      "retainer_claw_az": 80.0,
+      "retainer_top_z": 17.1125,
+      "retainer_top_above_rim": 7.5625,
+      "retainer_outer_d": 31.8,
+      "retainer_bottom_z": 3.95,
+      "retainer_ball_gap": 0.4,
+      "retainer_ball_play": 0.826089,
+      "retainer_claw_tip_r": 11.106,
+      "retainer_open_deg": 168.657,
+      "retainer_snap_undercut": 0.25,
+      "retainer_finger_strain": 0.0231481
     }
   }
 }

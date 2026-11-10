@@ -74,10 +74,43 @@ flange_hole_az  = [90, 210, 330];
 flange_pilot_d  = 1.6;     // pilot hole for M2 self-tapping screws (use 3.2 for heat-set inserts)
 
 // ---------------------------------------------------------------- cup
-// There is no retainer: the rim stays below the equator all round and the ball is held by
-// gravity alone. A removable case lid (issues/mech-case-lid.md) covers the ball in transport.
+// The cup itself has nothing above its rim: the rim stays below the equator all round and
+// the ball rests on the bearings by gravity. Keeping it in when the half is lifted or turned
+// over is the job of the optional clip-on retainer below, or of the case lid in transport.
 wall            = 1.6;     // cup wall thickness
 rim_drop        = 1.0;     // cup rim this far below the equator (finger clearance, ball lifts out freely)
+
+// ---------------------------------------------------------------- retainer (optional clip)
+// A separate ring that clips onto the cup and carries two claws over the ball's shoulders,
+// one on each side of the thumb's approach (issues/mech-ball-retainer-clip.md). The thumb
+// comes from -x (layout frame: thumb keys at -171 and 180 degrees from the ball), so the
+// claws sit at +-retainer_claw_az measured from +x and nothing of the ring rises above the
+// cup rim on the thumb side. Remove it by pinching the two claws and pulling straight up;
+// the ball then lifts out as before.
+//
+// Retention was checked by a configuration-space flood fill of the ball centre against the
+// cup and the claws (retention.py, retention.json): with these values the ball stays
+// trapped until ball, cup and claws are together about 1 mm looser than nominal. A claw on
+// the far (+x) side adds nothing; two claws close to +-90 degrees are what holds.
+retainer_claw_az   = 80;     // claws at +- this azimuth (deg from +x); the thumb sector stays open
+retainer_claw_w    = 6.0;    // claw width between its parallel side faces
+retainer_claw_h    = 0.525 * ball_d / 2;  // claw top above the ball centre: 5.0 for the 19.05 mm ball
+                             // (about 1.6 mm above the Choc caps), scales with the ball
+retainer_claw_t    = 1.2;    // claw shell thickness; its inner face is the cup sphere, ball_gap from the ball
+retainer_chamfer   = 0.8;    // 45 degree seat: outer chamfer on the cup rim and the matching cone in the ring
+retainer_fit       = 0.2;    // radial clearance between the ring's skirt and the cup's outer wall
+retainer_skirt_t   = 1.2;    // skirt wall around the cup, below the rim
+retainer_skirt_h   = 5.6;    // skirt from the rim down to the finger tips (the print bed)
+retainer_fingers   = [[30, 3.0], [330, 3.0], [150, 2.0], [210, 2.0]];  // [azimuth, width]: snap fingers;
+                             // the two widths key the ring so it only fits one way round
+retainer_finger_t  = 0.8;    // finger thickness (radial), thinner than the skirt so it flexes
+retainer_slit      = 0.6;    // slit on each side of a finger
+retainer_nub       = 0.45;   // nub height towards the cup; the snap undercut is nub - fit = 0.25
+retainer_nub_flat  = 0.3;    // flat tip of the nub
+retainer_release   = 30;     // nub top face, degrees from vertical: smaller pulls off easier
+retainer_pocket_clear = 0.1; // clearance of the nub in its pocket in the cup wall
+retainer_boss_clear = 0.5;   // skirt arch above the bearing bosses
+with_retainer      = true;   // show the retainer in the assembly and section views
 housing_wall    = 2.0;     // walls around the sensor board / lens cavity (y, the key-facing side)
 housing_wall_x  = 1.5;     // same on x: 29 mm total, 1 mm narrower than the notch across flats, so
                            // the housing clears the PCB edge when the module is lowered into the pocket
@@ -90,4 +123,4 @@ cable_ch_w      = 6.0;
 
 // ---------------------------------------------------------------- rendering
 $fn             = 96;
-part            = "assembly";  // cradle | assembly | section | cutout2d | floor2d | sensor_dummy
+part            = "assembly";  // cradle | retainer | assembly | section | cutout2d | floor2d | sensor_dummy

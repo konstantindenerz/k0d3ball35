@@ -2,8 +2,11 @@
 //
 // A 3D printed holder for a 19.05 mm (or 25 mm) trackball with three static ceramic
 // bearings and a PMW3610 / LM18-LSI sensor daughterboard underneath. The cup rim stays
-// below the ball equator and there is no retainer: the ball rests in the cup by gravity,
-// a removable case lid covers it in transport (issues/mech-case-lid.md).
+// below the ball equator and the cup has nothing above it: the ball rests in the cup by
+// gravity. An optional clip-on retainer (part = "retainer") puts two claws over the ball's
+// shoulders, away from the thumb, so the ball stays in when the half is turned over; it
+// snaps onto a chamfer and four pockets on the cup (issues/mech-ball-retainer-clip.md).
+// Without it the case lid covers the ball in transport (issues/mech-case-lid.md).
 //
 // Two ways to mount it (params.scad, `mount`):
 //   "pocket" (r2 default): the module stands on the case floor in a pocket beside the main
@@ -15,7 +18,8 @@
 //            under the PCB is pulled up with three M2 screws from the top.
 //
 //   part = "cradle"       the printed cup + housing (+ flange in the cutout mount)
-//   part = "assembly"     cradle + ball + sensor dummy + PCB / floor dummies
+//   part = "retainer"     the optional clip-on ring with the two claws
+//   part = "assembly"     cradle + retainer + ball + sensor dummy + PCB / floor dummies
 //   part = "section"      half model for section previews
 //   part = "cutout2d"     2D outline of the required PCB clearance, cutout mount (export as DXF)
 //   part = "floor2d"      2D footprint of the module on the case floor, pocket mount (export as DXF)
@@ -66,6 +70,22 @@ slot_w       = cable_slot_w > 0 ? cable_slot_w : hous_x - 2 * corner_post;
 // must stay inside the layout's cradle clearance circle (trackball.cradle_diameter)
 boss_reach   = (R_in - 0.5 + boss_len) * cos(bearing_elev) + boss_r * sin(bearing_elev);
 envelope_d   = 2 * max(R_out, boss_reach);
+boss_top_z   = zc - (R_in - 0.5 + boss_len) * sin(bearing_elev) + boss_r * cos(bearing_elev);
+
+// retainer (optional clip-on ring), see params.scad
+ret_ch       = retainer_chamfer;
+ret_fi       = R_out + retainer_fit;                 // inner face of the skirt and the fingers
+ret_ro       = ret_fi + retainer_skirt_t;            // outer radius of the ring
+ret_top      = zc + retainer_claw_h;                 // claw tops
+ret_zb       = rim_z - retainer_skirt_h;             // finger tips = skirt bottom = print bed
+ret_slit_top = rim_z - ret_ch - 0.6;                 // fingers are free below this
+ret_nub_rel  = retainer_nub / tan(retainer_release); // height of the release face
+ret_nub_top  = ret_zb + retainer_nub + retainer_nub_flat + ret_nub_rel;
+ret_tip_r    = sqrt(R_in * R_in - pow(retainer_claw_h, 2));     // claw inner radius at its top edge
+// vertical play of the ball before it touches the claw tips (ball centred)
+ret_play     = retainer_claw_h - sqrt(max(0, R * R - ret_tip_r * ret_tip_r));
+// claw corner furthest round towards the thumb (side face at the tip radius), in degrees
+ret_claw_reach = retainer_claw_az + asin((retainer_claw_w / 2) / ret_tip_r);
 
 // ------------------------------------------------------------------ reporting
 echo(str("STACK mount_pocket=", pocket ? 1 : 0));
@@ -97,6 +117,22 @@ echo(str("STACK cup_outer_d=", 2 * R_out));
 echo(str("STACK envelope_d_above_pcb=", envelope_d));
 echo(str("STACK notch_apothem=", notch_apothem));
 echo(str("STACK pcb_cutout_d=", pocket ? 2 * notch_apothem : pcb_cutout_d));
+echo(str("STACK bearing_boss_top_z=", boss_top_z));
+echo(str("STACK retainer_claw_az=", retainer_claw_az));
+echo(str("STACK retainer_top_z=", ret_top));
+echo(str("STACK retainer_top_above_rim=", ret_top - rim_z));
+echo(str("STACK retainer_outer_d=", 2 * ret_ro));
+echo(str("STACK retainer_bottom_z=", ret_zb));
+echo(str("STACK retainer_ball_gap=", ball_gap));
+echo(str("STACK retainer_ball_play=", ret_play));
+echo(str("STACK retainer_claw_tip_r=", ret_tip_r));
+echo(str("STACK retainer_open_deg=", 360 - 2 * ret_claw_reach));
+echo(str("STACK retainer_snap_undercut=", retainer_nub - retainer_fit));
+// bending strain of a snap finger while its nub rides over the cup wall: 1.5 t y / L^2
+// (cantilever with a point load at the nub; PETG takes about 4 %, PLA about 2.5 %)
+echo(str("STACK retainer_finger_strain=",
+         1.5 * retainer_finger_t * (retainer_nub - retainer_fit)
+         / pow(ret_slit_top - (ret_zb + retainer_nub + retainer_nub_flat / 2), 2)));
 
 // ------------------------------------------------------------------ helpers
 module at_ball() { translate([0, 0, zc]) children(); }
@@ -185,6 +221,13 @@ module cradle_cuts() {
     // bearing seats
     for (az = bearing_az) radial(az, bearing_elev)
         translate([0, 0, R_in - 0.01]) cylinder(d = seat_d, h = seat_depth + 0.01);
+    // retainer seat: a 45 degree chamfer on the outer edge of the rim, which the ring sits
+    // on and centres itself by, and one pocket per snap finger in the outer wall. Both stay
+    // outside the ball side of the rim, so the cup works the same without the retainer.
+    rotate_extrude($fn = $fn)
+        polygon([[R_out - ret_ch, rim_z + 0.01], [R_out + 1, rim_z + 0.01], [R_out + 1, rim_z - ret_ch - 1]]);
+    for (f = retainer_fingers) finger_arc(f[0], f[1] + 2 * 0.3, R_out)
+        offset(delta = retainer_pocket_clear) nub_profile(R_out + 1);
     if (!pocket) {
         // flange pilot holes
         for (az = flange_hole_az) rotate([0, 0, az]) translate([flange_hole_bcd / 2, 0, -pcb_t - flange_t - 1])
@@ -202,6 +245,79 @@ module cradle() {
         union() { cup_outer(); housing_outer(); flange_outer(); }
         cradle_cuts();
     }
+}
+
+// ------------------------------------------------------------------ retainer (optional clip)
+// r-z profile of a snap nub on the inner face of a finger: 45 degree lead-in from the tip
+// (it slides down the rim chamfer and the cup wall), a short flat, then the release face at
+// retainer_release degrees from vertical that pulls out of the pocket when the ring is lifted.
+module nub_profile(r_back) {
+    polygon([[r_back, ret_zb], [ret_fi, ret_zb], [ret_fi - retainer_nub, ret_zb + retainer_nub],
+             [ret_fi - retainer_nub, ret_zb + retainer_nub + retainer_nub_flat],
+             [ret_fi, ret_nub_top], [r_back, ret_nub_top]]);
+}
+
+// children (an r-z profile) swept over the arc of a finger `width` wide at radius r_ref
+module finger_arc(az, width, r_ref) {
+    half = (width / 2) / r_ref * 180 / PI;
+    rotate([0, 0, az - half]) rotate_extrude(angle = 2 * half, $fn = $fn) children();
+}
+
+module retainer_claw(az) {
+    w = retainer_claw_w;
+    intersection() {
+        difference() {
+            union() {
+                at_ball() sphere(r = R_in + retainer_claw_t);
+                // 45 degree buttress up the claw's back; it starts 0.3 mm inside the ring's outer
+                // edge so the two solids share a face, not an edge (keeps the mesh manifold)
+                translate([0, 0, rim_z]) cylinder(h = ret_ro - 0.3 - R_in, r1 = ret_ro - 0.3, r2 = R_in);
+            }
+            at_ball() sphere(r = R_in);   // ball_gap from the ball, like the cup
+            // underside: the seat cone continued inwards, so the claw clears the flat of the rim
+            translate([0, 0, rim_z + 0.2 - 20]) cylinder(h = 20, r = R_out - ret_ch + 0.1);
+            translate([0, 0, rim_z + 0.2]) cylinder(h = R_out - ret_ch + 0.1, r1 = R_out - ret_ch + 0.1, r2 = 0);
+        }
+        rotate([0, 0, az]) translate([0, -w / 2, rim_z]) cube([ret_ro + 1, w, ret_top - rim_z]);
+    }
+}
+
+module retainer() {
+    difference() {
+        union() {
+            // ring: seat cone on the rim chamfer, top flush with the rim, skirt down to the finger tips
+            // (the cone stands 0.05 mm off the chamfer along its normal so the two facetted
+            // surfaces do not overlap in the model; the real ring settles onto the chamfer)
+            sd = 0.05 * sqrt(2);
+            rotate_extrude($fn = $fn) polygon([
+                [R_out - ret_ch + sd, rim_z], [ret_ro, rim_z], [ret_ro, ret_zb], [ret_fi, ret_zb],
+                [ret_fi, rim_z - ret_ch - (ret_fi - R_out - sd)], [R_out + sd, rim_z - ret_ch]]);
+            for (s = [-1, 1]) retainer_claw(s * retainer_claw_az);
+        }
+        for (f = retainer_fingers) {
+            a = f[0]; w = f[1];
+            // two slits free the finger up to ret_slit_top ...
+            for (s = [-1, 1]) rotate([0, 0, a + s * ((w + retainer_slit) / 2) / ret_fi * 180 / PI])
+                translate([ret_fi - 1, -retainer_slit / 2, ret_zb - 1])
+                    cube([retainer_skirt_t + 2, retainer_slit, ret_slit_top - ret_zb + 1]);
+            // ... and it is thinner than the skirt, so it flexes outwards
+            finger_arc(a, w + 0.02, ret_fi)
+                translate([ret_fi + retainer_finger_t, ret_zb - 1]) square([retainer_skirt_t, ret_slit_top - ret_zb + 1]);
+        }
+        // arches over the bearing bosses (flat-topped with 45 degree flanks, prints without support)
+        if (boss_top_z + retainer_boss_clear > ret_zb)
+            for (az = bearing_az) {
+                hw0 = boss_r + 0.6;
+                hw1 = 1.0;
+                za = boss_top_z + retainer_boss_clear;
+                rotate([0, 0, az]) translate([ret_fi - 1, 0, 0]) rotate([90, 0, 90])
+                    linear_extrude(retainer_skirt_t + 2)
+                        polygon([[-hw0, ret_zb - 1], [hw0, ret_zb - 1], [hw0, za], [hw1, za + hw0 - hw1],
+                                 [-hw1, za + hw0 - hw1], [-hw0, za]]);
+            }
+    }
+    // snap nubs on the fingers
+    for (f = retainer_fingers) finger_arc(f[0], f[1], ret_fi) nub_profile(ret_fi + retainer_finger_t / 2);
 }
 
 // ------------------------------------------------------------------ dummies for the assembly view
@@ -242,14 +358,18 @@ module floor2d() {    // pocket mount: housing outline on the case floor with 0.
 }
 
 // ------------------------------------------------------------------ dispatch
+module retainer_view() { if (with_retainer) color("darkorange") retainer(); }
+
 if (part == "cradle")        cradle();
+else if (part == "retainer") retainer();
+else if (part == "clash")    intersection() { cradle(); retainer(); }   // must be empty (tests)
 else if (part == "sensor_dummy") sensor_dummy();
 else if (part == "cutout2d") cutout2d();
 else if (part == "floor2d")  floor2d();
-else if (part == "section") {           // half model for section previews
-    difference() {
-        union() { cradle(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
-        translate([-100, 0, -100]) cube([200, 100, 200]);
+else if (part == "section") {           // half model for section previews: the x = 0 plane cuts
+    difference() {                      // through both claws, the thumb (-x) half is removed
+        union() { cradle(); retainer_view(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
+        translate([-200, -100, -100]) cube([200, 200, 200]);
     }
 }
-else { cradle(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
+else { cradle(); retainer_view(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
