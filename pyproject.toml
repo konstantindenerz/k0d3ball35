@@ -7,6 +7,7 @@ name = "k0d3ball35"
 version = "0.1.0"
 description = "Wireless 35-key low profile split keyboard with a 19 mm trackball"
 readme = "README.md"
+authors = [{ name = "Konstantin Denerz" }]
 license = { file = "LICENSE" }
 requires-python = ">=3.12"
 dependencies = [
@@ -15,6 +16,11 @@ dependencies = [
   "numpy>=1.26",
   "shapely>=2.0",
 ]
+
+[project.urls]
+Homepage = "https://konstantin-denerz.com/k0d3ball35/"
+Repository = "https://github.com/konstantindenerz/k0d3ball35"
+Issues = "https://github.com/konstantindenerz/k0d3ball35/issues"
 
 [project.optional-dependencies]
 # ezdxf and trimesh are importorskip'd by the DXF and mesh tests: without them those

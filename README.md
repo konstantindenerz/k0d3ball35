@@ -1,5 +1,8 @@
 # k0d3ball35
 
+Designed and built by [Konstantin Denerz](https://konstantin-denerz.com) ·
+[project page](https://konstantin-denerz.com/k0d3ball35/)
+
 A wireless, low profile, 35-key split keyboard with an integrated 19 mm trackball.
 Keyball-inspired column stagger and thumb arc, Kailh Choc V1 hot-swap switches, a nice!nano v2
 on each half, ZMK firmware, two flat angular PCBs (18 keys left, 17 keys right) and the ball in a
@@ -199,5 +202,11 @@ visible. Oak desk, soft daylight, macro lens, shallow depth of field.
 
 ## License
 
+Copyright (c) 2026 Konstantin Denerz.
+
 Firmware, scripts and documentation: [MIT](LICENSE).
 Hardware (everything under `hardware/`): [CERN-OHL-P-2.0](LICENSE-HARDWARE).
+
+The `kode` wordmark on the PCB silkscreen, the case and the project page is the author's mark and
+is not covered by either licence; a fork keeps the design files and replaces the artwork. See
+[NOTICE](NOTICE).

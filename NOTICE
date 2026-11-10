@@ -1,15 +1,16 @@
 k0d3ball35 - third-party notices and credits
 
-This project is licensed under the MIT License (firmware, scripts, tests, documentation; see LICENSE)
-and the CERN Open Hardware Licence Version 2 - Permissive (hardware design files under hardware/;
-see LICENSE-HARDWARE).
+Copyright (c) 2026 Konstantin Denerz. This project is licensed under the MIT License (firmware,
+scripts, tests, documentation; see LICENSE) and the CERN Open Hardware Licence Version 2 -
+Permissive (hardware design files under hardware/; see LICENSE-HARDWARE).
 
 The following projects inspired or are used by k0d3ball35. None of their files are redistributed
 in this repository unless stated.
 
 Owner wordmark
   spec/images/logo.png and everything generated from it (spec/images/logo.svg,
-  hardware/case/logo_data.scad, the engraving on the case) is the project owner's mark. It is not covered by the MIT or
+  hardware/case/logo_data.scad, the engraving on the case, the project page's share card) is
+  the mark of Konstantin Denerz, who designed and built this project. It is not covered by the MIT or
   CERN-OHL-P licences of this repository: a fork may keep the design files but has to replace
   the artwork with its own (set logo_on_cap and logo_on_floor to false, or drop in another
   logo.png and re-run scripts/gen_logo.py).

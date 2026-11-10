@@ -3,6 +3,9 @@
 Thanks for your interest in k0d3ball35. This page explains how the repository is organised and
 what a change needs before it is merged.
 
+The project is maintained by [Konstantin Denerz](https://konstantin-denerz.com); open an issue or
+a pull request on [GitHub](https://github.com/konstantindenerz/k0d3ball35).
+
 ## Ground rules
 
 - All code, comments, documentation and ticket text are written in English.
