@@ -34,6 +34,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from scad_frame import load_layout_frame
 
 ROOT = Path(__file__).resolve().parents[1]
 PCB = ROOT / "hardware" / "sensor-pcb" / "k0d3ball35-sensor.kicad_pcb"
@@ -464,7 +465,7 @@ def test_render_pocket_cradle_and_measure_cavities(board, geometry, params, stac
     assert values["sensor_pcb_plane_z"] == stack["sensor_pcb_plane_z"]
     assert values["floor_z"] == stack["floor_z"]
 
-    mesh = trimesh.load(STL_OUT, force="mesh")
+    mesh = load_layout_frame(STL_OUT)
     assert mesh.is_watertight
     floor_z, board_z = values["floor_z"], values["sensor_pcb_plane_z"]
     cav_h = params["lens_h"] + 0.4

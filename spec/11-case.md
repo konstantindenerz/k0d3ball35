@@ -250,7 +250,8 @@ then comes out flush in the second colour.
 
 On the cap the wordmark keeps 5.0 mm to the long edges, 2.45 mm to the ends and 1.5 mm to both
 screw holes; on the floor it keeps at least 1.1 mm to the nearest foot recess. `case.scad`
-mirrors the left half as a whole, so `logo.scad` mirrors the wordmark back - it reads the same
+mirrors the left half as a whole and flips y for the export (print frame, see
+`hardware/case/README.md`), so `logo.scad` mirrors the wordmark back for both - it reads the same
 way round on both halves, which `tests/test_case.py` checks on the rendered meshes.
 
 Set `logo_on_cap = false` for a plain case.

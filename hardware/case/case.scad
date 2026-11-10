@@ -131,5 +131,14 @@ module dispatch() {
     else assert(false, str("unknown part ", part));
 }
 
-if (half == "left" && mirror_left) mirror([1, 0, 0]) dispatch();
-else dispatch();
+// The sources work in the layout frame: x outward, y towards the user, z up. That frame is
+// left-handed, and STL and DXF are always read right-handed, so exporting it as it is would give
+// the mirror image of the real part (issues/mech-case-stl-mirrored.md). The export flips y once
+// here: the files are in the print frame, x outward, y away from the user, z up - what a slicer
+// shows from above with the user at the front of the bed. The echoed STACK numbers stay in the
+// layout frame.
+module print_frame() mirror([0, 1, 0]) children();
+
+print_frame()
+    if (half == "left" && mirror_left) mirror([1, 0, 0]) dispatch();
+    else dispatch();

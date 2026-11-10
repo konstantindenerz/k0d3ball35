@@ -8,14 +8,16 @@
 OPENSCAD ?= $(shell command -v openscad 2>/dev/null || echo /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD)
 OSC       = $(OPENSCAD) --backend manifold
 PYTHON   ?= ../../.venv/bin/python
-CAM_ASM   = --camera=-10,30,0,55,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
-CAM_SEC   = --camera=-13,66,0,75,0,150,230 --imgsize=1400,1000 --colorscheme=Tomorrow
-CAM_BOX   = --camera=-58,22,5,60,0,300,150 --imgsize=1400,1000 --colorscheme=Tomorrow
-CAM_FOOT  = --camera=-70,30,10,78,0,25,460 --imgsize=1400,1000 --colorscheme=Tomorrow
-CAM_FOLD  = --camera=-31,30,10,60,0,40,260 --imgsize=1400,1000 --colorscheme=Tomorrow
-CAM_HINGE = --camera=-31,-9,14,70,0,0,60 --imgsize=1400,1000 --colorscheme=Tomorrow
-CAM_BOT   = --camera=-10,30,-10,125,0,25,400 --imgsize=1400,1000 --colorscheme=Tomorrow
-CAM_CAP   = --camera=-59.5,21.9,8.7,0,0,0,170 --imgsize=700,1200 --colorscheme=Tomorrow
+# cameras look at the exported (print frame) scene: y and the turn about z are those of the
+# layout-frame view mirrored in y (target y -> -y, rot_z -> 180 - rot_z)
+CAM_ASM   = --camera=-10,-30,0,55,0,155,400 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_SEC   = --camera=-13,-66,0,75,0,30,230 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_BOX   = --camera=-58,-22,5,60,0,240,150 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_FOOT  = --camera=-70,-30,10,78,0,155,460 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_FOLD  = --camera=-31,-30,10,60,0,140,260 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_HINGE = --camera=-31,9,14,70,0,180,60 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_BOT   = --camera=-10,-30,-10,125,0,155,400 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_CAP   = --camera=-59.5,-21.9,8.7,0,0,0,170 --imgsize=700,1200 --colorscheme=Tomorrow
 SRC       = case.scad params.scad data.scad logo_data.scad common.scad logo.scad tray.scad lid.scad
 LEFT      = -D 'half="left"'
 RIGHT     = -D 'half="right"'

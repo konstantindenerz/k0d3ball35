@@ -360,16 +360,24 @@ module floor2d() {    // pocket mount: housing outline on the case floor with 0.
 // ------------------------------------------------------------------ dispatch
 module retainer_view() { if (with_retainer) color("darkorange") retainer(); }
 
-if (part == "cradle")        cradle();
-else if (part == "retainer") retainer();
-else if (part == "clash")    intersection() { cradle(); retainer(); }   // must be empty (tests)
-else if (part == "sensor_dummy") sensor_dummy();
-else if (part == "cutout2d") cutout2d();
-else if (part == "floor2d")  floor2d();
-else if (part == "section") {           // half model for section previews: the x = 0 plane cuts
-    difference() {                      // through both claws, the thumb (-x) half is removed
-        union() { cradle(); retainer_view(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
-        translate([-200, -100, -100]) cube([200, 200, 200]);
+// The sources work in the layout frame (+x outward, +y towards the user, z up), which is
+// left-handed; STL and DXF are read right-handed. The export flips y once so the files are the
+// real part, in the print frame: x outward, y away from the user, z up
+// (issues/mech-case-stl-mirrored.md). The echoed STACK numbers stay in the layout frame.
+module dispatch() {
+    if (part == "cradle")        cradle();
+    else if (part == "retainer") retainer();
+    else if (part == "clash")    intersection() { cradle(); retainer(); }   // must be empty (tests)
+    else if (part == "sensor_dummy") sensor_dummy();
+    else if (part == "cutout2d") cutout2d();
+    else if (part == "floor2d")  floor2d();
+    else if (part == "section") {           // half model for section previews: the x = 0 plane cuts
+        difference() {                      // through both claws, the thumb (-x) half is removed
+            union() { cradle(); retainer_view(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
+            translate([-200, -100, -100]) cube([200, 200, 200]);
+        }
     }
+    else { cradle(); retainer_view(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
 }
-else { cradle(); retainer_view(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
+
+mirror([0, 1, 0]) dispatch();

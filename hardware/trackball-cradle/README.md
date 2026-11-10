@@ -41,7 +41,9 @@ The 19.05 mm (3/4 inch) ball is the smallest size with a working precedent in ke
 
 Coordinate system: z up, z = 0 is the top surface of the main PCB, the ball centre is on
 the z axis, +x points outward (towards the pinky), +y towards the user. The sensor optical
-axis points straight down through the ball centre.
+axis points straight down through the ball centre. That layout frame is left-handed, so
+`cradle.scad` flips y once at export: the STL and DXF files are in the print frame (x outward,
+y away from the user, z up) and are the real parts. `stack.json` stays in the layout frame.
 
 The vertical stack is taken from the PMW3610DM-SUDU datasheet (figure 4, assembly drawing
 with the LM18-LSI lens):

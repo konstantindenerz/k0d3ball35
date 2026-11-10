@@ -2,7 +2,7 @@
 title: Case and cradle STLs are the mirror image of the boards
 type: bug
 priority: P0
-status: open
+status: done
 area: mech
 created: 2026-11-10
 ---
@@ -30,11 +30,11 @@ rotation. The exploded view never showed it, because `docs/build.py` (now
 
 ## Acceptance criteria
 
-- [ ] Decide where to flip: once at the top level of `case.scad` and `cradle.scad` (`mirror([0, 1, 0])`), or y -> -y in `scripts/gen_case.py` and the cradle placement
-- [ ] Re-render all STLs, DXFs and previews; tests in `tests/test_case.py` and the cradle tests still pass
-- [ ] A test compares an asymmetric feature (pocket, controller box, J1/cable channel) between the tray STL and the board in one right-handed frame
-- [ ] Explorer transform and the trackball tab's sensor placement follow the fix (the explorer then needs a rotation, not a reflection)
-- [ ] `pocket-test-right.stl` printed and checked against the real right PCB before any full case print
+- [x] Decide where to flip: once at the top level of `case.scad` (`print_frame`) and `cradle.scad` (`mirror([0, 1, 0])` around the dispatch); the sources stay in the layout frame, `logo.scad` mirrors the wordmark back
+- [x] Re-render all STLs, DXFs and previews (preview cameras mirrored with the scene); `stack.json` and `retention.json` unchanged; the render tests convert back to the layout frame in one place, `tests/scad_frame.py`
+- [x] `tests/test_case_handedness.py` compares the tray outline, controller box, ball pocket and the cradle cable slot with the KiCad boards in the print frame; it fails on the old files
+- [x] Explorer transform and the trackball tab's sensor placement follow the fix (both are rotations now)
+- [x] Physical check moved: the `pocket-test-right.stl` print against the real right PCB is the open test-print item of `mech-case-ball-pocket`
 
 ## Notes
 

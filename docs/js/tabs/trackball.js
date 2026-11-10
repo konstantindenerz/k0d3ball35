@@ -3,8 +3,8 @@
 // from stack.json, the optional retainer and the sensor board GLB in place.
 // Data: docs/data/parts.json (docs/gen/parts.py). Route: #trackball/<variant>, e.g. #trackball/25mm-pocket.
 //
-// Frame: the cradle STLs are in the stack frame of hardware/trackball-cradle/README.md (mm, z = 0 on
-// the main PCB top, ball centre on the z axis, -y towards the keys), so the ball goes to
+// Frame: the cradle STLs are in the print frame (mm, z = 0 on the main PCB top, ball centre on the
+// z axis, x outward, +y away from the user, i.e. towards the keys), so the ball goes to
 // (0, 0, ball_centre_z). The bearings sit 35 degrees below the equator at 60, 180 and 300 degrees
 // from +x; the angle is derived from bearing_contact_z so the drawing follows the model.
 
@@ -79,7 +79,9 @@ function ballObject(s) {
   for (const az of BEARING_AZ) {
     const a = THREE.MathUtils.degToRad(az);
     const b = solid(bgeom, '--tb-bearing', '#EEECE4', '--tb-bearing', '#EEECE4');
-    b.position.set((R + r) * Math.cos(phi) * Math.cos(a), (R + r) * Math.cos(phi) * Math.sin(a), s.ball_centre_z - (R + r) * Math.sin(phi));
+    // bearing_az is measured in the layout frame (y towards the user); the STLs are in the print
+    // frame (y away from the user), hence -sin
+    b.position.set((R + r) * Math.cos(phi) * Math.cos(a), -(R + r) * Math.cos(phi) * Math.sin(a), s.ball_centre_z - (R + r) * Math.sin(phi));
     g.add(b);
   }
   g.userData.phiDeg = THREE.MathUtils.radToDeg(phi);
@@ -87,11 +89,12 @@ function ballObject(s) {
 }
 
 /** Sensor board GLB (KiCad export) placed in the cradle frame. loadGLB turns it into KiCad's 3D
- *  frame (x right, y = -pcb y, z up from the B face). The cradle frame is the layout frame
- *  (y = pcb y, towards the user), and the board hangs component side down with its lens ("BALL
- *  SIDE", B face) against the housing face at sensor_pcb_plane_z. Together that is x -> -x,
- *  y -> -y, z -> -z about the board centre, which puts J1 at local x = -7.6 in front of the cable
- *  channel (cable_channel_x in stack.json; tests/test_sensor_pcb_vs_cradle.py checks the same). */
+ *  frame (x right, y = -pcb y, z up from the B face). The cradle STL is in the print frame
+ *  (x outward, y away from the user, z up), and the board hangs component side down with its lens
+ *  ("BALL SIDE", B face) against the housing face at sensor_pcb_plane_z. That is a half turn about
+ *  y through the board centre (x -> -x, z -> -z), which puts J1 at local x = -7.6 in front of the
+ *  cable channel (cable_channel_x in stack.json; tests/test_sensor_pcb_vs_cradle.py checks the
+ *  same in the layout frame). A real board, so a rotation: no mirror. */
 function placeSensor(glbRoot, planeZ) {
   // the board substrate: the thinnest mesh that spans more than 20 mm on x and y and is over 1 mm
   // thick (copper and soldermask layers span the board too, but are thicker or flat)
@@ -108,8 +111,9 @@ function placeSensor(glbRoot, planeZ) {
   const wrap = new THREE.Group();
   wrap.name = 'sensor';
   wrap.add(glbRoot);
-  wrap.scale.set(-1, -1, -1);
-  wrap.position.set(c.x, c.y, planeZ + box.min.z);
+  wrap.scale.set(-1, 1, -1);
+  // the board centre c goes to (0, 0): x and z are negated by the turn, y is not
+  wrap.position.set(c.x, -c.y, planeZ + box.min.z);
   return wrap;
 }
 

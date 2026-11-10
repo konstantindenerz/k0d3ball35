@@ -35,10 +35,15 @@ it lists - `tests/test_site.py` fails while those are stale.
 
 ## Geometry
 
-Frame: x outward towards the pinky, y towards the user, origin at the middle-column top
-key, z = 0 is the PCB top (`hardware/layout/k0d3ball35.yaml`, same as the cradle). The frame
-is handedness-neutral; the left half is mirrored once at the top level of `case.scad`
-(`mirror_left`), so both halves share every module and the STLs are the physical parts.
+Frame: the sources work in the layout frame, x outward towards the pinky, y towards the user,
+origin at the middle-column top key, z = 0 is the PCB top (`hardware/layout/k0d3ball35.yaml`,
+same as the cradle). With z up that frame is left-handed, while STL and DXF are always read
+right-handed, so `case.scad` flips y once at export (`print_frame`). The files are in the print
+frame: x outward, y away from the user, z up, which is how a slicer shows them from above with
+the user at the front of the bed. The left half is also mirrored in x at the top level
+(`mirror_left`), so both halves share every module. Numbers in `stack.json` and `data.scad` stay
+in the layout frame. `tests/test_case_handedness.py` checks the STLs against the KiCad boards
+(issues/mech-case-stl-mirrored.md: before 2026-11-10 every part was exported as its mirror image).
 
 - Walls: 3.0 mm outside the PCB cavity (PCB plus 0.2 mm), mitre joins, no rounding. The rim
   is at +5.0, flush with the Choc keycap skirts and below the cradle cup rim (+6.575).

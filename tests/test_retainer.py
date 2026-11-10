@@ -22,6 +22,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 import yaml
+from scad_frame import load_layout_frame
 
 ROOT = Path(__file__).resolve().parents[1]
 CRADLE = ROOT / "hardware" / "trackball-cradle"
@@ -149,7 +150,7 @@ def test_retainer_fits_pocket_lid_and_hinge(stack, retention):
     ball_x = layout["halves"]["right"]["trackball"]["center"]["x"]
     trimesh = pytest.importorskip("trimesh")
     stl = CRADLE / "stl" / "retainer-19mm.stl"
-    v = trimesh.load(stl, force="mesh").vertices
+    v = load_layout_frame(stl).vertices
     high = v[v[:, 2] > strip_bottom - 0.5]
     assert len(high) > 0                                   # the claw tops do reach that high ...
     assert (high[:, 0] + ball_x > strip_x[1] + 0.5).all()  # ... but well away from the strip
@@ -163,7 +164,7 @@ def test_retainer_clears_ffc_corridor():
     corr = np.array(tb["pocket"]["cable_corridor"]) if "cable_corridor" in tb.get("pocket", {}) else np.array(tb["cable_corridor"])
     x0, x1 = corr[:, 0].min() - bx, corr[:, 0].max() - bx
     y0, y1 = corr[:, 1].min() - by, corr[:, 1].max() - by
-    v = trimesh.load(CRADLE / "stl" / "retainer-19mm.stl", force="mesh").vertices
+    v = load_layout_frame(CRADLE / "stl" / "retainer-19mm.stl").vertices
     dx = np.maximum(0, np.maximum(x0 - v[:, 0], v[:, 0] - x1))
     dy = np.maximum(0, np.maximum(y0 - v[:, 1], v[:, 1] - y1))
     assert np.hypot(dx, dy).min() >= 1.0
@@ -213,7 +214,7 @@ def test_retainer_mesh(tmp_path, stack):
     out = tmp_path / "retainer.stl"
     res = render("retainer", VARIANTS["19mm-pocket"], out)
     assert res.returncode == 0 and "WARNING" not in res.stderr, res.stderr
-    mesh = trimesh.load(out, force="mesh")
+    mesh = load_layout_frame(out)
     assert mesh.is_watertight
     assert 50 < mesh.volume < 1000
     s = stack["19mm-pocket"]
@@ -227,7 +228,7 @@ def test_retainer_mesh(tmp_path, stack):
     az = np.degrees(np.arctan2(above[:, 1], above[:, 0]))
     assert np.abs(az).max() <= 180 - MIN_OPEN_SECTOR / 2
     # the committed STL is this one
-    committed = trimesh.load(CRADLE / "stl" / "retainer-19mm.stl", force="mesh")
+    committed = load_layout_frame(CRADLE / "stl" / "retainer-19mm.stl")
     assert abs(committed.volume - mesh.volume) < 0.01
 
 
@@ -236,7 +237,7 @@ def test_cradle_carries_seat_and_pockets(stack):
     """The cradle STL has the rim chamfer and the four finger pockets, and still nothing above the rim."""
     trimesh = pytest.importorskip("trimesh")
     s = stack["19mm-pocket"]
-    mesh = trimesh.load(CRADLE / "stl" / "cradle-19mm-pocket.stl", force="mesh")
+    mesh = load_layout_frame(CRADLE / "stl" / "cradle-19mm-pocket.stl")
     v = mesh.vertices
     assert v[:, 2].max() <= s["rim_z"] + 1e-3
     r = np.hypot(v[:, 0], v[:, 1])

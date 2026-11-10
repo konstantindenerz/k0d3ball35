@@ -57,12 +57,17 @@ function keyLocal(k, lx, ly) {
   return { x: k.x + lx * Math.cos(t) + ly * Math.sin(t), z: k.y - lx * Math.sin(t) + ly * Math.cos(t) };
 }
 
-// Case STL (CAD frame, Z up) -> this page's frame: swap Y and Z; the left STLs are physically
-// mirrored boards, so they are mirrored back first (the whole left half is mirrored for display).
-// transformGeometry restores the outward winding the reflections reverse.
+// Case STL (print frame: x outward, y away from the user, z up) -> this page's frame (the layout
+// frame with y and z swapped, so three.js Z points towards the user). Right half: back to the
+// layout frame (y -> -y), then swap Y and Z; together a rotation. The left STLs are also mirrored
+// in x like the left board, so they are mirrored back first (the whole left half is mirrored for
+// display). transformGeometry restores the outward winding when the product is a reflection.
 const SWAP = new THREE.Matrix4().set(1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
+const TO_LAYOUT = new THREE.Matrix4().makeScale(1, -1, 1);
 const UNMIRROR = new THREE.Matrix4().makeScale(-1, 1, 1);
-const caseMatrix = (half) => (half === 'left' ? SWAP.clone().multiply(UNMIRROR) : SWAP.clone());
+const caseMatrix = (half) => (half === 'left'
+  ? SWAP.clone().multiply(UNMIRROR).multiply(TO_LAYOUT)
+  : SWAP.clone().multiply(TO_LAYOUT));
 
 // ---------- materials ----------
 const M = {

@@ -30,10 +30,10 @@ module logo_2d(cell) {
         else logo_ink_2d(cell);
 }
 
-// case.scad mirrors the whole left half once, so the wordmark is mirrored back here. The
-// mirror sits outside the rotation: the two mirrors then cancel and leave a pure rotation,
-// so the logo reads the same way round on both halves.
-module logo_placed_2d(rot, cell) {
+// case.scad mirrors the whole left half in x and every export in y (print_frame), so the
+// wordmark is mirrored back here. The mirrors sit outside the rotation: each pair cancels and
+// leaves a pure rotation, so the logo reads the same way round on both halves and in the file.
+module logo_placed_2d(rot, cell) mirror([0, 1, 0]) {
     if (half == "left" && mirror_left) mirror([1, 0, 0]) rotate(rot) logo_2d(cell);
     else rotate(rot) logo_2d(cell);
 }

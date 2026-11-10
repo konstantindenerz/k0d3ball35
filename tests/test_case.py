@@ -22,6 +22,7 @@ import pytest
 from shapely.geometry import Point, Polygon
 
 from k0d3.geometry import load_layout
+from scad_frame import load_layout_frame, layout_y
 
 ROOT = Path(__file__).resolve().parents[1]
 CASE = ROOT / "hardware" / "case"
@@ -106,7 +107,7 @@ def mesh_of(path):
     trimesh = pytest.importorskip("trimesh")
     # drop the zero-area triangles with a repeated vertex that the manifold export leaves where
     # the hinge grooves meet the strip; they would break is_watertight although the solid is fine
-    mesh = trimesh.load(path, force="mesh")
+    mesh = load_layout_frame(path)
     f = mesh.faces
     mesh.update_faces((f[:, 0] != f[:, 1]) & (f[:, 1] != f[:, 2]) & (f[:, 0] != f[:, 2]))
     return mesh
@@ -747,12 +748,13 @@ def _dxf_loops(path):
     loops = []
     for e in doc.modelspace():
         if e.dxftype() == "LWPOLYLINE":
-            pts = [(p[0], p[1]) for p in e.get_points()]
+            pts = [(p[0], layout_y(p[1])) for p in e.get_points()]
             xs, ys = [p[0] for p in pts], [p[1] for p in pts]
             loops.append((min(xs), max(xs), min(ys), max(ys)))
         elif e.dxftype() == "CIRCLE":
             c, r = e.dxf.center, e.dxf.radius
-            loops.append((c.x - r, c.x + r, c.y - r, c.y + r))
+            cy = layout_y(c.y)
+            loops.append((c.x - r, c.x + r, cy - r, cy + r))
     return loops
 
 

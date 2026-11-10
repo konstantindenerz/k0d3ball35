@@ -9,8 +9,10 @@
 OPENSCAD ?= $(shell command -v openscad 2>/dev/null || echo /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD)
 OSC       = $(OPENSCAD) --backend manifold
 PYTHON   ?= python3
+# cameras look at the exported (print frame) scene: y and the turn about z are those of the
+# layout-frame view mirrored in y (target y -> -y, rot_z -> 180 - rot_z)
 CAM_SEC   = --camera=0,0,3,80,0,270,110 --imgsize=1200,900 --colorscheme=Tomorrow
-CAM_ASM   = --camera=0,0,5,55,0,35,170 --imgsize=1200,900 --colorscheme=Tomorrow
+CAM_ASM   = --camera=0,0,5,55,0,145,170 --imgsize=1200,900 --colorscheme=Tomorrow
 POCKET19  = -D 'mount="pocket"' -D ball_d=19.05
 POCKET25  = -D 'mount="pocket"' -D ball_d=25 -D notch_apothem=16.5
 CUTOUT25  = -D 'mount="cutout"' -D ball_d=25

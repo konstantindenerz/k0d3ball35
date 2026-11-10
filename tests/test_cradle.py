@@ -17,6 +17,7 @@ from pathlib import Path
 
 import pytest
 import yaml
+from scad_frame import load_layout_frame, layout_y
 
 ROOT = Path(__file__).resolve().parents[1]
 CRADLE = ROOT / "hardware" / "trackball-cradle"
@@ -150,7 +151,7 @@ def test_render_19mm_pocket_stl(tmp_path):
     assert out.stat().st_size > 100_000
     assert LENS_Z_MIN <= values["lens_reference_plane_dist"] <= LENS_Z_MAX
     trimesh = pytest.importorskip("trimesh")
-    mesh = trimesh.load(out, force="mesh")
+    mesh = load_layout_frame(out)
     assert mesh.is_watertight
     assert mesh.volume > 1000
     v = mesh.vertices
@@ -186,10 +187,11 @@ def _dxf_loops(path):
     loops = []
     for e in doc.modelspace():
         if e.dxftype() == "LWPOLYLINE":
-            loops.append([(p[0], p[1]) for p in e.get_points()])
+            loops.append([(p[0], layout_y(p[1])) for p in e.get_points()])
         elif e.dxftype() == "CIRCLE":
             c, r = e.dxf.center, e.dxf.radius
-            loops.append([(c.x + r, c.y), (c.x - r, c.y), (c.x, c.y + r), (c.x, c.y - r)])
+            cy = layout_y(c.y)
+            loops.append([(c.x + r, cy), (c.x - r, cy), (c.x, cy + r), (c.x, cy - r)])
     return loops
 
 
