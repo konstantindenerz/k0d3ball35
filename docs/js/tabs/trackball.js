@@ -11,11 +11,12 @@
 import * as THREE from 'three';
 import { ModelViewer, parseSTL } from '../viewer.js';
 import { loadData, fetchBuffer, assetUrl, githubUrl, downloadFile, fmt, esc } from '../assets.js';
+import { t } from '../i18n.js';
 
 const SENSOR_GLB = 'hardware/sensor-pcb/renders/k0d3ball35-sensor.glb';
 const BEARING_D = 2.0;                 // ZrO2 balls, hardware/trackball-cradle/README.md "Bearings"
 const BEARING_AZ = [60, 180, 300];
-const VIEWS = [['iso', 'Iso'], ['front', 'Front'], ['top', 'Top'], ['bottom', 'Bottom'], ['side', 'Side']];
+const views = () => [['iso', t('Iso')], ['front', t('Front')], ['top', t('Top')], ['bottom', t('Bottom')], ['side', t('Side')]];
 const css = (v, fb) => getComputedStyle(document.documentElement).getPropertyValue(v).trim() || fb;
 const signed = (v, d = 2) => (v == null ? '-' : `${v >= 0 ? '+' : '−'}${fmt(Math.abs(v), d)}`);
 
@@ -55,7 +56,7 @@ function frame(dir) { viewer.fit(dir); }
 async function stlGeometry(path) {
   if (!geomCache.has(path)) {
     const name = path.split('/').pop();
-    geomCache.set(path, fetchBuffer(path, (f) => viewer.showStatus(`Loading ${name}`, f)).then((buf) => parseSTL(buf)));
+    geomCache.set(path, fetchBuffer(path, (f) => viewer.showStatus(t('Loading {name}', { name }), f)).then((buf) => parseSTL(buf)));
   }
   try {
     return await geomCache.get(path);
@@ -241,12 +242,12 @@ function applyClip() {
   // the viewer takes the plane as a fraction across the content bounds; the content changes with
   // the toggles, so the fraction is recomputed from the plane position in mm every time
   const box = viewer.bounds();
-  let t = 0.5;
-  if (!box.isEmpty() && box.max.y > box.min.y) t = (state.at - box.min.y) / (box.max.y - box.min.y);
+  let frac = 0.5;
+  if (!box.isEmpty() && box.max.y > box.min.y) frac = (state.at - box.min.y) / (box.max.y - box.min.y);
   // keep the +y half: the iso and front cameras look from -y, straight at the cut
-  viewer.setClip({ on: state.clip, axis: 'y', t: Math.min(1, Math.max(0, t)), flip: !state.flip });
+  viewer.setClip({ on: state.clip, axis: 'y', t: Math.min(1, Math.max(0, frac)), flip: !state.flip });
   const out = root.querySelector('.tb-clip-at');
-  out.textContent = Math.abs(state.at) < 0.05 ? 'y = 0, through the ball centre' : `y = ${signed(state.at, 1)} mm`;
+  out.textContent = Math.abs(state.at) < 0.05 ? t('y = 0, through the ball centre') : `y = ${signed(state.at, 1)} mm`;
   root.querySelector('.tb-clip-row').hidden = !state.clip;
 }
 
@@ -262,72 +263,73 @@ function renderPanel() {
   const cradle = part(v.cradle);
   const retainer = v.retainer ? part(v.retainer) : null;
   root.querySelectorAll('input[name="tb-variant"]').forEach((i) => { i.checked = i.value === v.id; });
-  root.querySelector('.tb-variant-role').textContent = cradle.role;
+  root.querySelector('.tb-variant-role').textContent = t(cradle.role);
   const ret = root.querySelector('input[data-toggle="retainer"]');
   ret.disabled = !retainer;
   ret.closest('label').classList.toggle('tb-off', !retainer);
 
   const floorRow = v.mount === 'pocket'
-    ? ['Case floor, housing stands on it', `${signed(s.floor_z)} mm`]
-    : ['Lowest plastic, flange under the PCB', `${signed(s.lowest_plastic_z)} mm`];
+    ? [t('Case floor, housing stands on it'), `${signed(s.floor_z)} mm`]
+    : [t('Lowest plastic, flange under the PCB'), `${signed(s.lowest_plastic_z)} mm`];
   root.querySelector('.tb-stack').innerHTML = `
-    <h2>Stack heights</h2>
-    <p class="tb-hint">z = 0 is the top face of the main PCB; + is up.</p>
+    <h2>${t('Stack heights')}</h2>
+    <p class="tb-hint">${t('z = 0 is the top face of the main PCB; + is up.')}</p>
     ${dims([
-      ['Ball diameter', `${fmt(s.ball_d, 2)} mm`],
-      ['Ball top', `${signed(s.ball_top_above_pcb_top)} mm`],
-      ['Ball centre', `${signed(s.ball_centre_z)} mm`],
-      ['Cup rim', `${signed(s.rim_z)} mm`, 'The rim stays below the equator, so the ball lifts straight out'],
-      ['Rim below the ball equator', `${fmt(s.rim_below_equator, 2)} mm`],
-      ['Bearing contact', `${signed(s.bearing_contact_z)} mm`, 'Where the ball touches the three 2 mm ceramic bearings, 35° below the equator'],
-      ['Ball bottom', `${signed(s.ball_bottom_z)} mm`],
-      ['Ball surface to lens reference plane', `${fmt(s.lens_reference_plane_dist, 2)} mm`, 'PMW3610 datasheet: 2.4 mm, 2.2 to 2.6'],
-      ['Sensor board, lens-side face', `${signed(s.sensor_pcb_plane_z)} mm`],
+      [t('Ball diameter'), `${fmt(s.ball_d, 2)} mm`],
+      [t('Ball top'), `${signed(s.ball_top_above_pcb_top)} mm`],
+      [t('Ball centre'), `${signed(s.ball_centre_z)} mm`],
+      [t('Cup rim'), `${signed(s.rim_z)} mm`, t('The rim stays below the equator, so the ball lifts straight out')],
+      [t('Rim below the ball equator'), `${fmt(s.rim_below_equator, 2)} mm`],
+      [t('Bearing contact'), `${signed(s.bearing_contact_z)} mm`, t('Where the ball touches the three 2 mm ceramic bearings, 35° below the equator')],
+      [t('Ball bottom'), `${signed(s.ball_bottom_z)} mm`],
+      [t('Ball surface to lens reference plane'), `${fmt(s.lens_reference_plane_dist, 2)} mm`, t('PMW3610 datasheet: 2.4 mm, 2.2 to 2.6')],
+      [t('Sensor board, lens-side face'), `${signed(s.sensor_pcb_plane_z)} mm`],
       floorRow,
     ])}
-    <h2 class="tb-sub">Footprint</h2>
+    <h2 class="tb-sub">${t('Footprint')}</h2>
     ${dims([
-      ['Cup outer diameter', `${fmt(s.cup_outer_d, 2)} mm`],
-      ['Widest part above the PCB', `${fmt(s.envelope_d_above_pcb, 2)} mm`],
-      ['PCB notch apothem it needs', `${fmt(s.notch_apothem, 1)} mm`],
-      [v.mount === 'pocket' ? 'Housing on the case floor' : 'Flange under the PCB', `${fmt(s.footprint_x, 1)} × ${fmt(s.footprint_y, 1)} mm`],
+      [t('Cup outer diameter'), `${fmt(s.cup_outer_d, 2)} mm`],
+      [t('Widest part above the PCB'), `${fmt(s.envelope_d_above_pcb, 2)} mm`],
+      [t('PCB notch apothem it needs'), `${fmt(s.notch_apothem, 1)} mm`],
+      [v.mount === 'pocket' ? t('Housing on the case floor') : t('Flange under the PCB'), `${fmt(s.footprint_x, 1)} × ${fmt(s.footprint_y, 1)} mm`],
     ])}`;
 
   root.querySelector('.tb-retention').innerHTML = retainer ? `
-    <h2>Ball retention</h2>
+    <h2>${t('Ball retention')}</h2>
     ${dims([
-      ['Without the retainer', r.without_retainer_trapped ? 'ball stays in' : 'ball falls out upside down'],
-      ['With the retainer clipped on', r.trapped ? 'ball stays in' : 'ball falls out'],
-      ['Print error it tolerates', `${fmt(r.guaranteed_margin, 2)} mm`],
-    ])}` : '<h2>Ball retention</h2><p class="tb-text">No retainer for this variant.</p>';
+      [t('Without the retainer'), r.without_retainer_trapped ? t('ball stays in') : t('ball falls out upside down')],
+      [t('With the retainer clipped on'), r.trapped ? t('ball stays in') : t('ball falls out')],
+      [t('Print error it tolerates'), `${fmt(r.guaranteed_margin, 2)} mm`],
+    ])}` : `<h2>${t('Ball retention')}</h2><p class="tb-text">${t('No retainer for this variant.')}</p>`;
 
   const dl = (p) => `<div class="tb-file"><span class="mono">${esc(p.path.split('/').pop())}</span>
       <span class="tb-file-meta">${fmt(p.size[0], 1)} × ${fmt(p.size[1], 1)} × ${fmt(p.size[2], 1)} mm</span>
-      <span class="actions"><button class="btn primary" type="button" data-download="${esc(p.path)}">Download STL</button>
+      <span class="actions"><button class="btn primary" type="button" data-download="${esc(p.path)}">${t('Download STL')}</button>
       <a class="btn" href="${esc(githubUrl(p.path))}" rel="noopener">GitHub</a>
-      <a class="btn" href="#case/${esc(p.id)}">On its own</a></span></div>`;
-  root.querySelector('.tb-downloads').innerHTML = `<h2>Files</h2>${dl(cradle)}${retainer ? dl(retainer) : ''}
-    <p class="untested">Untested: not printed, no ball has run in it yet.</p>
-    <p class="note">Print settings and fitting the bearings: <a href="${esc(githubUrl(cradle.doc))}" target="_blank" rel="noopener">${esc(cradle.doc)}</a></p>`;
+      <a class="btn" href="#case/${esc(p.id)}">${t('On its own')}</a></span></div>`;
+  root.querySelector('.tb-downloads').innerHTML = `<h2>${t('Files')}</h2>${dl(cradle)}${retainer ? dl(retainer) : ''}
+    <p class="untested">${t('Untested: not printed, no ball has run in it yet.')}</p>
+    <p class="note">${t('Print settings and fitting the bearings: {link}', { link: `<a href="${esc(githubUrl(cradle.doc))}" target="_blank" rel="noopener">${esc(cradle.doc)}</a>` })}</p>`;
 
   const previews = v.previews.map((path) => {
     const pv = data.previews.find((x) => x.path === path);
-    return `<li><a href="${esc(assetUrl(path))}" target="_blank" rel="noopener"><img src="${esc(assetUrl(path))}" alt="${esc(pv?.caption || '')}" loading="lazy" width="1200" height="900"><span>${esc(pv?.caption || '')}</span></a></li>`;
+    const cap = pv?.caption ? t(pv.caption) : '';
+    return `<li><a href="${esc(assetUrl(path))}" target="_blank" rel="noopener"><img src="${esc(assetUrl(path))}" alt="${esc(cap)}" loading="lazy" width="1200" height="900"><span>${esc(cap)}</span></a></li>`;
   }).join('');
-  root.querySelector('.tb-previews').innerHTML = previews ? `<h2>OpenSCAD renders</h2><ul>${previews}</ul>` : '';
+  root.querySelector('.tb-previews').innerHTML = previews ? `<h2>${t('OpenSCAD renders')}</h2><ul>${previews}</ul>` : '';
   root.querySelector('.tb-previews').hidden = !previews;
 }
 
 function renderSensorNote() {
   const n = root.querySelector('.tb-sensor-note');
-  const t = {
+  const msg = {
     idle: '', ok: '',
-    loading: 'Loading the sensor board model…',
-    missing: 'The sensor board model (k0d3ball35-sensor.glb) is not in this branch yet; it appears once the board export is merged.',
-    error: 'The sensor board model did not load. Reload the page to try again.',
+    loading: t('Loading the sensor board model…'),
+    missing: t('The sensor board model (k0d3ball35-sensor.glb) is not in this branch yet; it appears once the board export is merged.'),
+    error: t('The sensor board model did not load. Reload the page to try again.'),
   }[sensorState];
-  n.textContent = t;
-  n.hidden = !t;
+  n.textContent = msg;
+  n.hidden = !msg;
   const box = root.querySelector('input[data-toggle="sensor"]');
   box.disabled = sensorState === 'missing';
   box.closest('label').classList.toggle('tb-off', sensorState === 'missing');
@@ -339,8 +341,11 @@ function updateHud() {
   if (objs.retainer) files.push(part(v.retainer).path.split('/').pop());
   if (objs.sensor) files.push('k0d3ball35-sensor.glb');
   root.querySelector('.tb-files').textContent = files.join(' + ');
-  const shown = ['cradle', objs.ball && 'ball with its three bearings', objs.retainer && 'retainer', objs.sensor && 'sensor board'].filter(Boolean);
-  viewer.canvas.setAttribute('aria-label', `3D model, ${v.label} variant: ${shown.join(', ')}${state.clip ? ', cut through the ball centre' : ''}. Drag to rotate, scroll to zoom.`);
+  const shown = [t('cradle'), objs.ball && t('ball with its three bearings'), objs.retainer && t('retainer'), objs.sensor && t('sensor board')].filter(Boolean);
+  const aria = { variant: t(v.label), parts: shown.join(', ') };
+  viewer.canvas.setAttribute('aria-label', state.clip
+    ? t('3D model, {variant} variant: {parts}, cut through the ball centre. Drag to rotate, scroll to zoom.', aria)
+    : t('3D model, {variant} variant: {parts}. Drag to rotate, scroll to zoom.', aria));
 }
 
 function setVariant(id, { push = true } = {}) {
@@ -354,8 +359,8 @@ function setVariant(id, { push = true } = {}) {
 }
 
 function seg(name, items, value, label) {
-  return `<div class="seg" role="radiogroup" aria-label="${esc(label)}">${items.map(([v, t]) => `
-    <label><input type="radio" name="${name}" value="${v}"${v === value ? ' checked' : ''}><span>${esc(t)}</span></label>`).join('')}</div>`;
+  return `<div class="seg" role="radiogroup" aria-label="${esc(label)}">${items.map(([v, lbl]) => `
+    <label><input type="radio" name="${name}" value="${v}"${v === value ? ' checked' : ''}><span>${esc(lbl)}</span></label>`).join('')}</div>`;
 }
 
 // ------------------------------------------------------------------ tab contract
@@ -364,51 +369,48 @@ export async function mount(section, c) {
   root = section;
   section.classList.add('trackball');
   data = await loadData('parts');
-  const variants = data.trackball.variants.map((v) => [v.id, v.label]);
+  const variants = data.trackball.variants.map((v) => [v.id, t(v.label)]);
   section.innerHTML = `
   <div class="split">
     <div class="stage tb-stage" aria-busy="true">
       <div class="viewer-hud">
         <div class="tb-hud">
-          <p class="eyebrow">Loaded</p>
+          <p class="eyebrow">${t('Loaded')}</p>
           <p class="tb-files"></p>
         </div>
       </div>
       <div class="viewer-tools tb-tools">
         <div class="tb-clip-row">
-          <input type="range" min="-20" max="20" step="0.1" value="0" class="tb-clip-y" aria-label="Section plane position along y, in mm from the ball centre">
+          <input type="range" min="-20" max="20" step="0.1" value="0" class="tb-clip-y" aria-label="${t('Section plane position along y, in mm from the ball centre')}">
           <output class="tb-clip-at" aria-live="polite"></output>
-          <button class="btn" type="button" data-act="centre" title="Put the plane back through the ball centre">Centre</button>
-          <button class="btn" type="button" data-act="flip" aria-pressed="false" title="Keep the other half">Flip</button>
+          <button class="btn" type="button" data-act="centre" title="${t('Put the plane back through the ball centre')}">${t('Centre')}</button>
+          <button class="btn" type="button" data-act="flip" aria-pressed="false" title="${t('Keep the other half')}">${t('Flip')}</button>
         </div>
         <div class="tb-tool-row">
-          ${seg('tb-view', VIEWS, state.view, 'View direction')}
-          <button class="btn" type="button" data-act="clip" aria-pressed="true" title="Cut the module open on the plane through the ball centre">Section</button>
+          ${seg('tb-view', views(), state.view, t('View direction'))}
+          <button class="btn" type="button" data-act="clip" aria-pressed="true" title="${t('Cut the module open on the plane through the ball centre')}">${t('Section')}</button>
         </div>
       </div>
     </div>
-    <aside class="panel tb-panel" aria-label="Trackball module">
+    <aside class="panel tb-panel" aria-label="${t('Trackball module')}">
       <header>
-        <p class="eyebrow">Sheet 4 · trackball module</p>
-        <h1 class="display">Trackball</h1>
-        <p class="tb-lede">A printed cup on three ceramic bearings with the PMW3610 sensor board straight underneath,
-        standing on the case floor beside the right PCB. The view is cut through the ball centre; the ball and the
-        bearings are drawn from the stack numbers, the rest are the real files.</p>
+        <p class="eyebrow">${t('Sheet 4 · trackball module')}</p>
+        <h1 class="display">${t('Trackball')}</h1>
+        <p class="tb-lede">${t('A printed cup on three ceramic bearings with the PMW3610 sensor board straight underneath, standing on the case floor beside the right PCB. The view is cut through the ball centre; the ball and the bearings are drawn from the stack numbers, the rest are the real files.')}</p>
       </header>
       <section>
-        <h2 id="tb-variant-h">Variant</h2>
-        ${seg('tb-variant', variants, data.trackball.default, 'Cradle variant').replace('class="seg"', 'class="seg tb-variants"')}
+        <h2 id="tb-variant-h">${t('Variant')}</h2>
+        ${seg('tb-variant', variants, data.trackball.default, t('Cradle variant')).replace('class="seg"', 'class="seg tb-variants"')}
         <p class="tb-variant-role tb-text"></p>
       </section>
       <section>
-        <h2>Show</h2>
+        <h2>${t('Show')}</h2>
         <div class="toggles">
-          <label><input type="checkbox" data-toggle="ball" checked> Ball and its three bearings</label>
-          <label><input type="checkbox" data-toggle="retainer"> Retainer (optional clip-on ring)</label>
-          <label><input type="checkbox" data-toggle="sensor" checked> Sensor board under the cup</label>
+          <label><input type="checkbox" data-toggle="ball" checked> ${t('Ball and its three bearings')}</label>
+          <label><input type="checkbox" data-toggle="retainer"> ${t('Retainer (optional clip-on ring)')}</label>
+          <label><input type="checkbox" data-toggle="sensor" checked> ${t('Sensor board under the cup')}</label>
         </div>
-        <p class="tb-hint">The board is the KiCad export. The sensor has no 3D model there, so its body (dark box)
-        and lens (blue disc at the lens reference plane) are drawn from the datasheet numbers.</p>
+        <p class="tb-hint">${t('The board is the KiCad export. The sensor has no 3D model there, so its body (dark box) and lens (blue disc at the lens reference plane) are drawn from the datasheet numbers.')}</p>
         <p class="tb-sensor-note tb-hint" hidden></p>
       </section>
       <section class="tb-stack"></section>
@@ -418,20 +420,20 @@ export async function mount(section, c) {
     </aside>
   </div>`;
 
-  viewer = new ModelViewer(section.querySelector('.tb-stage'), { label: '3D model of the trackball cradle' });
+  viewer = new ModelViewer(section.querySelector('.tb-stage'), { label: t('3D model of the trackball cradle') });
   document.addEventListener('themechange', recolour);
 
   section.querySelector('.tb-panel').addEventListener('change', (e) => {
-    const t = e.target;
-    if (t.name === 'tb-variant') setVariant(t.value);
-    if (t.dataset.toggle) { state[t.dataset.toggle] = t.checked; sync(); }
+    const tg = e.target;
+    if (tg.name === 'tb-variant') setVariant(tg.value);
+    if (tg.dataset.toggle) { state[tg.dataset.toggle] = tg.checked; sync(); }
   });
   section.querySelector('.tb-panel').addEventListener('click', (e) => {
     const b = e.target.closest('[data-download]');
     if (!b) return;
     const label = b.textContent;
     b.disabled = true;
-    b.textContent = 'Downloading…';
+    b.textContent = t('Downloading…');
     downloadFile(b.dataset.download).finally(() => { b.disabled = false; b.textContent = label; });
   });
   section.querySelector('.tb-tools').addEventListener('change', (e) => {

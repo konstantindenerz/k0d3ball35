@@ -6,9 +6,10 @@
 import * as THREE from 'three';
 import { ModelViewer, parseSTL } from '../viewer.js';
 import { loadData, fetchBuffer, assetUrl, githubUrl, downloadFile, fmt, esc } from '../assets.js';
+import { t } from '../i18n.js';
 
 const DEFAULT = 'tray-right';
-const VIEWS = [['iso', 'Iso'], ['top', 'Top'], ['bottom', 'Bottom'], ['front', 'Front']];
+const VIEWS = [['iso', t('Iso')], ['top', t('Top')], ['bottom', t('Bottom')], ['front', t('Front')]];
 const css = (v, fb) => getComputedStyle(document.documentElement).getPropertyValue(v).trim() || fb;
 
 let root, viewer, data, ctx;
@@ -55,8 +56,8 @@ function frame(dir) { viewer.fit(dir); }
 async function geometry(path, signal) {
   if (geomCache.has(path)) return geomCache.get(path);
   const name = path.split('/').pop();
-  viewer.showStatus(`Loading ${name}`, 0);
-  const buf = await fetchBuffer(path, (f) => viewer.showStatus(`Loading ${name}`, f), signal);
+  viewer.showStatus(t('Loading {name}', { name }), 0);
+  const buf = await fetchBuffer(path, (f) => viewer.showStatus(t('Loading {name}', { name }), f), signal);
   const geom = parseSTL(buf);
   geom.computeBoundingBox();
   geomCache.set(path, geom);
@@ -96,10 +97,10 @@ const halfOf = (p) => (HALVES.includes(p.group) ? p.group : null);
 function groupList(g, hidden = false) {
   const parts = data.parts.filter((p) => p.group === g.id);
   if (!parts.length) return '';
-  return `<div class="case-group" data-group="${esc(g.id)}"${hidden ? ' hidden' : ''}><h3>${esc(g.label)}</h3><ul class="picklist">${parts.map((p) => `
+  return `<div class="case-group" data-group="${esc(g.id)}"${hidden ? ' hidden' : ''}><h3>${esc(t(g.label))}</h3><ul class="picklist">${parts.map((p) => `
     <li><button type="button" data-part="${esc(p.id)}" aria-pressed="false">
-      <span>${esc(p.name.replace(/, (left|right)$/, ''))}</span>
-      ${p.printed ? '' : '<small>display</small>'}
+      <span>${esc(t(p.name.replace(/, (left|right)$/, '')))}</span>
+      ${p.printed ? '' : `<small>${t('display')}</small>`}
     </button></li>`).join('')}</ul></div>`;
 }
 
@@ -108,7 +109,7 @@ function groupList(g, hidden = false) {
 function partList() {
   const halves = data.groups.filter((g) => HALVES.includes(g.id));
   const others = data.groups.filter((g) => !HALVES.includes(g.id));
-  return `<div class="case-halfswitch">${seg('case-half', halves.map((g) => [g.id, g.label]), 'right', 'Case half')}</div>
+  return `<div class="case-halfswitch">${seg('case-half', halves.map((g) => [g.id, esc(t(g.label))]), 'right', t('Case half'))}</div>
     ${halves.map((g, i) => groupList(g, i > 0)).join('')}
     ${others.map((g) => groupList(g)).join('')}`;
 }
@@ -125,32 +126,33 @@ function renderPanel(p) {
   const previews = p.previews.map((path) => {
     const pv = data.previews.find((x) => x.path === path);
     return `<li><a href="${esc(assetUrl(path))}" target="_blank" rel="noopener">
-      <img src="${esc(assetUrl(path))}" alt="${esc(pv?.caption || '')}" loading="lazy" width="320" height="240">
-      <span>${esc(pv?.caption || path.split('/').pop())}</span></a></li>`;
+      <img src="${esc(assetUrl(path))}" alt="${esc(pv?.caption ? t(pv.caption) : '')}" loading="lazy" width="320" height="240">
+      <span>${esc(pv?.caption ? t(pv.caption) : path.split('/').pop())}</span></a></li>`;
   }).join('');
   const crossLink = p.group === 'cradle' || p.group === 'retainer'
-    ? `<p class="note">The <a href="#trackball/${esc(p.group === 'cradle' ? p.id.replace(/^cradle-/, '') : p.id.replace(/^retainer-(\d+mm)$/, '$1-pocket'))}">Trackball sheet</a> shows the cradle with the ball, the retainer and the sensor board in place.</p>` : '';
+    ? `<p class="note">${t('The {link} shows the cradle with the ball, the retainer and the sensor board in place.', { link: `<a href="#trackball/${esc(p.group === 'cradle' ? p.id.replace(/^cradle-/, '') : p.id.replace(/^retainer-(\d+mm)$/, '$1-pocket'))}">${t('Trackball sheet')}</a>` })}</p>` : '';
+  const docLink = `<a href="${esc(githubUrl(p.doc))}" target="_blank" rel="noopener">${esc(p.doc)}</a>`;
   root.querySelector('.case-detail').innerHTML = `
-    <h2>Selected part</h2>
-    <h3 class="case-name">${esc(p.name)}</h3>
-    <p class="case-kind ${p.printed ? 'print' : 'show'}">${p.printed ? 'Print this part' : 'Display only, not for printing'}</p>
-    <p class="case-role">${esc(p.role)}</p>
+    <h2>${t('Selected part')}</h2>
+    <h3 class="case-name">${esc(t(p.name))}</h3>
+    <p class="case-kind ${p.printed ? 'print' : 'show'}">${p.printed ? t('Print this part') : t('Display only, not for printing')}</p>
+    <p class="case-role">${esc(t(p.role))}</p>
     <dl class="dims">
-      <dt>Size x · y · z</dt><dd>${fmt(sx, 2)} × ${fmt(sy, 2)} × ${fmt(sz, 2)} mm</dd>
+      <dt>${t('Size x · y · z')}</dt><dd>${fmt(sx, 2)} × ${fmt(sy, 2)} × ${fmt(sz, 2)} mm</dd>
     </dl>
-    ${p.printed ? '<p class="untested">Untested: not printed or fit-checked yet. Print the pocket test first.</p>' : ''}
-    <p class="note">${p.printed ? 'Print settings, inserts and assembly' : 'What it shows and which plates to print'}: <a href="${esc(githubUrl(p.doc))}" target="_blank" rel="noopener">${esc(p.doc)}</a></p>
+    ${p.printed ? `<p class="untested">${t('Untested: not printed or fit-checked yet. Print the pocket test first.')}</p>` : ''}
+    <p class="note">${p.printed ? t('Print settings, inserts and assembly: {link}', { link: docLink }) : t('What it shows and which plates to print: {link}', { link: docLink })}</p>
     <div class="actions">
-      <button class="btn primary" type="button" data-act="download">Download ${esc(stemOf(p))}</button>
-      <a class="btn" href="${esc(githubUrl(p.path))}" rel="noopener">View on GitHub</a>
+      <button class="btn primary" type="button" data-act="download">${esc(t('Download {name}', { name: stemOf(p) }))}</button>
+      <a class="btn" href="${esc(githubUrl(p.path))}" rel="noopener">${t('View on GitHub')}</a>
     </div>
-    ${previews ? `<div><h2>Renders</h2><ul class="case-previews">${previews}</ul></div>` : ''}
+    ${previews ? `<div><h2>${t('Renders')}</h2><ul class="case-previews">${previews}</ul></div>` : ''}
     ${crossLink}`;
   root.querySelector('.case-file').textContent = stemOf(p);
-  root.querySelector('.case-file-kind').textContent = p.printed ? 'print' : 'display only';
+  root.querySelector('.case-file-kind').textContent = p.printed ? t('print') : t('display only');
   root.querySelector('.case-file-kind').className = `case-file-kind ${p.printed ? 'print' : 'show'}`;
   root.querySelector('.case-stage').setAttribute('aria-busy', 'true');
-  viewer.canvas.setAttribute('aria-label', `3D model of ${p.name}, ${fmt(sx, 1)} by ${fmt(sy, 1)} by ${fmt(sz, 1)} mm. Drag to rotate, scroll to zoom.`);
+  viewer.canvas.setAttribute('aria-label', t('3D model of {name}, {x} by {y} by {z} mm. Drag to rotate, scroll to zoom.', { name: t(p.name), x: fmt(sx, 1), y: fmt(sy, 1), z: fmt(sz, 1) }));
 }
 
 // ------------------------------------------------------------------ section
@@ -189,32 +191,30 @@ export async function mount(section, c) {
       </div>
       <div class="viewer-tools case-tools">
         <div class="case-clip-row" hidden>
-          ${seg('case-axis', [['x', 'x'], ['y', 'y'], ['z', 'z']], state.axis, 'Section plane normal')}
-          <input type="range" min="0" max="1" step="0.005" value="${state.t}" aria-label="Section plane position" class="case-clip-t">
+          ${seg('case-axis', [['x', 'x'], ['y', 'y'], ['z', 'z']], state.axis, t('Section plane normal'))}
+          <input type="range" min="0" max="1" step="0.005" value="${state.t}" aria-label="${t('Section plane position')}" class="case-clip-t">
           <output class="case-clip-at" aria-live="polite"></output>
-          <button class="btn" type="button" data-act="flip" aria-pressed="false" title="Keep the other side of the plane">Flip</button>
+          <button class="btn" type="button" data-act="flip" aria-pressed="false" title="${t('Keep the other side of the plane')}">${t('Flip')}</button>
         </div>
         <div class="case-tool-row">
-          ${seg('case-view', VIEWS, state.view, 'View direction')}
-          <button class="btn" type="button" data-act="wire" aria-pressed="false" title="Show the triangle edges">Wireframe</button>
-          <button class="btn" type="button" data-act="clip" aria-pressed="false" title="Cut the part open with a plane">Section</button>
+          ${seg('case-view', VIEWS, state.view, t('View direction'))}
+          <button class="btn" type="button" data-act="wire" aria-pressed="false" title="${t('Show the triangle edges')}">${t('Wireframe')}</button>
+          <button class="btn" type="button" data-act="clip" aria-pressed="false" title="${t('Cut the part open with a plane')}">${t('Section')}</button>
         </div>
       </div>
     </div>
-    <aside class="panel case-panel" aria-label="Case parts">
+    <aside class="panel case-panel" aria-label="${t('Case parts')}">
       <header>
-        <p class="eyebrow">Sheet 3 · printed parts</p>
-        <h1 class="display">Case</h1>
-        <p class="case-lede">Each half is a tray with a screwed controller box cap and a two-plate lid that covers
-        the keys for transport and folds under the half as a tenting foot. Pick a part to turn it, cut it open
-        and download its STL.</p>
+        <p class="eyebrow">${t('Sheet 3 · printed parts')}</p>
+        <h1 class="display">${t('Case')}</h1>
+        <p class="case-lede">${t('Each half is a tray with a screwed controller box cap and a two-plate lid that covers the keys for transport and folds under the half as a tenting foot. Pick a part to turn it, cut it open and download its STL.')}</p>
       </header>
-      <nav class="case-parts" aria-label="Parts">${partList()}</nav>
+      <nav class="case-parts" aria-label="${t('Parts')}">${partList()}</nav>
       <section class="case-detail" aria-live="polite"></section>
     </aside>
   </div>`;
 
-  viewer = new ModelViewer(section.querySelector('.case-stage'), { label: '3D model of the selected part' });
+  viewer = new ModelViewer(section.querySelector('.case-stage'), { label: t('3D model of the selected part') });
   document.addEventListener('themechange', recolour);
 
   section.querySelector('.case-parts').addEventListener('click', (e) => {
@@ -234,8 +234,8 @@ export async function mount(section, c) {
     if (!b) return;
     const p = byId(current);
     b.disabled = true;
-    b.textContent = 'Downloading…';
-    downloadFile(p.path).finally(() => { b.disabled = false; b.textContent = `Download ${stemOf(p)}`; });
+    b.textContent = t('Downloading…');
+    downloadFile(p.path).finally(() => { b.disabled = false; b.textContent = t('Download {name}', { name: stemOf(p) }); });
   });
   section.querySelector('.case-tools').addEventListener('change', (e) => {
     const t = e.target;

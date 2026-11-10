@@ -84,7 +84,7 @@ def test_every_url_the_page_loads_is_versioned():
         assert re.fullmatch(rf"\./{re.escape(rel)}\?v=[0-9a-f]{{10}}", imports[f"./{rel}"]), rel
     assert re.search(r'<script type="module" src="js/main\.js\?v=[0-9a-f]{10}"></script>', html)
     data = json.loads(re.search(r'<script type="application/json" id="dataVersions">(.*?)</script>', html)[1])
-    assert set(data) == {p.stem for p in DATA.glob("*.json")}
+    assert set(data) == {p.stem for p in DATA.glob("*.json")} | {f"i18n/{p.stem}" for p in (DOCS / "i18n").glob("*.json")}
     versions = json.loads((DATA / "versions.json").read_text())
     for name in ("parts", "layout", "pcbs"):
         for s in _strings(json.loads((DATA / f"{name}.json").read_text())):
@@ -398,7 +398,7 @@ def test_every_sheet_says_the_design_is_untested():
     explanation behind it, and an 'untested' line next to every download."""
     html = (DOCS / "index.html").read_text()
     assert 'popovertarget="wip"' in html and 'id="wip" popover' in html
-    assert "Preliminary · </span>untested" in html
+    assert "<span data-i18n>Preliminary</span> · </span><span data-i18n>untested</span>" in html
     assert "fabricated, printed or tested" in html and "README" in html
     for tab in ("case", "trackball", "pcbs"):
         assert 'class="untested"' in (DOCS / "js" / "tabs" / f"{tab}.js").read_text(), tab
@@ -417,3 +417,39 @@ def test_wordmark_uses_kode_mono():
     # every place that shows the name, not just the title block
     assert re.search(r"\.ov-name \{[^}]*var\(--wordmark\)", (DOCS / "css/tabs/overview.css").read_text())
     assert re.search(r"\.xp-title \{[^}]*var\(--wordmark\)", (DOCS / "css/tabs/explorer.css").read_text())
+
+
+# ---------------------------------------------------------------- translations (docs/i18n)
+def _i18n():
+    sys.path.insert(0, str(DOCS))
+    from gen import i18n
+    return i18n
+
+
+def test_i18n_keys_are_extractable():
+    """t() takes one single-quoted literal (or a data field), so the key list sees every text."""
+    i18n = _i18n()
+    assert not i18n.js_violations(), "t() with a template or double-quoted literal: " + ", ".join(i18n.js_violations())
+    assert len(i18n.keys()) > 300
+
+
+@pytest.mark.parametrize("lang", ["ja", "zh-CN"])
+def test_i18n_catalog_complete(lang):
+    """Every page text has a translation, none is left over, the {placeholders} match.
+    `python docs/build.py --i18n` lists what to add or drop."""
+    i18n = _i18n()
+    r = i18n.report(lang)
+    assert not r["missing"], f"{lang}: {len(r['missing'])} texts without a translation, e.g. {r['missing'][:5]}"
+    assert not r["stale"], f"{lang}: {len(r['stale'])} unused entries, e.g. {r['stale'][:5]}"
+    assert not r["placeholders"], f"{lang}: placeholders differ in {r['placeholders'][:5]}"
+    assert not [k for k, v in i18n.catalog(lang).items() if not v.strip()], f"{lang}: empty translations"
+
+
+def test_i18n_shell_offers_every_language():
+    js = (DOCS / "js/i18n.js").read_text()
+    for lang in ["en", "ja", "zh-CN"]:
+        assert f"'{lang}'" in js
+    html = (DOCS / "index.html").read_text()
+    assert 'id="langBtn"' in html and 'id="langMenu"' in html
+    for lang in ["ja", "zh-CN"]:
+        assert f'"i18n/{lang}":' in html, f"index.html versions block lacks i18n/{lang}; run `make site`"

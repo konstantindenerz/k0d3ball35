@@ -36,18 +36,30 @@
    "value": 35,
    "left": 18,
    "right": 17,
-   "text": "35: left 18 (3 thumb), right 17 (2 thumb), 18 x 17 mm pitch",
    "pitch": [
     18.0,
     17.0
    ],
-   "source": "hardware/layout/output/points-right.json"
+   "source": "hardware/layout/output/points-right.json",
+   "text": "35: left 18 (3 thumb), right 17 (2 thumb), 18 x 17 mm pitch",
+   "tpl": "{n}: left {left} ({lt} thumb), right {right} ({rt} thumb), {px} x {py} mm pitch",
+   "params": {
+    "n": 35,
+    "left": 18,
+    "lt": 3,
+    "right": 17,
+    "rt": 2,
+    "px": "18",
+    "py": "17"
+   }
   },
   {
    "id": "switch",
    "label": "Switches",
+   "source": "spec/01-design-spec.md",
    "text": "Kailh Choc V1 (PG1350) in hot-swap sockets (CPG135001S30)",
-   "source": "spec/01-design-spec.md"
+   "tpl": "Kailh Choc V1 (PG1350) in hot-swap sockets (CPG135001S30)",
+   "params": {}
   },
   {
    "id": "ball",
@@ -55,22 +67,33 @@
    "value": 19.05,
    "sensor": "PMW3610",
    "cpi": 600,
+   "source": "hardware/layout/output/points-right.json",
    "text": "19.05 mm ball on the right half, PMW3610 sensor",
-   "source": "hardware/layout/output/points-right.json"
+   "tpl": "{d} mm ball on the right half, {sensor} sensor",
+   "params": {
+    "d": "19.05",
+    "sensor": "PMW3610"
+   }
   },
   {
    "id": "controller",
    "label": "Controller",
+   "source": "spec/01-design-spec.md",
    "text": "nRF52840 Pro Micro form factor (nice!nano v2 or SuperMini), Bluetooth split, ZMK",
-   "source": "spec/01-design-spec.md"
+   "tpl": "nRF52840 Pro Micro form factor (nice!nano v2 or SuperMini), Bluetooth split, ZMK",
+   "params": {}
   },
   {
    "id": "battery",
    "label": "Battery",
    "cell": "LP552035",
    "value": 350,
+   "source": "hardware/layout/output/points-right.json",
    "text": "350 mAh LiPo per half",
-   "source": "hardware/layout/output/points-right.json"
+   "tpl": "{mah} mAh LiPo per half",
+   "params": {
+    "mah": 350
+   }
   },
   {
    "id": "half",
@@ -78,8 +101,14 @@
    "x": 121.0,
    "y": 86.7,
    "z": 22.8,
+   "source": "hardware/layout/output/points-right.json",
    "text": "121 x 87 mm, 22.8 mm high with the case",
-   "source": "hardware/layout/output/points-right.json"
+   "tpl": "{x} x {y} mm, {z} mm high with the case",
+   "params": {
+    "x": 121,
+    "y": 87,
+    "z": "22.8"
+   }
   }
  ],
  "status": {

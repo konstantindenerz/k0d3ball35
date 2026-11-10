@@ -9,6 +9,7 @@
 // mask layer (the openings) cut out of it.
 
 import { assetUrl, downloadFile, esc, fetchText, githubTreeUrl, githubUrl, loadData } from '../assets.js';
+import { t } from '../i18n.js';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 const MODES = ['3d', 'layers'];
@@ -45,8 +46,8 @@ export async function mount(section, c) {
   section.innerHTML = `
   <div class="split pcbs">
     <div class="stage pcb-stage" data-mode="3d">
-      <div class="pcb-3d" aria-label="3D view of the board"></div>
-      <div class="pcb-plot" tabindex="0" role="img" aria-roledescription="layer plot" hidden></div>
+      <div class="pcb-3d" aria-label="${t('3D view of the board')}"></div>
+      <div class="pcb-plot" tabindex="0" role="img" aria-roledescription="${t('layer plot')}" hidden></div>
       <div class="viewer-status pcb-plot-status" hidden></div>
       <div class="viewer-hud">
         <p class="eyebrow pcb-hud-title"></p>
@@ -54,48 +55,48 @@ export async function mount(section, c) {
       </div>
       <div class="pcb-scale" aria-hidden="true" hidden><span class="pcb-scale-bar"></span><span class="pcb-scale-label"></span></div>
       <div class="viewer-tools pcb-tools-3d">
-        <button class="btn" type="button" data-view="top">Top</button>
-        <button class="btn" type="button" data-view="bottom">Bottom</button>
-        <button class="btn" type="button" data-view="iso">Iso</button>
+        <button class="btn" type="button" data-view="top">${t('Top')}</button>
+        <button class="btn" type="button" data-view="bottom">${t('Bottom')}</button>
+        <button class="btn" type="button" data-view="iso">${t('Iso')}</button>
       </div>
       <div class="viewer-tools pcb-tools-plot" hidden>
-        <button class="btn" type="button" data-zoom="out" aria-label="Zoom out">&minus;</button>
-        <button class="btn" type="button" data-zoom="in" aria-label="Zoom in">+</button>
-        <button class="btn" type="button" data-zoom="fit">Fit</button>
-        <button class="btn" type="button" data-flip aria-pressed="false">View back</button>
+        <button class="btn" type="button" data-zoom="out" aria-label="${t('Zoom out')}">&minus;</button>
+        <button class="btn" type="button" data-zoom="in" aria-label="${t('Zoom in')}">+</button>
+        <button class="btn" type="button" data-zoom="fit">${t('Fit')}</button>
+        <button class="btn" type="button" data-flip aria-pressed="false">${t('View back')}</button>
       </div>
     </div>
-    <aside class="panel pcb-panel" aria-label="Board">
+    <aside class="panel pcb-panel" aria-label="${t('Board')}">
       <section>
-        <h2>Board</h2>
+        <h2>${t('Board')}</h2>
         <ul class="picklist pcb-boards"></ul>
       </section>
       <section>
-        <h2 id="pcbModeLabel">View</h2>
+        <h2 id="pcbModeLabel">${t('View')}</h2>
         <div class="seg pcb-mode" role="radiogroup" aria-labelledby="pcbModeLabel">
           <label><input type="radio" name="pcbMode" value="3d"><span>3D</span></label>
-          <label><input type="radio" name="pcbMode" value="layers"><span>Layers</span></label>
+          <label><input type="radio" name="pcbMode" value="layers"><span>${t('Layers')}</span></label>
         </div>
         <div class="pcb-3d-opts">
-          <label class="pcb-check"><input type="checkbox" class="pcb-clip"> Section through the board</label>
-          <input type="range" class="pcb-clip-t" min="0.02" max="0.98" step="0.01" value="0.5" aria-label="Section position, left to right" disabled>
-          <p class="pcb-hint">Drag to orbit, right-drag or two fingers to pan, scroll or pinch to zoom.</p>
+          <label class="pcb-check"><input type="checkbox" class="pcb-clip"> ${t('Section through the board')}</label>
+          <input type="range" class="pcb-clip-t" min="0.02" max="0.98" step="0.01" value="0.5" aria-label="${t('Section position, left to right')}" disabled>
+          <p class="pcb-hint">${t('Drag to orbit, right-drag or two fingers to pan, scroll or pinch to zoom.')}</p>
         </div>
         <div class="pcb-layer-opts" hidden>
-          <ul class="pcb-layers" aria-label="Layers"></ul>
-          <p class="pcb-hint">Drag to pan, scroll or pinch to zoom, arrow keys and + / - on the plot. The far side shows through, dimmed.</p>
+          <ul class="pcb-layers" aria-label="${t('Layers')}"></ul>
+          <p class="pcb-hint">${t('Drag to pan, scroll or pinch to zoom, arrow keys and + / - on the plot. The far side shows through, dimmed.')}</p>
         </div>
       </section>
       <section>
-        <h2>Facts</h2>
+        <h2>${t('Facts')}</h2>
         <dl class="dims pcb-facts"></dl>
       </section>
       <section>
-        <h2>Parts worth knowing</h2>
+        <h2>${t('Parts worth knowing')}</h2>
         <ul class="pcb-parts"></ul>
       </section>
       <section>
-        <h2>Files</h2>
+        <h2>${t('Files')}</h2>
         <div class="pcb-files"></div>
         <div class="pcb-renders"></div>
       </section>
@@ -114,7 +115,7 @@ export async function mount(section, c) {
   };
 
   els.boards.innerHTML = data.boards.map((b) => `
-    <li><button type="button" data-board="${b.id}" aria-pressed="false">${esc(b.name)}<small>${b.size_mm[0].toFixed(0)} x ${b.size_mm[1].toFixed(0)} mm</small></button></li>`).join('');
+    <li><button type="button" data-board="${b.id}" aria-pressed="false">${esc(t(b.name))}<small>${b.size_mm[0].toFixed(0)} x ${b.size_mm[1].toFixed(0)} mm</small></button></li>`).join('');
   els.boards.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-board]');
     if (btn) go({ board: btn.dataset.board });
@@ -183,29 +184,29 @@ function render() {
   els.scale.hidden = true;   // shown once a plot is drawn
   els.plotStatus.hidden = true;
   els.read.textContent = '';
-  els.title.textContent = `${b.name} · ${is3d ? '3D' : (flipped.get(b.id) ? 'Layers, seen from the back' : 'Layers, seen from the front')}`;
+  els.title.textContent = `${t(b.name)} · ${is3d ? '3D' : (flipped.get(b.id) ? t('Layers, seen from the back') : t('Layers, seen from the front'))}`;
 
-  els.facts.innerHTML = b.facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
+  els.facts.innerHTML = b.facts.map(([k, v]) => `<dt>${esc(t(k))}</dt><dd>${esc(t(v))}</dd>`).join('');
   els.parts.innerHTML = b.parts.map((p) => `
-    <li><span class="pcb-ref">${esc(p.ref)}</span><span class="pcb-part"><b>${esc(p.role)}</b> ${esc(p.value)}<small>${esc(p.side)}</small></span></li>`).join('');
+    <li><span class="pcb-ref">${esc(p.ref)}</span><span class="pcb-part"><b>${esc(t(p.role))}</b> ${esc(p.value)}<small>${esc(t(p.side))}</small></span></li>`).join('');
   const f = b.files, s = b.sizes;
   els.files.innerHTML = `
     <div class="pcb-dl">
-      <button class="btn primary" type="button" data-dl="${esc(f.gerbers)}">Gerbers (zip)<small>${kib(s.gerbers)}</small></button>
-      <button class="btn" type="button" data-dl="${esc(f.step)}">STEP model<small>${kib(s.step)}</small></button>
-      <button class="btn" type="button" data-dl="${esc(f.kicad_pcb)}">KiCad board<small>${kib(s.kicad_pcb)}</small></button>
-      <button class="btn" type="button" data-dl="${esc(f.glb)}">GLB (3D view)<small>${kib(s.glb)}</small></button>
+      <button class="btn primary" type="button" data-dl="${esc(f.gerbers)}">${t('Gerbers (zip)')}<small>${kib(s.gerbers)}</small></button>
+      <button class="btn" type="button" data-dl="${esc(f.step)}">${t('STEP model')}<small>${kib(s.step)}</small></button>
+      <button class="btn" type="button" data-dl="${esc(f.kicad_pcb)}">${t('KiCad board')}<small>${kib(s.kicad_pcb)}</small></button>
+      <button class="btn" type="button" data-dl="${esc(f.glb)}">${t('GLB (3D view)')}<small>${kib(s.glb)}</small></button>
     </div>
-    <p class="untested">Untested: never fabricated. Do not order from these files yet.</p>
-    <p class="pcb-gh"><a href="${githubTreeUrl(b.folder)}" rel="noopener">View ${esc(b.folder)}/ on GitHub</a></p>`;
+    <p class="untested">${t('Untested: never fabricated. Do not order from these files yet.')}</p>
+    <p class="pcb-gh"><a href="${githubTreeUrl(b.folder)}" rel="noopener">${t('View {folder}/ on GitHub', { folder: esc(b.folder) })}</a></p>`;
   els.files.querySelectorAll('[data-dl]').forEach((btn) => btn.addEventListener('click', async () => {
     btn.disabled = true;
     try { await downloadFile(btn.dataset.dl); } finally { btn.disabled = false; }
   }));
   els.renders.innerHTML = ['render_top', 'render_bottom'].map((k) => `
     <a class="pcb-thumb" href="${githubUrl(f[k])}" rel="noopener">
-      <img src="${assetUrl(f[k])}" alt="${esc(b.name)}, KiCad render of the ${k === 'render_top' ? 'front' : 'back'}" loading="lazy" width="160" height="${b.id === 'sensor' ? 160 : 107}">
-      <span>${k === 'render_top' ? 'Front' : 'Back'} render</span>
+      <img src="${assetUrl(f[k])}" alt="${esc(k === 'render_top' ? t('{name}, KiCad render of the front', { name: t(b.name) }) : t('{name}, KiCad render of the back', { name: t(b.name) }))}" loading="lazy" width="160" height="${b.id === 'sensor' ? 160 : 107}">
+      <span>${k === 'render_top' ? t('Front render') : t('Back render')}</span>
     </a>`).join('');
   els.renders.querySelectorAll('img').forEach((img) => img.addEventListener('error', () => { img.closest('.pcb-thumb').classList.add('missing'); }, { once: true }));
   els.note.innerHTML = noteFor(b);
@@ -217,10 +218,10 @@ function render() {
 
 function noteFor(b) {
   const bits = [];
-  if (b.notes) bits.push(esc(b.notes[0].toUpperCase() + b.notes.slice(1)) + '.');
-  if (b.id === 'left') bits.push('The left board is the mirror image of the right one around the controller, with a third thumb key and no notch.');
-  if (b.id === 'sensor') bits.push('The sensor and its lens sit on the back, facing the ball; the slot in the middle takes the sensor body.');
-  bits.push('Exported from <b>' + esc(b.stem) + '.kicad_pcb</b> with <code>make pcb-3d</code>.');
+  if (b.notes) { const n = t(b.notes); bits.push(esc(n[0].toUpperCase() + n.slice(1)) + '.'); }
+  if (b.id === 'left') bits.push(t('The left board is the mirror image of the right one around the controller, with a third thumb key and no notch.'));
+  if (b.id === 'sensor') bits.push(t('The sensor and its lens sit on the back, facing the ball; the slot in the middle takes the sensor body.'));
+  bits.push(t('Exported from {file} with {command}.', { file: `<b>${esc(b.stem)}.kicad_pcb</b>`, command: '<code>make pcb-3d</code>' }));
   return bits.join(' ');
 }
 
@@ -229,7 +230,7 @@ async function show3d(b) {
   const token = ++loadToken;
   if (!viewer) {
     viewerMod = await import('../viewer.js');
-    viewer = new viewerMod.ModelViewer(els.host3d, { grid: true, label: '3D model of the board' });
+    viewer = new viewerMod.ModelViewer(els.host3d, { grid: true, label: t('3D model of the board') });
   }
   viewer.setActive(true);
   if (glbShown && glbShown.userData.board === b.id) return;
@@ -266,7 +267,7 @@ function renderLayerList(b) {
     <li><label>
       <input type="checkbox" data-layer="${l.id}" ${isOn(b, l) ? 'checked' : ''}>
       <span class="pcb-swatch kind-${l.kind}" style="${l.color ? `--sw:${l.color}` : ''}"></span>
-      <span class="pcb-layer-name">${esc(l.label)}</span><small>${esc(l.id)}</small>
+      <span class="pcb-layer-name">${esc(t(l.label))}</span><small>${esc(l.id)}</small>
     </label></li>`).join('');
 }
 
@@ -281,7 +282,7 @@ function setFlip(on) {
     layerOn.set(`${b.id}:${k}`, a);
   }
   renderLayerList(b);
-  els.title.textContent = `${b.name} · ${on ? 'Layers, seen from the back' : 'Layers, seen from the front'}`;
+  els.title.textContent = `${t(b.name)} · ${on ? t('Layers, seen from the back') : t('Layers, seen from the front')}`;
   applyLayers();
 }
 
@@ -380,7 +381,7 @@ async function showPlot(b) {
   if (plot?.board === b.id) { applyLayers(); drawCam(); return; }
   els.plot.replaceChildren();
   els.plotStatus.className = 'viewer-status pcb-plot-status';
-  els.plotStatus.textContent = `Loading the layers of ${b.name}`;
+  els.plotStatus.textContent = t('Loading the layers of {name}', { name: t(b.name) });
   els.plotStatus.hidden = false;
   let built;
   try {
@@ -395,7 +396,7 @@ async function showPlot(b) {
   if (token !== loadToken || state.mode !== 'layers' || state.board !== b.id) return;
   els.plotStatus.hidden = true;
   els.plot.replaceChildren(built.svg);
-  els.plot.setAttribute('aria-label', `${b.name}, layer plot, ${b.size_mm[0].toFixed(1)} by ${b.size_mm[1].toFixed(1)} mm`);
+  els.plot.setAttribute('aria-label', t('{name}, layer plot, {w} by {h} mm', { name: t(b.name), w: b.size_mm[0].toFixed(1), h: b.size_mm[1].toFixed(1) }));
   plot = { board: b.id, svg: built.svg, view: built.view, cam: null };
   applyLayers();
   fitPlot();
@@ -421,7 +422,7 @@ function applyLayers() {
     g.classList.toggle('far', l.side !== 'both' && l.side !== near);
   });
   els.flip.setAttribute('aria-pressed', String(back));
-  els.flip.textContent = back ? 'View front' : 'View back';
+  els.flip.textContent = back ? t('View front') : t('View back');
 }
 
 // camera: x, y = the plot point at the centre of the stage (mm), s = pixels per mm

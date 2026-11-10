@@ -77,22 +77,28 @@ def facts() -> list[dict]:
     case_h = rc["box_top_z"] - rc["base_z"]
     switch = req["Switches"]
 
+    def fact(id_: str, label: str, tpl: str, params: dict | None = None, **extra) -> dict:
+        """text is the English line; tpl + params let the page translate it without the numbers
+        (docs/js/i18n.js: the catalogs carry the template, so a changed dimension needs no new translation)."""
+        params = params or {}
+        return {"id": id_, "label": label, **extra, "text": tpl.format(**params), "tpl": tpl, "params": params}
+
+    k = {"n": n["left"] + n["right"], "left": n["left"], "lt": thumbs["left"], "right": n["right"], "rt": thumbs["right"],
+         "px": _num(cfg["pitch"]["x"]), "py": _num(cfg["pitch"]["y"])}
     return [
-        {"id": "keys", "label": "Keys", "value": n["left"] + n["right"], "left": n["left"], "right": n["right"],
-         "text": f"{n['left'] + n['right']}: left {n['left']} ({thumbs['left']} thumb), right {n['right']} ({thumbs['right']} thumb), "
-                 f"{_num(cfg['pitch']['x'])} x {_num(cfg['pitch']['y'])} mm pitch",
-         "pitch": [cfg["pitch"]["x"], cfg["pitch"]["y"]], "source": POINTS.format(half="right")},
-        {"id": "switch", "label": "Switches", "text": switch.split(";")[0], "source": DESIGN},
-        {"id": "ball", "label": "Trackball", "value": tb["ball_diameter"], "sensor": sensor, "cpi": cpi,
-         "text": f"{_num(tb['ball_diameter'])} mm ball on the right half, {sensor} sensor",
-         "source": POINTS.format(half="right")},
-        {"id": "controller", "label": "Controller",
-         "text": f"{req['Wireless'].split(',')[0]}, Bluetooth split, ZMK", "source": DESIGN},
-        {"id": "battery", "label": "Battery", "cell": bat["cell"], "value": bat["capacity_mah"],
-         "text": f"{bat['capacity_mah']} mAh LiPo per half", "source": POINTS.format(half="right")},
-        {"id": "half", "label": "Size per half", "x": round(b["width"], 1), "y": round(b["height"], 1), "z": round(case_h, 1),
-         "text": f"{round(b['width'])} x {round(b['height'])} mm, {_num(case_h)} mm high with the case",
-         "source": POINTS.format(half="right")},
+        fact("keys", "Keys", "{n}: left {left} ({lt} thumb), right {right} ({rt} thumb), {px} x {py} mm pitch", k,
+             value=k["n"], left=n["left"], right=n["right"],
+             pitch=[cfg["pitch"]["x"], cfg["pitch"]["y"]], source=POINTS.format(half="right")),
+        # the switch and controller lines are spec prose: translated as a whole, the test asks again when the spec changes
+        fact("switch", "Switches", switch.split(";")[0], source=DESIGN),
+        fact("ball", "Trackball", "{d} mm ball on the right half, {sensor} sensor", {"d": _num(tb["ball_diameter"]), "sensor": sensor},
+             value=tb["ball_diameter"], sensor=sensor, cpi=cpi, source=POINTS.format(half="right")),
+        fact("controller", "Controller", f"{req['Wireless'].split(',')[0]}, Bluetooth split, ZMK", source=DESIGN),
+        fact("battery", "Battery", "{mah} mAh LiPo per half", {"mah": bat["capacity_mah"]},
+             cell=bat["cell"], value=bat["capacity_mah"], source=POINTS.format(half="right")),
+        fact("half", "Size per half", "{x} x {y} mm, {z} mm high with the case",
+             {"x": round(b["width"]), "y": round(b["height"]), "z": _num(case_h)},
+             x=round(b["width"], 1), y=round(b["height"], 1), z=round(case_h, 1), source=POINTS.format(half="right")),
     ]
 
 

@@ -12,6 +12,8 @@
 // #dataVersions block of index.html, the repository files from data/versions.json. A page load
 // then never pairs a module of one version with a cached file of another.
 
+import { t } from './i18n.js';
+
 export const REPO = 'konstantindenerz/k0d3ball35';
 const params = new URLSearchParams(location.search);
 const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]', ''];
@@ -44,13 +46,14 @@ export function assetUrl(repoPath) {
 export const githubUrl = (repoPath) => `https://github.com/${REPO}/blob/${ref}/${repoPath.replace(/^\/+/, '')}`;
 export const githubTreeUrl = (repoPath) => `https://github.com/${REPO}/tree/${ref}/${repoPath.replace(/^\/+/, '')}`;
 
-export const assetBaseLabel = () => (isLocal ? 'the working tree (localhost)' : `github.com/${REPO} @ ${ref}`);
+export const assetBaseLabel = () => (isLocal ? t('the working tree (localhost)') : `github.com/${REPO} @ ${ref}`);
 
 export class AssetError extends Error {
   constructor(repoPath, status) {
     super(status === 404
-      ? `${repoPath} is not on ${isLocal ? 'disk' : ref} yet. It appears here once the branch that adds it is merged.`
-      : `${repoPath} did not load (HTTP ${status}). Reload the page to try again.`);
+      ? (isLocal ? t('{path} is not on disk yet. It appears here once the branch that adds it is merged.', { path: repoPath })
+        : t('{path} is not on {ref} yet. It appears here once the branch that adds it is merged.', { path: repoPath, ref }))
+      : t('{path} did not load (HTTP {status}). Reload the page to try again.', { path: repoPath, status }));
     this.status = status;
     this.repoPath = repoPath;
   }

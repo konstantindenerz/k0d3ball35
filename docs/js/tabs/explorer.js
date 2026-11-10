@@ -11,6 +11,7 @@
 import * as THREE from 'three';
 import { fetchBuffer, loadData } from '../assets.js';
 import { parseSTL, transformGeometry } from '../viewer.js';
+import { t } from '../i18n.js';
 
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const col = (hex) => new THREE.Color(hex);
@@ -97,59 +98,60 @@ const M = {
 for (const m of Object.values(M)) m.side = THREE.DoubleSide;
 
 // ---------- DOM ----------
-const TEMPLATE = `
+// built on mount, after the catalog has loaded
+const template = () => `
 <div class="split explorer">
   <div class="stage xp-stage">
     <svg class="xp-leaders" aria-hidden="true"></svg>
     <div class="xp-labels" aria-hidden="true"></div>
     <div class="xp-hud">
       <h1 class="xp-title">k0d3ball35</h1>
-      <p>Drag to orbit, also from underneath; scroll or pinch to zoom. With the view focused, arrow keys orbit and + / - zoom. Heights are true to the CAD.</p>
-      <span class="xp-tag" aria-live="polite">assembled</span>
+      <p>${t('Drag to orbit, also from underneath; scroll or pinch to zoom. With the view focused, arrow keys orbit and + / - zoom. Heights are true to the CAD.')}</p>
+      <span class="xp-tag" aria-live="polite">${t('assembled')}</span>
     </div>
     <div class="viewer-status" role="status" hidden></div>
   </div>
-  <aside class="panel" aria-label="Explorer controls">
+  <aside class="panel" aria-label="${t('Explorer controls')}">
     <div>
-      <h2 id="xpHalfH">Half</h2>
+      <h2 id="xpHalfH">${t('Half')}</h2>
       <div class="seg" role="radiogroup" aria-labelledby="xpHalfH">
-        <label><input type="radio" name="xpHalf" value="right" checked><span>Right · 17 keys, ball</span></label>
-        <label><input type="radio" name="xpHalf" value="left"><span>Left · 18 keys</span></label>
+        <label><input type="radio" name="xpHalf" value="right" checked><span>${t('Right · 17 keys, ball')}</span></label>
+        <label><input type="radio" name="xpHalf" value="left"><span>${t('Left · 18 keys')}</span></label>
       </div>
     </div>
     <div class="xp-slider">
-      <h2><label for="xpExplode">Explode</label></h2>
-      <div class="xp-row"><span>assembled</span><output for="xpExplode">0.00</output><span>exploded</span></div>
+      <h2><label for="xpExplode">${t('Explode')}</label></h2>
+      <div class="xp-row"><span>${t('assembled')}</span><output for="xpExplode">0.00</output><span>${t('exploded')}</span></div>
       <input type="range" id="xpExplode" min="0" max="1" step="0.01" value="0">
       <div class="actions">
-        <button class="btn primary" type="button" data-act="play">Animate</button>
-        <button class="btn" type="button" data-act="under">From below</button>
-        <button class="btn" type="button" data-act="reset">Reset view</button>
+        <button class="btn primary" type="button" data-act="play">${t('Animate')}</button>
+        <button class="btn" type="button" data-act="under">${t('From below')}</button>
+        <button class="btn" type="button" data-act="reset">${t('Reset view')}</button>
       </div>
     </div>
     <div>
-      <h2>View</h2>
+      <h2>${t('View')}</h2>
       <div class="toggles">
-        <label><input type="checkbox" name="rotate" checked> Auto-rotate</label>
-        <label><input type="checkbox" name="section"> Section through the ball centre</label>
-        <label><input type="checkbox" name="labels" checked> Labels</label>
+        <label><input type="checkbox" name="rotate" checked> ${t('Auto-rotate')}</label>
+        <label><input type="checkbox" name="section"> ${t('Section through the ball centre')}</label>
+        <label><input type="checkbox" name="labels" checked> ${t('Labels')}</label>
       </div>
     </div>
     <div>
-      <h2 id="xpLidH">Lid</h2>
+      <h2 id="xpLidH">${t('Lid')}</h2>
       <div class="seg" role="radiogroup" aria-labelledby="xpLidH">
-        <label><input type="radio" name="xpLid" value="off" checked><span>Off</span></label>
-        <label><input type="radio" name="xpLid" value="on"><span>On top</span></label>
-        <label><input type="radio" name="xpLid" value="foot"><span>As foot</span></label>
+        <label><input type="radio" name="xpLid" value="off" checked><span>${t('Off')}</span></label>
+        <label><input type="radio" name="xpLid" value="on"><span>${t('On top')}</span></label>
+        <label><input type="radio" name="xpLid" value="foot"><span>${t('As foot')}</span></label>
       </div>
-      <p class="xp-hint">The lid is two plates on a pin hinge: it holds on top by an inner lip and folds into a tenting foot under the half (magnets in the floor and the outer plate).</p>
+      <p class="xp-hint">${t('The lid is two plates on a pin hinge: it holds on top by an inner lip and folds into a tenting foot under the half (magnets in the floor and the outer plate).')}</p>
     </div>
     <div>
-      <h2>Layers</h2>
+      <h2>${t('Layers')}</h2>
       <div class="xp-layers"></div>
     </div>
     <div>
-      <h2>Dimensions</h2>
+      <h2>${t('Dimensions')}</h2>
       <dl class="dims"></dl>
     </div>
     <p class="note"></p>
@@ -212,11 +214,11 @@ function build(which) {
   clipPlane.constant = ball ? bz : 60;
 
   // --- case tray: the printed part from hardware/case (key floor -4.6, well and pocket floor -11.6, rim +5) ---
-  layer('Case tray', -34, '#CFC3AE', { x: B.min_x + 10, y: -14, z: B.max_y - 10 }).add(caseMesh('tray', M.tray));
+  layer(t('Case tray'), -34, '#CFC3AE', { x: B.min_x + 10, y: -14, z: B.max_y - 10 }).add(caseMesh('tray', M.tray));
   // --- battery: one cell per half, under the PCB in the bay below the controller (case well) ---
   {
     const bt = H.battery, bay = bt.bay, cell = bt.size;
-    const g = layer(`Battery ${bt.cell} (bay under the controller)`, -16, '#7B8BA3', { x: bay.center.x - 14, y: -8, z: bay.center.y + 6 });
+    const g = layer(t('Battery {cell} (bay under the controller)', { cell: bt.cell }), -16, '#7B8BA3', { x: bay.center.x - 14, y: -8, z: bay.center.y + 6 });
     g.add(slab(outlineShape(bt.bay_polygon), 0.05, -PCB_T - 0.02, M.pcbEdge));          // bay outline, back silkscreen
     g.add(box(cell.x, 0.5, cell.y, M.bumper, bay.center.x, -PCB_T - 1.0 - 0.25, bay.center.y));   // 0.5 mm foam pad
     g.add(box(cell.x, cell.z, cell.y, M.battery, bay.center.x, -PCB_T - 1.5 - cell.z / 2, bay.center.y));
@@ -224,7 +226,7 @@ function build(which) {
   }
   // --- sensor board + lens (on the case floor in the pocket) ---
   if (ball) {
-    const g = layer('Sensor board PMW3610', -16, '#1E4A6B', { x: bx + 16, y: -11, z: bz });
+    const g = layer(t('Sensor board PMW3610'), -16, '#1E4A6B', { x: bx + 16, y: -11, z: bz });
     const sb = ball.sensor_board;
     g.add(box(sb.width, 1.6, sb.height, M.sensor, bx, S.sensor_pcb_plane_z - 0.8, bz));       // board, lens side up at the housing face
     g.add(box(21.5, 3.4, 11.4, M.lens, bx, S.sensor_pcb_plane_z + 1.7, bz));                  // LM18-LSI lens block above the board
@@ -232,7 +234,7 @@ function build(which) {
   }
   // --- cradle (pocket mount) ---
   if (ball) {
-    const g = layer('Trackball cradle (pocket mount)', -8, '#CFC5B3', { x: bx - 18, y: 4, z: bz });
+    const g = layer(t('Trackball cradle (pocket mount)'), -8, '#CFC5B3', { x: bx - 18, y: 4, z: bz });
     const housing = new THREE.Mesh(new THREE.BoxGeometry(S.housing_x, S.housing_top_z - S.floor_z, S.housing_y), M.cradle);
     housing.position.set(bx, (S.housing_top_z + S.floor_z) / 2, bz); g.add(housing);
     // M2 x 10 flat heads in the 90 degree countersinks: the flat face sits below the tray underside
@@ -250,7 +252,7 @@ function build(which) {
   }
   // --- bottom-side parts ---
   {
-    const g = layer('Bottom-side parts', -5, '#3B3B3F', { x: 20, y: -3, z: 28 });
+    const g = layer(t('Bottom-side parts'), -5, '#3B3B3F', { x: 20, y: -3, z: 28 });
     for (const k of H.keys) {
       const p = keyLocal(k, 2.5, -5.4);
       g.add(box(14.8, 1.8, 6.6, M.socket, p.x, -PCB_T - 0.9, p.z, k.rot));
@@ -265,7 +267,7 @@ function build(which) {
   }
   // --- PCB ---
   {
-    const g = layer(`${which === 'left' ? 'Left' : 'Right'} PCB (1.6 mm)`, 0, '#2E5A3B', { x: B.max_x - 6, y: 0, z: B.min_y + 30 });
+    const g = layer(which === 'left' ? t('Left PCB (1.6 mm)') : t('Right PCB (1.6 mm)'), 0, '#2E5A3B', { x: B.max_x - 6, y: 0, z: B.min_y + 30 });
     g.add(slab(ol, PCB_T, 0, M.pcb));
     for (const h of H.holes) g.add(cyl(1.6, PCB_T + 0.2, M.metal, h.x, -PCB_T / 2, h.y));
     const tp = H.test_pads;
@@ -274,7 +276,7 @@ function build(which) {
   }
   // --- controller ---
   {
-    const g = layer('Controller nice!nano v2', 14, '#1C2538', { x: c.x - 16, y: 6, z: c.y - 12 });
+    const g = layer(t('Controller nice!nano v2'), 14, '#1C2538', { x: c.x - 16, y: 6, z: c.y - 12 });
     const sh = c.socket;                                                   // low-profile sockets, nothing underneath
     for (const sx of [-7.62, 7.62]) g.add(box(2.6, sh, 30.5, M.black, c.x + sx, sh / 2, c.y));
     g.add(box(c.w, 1.6, c.l, M.ctrl, c.x, sh + 0.8, c.y - 0.6));             // nice!nano PCB 1.6 mm
@@ -284,7 +286,7 @@ function build(which) {
   }
   // --- switches ---
   {
-    const g = layer('Choc V1 switches', 24, '#EDE8DF', { x: 36, y: 4, z: -4 });
+    const g = layer(t('Choc V1 switches'), 24, '#EDE8DF', { x: 36, y: 4, z: -4 });
     for (const k of H.keys) {
       g.add(box(D.switch_body, 2.2, D.switch_body, M.switchBody, k.x, 1.1, k.y, k.rot));
       g.add(box(11.5, 2.8, 11.5, M.switchBody, k.x, 3.6, k.y, k.rot));
@@ -293,7 +295,7 @@ function build(which) {
   }
   // --- keycaps ---
   {
-    const g = layer('Keycaps (MBK 1u)', 34, '#F4F0E7', { x: 36, y: 10, z: 44 });
+    const g = layer(t('Keycaps (MBK 1u)'), 34, '#F4F0E7', { x: 36, y: 10, z: 44 });
     for (const k of H.keys) {
       const mat = k.kind === 'thumb' ? M.capThumb : (k.ref.endsWith('0') ? M.capGrey : M.cap);
       g.add(box(D.keycap.width, 3.0, D.keycap.height, mat, k.x, 7.0, k.y, k.rot));
@@ -302,15 +304,15 @@ function build(which) {
   }
   // --- ball ---
   if (ball) {
-    const g = layer(`Trackball ${ball.d} mm`, 28, '#FFFFFF', { x: bx + 20, y: S.ball_centre_z + 6, z: bz - 6 });
+    const g = layer(t('Trackball {d} mm', { d: ball.d }), 28, '#FFFFFF', { x: bx + 20, y: S.ball_centre_z + 6, z: bz - 6 });
     const m = new THREE.Mesh(new THREE.SphereGeometry(ball.d / 2, 64, 48), M.ball);
     m.position.set(bx, S.ball_centre_z, bz); g.add(m);
   }
   // --- controller box cap: separate printed roof over the controller block, roof underside +6.7 ---
-  layer('Controller box cap', 44, '#B9A98E', { x: c.x, y: H.case_stack.box_top_z + 2, z: B.min_y + 4 }).add(caseMesh('cap', M.boxCap));
+  layer(t('Controller box cap'), 44, '#B9A98E', { x: c.x, y: H.case_stack.box_top_z + 2, z: B.min_y + 4 }).add(caseMesh('cap', M.boxCap));
   // --- lid: cover on top (inner lip, no magnets) or foot under the tray (magnets in floor and roof) ---
   {
-    const g = layer('Lid', 60, '#E8762E', { x: B.max_x - 20, y: H.case_stack.lid_top_z + 2, z: B.min_y + 10 }, true);
+    const g = layer(t('Lid'), 60, '#E8762E', { x: B.max_x - 20, y: H.case_stack.lid_top_z + 2, z: B.min_y + 10 }, true);
     g.add(caseMesh('lid', M.lid), caseMesh('lid_folded', M.lid));
     lidLayer = layers[layers.length - 1];
     lidLayer.nolist = true;   // driven by the Lid control, not the layer list
@@ -318,7 +320,10 @@ function build(which) {
 
   buildLabels();
   buildDims();
-  el.title.textContent = `${D.name} ${D.revision}, ${which} half (${H.keys.length} keys${ball ? `, ${ball.d} mm ball` : ''})`;
+  const tt = { name: D.name, rev: D.revision, n: H.keys.length, d: ball?.d };
+  el.title.textContent = which === 'left'
+    ? (ball ? t('{name} {rev}, left half ({n} keys, {d} mm ball)', tt) : t('{name} {rev}, left half ({n} keys)', tt))
+    : (ball ? t('{name} {rev}, right half ({n} keys, {d} mm ball)', tt) : t('{name} {rev}, right half ({n} keys)', tt));
   el.section.disabled = !ball;
   el.section.closest('label').classList.toggle('xp-disabled', !ball);
   if (!ball && el.section.checked) { el.section.checked = false; setSection(false); }
@@ -335,7 +340,7 @@ function loadCase(which) {
     const report = () => {
       if (half !== which || failed) return;
       const f = CASE_KEYS.reduce((s, k) => s + frac[k], 0) / CASE_KEYS.length;
-      showStatus(`Loading the ${which} case parts`, f);
+      showStatus(which === 'left' ? t('Loading the left case parts') : t('Loading the right case parts'), f);
     };
     report();
     const matrix = caseMatrix(which);
@@ -409,33 +414,33 @@ function buildLabels() {
     return { el: lab, line };
   });
   el.labels.append(el.sectionLabel);
-  if (H.stack) el.sectionLabel.innerHTML = `lens gap <small>${H.stack.lens_reference_plane_dist.toFixed(1)} mm (2.2 to 2.6)</small>`;
+  if (H.stack) el.sectionLabel.innerHTML = `${t('lens gap')} <small>${t('{gap} mm (2.2 to 2.6)', { gap: H.stack.lens_reference_plane_dist.toFixed(1) })}</small>`;
 }
 
 function buildDims() {
   const S = H.stack, B = H.bounds;
   const dims = [
-    ['Board outline', `${B.width.toFixed(1)} x ${B.height.toFixed(1)} mm`],
-    ['Keys', `${H.keys.length} (${H.keys.filter((k) => k.kind === 'thumb').length} thumb)`],
-    ['PCB thickness', `${D.pcb_thickness.toFixed(1)} mm`],
-    ['Controller top', `+${(D.controller.socket + 1.6 + 1.6).toFixed(1)} mm`],
-    ['Lid over the controller block (concept)', `+${D.controller_lid_z.toFixed(1)} mm`],
-    ['Battery', `${H.battery.cell}, ${H.battery.capacity_mah} mAh, bay ${H.battery.bay.size.x} x ${H.battery.bay.size.y} mm under the controller`],
-    ['Battery well floor', `${H.battery.well_floor_z.toFixed(1)} mm`],
-    ['Keycap top', '+8.9 mm'],
-    ['Mounting holes', `${H.holes.length} x M2`],
-    ['Test pads', H.test_pads.labels.join(' ')],
+    [t('Board outline'), `${B.width.toFixed(1)} x ${B.height.toFixed(1)} mm`],
+    [t('Keys'), t('{n} ({thumb} thumb)', { n: H.keys.length, thumb: H.keys.filter((k) => k.kind === 'thumb').length })],
+    [t('PCB thickness'), `${D.pcb_thickness.toFixed(1)} mm`],
+    [t('Controller top'), `+${(D.controller.socket + 1.6 + 1.6).toFixed(1)} mm`],
+    [t('Lid over the controller block (concept)'), `+${D.controller_lid_z.toFixed(1)} mm`],
+    [t('Battery'), t('{cell}, {mah} mAh, bay {x} x {y} mm under the controller', { cell: H.battery.cell, mah: H.battery.capacity_mah, x: H.battery.bay.size.x, y: H.battery.bay.size.y })],
+    [t('Battery well floor'), `${H.battery.well_floor_z.toFixed(1)} mm`],
+    [t('Keycap top'), '+8.9 mm'],
+    [t('Mounting holes'), `${H.holes.length} x M2`],
+    [t('Test pads'), H.test_pads.labels.join(' ')],
   ];
   if (S) dims.push(
-    ['Ball top above PCB', `+${S.ball_top_above_pcb_top.toFixed(1)} mm`],
-    ['Ball centre above PCB', `+${S.ball_centre_z.toFixed(1)} mm`],
-    ['Cup rim', `+${S.rim_z.toFixed(1)} mm`],
-    ['Case floor under the module', `${S.floor_z.toFixed(1)} mm`],
-    ['Cup outer diameter', `${S.cup_outer_d.toFixed(1)} mm`],
-    ['Cradle envelope above PCB', `${S.envelope_d_above_pcb.toFixed(1)} mm`],
-    ['PCB notch', `octagon, apothem ${S.notch_apothem.toFixed(0)} mm`],
-    ['Case pocket', `${H.ball.pocket_d.toFixed(0)} mm ring above the PCB`],
-    ['Housing on the floor', `${S.housing_x.toFixed(0)} x ${S.housing_y.toFixed(0)} mm, 2 x M2 from below`],
+    [t('Ball top above PCB'), `+${S.ball_top_above_pcb_top.toFixed(1)} mm`],
+    [t('Ball centre above PCB'), `+${S.ball_centre_z.toFixed(1)} mm`],
+    [t('Cup rim'), `+${S.rim_z.toFixed(1)} mm`],
+    [t('Case floor under the module'), `${S.floor_z.toFixed(1)} mm`],
+    [t('Cup outer diameter'), `${S.cup_outer_d.toFixed(1)} mm`],
+    [t('Cradle envelope above PCB'), `${S.envelope_d_above_pcb.toFixed(1)} mm`],
+    [t('PCB notch'), t('octagon, apothem {a} mm', { a: S.notch_apothem.toFixed(0) })],
+    [t('Case pocket'), t('{d} mm ring above the PCB', { d: H.ball.pocket_d.toFixed(0) })],
+    [t('Housing on the floor'), t('{x} x {y} mm, 2 x M2 from below', { x: S.housing_x.toFixed(0), y: S.housing_y.toFixed(0) })],
   );
   el.dims.replaceChildren();
   for (const [k, v] of dims) {
@@ -444,8 +449,8 @@ function buildDims() {
     el.dims.append(dt, dd);
   }
   el.note.innerHTML = H.ball
-    ? '<b>Reading the stack.</b> PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets and the LP552035 cell lies under the PCB in the bay below it, in the 10 mm deep well of the printed tray, like on the left half. The trackball module stands on the tray floor in the pocket beside the PCB: its housing holds the sensor board, the cup rises through the octagonal notch and nothing touches the PCB. The tray, the controller box cap and the lid are the printed parts from hardware/case.'
-    : '<b>Reading the stack.</b> PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets and the LP552035 cell lies under the PCB in the bay below it, in the 10 mm deep well of the printed tray, identical to the right half. The left half has three thumb keys and no ball, no FPC connector and nine test pads.';
+    ? `<b>${t('Reading the stack.')}</b> ${t('PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets and the LP552035 cell lies under the PCB in the bay below it, in the 10 mm deep well of the printed tray, like on the left half. The trackball module stands on the tray floor in the pocket beside the PCB: its housing holds the sensor board, the cup rises through the octagonal notch and nothing touches the PCB. The tray, the controller box cap and the lid are the printed parts from hardware/case.')}`
+    : `<b>${t('Reading the stack.')}</b> ${t('PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets and the LP552035 cell lies under the PCB in the bay below it, in the 10 mm deep well of the printed tray, identical to the right half. The left half has three thumb keys and no ball, no FPC connector and nine test pads.')}`;
 }
 
 // ---------- camera: a small spherical orbit around the half ----------
@@ -504,7 +509,7 @@ function setExplode(v) {
   explode = v;
   el.explode.value = v.toFixed(2);
   el.explodeVal.textContent = v.toFixed(2);
-  el.tag.textContent = v < 0.02 ? 'assembled' : v > 0.98 ? 'exploded' : 'exploding';
+  el.tag.textContent = v < 0.02 ? t('assembled') : v > 0.98 ? t('exploded') : t('exploding');
   for (const l of layers) l.group.position.y = l.baseY + l.explode * v;
 }
 
@@ -527,8 +532,8 @@ function applyLidMode() {
     lidLayer.anchor.y = cs.lid_top_z + 2;
   }
   lidLayer.name = mode === 'foot'
-    ? `Lid folded as kickstand (hinge ${(cs.hinge_fold_deg ?? 34).toFixed(0)} deg, tilts the half by ${(cs.tent_deg ?? 15).toFixed(0)} deg)`
-    : 'Lid (two hinged plates, inner lip)';
+    ? t('Lid folded as kickstand (hinge {hinge} deg, tilts the half by {tent} deg)', { hinge: (cs.hinge_fold_deg ?? 34).toFixed(0), tent: (cs.tent_deg ?? 15).toFixed(0) })
+    : t('Lid (two hinged plates, inner lip)');
   const node = labelNodes[layers.indexOf(lidLayer)];
   if (node) node.el.textContent = lidLayer.name;
   setExplode(explode);
@@ -643,7 +648,7 @@ function selectHalf(which) {
 
 export async function mount(section, ctx) {
   ctxRef = ctx;
-  section.innerHTML = TEMPLATE;
+  section.innerHTML = template();
   const q = (s) => section.querySelector(s);
   el = {
     stage: q('.xp-stage'), leaders: q('.xp-leaders'), labels: q('.xp-labels'), title: q('.xp-title'), tag: q('.xp-tag'),
@@ -659,7 +664,7 @@ export async function mount(section, ctx) {
   try {
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   } catch (e) {
-    showError('This view needs WebGL, which this browser did not provide.');
+    showError(t('This view needs WebGL, which this browser did not provide.'));
     return;
   }
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -667,7 +672,7 @@ export async function mount(section, ctx) {
   const canvas = renderer.domElement;
   canvas.tabIndex = 0;
   canvas.setAttribute('role', 'img');
-  canvas.setAttribute('aria-label', '3D exploded view of one k0d3ball35 half. Arrow keys orbit, plus and minus zoom.');
+  canvas.setAttribute('aria-label', t('3D exploded view of one k0d3ball35 half. Arrow keys orbit, plus and minus zoom.'));
   el.stage.prepend(canvas);
 
   scene = new THREE.Scene();

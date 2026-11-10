@@ -9,6 +9,7 @@
 // Only mount is required.
 
 import { assetBaseLabel, loadData, loadVersions } from './assets.js';
+import { LANGS, LANG_LABELS, lang, loadCatalog, setLang, t, translateStatic } from './i18n.js';
 
 const chrome = document.getElementById('chrome');
 const sections = new Map([...document.querySelectorAll('main > section.tab')].map((s) => [s.id.slice(4), s]));
@@ -30,7 +31,7 @@ function setChromeHeight() {
 function load(id) {
   if (!modules.has(id)) {
     const section = sections.get(id);
-    section.innerHTML = '<p class="loading-tab">Loading…</p>';
+    section.innerHTML = `<p class="loading-tab">${t('Loading…')}</p>`;
     const p = import(`./tabs/${id}.js`).then(async (mod) => {
       section.innerHTML = '';
       await mod.mount(section, {
@@ -44,7 +45,7 @@ function load(id) {
       section.innerHTML = '';
       const box = document.createElement('div');
       box.className = 'tab-error';
-      box.textContent = `This section did not load: ${err.message}`;
+      box.textContent = t('This section did not load: {error}', { error: err.message });
       section.append(box);
       return {};
     });
@@ -65,8 +66,9 @@ async function route() {
   section.hidden = false;
   links.forEach((a) => (a.dataset.tab === id ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
   const n = ids.indexOf(id) + 1;
-  document.getElementById('tbSheet').innerHTML = `<b>${n}</b> of ${ids.length} · ${section.dataset.title}`;
-  document.title = n === 1 ? 'k0d3ball35' : `${section.dataset.title} · k0d3ball35`;
+  const title = t(section.dataset.title);
+  document.getElementById('tbSheet').innerHTML = `<b>${n}</b> / ${ids.length} · ${title}`;
+  document.title = n === 1 ? 'k0d3ball35' : `${title} · k0d3ball35`;
   if (changedTab) {
     links[n - 1].scrollIntoView({ block: 'nearest', inline: 'nearest' });
     window.scrollTo({ top: 0 });
@@ -75,36 +77,62 @@ async function route() {
   if (current === id) mod.show?.(sub);
 }
 
-// ---------- theme: system -> light -> dark ----------
+// ---------- theme: system -> light -> dark, one icon that morphs (half disc, sun, moon) ----------
 const THEMES = ['system', 'light', 'dark'];
+const THEME_NAMES = { system: () => t('system'), light: () => t('light'), dark: () => t('dark') };
 const themeBtn = document.getElementById('themeBtn');
 function readTheme() { try { return localStorage.getItem('k0d3-theme') || 'system'; } catch { return 'system'; } }
-function applyTheme(t) {
-  if (t === 'system') delete document.documentElement.dataset.theme;
-  else document.documentElement.dataset.theme = t;
-  themeBtn.textContent = `Theme: ${t}`;
-  themeBtn.setAttribute('aria-label', `Colour theme: ${t}. Change`);
+function applyTheme(mode) {
+  if (mode === 'system') delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = mode;
+  themeBtn.dataset.mode = mode;
+  const next = THEMES[(THEMES.indexOf(mode) + 1) % THEMES.length];
+  const label = t('Colour theme: {mode}. Switch to {next}', { mode: THEME_NAMES[mode](), next: THEME_NAMES[next]() });
+  themeBtn.setAttribute('aria-label', label);
+  themeBtn.title = label;
   document.dispatchEvent(new CustomEvent('themechange'));
 }
 themeBtn.addEventListener('click', () => {
-  const t = THEMES[(THEMES.indexOf(readTheme()) + 1) % THEMES.length];
-  try { localStorage.setItem('k0d3-theme', t); } catch { /* private mode */ }
-  applyTheme(t);
+  const mode = THEMES[(THEMES.indexOf(readTheme()) + 1) % THEMES.length];
+  try { localStorage.setItem('k0d3-theme', mode); } catch { /* private mode */ }
+  applyTheme(mode);
 });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => document.dispatchEvent(new CustomEvent('themechange')));
-applyTheme(readTheme());
+applyTheme(readTheme());   // before the first await: no flash of the other theme; again once the catalog is in for the label
+
+// ---------- language: a globe with the short code, a small menu with the native names ----------
+const langBtn = document.getElementById('langBtn');
+function renderLang() {
+  const [code, name] = LANG_LABELS[lang];
+  document.getElementById('langCode').textContent = code;
+  const label = t('Language: {name}. Change', { name });
+  langBtn.setAttribute('aria-label', label);
+  langBtn.title = label;
+  document.getElementById('langList').innerHTML = LANGS.map((l) => `
+    <li><button type="button" lang="${l}" data-lang="${l}"${l === lang ? ' aria-current="true"' : ''}><span class="lang-code">${LANG_LABELS[l][0]}</span>${LANG_LABELS[l][1]}</button></li>`).join('');
+}
+document.getElementById('langList').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-lang]');
+  if (!b) return;
+  if (b.dataset.lang === lang) document.getElementById('langMenu').hidePopover();
+  else setLang(b.dataset.lang);
+});
 
 // ---------- start ----------
-document.getElementById('assetBase').textContent = assetBaseLabel();
 new ResizeObserver(setChromeHeight).observe(chrome);
 setChromeHeight();
-try { [site] = await Promise.all([loadData('site'), loadVersions()]); } catch (e) { console.error(e); site = {}; }
+try { [site] = await Promise.all([loadData('site'), loadVersions(), loadCatalog()]); } catch (e) { console.error(e); site = {}; }
+translateStatic(document);
+renderLang();
+applyTheme(readTheme());
+document.getElementById('assetBase').textContent = assetBaseLabel();
 if (site.revision) document.getElementById('tbRev').textContent = site.revision;
 // the release stamp follows the order ticket: preliminary until the PCBs are ordered
 if (site.status?.pcbs_ordered) {
   const stamp = document.getElementById('wipBtn');
-  stamp.querySelector('.stamp-stage').textContent = 'Prototype · ';
-  stamp.setAttribute('aria-label', 'Status: prototype, untested. What that means');
+  stamp.querySelector('.stamp-stage [data-i18n]').textContent = t('Prototype');
+  stamp.setAttribute('aria-label', t('Status: prototype, untested. What that means'));
 }
+setChromeHeight();
 addEventListener('hashchange', route);
 route();

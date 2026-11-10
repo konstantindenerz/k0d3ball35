@@ -12,11 +12,13 @@ two versions from different caches (GitHub Pages caches 10 minutes, raw.githubus
   as a string literal in js/);
 - the block between `<!-- versions -->` and `<!-- /versions -->` in index.html: the stylesheets,
   an importmap that maps every local module to its hashed URL (so the relative imports between
-  the modules resolve to the same build), the hashes of the data files and the main module.
+  the modules resolve to the same build), the hashes of the data files and of the translation
+  catalogs (docs/i18n/<lang>.json, keyed i18n/<lang>) and the main module.
 
-Usage: build.py [--check] [--out DIR]
+Usage: build.py [--check] [--out DIR] [--i18n]
   --check  regenerate in memory and fail if a committed file differs (what the tests run)
   --out    write somewhere else than docs/data
+  --i18n   list the texts each catalog misses or keeps without use (docs/gen/i18n.py)
 """
 from __future__ import annotations
 
@@ -81,6 +83,7 @@ def stamp(html: str, files: dict[str, str], tab_ids: list[str]) -> str:
                "three/addons/": f"https://cdn.jsdelivr.net/npm/three@{THREE}/examples/jsm/"}
     imports |= {f"./{m}": f"./{v(m)}" for m in modules}
     data = {name[:-5]: short_hash(text.encode()) for name, text in sorted(files.items())}
+    data |= {f"i18n/{c.stem}": short_hash(c.read_bytes()) for c in sorted((HERE / "i18n").glob("*.json"))}
     block = "\n".join(
         [f'<link rel="stylesheet" href="{v(c)}">' for c in css]
         + [f'<script type="importmap">{json.dumps({"imports": imports}, separators=(",", ":"))}</script>',
@@ -106,7 +109,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
     ap.add_argument("--out", type=Path, default=HERE / "data")
+    ap.add_argument("--i18n", action="store_true")
     args = ap.parse_args()
+    if args.i18n:
+        return i18n_report()
     files = generate()
     tabs = [t["id"] for t in json.loads(files["site.json"])["tabs"]]
     html = stamp(INDEX.read_text(), files, tabs)
@@ -126,6 +132,19 @@ def main() -> int:
     INDEX.write_text(html)
     print("stamped index.html")
     return 0
+
+
+def i18n_report() -> int:
+    from gen import i18n
+    bad = 0
+    for lang in i18n.LANGS:
+        r = i18n.report(lang)
+        print(f"{lang}: {len(i18n.catalog(lang))} entries, " + ", ".join(f"{len(v)} {k}" for k, v in r.items()))
+        for kind, items in r.items():
+            for k in items:
+                print(f"  {kind}: {k}")
+        bad += sum(map(len, r.values()))
+    return 1 if bad else 0
 
 
 if __name__ == "__main__":

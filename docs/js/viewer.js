@@ -11,6 +11,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { fetchBuffer } from './assets.js';
+import { t } from './i18n.js';
 
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -64,7 +65,7 @@ export class ModelViewer {
     this.renderer.localClippingEnabled = true;
     this.canvas = this.renderer.domElement;
     this.canvas.setAttribute('role', 'img');
-    this.canvas.setAttribute('aria-label', this.opts.label || '3D model');
+    this.canvas.setAttribute('aria-label', this.opts.label || t('3D model'));
     host.prepend(this.canvas);
 
     this.scene = new THREE.Scene();
@@ -146,9 +147,9 @@ export class ModelViewer {
   }
 
   async _fetch(repoPath, opts) {
-    if (opts.status !== false) this.showStatus(`Loading ${repoPath.split('/').pop()}`, 0);
+    if (opts.status !== false) this.showStatus(t('Loading {name}', { name: repoPath.split('/').pop() }), 0);
     try {
-      const buf = await fetchBuffer(repoPath, (f) => { if (opts.status !== false) this.showStatus(`Loading ${repoPath.split('/').pop()}`, f); });
+      const buf = await fetchBuffer(repoPath, (f) => { if (opts.status !== false) this.showStatus(t('Loading {name}', { name: repoPath.split('/').pop() }), f); });
       if (opts.status !== false) this.hideStatus();
       return buf;
     } catch (e) {
