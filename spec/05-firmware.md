@@ -107,7 +107,7 @@ Key positions in matrix transform order:
       30 31 32     33 34
 ```
 
-35 positions: the left half has three thumb keys (30 inner, 31 middle, 32 outer), the right half
+35 positions: the left half has three thumb keys (30 outer, 31 middle, 32 inner), the right half
 only the two INNER ones (33 inner, 34 middle); the place where a right outer thumb key would sit
 is taken by the ball pocket since r2.3. Matrix transform row 3 is `RC(3,2) RC(3,3) RC(3,4)` on the
 left and `RC(3,9) RC(3,8)` on the right.
