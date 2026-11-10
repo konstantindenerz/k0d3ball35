@@ -26,8 +26,9 @@ The tray and the box cap carry the owner wordmark as an engraved relief (section
 The layout facts (outline, holes, bay, courtyards, pocket, controller block) are generated
 from `hardware/layout/k0d3ball35.yaml` by `scripts/gen_case.py` into `hardware/case/data.scad`;
 every offset and height is a parameter in `params.scad`. `make case` renders everything;
-`make exploded` then refreshes the [interactive 3D view](../docs/index.html), which embeds
-the STLs and would otherwise still show the previous parts.
+the [project page](../docs/index.html) loads the STLs straight from the repository (the Case
+tab shows every printable part, the Explorer tab the assembled halves), so it shows the new parts as
+soon as they are committed; `make site` refreshes the part facts it lists.
 
 ![Tray from above](images/img-case-tray-top.png)
 

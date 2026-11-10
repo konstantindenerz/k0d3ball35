@@ -80,7 +80,7 @@ Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 
 
 ```
 spec/                 specification, layout, BOM, build guide, firmware, fabrication, testing
-docs/                 the published page: interactive 3D exploded view, built from the layout data
+docs/                 the published project page (tabs: exploded view, case, trackball, PCBs, keymap, BOM)
 hardware/layout/      layout source (yaml), generated points, outline DXFs and previews per half
 hardware/left-pcb/    KiCad project of the left PCB (18 keys), gerbers and renders
 hardware/right-pcb/   KiCad project of the right PCB (17 keys, FPC connector, pocket notch)
@@ -112,13 +112,21 @@ issues/               markdown tickets and the generated index
 | [12 Order checklist](spec/12-order-checklist.md) | shop-by-shop parts list, what is ordered, JLCPCB and LCSC lines, printed parts, what waits for hardware |
 | [Image prompts](spec/images/PROMPTS.md) | every picture as a generation prompt |
 
-## Exploded view
+## Project page
 
-An interactive 3D exploded view of both halves (explode slider, half switch, section through the
-ball, layer toggles) lives in [`docs/index.html`](docs/index.html). It
-is generated from `points-left.json`, `points-right.json` and the cradle `stack.json` with
-`docs/build.py`; the case, the pocket wall and the top frame in it are placeholders
-until the case phase.
+The project page, [`docs/index.html`](docs/index.html), is published with GitHub Pages from
+`docs/` on `main`. One tab per area: an overview, the interactive 3D exploded view of both halves
+(explode slider, half switch, section through the ball, lid modes), the real printed parts of the
+case and the trackball cradle, the three boards in 3D and as layer plots, the keymap and the parts
+list with what is still open before ordering.
+
+The page is static. It shows the real files: STLs and the KiCad GLBs are fetched from the
+repository (raw.githubusercontent.com, branch `main`), nothing is copied into `docs/`. The data the
+tabs need (layout, part facts, keymap, BOM, tickets) is generated into `docs/data/` by
+`docs/build.py`: run `make site` after a change to the layout, the case, the boards, the keymap,
+the BOM or the tickets; `tests/test_site.py` fails while the data is stale. `make site-serve`
+serves the page with the files of the working tree at http://localhost:8000/docs/, which previews
+a branch before it is merged.
 
 ## Quick start
 
