@@ -414,3 +414,6 @@ def test_wordmark_uses_kode_mono():
     assert re.search(r'--wordmark:\s*"Kode Mono"', css)
     assert re.search(r"\.tb-name span \{[^}]*var\(--wordmark\)", css)
     assert re.search(r"\.display \{[^}]*var\(--display\)", css)
+    # every place that shows the name, not just the title block
+    assert re.search(r"\.ov-name \{[^}]*var\(--wordmark\)", (DOCS / "css/tabs/overview.css").read_text())
+    assert re.search(r"\.xp-title \{[^}]*var\(--wordmark\)", (DOCS / "css/tabs/explorer.css").read_text())

@@ -4,7 +4,7 @@
 .ov a { color: var(--ink); }
 .ov-hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(20px, 4vw, 48px); align-items: center; }
 @media (max-width: 900px) { .ov-hero { grid-template-columns: minmax(0, 1fr); } .ov-fig { order: -1; } }
-.ov-name { font-size: clamp(36px, 6vw, 68px); }
+.ov-name { font-family: var(--wordmark); font-stretch: normal; letter-spacing: 0; font-size: clamp(36px, 6vw, 68px); }
 .ov-what { margin: 14px 0 0; font: 500 clamp(17px, 1.7vw, 20px)/1.4 var(--sans); max-width: 34ch; text-wrap: pretty; }
 .ov-status { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 14px 0 20px; font-size: 13px; color: var(--muted); }
 .ov-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--signal); align-self: center; }

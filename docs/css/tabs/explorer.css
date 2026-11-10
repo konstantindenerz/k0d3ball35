@@ -14,7 +14,7 @@
 .explorer .xp-label small { color: var(--muted); font-weight: 400; }
 
 .explorer .xp-hud { position: absolute; left: 16px; top: 14px; max-width: min(70%, 520px); pointer-events: none; }
-.explorer .xp-title { margin: 0; font: 600 20px/1.1 var(--sans); letter-spacing: -.01em; text-wrap: balance; }
+.explorer .xp-title { margin: 0; font: 700 20px/1.1 var(--wordmark); letter-spacing: -.01em; text-wrap: balance; }
 .explorer .xp-hud p { margin: 4px 0 0; color: var(--muted); font-size: 12px; text-wrap: pretty; }
 .explorer .xp-tag { display: inline-block; margin-top: 8px; font: 500 10px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
                     color: var(--signal); border: 1px solid var(--signal); padding: 4px 7px; border-radius: 2px; }
