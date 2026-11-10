@@ -125,15 +125,42 @@ function placeSensor(glbRoot, planeZ) {
   return wrap;
 }
 
-async function ensureSensor(planeZ) {
-  if (sensorRoot) { sensorRoot.position.z = planeZ + sensorRoot.userData.faceZ; return sensorRoot; }
+/** U1 (PMW3610) and its LM18-LSI lens have no 3D model in the board file. A stand-in from the
+ *  numbers in hardware/trackball-cradle/README.md and spec/08: the sensor body fills the
+ *  16.96 x 8.60 mm board cutout (long side along the 26 mm board side, x), protrudes 0.7 mm on the
+ *  lens side and 1.65 mm past the component side; the lens is drawn as a 9 mm disc (the aperture
+ *  hole in the cup) at the lens reference plane, lens_reference_plane_dist under the ball. */
+function sensorStandIn(s) {
+  const g = new THREE.Group();
+  g.name = 'sensor-stand-in';
+  const plane = s.sensor_pcb_plane_z;
+  const bodyTop = plane + 0.7, bodyBottom = plane - 1.6 - 1.65;
+  const body = solid(new THREE.BoxGeometry(16.96, 8.6, bodyTop - bodyBottom), '--tb-sensor', '#2B2F2C', '--tb-sensor', '#2B2F2C');
+  body.position.set(0, 0, (bodyTop + bodyBottom) / 2);
+  const lensZ = s.ball_bottom_z - s.lens_reference_plane_dist;
+  const lens = solid(new THREE.CylinderGeometry(4.5, 4.5, Math.max(0.3, lensZ - bodyTop), 48).rotateX(Math.PI / 2), '--tb-lens', '#A9C6CF', '--tb-lens', '#A9C6CF');
+  lens.position.set(0, 0, (lensZ + bodyTop) / 2);
+  g.add(body, lens);
+  return g;
+}
+
+async function ensureSensor(s) {
+  if (sensorRoot) {
+    // same board for every variant; only the stand-in follows the variant's stack numbers
+    const old = sensorRoot.getObjectByName('sensor-stand-in');
+    sensorRoot.remove(old);
+    old.traverse((o) => { o.geometry?.dispose(); o.material?.dispose?.(); });
+    sensorRoot.add(sensorStandIn(s));
+    return sensorRoot;
+  }
   if (sensorState === 'loading' || sensorState === 'missing') return null;
   sensorState = 'loading';
   renderSensorNote();
   try {
     const glb = await viewer.loadGLB(SENSOR_GLB, { add: false, status: false });
-    sensorRoot = placeSensor(glb, planeZ);
-    sensorRoot.userData.faceZ = sensorRoot.position.z - planeZ;
+    sensorRoot = new THREE.Group();
+    sensorRoot.name = 'sensor';
+    sensorRoot.add(placeSensor(glb, s.sensor_pcb_plane_z), sensorStandIn(s));
     sensorState = 'ok';
   } catch (e) {
     sensorState = e.status === 404 ? 'missing' : 'error';
@@ -202,9 +229,9 @@ async function sync({ refit = false } = {}) {
   }
 
   if (state.sensor) {
-    const sr = await ensureSensor(s.sensor_pcb_plane_z);
+    const sr = await ensureSensor(s);
     if (my !== token) return;
-    if (sr && state.sensor && objs.sensor !== sr) attach('sensor', sr);
+    if (sr && state.sensor) attach('sensor', sr);
   } else detach('sensor');
 
   if (refit) frame(state.view);
@@ -393,6 +420,8 @@ export async function mount(section, c) {
           <label><input type="checkbox" data-toggle="retainer"> Retainer (optional clip-on ring)</label>
           <label><input type="checkbox" data-toggle="sensor" checked> Sensor board under the cup</label>
         </div>
+        <p class="tb-hint">The board is the KiCad export. The sensor has no 3D model there, so its body (dark box)
+        and lens (blue disc at the lens reference plane) are drawn from the datasheet numbers.</p>
         <p class="tb-sensor-note tb-hint" hidden></p>
       </section>
       <section class="tb-stack"></section>
