@@ -63,7 +63,7 @@ def test_shell_lists_every_tab(site):
         assert f'id="tab-{tid}"' in html, f"section for {tid}"
         assert (DOCS / "js" / "tabs" / f"{tid}.js").is_file(), f"module for {tid}"
         assert (DOCS / "css" / "tabs" / f"{tid}.css").is_file(), f"stylesheet for {tid}"
-        assert f'href="css/tabs/{tid}.css"' in html
+        assert re.search(rf'href="css/tabs/{tid}\.css\?v=[0-9a-f]{{10}}"', html), f"versioned stylesheet for {tid}"
 
 
 def test_shell_stays_small_and_pins_three():
@@ -72,6 +72,42 @@ def test_shell_stays_small_and_pins_three():
     assert not re.search(r"[A-Za-z0-9+/]{2000,}", html), "no base64 blobs"
     versions = set(re.findall(r"three@([\w.]+)/", html))
     assert versions and all(re.fullmatch(r"\d+\.\d+\.\d+", v) for v in versions) and len(versions) == 1
+
+
+def test_every_url_the_page_loads_is_versioned():
+    """Content hashes on every local module, stylesheet, data file and fetched repository file, so
+    one page load never mixes two versions from different caches (the mirrored-tray report)."""
+    html = (DOCS / "index.html").read_text()
+    imports = json.loads(re.search(r'<script type="importmap">(.*?)</script>', html)[1])["imports"]
+    for js in (DOCS / "js").rglob("*.js"):
+        rel = js.relative_to(DOCS).as_posix()
+        assert re.fullmatch(rf"\./{re.escape(rel)}\?v=[0-9a-f]{{10}}", imports[f"./{rel}"]), rel
+    assert re.search(r'<script type="module" src="js/main\.js\?v=[0-9a-f]{10}"></script>', html)
+    data = json.loads(re.search(r'<script type="application/json" id="dataVersions">(.*?)</script>', html)[1])
+    assert set(data) == {p.stem for p in DATA.glob("*.json")}
+    versions = json.loads((DATA / "versions.json").read_text())
+    for name in ("parts", "layout", "pcbs"):
+        for s in _strings(json.loads((DATA / f"{name}.json").read_text())):
+            if re.search(r"\.(stl|glb|svg|png)$", s) and (ROOT / s).is_file():
+                assert s in versions, s
+    for literal in ("spec/images/concept-render.png", "hardware/sensor-pcb/renders/k0d3ball35-sensor.glb"):
+        assert literal in versions
+
+
+def _strings(node):
+    if isinstance(node, str):
+        yield node
+    elif isinstance(node, dict):
+        for v in node.values():
+            yield from _strings(v)
+    elif isinstance(node, list):
+        for v in node:
+            yield from _strings(v)
+
+
+def test_preview_server_disables_the_cache():
+    assert "no-store" in (ROOT / "scripts/site_serve.py").read_text()
+    assert "scripts/site_serve.py" in (ROOT / "Makefile").read_text()
 
 
 def test_modules_import_only_pinned_or_local_code():

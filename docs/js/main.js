@@ -2,13 +2,13 @@
 // Hash router for the sheet tabs.
 //
 // #<tab>[/<sub>]  e.g. #case/tray-right. A tab module is imported on its first visit and lives in
-// js/tabs/<tab>.js with this contract:
+// js/tabs/<tab>.js (the importmap of index.html turns that into its hashed URL) with this contract:
 //   export async function mount(section, ctx)  build the DOM once; ctx = { site, sub, navigate(sub) }
 //   export function show(sub)                   the tab became visible (or its sub route changed)
 //   export function hide()                      the tab was left: stop render loops
 // Only mount is required.
 
-import { assetBaseLabel, loadData } from './assets.js';
+import { assetBaseLabel, loadData, loadVersions } from './assets.js';
 
 const chrome = document.getElementById('chrome');
 const sections = new Map([...document.querySelectorAll('main > section.tab')].map((s) => [s.id.slice(4), s]));
@@ -98,7 +98,7 @@ applyTheme(readTheme());
 document.getElementById('assetBase').textContent = assetBaseLabel();
 new ResizeObserver(setChromeHeight).observe(chrome);
 setChromeHeight();
-try { site = await loadData('site'); } catch (e) { console.error(e); site = {}; }
+try { [site] = await Promise.all([loadData('site'), loadVersions()]); } catch (e) { console.error(e); site = {}; }
 if (site.revision) document.getElementById('tbRev').textContent = site.revision;
 addEventListener('hashchange', route);
 route();

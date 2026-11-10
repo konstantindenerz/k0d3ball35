@@ -103,7 +103,7 @@ SITE_PORT ?= 8000
 SITE_HOST ?= 127.0.0.1
 site-serve: ## Serve the page with the working-tree files (SITE_HOST=0.0.0.0 for the LAN)
 	@echo "http://localhost:$(SITE_PORT)/docs/"
-	$(PY) -m http.server $(SITE_PORT) --bind $(SITE_HOST)
+	$(PY) scripts/site_serve.py $(SITE_PORT) $(SITE_HOST)
 
 print: print-check print-plots ## Everything to print on paper before the order
 

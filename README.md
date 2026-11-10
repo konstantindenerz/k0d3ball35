@@ -120,7 +120,7 @@ The project page, [`docs/index.html`](docs/index.html), is published with GitHub
 case and the trackball cradle, the three boards in 3D and as layer plots and the keymap. The page
 shows the files; the markdown keeps the details, and the overview links to it.
 
-The page is static. It shows the real files: STLs and the KiCad GLBs are fetched from the
+The page is static; every file it loads carries a content hash (`?v=`, stamped by `make site`), so a visit never mixes cached files of two versions. It shows the real files: STLs and the KiCad GLBs are fetched from the
 repository (raw.githubusercontent.com, branch `main`), nothing is copied into `docs/`. The data the
 tabs need (layout, part facts, keymap, board facts) is generated into `docs/data/` by
 `docs/build.py`: run `make site` after a change to the layout, the case, the boards, the keymap,

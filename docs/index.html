@@ -8,14 +8,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="css/site.css">
-<link rel="stylesheet" href="css/tabs/overview.css">
-<link rel="stylesheet" href="css/tabs/explorer.css">
-<link rel="stylesheet" href="css/tabs/case.css">
-<link rel="stylesheet" href="css/tabs/trackball.css">
-<link rel="stylesheet" href="css/tabs/pcbs.css">
-<link rel="stylesheet" href="css/tabs/keymap.css">
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<!-- versions -->
+<link rel="stylesheet" href="css/site.css?v=8e86fedc08">
+<link rel="stylesheet" href="css/tabs/overview.css?v=3557809b76">
+<link rel="stylesheet" href="css/tabs/explorer.css?v=0da9304b94">
+<link rel="stylesheet" href="css/tabs/case.css?v=5818763ed8">
+<link rel="stylesheet" href="css/tabs/trackball.css?v=1a20a4b8b0">
+<link rel="stylesheet" href="css/tabs/pcbs.css?v=574cc23b2a">
+<link rel="stylesheet" href="css/tabs/keymap.css?v=4fa9538c5a">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/","./js/assets.js":"./js/assets.js?v=ba42af58cf","./js/main.js":"./js/main.js?v=1293694510","./js/tabs/case.js":"./js/tabs/case.js?v=928d4726d8","./js/tabs/explorer.js":"./js/tabs/explorer.js?v=46f1bbdcbd","./js/tabs/keymap.js":"./js/tabs/keymap.js?v=8de784ab09","./js/tabs/overview.js":"./js/tabs/overview.js?v=4f9e445178","./js/tabs/pcbs.js":"./js/tabs/pcbs.js?v=5cb22532d9","./js/tabs/trackball.js":"./js/tabs/trackball.js?v=5588cb7b05","./js/viewer.js":"./js/viewer.js?v=8c70391971"}}</script>
+<script type="application/json" id="dataVersions">{"keymap":"6d6b1f8e73","layout":"7fb937bea2","parts":"3183771b72","pcbs":"5dae326a1f","site":"b3339cd2ec","versions":"bd1060be78"}</script>
+<script type="module" src="js/main.js?v=1293694510"></script>
+<!-- /versions -->
 </head>
 <body>
 <header class="chrome" id="chrome">
@@ -24,7 +28,7 @@
     <div class="tb-cell tb-title"><span class="tb-key">Title</span><span class="tb-val">Wireless split keyboard, 35 Choc keys, 19 mm trackball</span></div>
     <div class="tb-cell tb-rev"><span class="tb-key">Rev</span><span class="tb-val" id="tbRev">r2.3</span></div>
     <div class="tb-cell tb-units"><span class="tb-key">Units</span><span class="tb-val">mm</span></div>
-    <div class="tb-cell tb-sheet"><span class="tb-key">Sheet</span><span class="tb-val" id="tbSheet"><b>1</b> of 7</span></div>
+    <div class="tb-cell tb-sheet"><span class="tb-key">Sheet</span><span class="tb-val" id="tbSheet"><b>1</b> of 6</span></div>
     <div class="tb-actions">
       <button class="btn" id="themeBtn" type="button" aria-label="Colour theme: system">Theme: system</button>
       <a class="btn" href="https://github.com/konstantindenerz/k0d3ball35" rel="noopener">GitHub</a>
@@ -52,6 +56,5 @@
   <span>Sources: <a href="https://github.com/konstantindenerz/k0d3ball35">github.com/konstantindenerz/k0d3ball35</a> · 3D files load from <span id="assetBase">the repository</span></span>
 </footer>
 <noscript><p class="page">This page draws the keyboard with JavaScript and WebGL. The files are in the <a href="https://github.com/konstantindenerz/k0d3ball35">repository</a>.</p></noscript>
-<script type="module" src="js/main.js"></script>
 </body>
 </html>

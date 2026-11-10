@@ -7,6 +7,10 @@
 // working tree, which previews a branch before it is merged.
 //   ?ref=<branch>  load the files of that branch from GitHub instead of main
 //   ?remote        on localhost, load from GitHub anyway (how the published page behaves)
+//
+// Every URL carries a content hash (?v=) from docs/build.py: the data files from the
+// #dataVersions block of index.html, the repository files from data/versions.json. A page load
+// then never pairs a module of one version with a cached file of another.
 
 export const REPO = 'konstantindenerz/k0d3ball35';
 const params = new URLSearchParams(location.search);
@@ -17,11 +21,23 @@ const localHost = LOCAL_HOSTS.includes(location.hostname) || LAN.test(location.h
 export const isLocal = localHost && !params.has('remote') && !params.has('ref');
 export const ref = params.get('ref') || 'main';
 
+const dataVersions = (() => {
+  try { return JSON.parse(document.getElementById('dataVersions')?.textContent || '{}'); } catch { return {}; }
+})();
+let fileVersions = {};
+/** Read data/versions.json; main.js awaits this before the first tab mounts. */
+export async function loadVersions() {
+  try { fileVersions = await loadData('versions'); } catch (e) { console.warn(e); fileVersions = {}; }
+}
+const withVersion = (url, v) => (v ? `${url}?v=${v}` : url);
+
 /** URL of a file given by its path from the repository root, e.g. "hardware/case/stl/tray-right.stl". */
 export function assetUrl(repoPath) {
   const p = repoPath.replace(/^\/+/, '');
-  if (isLocal) return new URL(`../${p}`, document.baseURI).href;
-  return `https://raw.githubusercontent.com/${REPO}/${encodeURIComponent(ref).replace(/%2F/g, '/')}/${p}`;
+  const url = isLocal
+    ? new URL(`../${p}`, document.baseURI).href
+    : `https://raw.githubusercontent.com/${REPO}/${encodeURIComponent(ref).replace(/%2F/g, '/')}/${p}`;
+  return withVersion(url, fileVersions[p]);
 }
 
 /** The file's page on GitHub (GitHub renders STL, SVG, PNG and markdown there). */
@@ -92,7 +108,7 @@ const dataCache = new Map();
 /** docs/data/<name>.json, fetched once per page load. */
 export function loadData(name) {
   if (!dataCache.has(name)) {
-    dataCache.set(name, fetch(new URL(`data/${name}.json`, document.baseURI)).then((r) => {
+    dataCache.set(name, fetch(withVersion(new URL(`data/${name}.json`, document.baseURI).href, dataVersions[name])).then((r) => {
       if (!r.ok) throw new Error(`data/${name}.json is missing (HTTP ${r.status}); run \`make site\`.`);
       return r.json();
     }));
