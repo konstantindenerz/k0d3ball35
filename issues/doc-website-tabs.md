@@ -29,12 +29,13 @@ keymap on the page. The site becomes a project page with one tab ("sheet") per a
 ## Acceptance criteria
 
 - [x] Shell, router, title block, shared viewer, `make site`, `make site-serve`
-- [ ] Explorer ported, case meshes fetched instead of embedded
-- [ ] Case tab: every printable STL with size, volume, download
-- [ ] Trackball tab: cradle variants, retainer, ball, stack heights
-- [ ] PCBs tab: KiCad GLB per board, layer view, fab downloads (`make pcb-3d`)
-- [ ] Keymap tab generated from the ZMK keymap
-- [ ] Build & BOM tab generated from `spec/03-bom.md` and the tickets
-- [ ] Overview tab
-- [ ] `tests/test_site.py` covers the data, the asset paths and the shell
-- [ ] README, `spec/11-case.md` and `hardware/case/README.md` point at the new targets
+- [x] Explorer ported, case meshes fetched instead of embedded
+- [x] Case tab: every printable STL with size, volume, download
+- [x] Trackball tab: cradle variants, retainer, ball, stack heights
+- [x] PCBs tab: KiCad GLB per board, layer view, fab downloads (`make pcb-3d`)
+- [x] Keymap tab generated from the ZMK keymap
+- [x] Build & BOM tab generated from `spec/03-bom.md` and the tickets
+- [x] Overview tab
+- [x] `tests/test_site.py` covers the data, the asset paths and the shell
+- [x] README, `spec/11-case.md` and `hardware/case/README.md` point at the new targets
+- [ ] Merged to main, so the published page shows the tabs (waits for the user)
