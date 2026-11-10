@@ -1,0 +1,851 @@
+{
+ "density_pla_g_cm3": 1.24,
+ "mass_note": "Mass of the solid mesh in PLA (1.24 g/cm3): an upper bound, a print with 20 to 30 % infill weighs much less.",
+ "groups": [
+  {
+   "id": "right",
+   "label": "Right half"
+  },
+  {
+   "id": "left",
+   "label": "Left half"
+  },
+  {
+   "id": "test",
+   "label": "Test prints"
+  },
+  {
+   "id": "cradle",
+   "label": "Trackball cradle"
+  },
+  {
+   "id": "retainer",
+   "label": "Ball retainer"
+  }
+ ],
+ "parts": [
+  {
+   "id": "tray-right",
+   "path": "hardware/case/stl/tray-right.stl",
+   "group": "right",
+   "name": "Tray, right",
+   "role": "The case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, five standoffs for M2 heat-set inserts, four foot magnet pockets from below. Carries the pocket for the trackball cradle.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Flat on the bed, cavities open upwards; the only bridges are the USB opening (11 mm), the switch slot, the LED window and the magnet pockets.",
+   "previews": [
+    "hardware/case/preview/assembly-right.png",
+    "hardware/case/preview/box-right.png",
+    "hardware/case/preview/section-right.png",
+    "hardware/case/preview/tray-bottom-right.png"
+   ],
+   "bbox_min": [
+    -78.73,
+    -11.95,
+    -14.1
+   ],
+   "bbox_max": [
+    49.55,
+    83.2,
+    8.7
+   ],
+   "size": [
+    128.28,
+    95.15,
+    22.8
+   ],
+   "triangles": 9976,
+   "volume_cm3": 91.64,
+   "mass_g_solid": 113.6,
+   "watertight": false,
+   "non_manifold_edges": 2
+  },
+  {
+   "id": "box-cap-right",
+   "path": "hardware/case/stl/box-cap-right.stl",
+   "group": "right",
+   "name": "Controller box cap, right",
+   "role": "Roof of the controller box: a 2 mm plate in the rebate plus an L-shaped skirt towards the keys and the thumb keys, held by two M2 screws in the corner bosses. The wordmark is engraved 0.6 mm into the plate.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down (plate on the bed). A filament change at 0.6 mm gives a two-colour wordmark.",
+   "previews": [
+    "hardware/case/preview/assembly-right.png",
+    "hardware/case/preview/box-right.png",
+    "hardware/case/preview/cap-logo-right.png"
+   ],
+   "bbox_min": [
+    -73.55,
+    -6.8,
+    0.3
+   ],
+   "bbox_max": [
+    -45.5,
+    50.6,
+    8.7
+   ],
+   "size": [
+    28.05,
+    57.4,
+    8.4
+   ],
+   "triangles": 924,
+   "volume_cm3": 3.88,
+   "mass_g_solid": 4.8,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "lid-outer-right",
+   "path": "hardware/case/stl/lid-outer-right.stl",
+   "group": "right",
+   "name": "Lid, outer plate, right",
+   "role": "The pinky-side half of the transport cover. Carries the 16 mm ball window, the four roof magnets and the even hinge knuckles; folded, it lies under the half as the tenting foot.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down; the magnet pockets print as plain holes on a 0.6 mm skin. Joined to the inner plate by a 2 mm steel pin.",
+   "previews": [
+    "hardware/case/preview/lid-hinge-right.png",
+    "hardware/case/preview/lid-on-right.png"
+   ],
+   "bbox_min": [
+    -33.5,
+    -11.95,
+    2.0
+   ],
+   "bbox_max": [
+    49.55,
+    83.2,
+    17.01
+   ],
+   "size": [
+    83.05,
+    95.15,
+    15.01
+   ],
+   "triangles": 5506,
+   "volume_cm3": 29.16,
+   "mass_g_solid": 36.2,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "lid-inner-right",
+   "path": "hardware/case/stl/lid-inner-right.stl",
+   "group": "right",
+   "name": "Lid, inner plate, right",
+   "role": "The controller and thumb-side half of the transport cover with the odd hinge knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down. Joined to the outer plate by a 2 mm steel pin.",
+   "previews": [
+    "hardware/case/preview/lid-hinge-right.png",
+    "hardware/case/preview/lid-on-right.png"
+   ],
+   "bbox_min": [
+    -78.73,
+    -9.72,
+    2.0
+   ],
+   "bbox_max": [
+    -28.5,
+    82.05,
+    17.01
+   ],
+   "size": [
+    50.23,
+    91.77,
+    15.01
+   ],
+   "triangles": 2406,
+   "volume_cm3": 15.79,
+   "mass_g_solid": 19.6,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "lid-right",
+   "path": "hardware/case/stl/lid-right.stl",
+   "group": "right",
+   "name": "Lid, closed pair, right",
+   "role": "Both lid plates closed on the tray, as held on top by the inner lip. One mesh of the two plates for the assembled and exploded views.",
+   "printed": false,
+   "print_notes": "Display only, do not print: print lid-outer and lid-inner instead.",
+   "previews": [
+    "hardware/case/preview/lid-hinge-right.png",
+    "hardware/case/preview/lid-on-right.png"
+   ],
+   "bbox_min": [
+    -78.73,
+    -11.95,
+    2.0
+   ],
+   "bbox_max": [
+    49.55,
+    83.2,
+    17.01
+   ],
+   "size": [
+    128.28,
+    95.15,
+    15.01
+   ],
+   "triangles": 7992,
+   "volume_cm3": 44.95,
+   "mass_g_solid": 55.7,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "lid-folded-right",
+   "path": "hardware/case/stl/lid-folded-right.stl",
+   "group": "right",
+   "name": "Lid, folded as foot, right",
+   "role": "Both lid plates in the folded position under the tray, tilting the half by 18 degrees as a tenting foot.",
+   "printed": false,
+   "print_notes": "Display only, do not print: print lid-outer and lid-inner instead.",
+   "previews": [
+    "hardware/case/preview/lid-folded-right.png",
+    "hardware/case/preview/lid-foot-right.png"
+   ],
+   "bbox_min": [
+    -58.33,
+    -11.95,
+    -30.9
+   ],
+   "bbox_max": [
+    49.55,
+    83.2,
+    17.01
+   ],
+   "size": [
+    107.88,
+    95.15,
+    47.91
+   ],
+   "triangles": 8068,
+   "volume_cm3": 44.95,
+   "mass_g_solid": 55.7,
+   "watertight": false,
+   "non_manifold_edges": 12
+  },
+  {
+   "id": "tray-left",
+   "path": "hardware/case/stl/tray-left.stl",
+   "group": "left",
+   "name": "Tray, left",
+   "role": "The case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, five standoffs for M2 heat-set inserts, four foot magnet pockets from below.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Flat on the bed, cavities open upwards; the only bridges are the USB opening (11 mm), the switch slot, the LED window and the magnet pockets.",
+   "previews": [
+    "hardware/case/preview/assembly-left.png"
+   ],
+   "bbox_min": [
+    -49.55,
+    -11.95,
+    -14.1
+   ],
+   "bbox_max": [
+    78.73,
+    82.05,
+    8.7
+   ],
+   "size": [
+    128.28,
+    94.0,
+    22.8
+   ],
+   "triangles": 7966,
+   "volume_cm3": 90.13,
+   "mass_g_solid": 111.8,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "box-cap-left",
+   "path": "hardware/case/stl/box-cap-left.stl",
+   "group": "left",
+   "name": "Controller box cap, left",
+   "role": "Roof of the controller box: a 2 mm plate in the rebate plus an L-shaped skirt towards the keys and the thumb keys, held by two M2 screws in the corner bosses. The wordmark is engraved 0.6 mm into the plate.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down (plate on the bed). A filament change at 0.6 mm gives a two-colour wordmark.",
+   "previews": [
+    "hardware/case/preview/assembly-left.png",
+    "hardware/case/preview/cap-logo-right.png"
+   ],
+   "bbox_min": [
+    45.5,
+    -6.8,
+    0.3
+   ],
+   "bbox_max": [
+    73.55,
+    50.6,
+    8.7
+   ],
+   "size": [
+    28.05,
+    57.4,
+    8.4
+   ],
+   "triangles": 922,
+   "volume_cm3": 3.88,
+   "mass_g_solid": 4.8,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "lid-outer-left",
+   "path": "hardware/case/stl/lid-outer-left.stl",
+   "group": "left",
+   "name": "Lid, outer plate, left",
+   "role": "The pinky-side half of the transport cover. Carries the four roof magnets and the even hinge knuckles; folded, it lies under the half as the tenting foot.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down; the magnet pockets print as plain holes on a 0.6 mm skin. Joined to the inner plate by a 2 mm steel pin.",
+   "previews": [],
+   "bbox_min": [
+    -49.55,
+    -11.95,
+    2.0
+   ],
+   "bbox_max": [
+    15.5,
+    71.6,
+    17.01
+   ],
+   "size": [
+    65.05,
+    83.55,
+    15.01
+   ],
+   "triangles": 4668,
+   "volume_cm3": 20.0,
+   "mass_g_solid": 24.8,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "lid-inner-left",
+   "path": "hardware/case/stl/lid-inner-left.stl",
+   "group": "left",
+   "name": "Lid, inner plate, left",
+   "role": "The controller and thumb-side half of the transport cover with the odd hinge knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.2 mm layers, 3 perimeters, 20 % infill, no supports. Roof down. Joined to the outer plate by a 2 mm steel pin.",
+   "previews": [],
+   "bbox_min": [
+    10.5,
+    -11.95,
+    2.0
+   ],
+   "bbox_max": [
+    78.73,
+    82.05,
+    17.01
+   ],
+   "size": [
+    68.23,
+    94.0,
+    15.01
+   ],
+   "triangles": 3340,
+   "volume_cm3": 22.05,
+   "mass_g_solid": 27.3,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "lid-left",
+   "path": "hardware/case/stl/lid-left.stl",
+   "group": "left",
+   "name": "Lid, closed pair, left",
+   "role": "Both lid plates closed on the tray, as held on top by the inner lip. One mesh of the two plates for the assembled and exploded views.",
+   "printed": false,
+   "print_notes": "Display only, do not print: print lid-outer and lid-inner instead.",
+   "previews": [],
+   "bbox_min": [
+    -49.55,
+    -11.95,
+    2.0
+   ],
+   "bbox_max": [
+    78.73,
+    82.05,
+    17.01
+   ],
+   "size": [
+    128.28,
+    94.0,
+    15.01
+   ],
+   "triangles": 8032,
+   "volume_cm3": 42.04,
+   "mass_g_solid": 52.1,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "lid-folded-left",
+   "path": "hardware/case/stl/lid-folded-left.stl",
+   "group": "left",
+   "name": "Lid, folded as foot, left",
+   "role": "Both lid plates in the folded position under the tray, tilting the half by 18 degrees as a tenting foot.",
+   "printed": false,
+   "print_notes": "Display only, do not print: print lid-outer and lid-inner instead.",
+   "previews": [],
+   "bbox_min": [
+    -49.55,
+    -11.95,
+    -37.79
+   ],
+   "bbox_max": [
+    61.89,
+    82.05,
+    17.01
+   ],
+   "size": [
+    111.44,
+    94.0,
+    54.8
+   ],
+   "triangles": 8020,
+   "volume_cm3": 42.04,
+   "mass_g_solid": 52.1,
+   "watertight": false,
+   "non_manifold_edges": 5
+  },
+  {
+   "id": "pocket-test-right",
+   "path": "hardware/case/stl/pocket-test-right.stl",
+   "group": "test",
+   "name": "Pocket test, right",
+   "role": "The 50 x 50 mm corner of the right tray around the ball pocket, to check the fit of the cradle and the PCB notch before printing the whole tray.",
+   "printed": true,
+   "print_notes": "0.12 mm layers, otherwise as the tray. Print it with the cradle and a scrap PCB with the notch before the full tray.",
+   "previews": [
+    "hardware/case/preview/section-right.png"
+   ],
+   "bbox_min": [
+    -38.0,
+    41.0,
+    -14.1
+   ],
+   "bbox_max": [
+    12.0,
+    83.2,
+    5.01
+   ],
+   "size": [
+    50.0,
+    42.2,
+    19.11
+   ],
+   "triangles": 3666,
+   "volume_cm3": 13.9,
+   "mass_g_solid": 17.2,
+   "watertight": false,
+   "non_manifold_edges": 3
+  },
+  {
+   "id": "cradle-19mm-pocket",
+   "path": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
+   "group": "cradle",
+   "name": "Cradle, 19.05 mm ball, pocket",
+   "role": "The r2 default: cup with three static ceramic bearings for a 19.05 mm ball and the housing for the PMW3610 sensor board, standing on the case floor in the pocket beside the right PCB.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.12 mm layers, 3 perimeters, 30 % infill, no supports. Upright, housing down, open side on the bed. Press in three 2 mm ZrO2 bearing balls and deburr the rim.",
+   "previews": [
+    "hardware/trackball-cradle/preview/assembly-19mm-pocket.png",
+    "hardware/trackball-cradle/preview/section-19mm-pocket.png"
+   ],
+   "bbox_min": [
+    -14.5,
+    -14.5,
+    -11.6
+   ],
+   "bbox_max": [
+    14.5,
+    14.5,
+    6.58
+   ],
+   "size": [
+    29.0,
+    29.0,
+    18.18
+   ],
+   "triangles": 7720,
+   "volume_cm3": 4.94,
+   "mass_g_solid": 6.1,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "cradle-25mm-pocket",
+   "path": "hardware/trackball-cradle/stl/cradle-25mm-pocket.stl",
+   "group": "cradle",
+   "name": "Cradle, 25 mm ball, pocket",
+   "role": "Fallback for a 25 mm ball in the same pocket. Needs a PCB notch apothem of 16.5 mm and a 35 mm pocket, i.e. a different PCB.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.12 mm layers, 3 perimeters, 30 % infill, no supports. Upright, housing down, open side on the bed. Press in three 2 mm ZrO2 bearing balls and deburr the rim.",
+   "previews": [
+    "hardware/trackball-cradle/preview/assembly-25mm-pocket.png"
+   ],
+   "bbox_min": [
+    -14.5,
+    -14.5,
+    -11.6
+   ],
+   "bbox_max": [
+    14.5,
+    14.5,
+    9.55
+   ],
+   "size": [
+    29.0,
+    29.0,
+    21.15
+   ],
+   "triangles": 7798,
+   "volume_cm3": 6.73,
+   "mass_g_solid": 8.3,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "cradle-25mm-cutout",
+   "path": "hardware/trackball-cradle/stl/cradle-25mm-cutout.stl",
+   "group": "cradle",
+   "name": "Cradle, 25 mm ball, PCB cutout (r1)",
+   "role": "The r1 design: sits in a 30 mm round cutout of the PCB with a 40 mm flange under the board. Kept for reference.",
+   "printed": true,
+   "print_notes": "PETG or PLA, 0.12 mm layers, 3 perimeters, 30 % infill, no supports. Upright, housing down, open side on the bed. Press in three 2 mm ZrO2 bearing balls and deburr the rim.",
+   "previews": [
+    "hardware/trackball-cradle/preview/section-25mm-cutout.png"
+   ],
+   "bbox_min": [
+    -20.0,
+    -20.0,
+    -7.75
+   ],
+   "bbox_max": [
+    20.0,
+    20.0,
+    9.55
+   ],
+   "size": [
+    40.0,
+    40.0,
+    17.3
+   ],
+   "triangles": 9348,
+   "volume_cm3": 7.34,
+   "mass_g_solid": 9.1,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "retainer-19mm",
+   "path": "hardware/trackball-cradle/stl/retainer-19mm.stl",
+   "group": "retainer",
+   "name": "Retainer, 19.05 mm ball",
+   "role": "Optional clip-on ring with two claws over the ball's shoulders, away from the thumb, so the ball stays in when the half is turned over. Snaps onto the cup rim and comes off by hand.",
+   "printed": true,
+   "print_notes": "PETG (the snap fingers bend 2.3 %, which PLA only just takes), 0.12 mm layers, upright as exported, no supports.",
+   "previews": [
+    "hardware/trackball-cradle/preview/assembly-19mm-pocket.png"
+   ],
+   "bbox_min": [
+    -12.92,
+    -12.92,
+    0.98
+   ],
+   "bbox_max": [
+    12.92,
+    12.92,
+    12.58
+   ],
+   "size": [
+    25.85,
+    25.85,
+    11.6
+   ],
+   "triangles": 2656,
+   "volume_cm3": 0.54,
+   "mass_g_solid": 0.7,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "retainer-25mm",
+   "path": "hardware/trackball-cradle/stl/retainer-25mm.stl",
+   "group": "retainer",
+   "name": "Retainer, 25 mm ball",
+   "role": "The same clip-on ring for the 25 mm cups (pocket and cutout variant).",
+   "printed": true,
+   "print_notes": "PETG (the snap fingers bend 2.3 %, which PLA only just takes), 0.12 mm layers, upright as exported, no supports.",
+   "previews": [
+    "hardware/trackball-cradle/preview/assembly-25mm-pocket.png"
+   ],
+   "bbox_min": [
+    -15.9,
+    -15.9,
+    3.95
+   ],
+   "bbox_max": [
+    15.9,
+    15.9,
+    17.11
+   ],
+   "size": [
+    31.8,
+    31.8,
+    13.16
+   ],
+   "triangles": 2492,
+   "volume_cm3": 0.73,
+   "mass_g_solid": 0.9,
+   "watertight": true,
+   "non_manifold_edges": 0
+  }
+ ],
+ "excluded": {},
+ "previews": [
+  {
+   "path": "hardware/case/preview/assembly-left.png",
+   "caption": "Left half assembled",
+   "parts": [
+    "box-cap-left",
+    "tray-left"
+   ]
+  },
+  {
+   "path": "hardware/case/preview/assembly-right.png",
+   "caption": "Right half assembled",
+   "parts": [
+    "box-cap-right",
+    "tray-right"
+   ]
+  },
+  {
+   "path": "hardware/case/preview/box-right.png",
+   "caption": "Controller box close-up, right",
+   "parts": [
+    "box-cap-right",
+    "tray-right"
+   ]
+  },
+  {
+   "path": "hardware/case/preview/cap-logo-right.png",
+   "caption": "Cap with the engraved wordmark",
+   "parts": [
+    "box-cap-left",
+    "box-cap-right"
+   ]
+  },
+  {
+   "path": "hardware/case/preview/lid-folded-right.png",
+   "caption": "Lid folded, right",
+   "parts": [
+    "lid-folded-right"
+   ]
+  },
+  {
+   "path": "hardware/case/preview/lid-foot-right.png",
+   "caption": "Lid as tenting foot, right",
+   "parts": [
+    "lid-folded-right"
+   ]
+  },
+  {
+   "path": "hardware/case/preview/lid-hinge-right.png",
+   "caption": "Lid hinge close-up, right",
+   "parts": [
+    "lid-inner-right",
+    "lid-outer-right",
+    "lid-right"
+   ]
+  },
+  {
+   "path": "hardware/case/preview/lid-on-right.png",
+   "caption": "Lid on for transport, right",
+   "parts": [
+    "lid-inner-right",
+    "lid-outer-right",
+    "lid-right"
+   ]
+  },
+  {
+   "path": "hardware/case/preview/section-right.png",
+   "caption": "Section through the ball, right half",
+   "parts": [
+    "pocket-test-right",
+    "tray-right"
+   ]
+  },
+  {
+   "path": "hardware/case/preview/tray-bottom-right.png",
+   "caption": "Tray from below, right",
+   "parts": [
+    "tray-right"
+   ]
+  },
+  {
+   "path": "hardware/trackball-cradle/preview/assembly-19mm-pocket.png",
+   "caption": "Cradle assembled, 19.05 mm ball",
+   "parts": [
+    "cradle-19mm-pocket",
+    "retainer-19mm"
+   ]
+  },
+  {
+   "path": "hardware/trackball-cradle/preview/assembly-25mm-pocket.png",
+   "caption": "Cradle assembled, 25 mm ball",
+   "parts": [
+    "cradle-25mm-pocket",
+    "retainer-25mm"
+   ]
+  },
+  {
+   "path": "hardware/trackball-cradle/preview/section-19mm-pocket.png",
+   "caption": "Section, 19.05 mm ball, pocket",
+   "parts": [
+    "cradle-19mm-pocket"
+   ]
+  },
+  {
+   "path": "hardware/trackball-cradle/preview/section-25mm-cutout.png",
+   "caption": "Section, 25 mm ball, PCB cutout",
+   "parts": [
+    "cradle-25mm-cutout"
+   ]
+  }
+ ],
+ "trackball": {
+  "default": "19mm-pocket",
+  "variants": [
+   {
+    "id": "19mm-pocket",
+    "label": "19 mm pocket",
+    "cradle": "cradle-19mm-pocket",
+    "retainer": "retainer-19mm",
+    "mount": "pocket",
+    "stack": {
+     "ball_d": 19.05,
+     "ball_centre_z": 7.575,
+     "ball_top_above_pcb_top": 17.1,
+     "ball_bottom_z": -1.95,
+     "bearing_contact_z": 2.112,
+     "rim_z": 6.575,
+     "rim_below_equator": 1.0,
+     "lens_reference_plane_dist": 2.4,
+     "sensor_pcb_plane_z": -7.75,
+     "lowest_plastic_z": -11.6,
+     "floor_z": -11.6,
+     "cup_outer_d": 23.05,
+     "envelope_d_above_pcb": 24.1,
+     "notch_apothem": 15.0,
+     "housing_x": 29.0,
+     "housing_y": 29.0,
+     "footprint_x": 29.0,
+     "footprint_y": 29.0,
+     "retainer_top_z": 12.576,
+     "retainer_outer_d": 25.85
+    },
+    "retention": {
+     "trapped": true,
+     "without_retainer_trapped": false,
+     "guaranteed_margin": 0.669,
+     "ball_lift_play": 0.82,
+     "rest_gap": 0.389,
+     "pull_off_min_gap": 0.389,
+     "open_sector_deg": 158.989,
+     "boss_clearance": 1.005
+    },
+    "previews": [
+     "hardware/trackball-cradle/preview/assembly-19mm-pocket.png",
+     "hardware/trackball-cradle/preview/section-19mm-pocket.png"
+    ]
+   },
+   {
+    "id": "25mm-pocket",
+    "label": "25 mm pocket",
+    "cradle": "cradle-25mm-pocket",
+    "retainer": "retainer-25mm",
+    "mount": "pocket",
+    "stack": {
+     "ball_d": 25.0,
+     "ball_centre_z": 10.55,
+     "ball_top_above_pcb_top": 23.05,
+     "ball_bottom_z": -1.95,
+     "bearing_contact_z": 3.38,
+     "rim_z": 9.55,
+     "rim_below_equator": 1.0,
+     "lens_reference_plane_dist": 2.4,
+     "sensor_pcb_plane_z": -7.75,
+     "lowest_plastic_z": -11.6,
+     "floor_z": -11.6,
+     "cup_outer_d": 29.0,
+     "envelope_d_above_pcb": 29.0,
+     "notch_apothem": 16.5,
+     "housing_x": 29.0,
+     "housing_y": 29.0,
+     "footprint_x": 29.0,
+     "footprint_y": 29.0,
+     "retainer_top_z": 17.113,
+     "retainer_outer_d": 31.8
+    },
+    "retention": {
+     "trapped": true,
+     "without_retainer_trapped": false,
+     "guaranteed_margin": 0.888,
+     "ball_lift_play": 0.8,
+     "rest_gap": 0.386,
+     "pull_off_min_gap": 0.386,
+     "open_sector_deg": 168.619,
+     "boss_clearance": null
+    },
+    "previews": [
+     "hardware/trackball-cradle/preview/assembly-25mm-pocket.png"
+    ]
+   },
+   {
+    "id": "25mm-cutout",
+    "label": "25 mm cutout",
+    "cradle": "cradle-25mm-cutout",
+    "retainer": "retainer-25mm",
+    "mount": "cutout",
+    "stack": {
+     "ball_d": 25.0,
+     "ball_centre_z": 10.55,
+     "ball_top_above_pcb_top": 23.05,
+     "ball_bottom_z": -1.95,
+     "bearing_contact_z": 3.38,
+     "rim_z": 9.55,
+     "rim_below_equator": 1.0,
+     "lens_reference_plane_dist": 2.4,
+     "sensor_pcb_plane_z": -7.75,
+     "lowest_plastic_z": -7.75,
+     "floor_z": -11.6,
+     "cup_outer_d": 29.0,
+     "envelope_d_above_pcb": 29.0,
+     "notch_apothem": 15.0,
+     "housing_x": 30.0,
+     "housing_y": 29.0,
+     "footprint_x": 40.0,
+     "footprint_y": 40.0,
+     "retainer_top_z": 17.113,
+     "retainer_outer_d": 31.8
+    },
+    "retention": {
+     "trapped": true,
+     "without_retainer_trapped": false,
+     "guaranteed_margin": 0.904,
+     "ball_lift_play": 0.8,
+     "rest_gap": 0.386,
+     "pull_off_min_gap": 0.386,
+     "open_sector_deg": 168.619,
+     "boss_clearance": null
+    },
+    "previews": [
+     "hardware/trackball-cradle/preview/section-25mm-cutout.png"
+    ]
+   }
+  ]
+ }
+}
