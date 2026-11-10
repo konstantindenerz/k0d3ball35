@@ -90,3 +90,17 @@ def test_layout_names_the_case_stls(tracked):
         assert set(h["case_files"]) == {"tray", "cap", "lid", "lid_folded"}
         for path in h["case_files"].values():
             assert path in tracked and half in path
+
+
+def test_explorer_loads_every_case_part():
+    """The Explorer fetches each half's case STLs by the case_files keys; a key the module does not
+    name would silently leave a part out of the exploded view."""
+    layout = json.loads((DATA / "layout.json").read_text())
+    js = (DOCS / "js" / "tabs" / "explorer.js").read_text()
+    names = re.search(r"CASE_KEYS\s*=\s*\[([^\]]*)\]", js)
+    assert names, "explorer.js lists the case parts it loads in CASE_KEYS"
+    keys = set(re.findall(r"'(\w+)'", names.group(1)))
+    for half, h in layout["halves"].items():
+        assert keys == set(h["case_files"]), f"{half}: explorer loads {sorted(keys)}, layout has {sorted(h['case_files'])}"
+    for k in keys:
+        assert f"caseMesh('{k}'" in js, f"explorer.js never places the {k} mesh"

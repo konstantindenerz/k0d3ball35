@@ -32,7 +32,7 @@ function outlineShape(points, holes = []) {
   }
   return s;
 }
-// Extrude a layout-plane shape downwards from `top` by `depth` (layout y -> world Z, height -> world Y)
+// Extrude a layout-plane shape down by depth, starting at height top (layout y -> world Z, height -> world Y)
 function slab(shape, depth, top, mat) {
   const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false });
   const m = new THREE.Mesh(g, mat);
@@ -326,8 +326,9 @@ function loadCase(which) {
   if (!caseCache.has(which)) {
     const files = D.halves[which].case_files;
     const frac = Object.fromEntries(CASE_KEYS.map((k) => [k, 0]));
+    let failed = false;   // the other files keep reporting progress after one failed; keep the error on screen
     const report = () => {
-      if (half !== which) return;
+      if (half !== which || failed) return;
       const f = CASE_KEYS.reduce((s, k) => s + frac[k], 0) / CASE_KEYS.length;
       showStatus(`Loading the ${which} case parts`, f);
     };
@@ -341,7 +342,7 @@ function loadCase(which) {
       geom.computeBoundingSphere();
       return [k, geom];
     })).then(Object.fromEntries);
-    p.catch(() => caseCache.delete(which));   // a later visit tries again
+    p.catch(() => { failed = true; caseCache.delete(which); });   // a later visit tries again
     caseCache.set(which, p);
   }
   return caseCache.get(which);
@@ -588,6 +589,7 @@ function frame(now) {
   renderer.render(scene, camera);
   const showLabels = explode > 0.35;
   const offset = Math.min(110, stageW * 0.2);   // leader length, shorter on narrow screens
+  const widths = labelNodes.map((n) => n.el.offsetWidth);   // read before any write: one layout per frame
   layers.forEach((l, i) => {
     const { el: lab, line } = labelNodes[i];
     const on = showLabels && l.group.visible;
@@ -596,10 +598,11 @@ function frame(now) {
     const a = l.anchor, y = a.y + l.baseY + l.explode * explode;
     const p = project(a.x, y, a.z);
     const side = (a.x * root.scale.x) < (target.x * root.scale.x) ? -1 : 1;
-    const lx = p.x + side * offset, ly = p.y - 18;
+    const half = widths[i] / 2 + 4;   // keep the label inside the stage on narrow screens
+    const lx = THREE.MathUtils.clamp(p.x + side * offset, half, Math.max(half, stageW - half)), ly = p.y - 18;
     lab.style.left = `${lx}px`; lab.style.top = `${ly}px`;
     line.setAttribute('x1', p.x); line.setAttribute('y1', p.y);
-    line.setAttribute('x2', lx - side * Math.min(48, offset * 0.44)); line.setAttribute('y2', ly);
+    line.setAttribute('x2', lx - side * Math.min(48, offset * 0.44, half)); line.setAttribute('y2', ly);
     line.setAttribute('opacity', p.behind ? 0 : 1);
   });
   if (!el.sectionLabel.hidden && H.ball) {
