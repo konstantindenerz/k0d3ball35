@@ -23,12 +23,12 @@ BUILD      := build
 SCHS := $(wildcard $(HALF_SCHS) $(SENSOR_SCH))
 PCBS := $(wildcard $(HALF_PCBS) $(SENSOR_PCB))
 
-.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case site exploded site-serve print print-check print-plots clean help
+.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case site pcb-3d exploded site-serve print print-check print-plots clean help
 
 all: layout board erc drc gerbers
 
 help:
-	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
+	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-12s %s\n", $$1, $$2}'
 
 layout: ## Generate points-<half>.json, outline-<half>.dxf and previews from the layout yaml
 	$(PY) scripts/gen_layout.py
@@ -90,6 +90,9 @@ case-logo: ## Regenerate logo_data.scad and spec/images/logo.svg from spec/image
 
 case: ## Render the printed case: STLs, floor DXFs, previews and stack.json (needs OpenSCAD)
 	$(MAKE) -C hardware/case all PYTHON=../../$(PY)
+
+pcb-3d: ## Export the board GLBs and per-layer SVGs the page shows (renders/*.glb, renders/layers/)
+	KICAD_CLI=$(KICAD_CLI) KPY=$(KPY) $(PY) scripts/export_site_pcbs.py
 
 site: ## Regenerate the page data in docs/data (run after `make layout`, `make case`, `make pcb-3d`)
 	$(PY) docs/build.py

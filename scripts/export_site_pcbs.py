@@ -5,7 +5,8 @@
 Per board (left, right, sensor):
   hardware/<board>/renders/k0d3ball35-<board>.glb   binary glTF from `kicad-cli pcb export glb`
       with tracks, pads, zones, silkscreen and soldermask, then compacted: the primitives of each
-      mesh are merged per material and identical vertices are welded. KiCad writes one primitive
+      mesh are merged per material, identical vertices are welded and the board's own flat meshes
+      lose their normals (viewers shade them flat, which is exact for extruded copper and mask). KiCad writes one primitive
       per copper shape (11 000 on a main board), which makes the file 12 MB and slow to parse;
       merged it is a few MB with the same triangles. The export timestamp is dropped so a re-run
       leaves git clean. Frame as KiCad writes it: glTF Y up, metres.
@@ -85,6 +86,7 @@ def write_glb(js: dict, bin_: bytes) -> bytes:
             + struct.pack("<II", len(bin_), 0x004E4942) + bin_)
 
 
+BOARD_MESH = re.compile(r"^k0d3ball35-\w+_(copper|pad|via|silkscreen|soldermask|PCB)$")
 _CT = {5126: np.float32, 5125: np.uint32, 5123: np.uint16, 5121: np.uint8}
 _NC = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4}
 
@@ -122,6 +124,9 @@ def compact_glb(data: bytes, board: str) -> bytes:
 
     meshes = []
     for mesh in js["meshes"]:
+        # the board's own meshes (copper, pads, vias, silkscreen, soldermask, body) are flat extrusions:
+        # without normals glTF viewers shade them flat, which is exact, and their vertices weld by position
+        flat = bool(BOARD_MESH.search(mesh.get("name", "")))
         groups: dict = {}
         for p in mesh["primitives"]:
             assert p.get("mode", 4) == 4 and set(p["attributes"]) <= {"POSITION", "NORMAL"}, p
@@ -136,9 +141,10 @@ def compact_glb(data: bytes, board: str) -> bytes:
             nor = np.concatenate([g[1] for g in parts])
             base = np.cumsum([0] + [len(g[0]) for g in parts[:-1]])
             idx = np.concatenate([g[2] + b for g, b in zip(parts, base)])
-            # weld: identical position and normal -> one vertex (first occurrence keeps its order)
-            key = np.concatenate([pos, nor], axis=1).astype(np.float32)
-            _, first, inv = np.unique(key.view(np.dtype((np.void, key.dtype.itemsize * 6))).ravel(),
+            # weld: identical position (and normal, where kept) -> one vertex, first occurrence keeps its order
+            key = (pos if flat else np.concatenate([pos, nor], axis=1)).astype(np.float32)
+            key = np.ascontiguousarray(key)
+            _, first, inv = np.unique(key.view(np.dtype((np.void, key.dtype.itemsize * key.shape[1]))).ravel(),
                                       return_index=True, return_inverse=True)
             order = np.argsort(first)
             rank = np.empty_like(order)
@@ -147,8 +153,10 @@ def compact_glb(data: bytes, board: str) -> bytes:
             idx = rank[inv.ravel()][idx]
             pos, nor = pos[keep].astype(np.float32), nor[keep].astype(np.float32)
             ityp = np.uint16 if len(pos) < 65535 else np.uint32
-            prim = {"attributes": {"POSITION": put(pos, 34962, "VEC3", True), "NORMAL": put(nor, 34962, "VEC3")},
-                    "indices": put(idx.astype(ityp), 34963, "SCALAR"), "mode": 4}
+            attrs = {"POSITION": put(pos, 34962, "VEC3", True)}
+            if not flat:
+                attrs["NORMAL"] = put(nor, 34962, "VEC3")
+            prim = {"attributes": attrs, "indices": put(idx.astype(ityp), 34963, "SCALAR"), "mode": 4}
             if mat is not None:
                 prim["material"] = mat
             prims.append(prim)
