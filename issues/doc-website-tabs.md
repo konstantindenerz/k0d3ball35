@@ -2,7 +2,7 @@
 title: Project website with tabs for the real 3D files, PCBs, keymap and BOM
 type: feature
 priority: P2
-status: in-progress
+status: done
 area: doc
 created: 2026-11-10
 ---
@@ -40,4 +40,4 @@ keymap on the page. The site becomes a project page with one tab ("sheet") per a
 - [x] Overview tab
 - [x] `tests/test_site.py` covers the data, the asset paths and the shell
 - [x] README, `spec/11-case.md` and `hardware/case/README.md` point at the new targets
-- [ ] Merged to main, so the published page shows the tabs (waits for the user)
+- [x] Merged to main, so the published page shows the tabs (2026-11-10)
