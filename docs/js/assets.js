@@ -3,7 +3,7 @@
 //
 // The published page (GitHub Pages serves only docs/) loads the real repository files - STL, GLB,
 // SVG, PNG - from raw.githubusercontent.com, so there are no copies to go stale. Served from
-// localhost (`make site-serve`, repo root as document root) the same repo paths resolve against the
+// localhost or a LAN address (`make site-serve`, repo root as document root) the same repo paths resolve against the
 // working tree, which previews a branch before it is merged.
 //   ?ref=<branch>  load the files of that branch from GitHub instead of main
 //   ?remote        on localhost, load from GitHub anyway (how the published page behaves)
@@ -11,7 +11,10 @@
 export const REPO = 'konstantindenerz/k0d3ball35';
 const params = new URLSearchParams(location.search);
 const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]', ''];
-export const isLocal = LOCAL_HOSTS.includes(location.hostname) && !params.has('remote') && !params.has('ref');
+// A private LAN address (`make site-serve SITE_HOST=0.0.0.0`, opened from a phone) is a local preview too.
+const LAN = /^(10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)|\.local$/;
+const localHost = LOCAL_HOSTS.includes(location.hostname) || LAN.test(location.hostname);
+export const isLocal = localHost && !params.has('remote') && !params.has('ref');
 export const ref = params.get('ref') || 'main';
 
 /** URL of a file given by its path from the repository root, e.g. "hardware/case/stl/tray-right.stl". */

@@ -100,9 +100,10 @@ site: ## Regenerate the page data in docs/data (run after `make layout`, `make c
 exploded: site ## Old name of `make site`
 
 SITE_PORT ?= 8000
-site-serve: ## Serve the page with the working-tree files: http://localhost:$(SITE_PORT)/docs/
+SITE_HOST ?= 127.0.0.1
+site-serve: ## Serve the page with the working-tree files (SITE_HOST=0.0.0.0 for the LAN)
 	@echo "http://localhost:$(SITE_PORT)/docs/"
-	$(PY) -m http.server $(SITE_PORT) --bind 127.0.0.1
+	$(PY) -m http.server $(SITE_PORT) --bind $(SITE_HOST)
 
 print: print-check print-plots ## Everything to print on paper before the order
 
