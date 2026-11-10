@@ -1,0 +1,36 @@
+{
+ "name": "k0d3ball35",
+ "revision": "r2.3",
+ "github": "konstantindenerz/k0d3ball35",
+ "ref": "main",
+ "tabs": [
+  {
+   "id": "overview",
+   "title": "Overview"
+  },
+  {
+   "id": "explorer",
+   "title": "Explorer"
+  },
+  {
+   "id": "case",
+   "title": "Case"
+  },
+  {
+   "id": "trackball",
+   "title": "Trackball"
+  },
+  {
+   "id": "pcbs",
+   "title": "PCBs"
+  },
+  {
+   "id": "keymap",
+   "title": "Keymap"
+  },
+  {
+   "id": "build",
+   "title": "Build & BOM"
+  }
+ ]
+}

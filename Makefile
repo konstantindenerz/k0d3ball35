@@ -23,7 +23,7 @@ BUILD      := build
 SCHS := $(wildcard $(HALF_SCHS) $(SENSOR_SCH))
 PCBS := $(wildcard $(HALF_PCBS) $(SENSOR_PCB))
 
-.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case exploded print print-check print-plots clean help
+.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case site exploded site-serve print print-check print-plots clean help
 
 all: layout board erc drc gerbers
 
@@ -91,8 +91,15 @@ case-logo: ## Regenerate logo_data.scad and spec/images/logo.svg from spec/image
 case: ## Render the printed case: STLs, floor DXFs, previews and stack.json (needs OpenSCAD)
 	$(MAKE) -C hardware/case all PYTHON=../../$(PY)
 
-exploded: ## Rebuild docs/index.html (embeds the case STLs; run after `make case`)
+site: ## Regenerate the page data in docs/data (run after `make layout`, `make case`, `make pcb-3d`)
 	$(PY) docs/build.py
+
+exploded: site ## Old name of `make site`
+
+SITE_PORT ?= 8000
+site-serve: ## Serve the page with the working-tree files: http://localhost:$(SITE_PORT)/docs/
+	@echo "http://localhost:$(SITE_PORT)/docs/"
+	$(PY) -m http.server $(SITE_PORT) --bind 127.0.0.1
 
 print: print-check print-plots ## Everything to print on paper before the order
 

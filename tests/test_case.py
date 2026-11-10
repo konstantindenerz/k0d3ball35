@@ -29,7 +29,6 @@ CRADLE = ROOT / "hardware" / "trackball-cradle"
 SCAD = CASE / "case.scad"
 DATA = CASE / "data.scad"
 LOGO = CASE / "logo_data.scad"
-EXPLODED = ROOT / "docs" / "index.html"
 LOGO_SVG = ROOT / "spec" / "images" / "logo.svg"
 PCB_T = 1.6
 BALL_D = 19.05
@@ -379,27 +378,6 @@ def test_stack_json(stack, cradle_stack):
     assert r["ball_top_z"] == cradle_stack["ball_top_above_pcb_top"]
     assert abs(r["cradle_rim_z"] - cradle_stack["rim_z"]) < 1e-6
     assert stack["right-25mm"]["lid_roof_under_z"] >= 23.05 + 1.0
-
-
-def test_exploded_view_carries_the_current_box_cap(stack):
-    """docs/index.html embeds the case STLs as base64. `make case` rewrites those
-    STLs, so the committed page goes stale unless `make exploded` runs after it; the engraved
-    wordmark is the cheapest thing to check for."""
-    import base64
-    import io
-
-    import numpy as np
-
-    trimesh = pytest.importorskip("trimesh")
-    blobs = re.findall(r'"cap":"([A-Za-z0-9+/=]{100,})"', EXPLODED.read_text())
-    assert len(blobs) == 2, "one embedded box cap per half"
-    for blob, half in zip(blobs, ("left", "right")):
-        v = stack[half]
-        mesh = trimesh.load(io.BytesIO(base64.b64decode(blob)), file_type="stl", force="mesh")
-        # the page's world frame swaps the axes: its y is the layout z
-        n, a, c = mesh.face_normals, mesh.area_faces, mesh.triangles_center
-        engraved = a[(n[:, 1] > 0.7) & (np.abs(c[:, 1] - (v["box_top_z"] - v["logo_depth"])) < 0.01)].sum()
-        assert abs(engraved - v["logo_cap_area"]) < 1.0, f"{half}: run `make exploded`"
 
 
 # ----------------------------------------------------------------- renders
