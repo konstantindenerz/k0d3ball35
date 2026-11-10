@@ -1,2 +1,42 @@
 /* SPDX-License-Identifier: MIT
-   Explorer tab. */
+   Explorer tab: exploded view of one half. Layout, panel, buttons, .seg, .toggles and .dims
+   come from site.css; this file adds the overlays on the stage and the panel details. */
+
+.explorer .xp-stage canvas:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
+
+/* overlays on the stage: leader lines, labels, HUD */
+.explorer .xp-leaders, .explorer .xp-labels { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.explorer .xp-leaders line { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+.explorer .xp-label { position: absolute; transform: translate(-50%, -50%); font: 500 11px/1.2 var(--mono); letter-spacing: .02em; color: var(--ink);
+                      background: color-mix(in srgb, var(--sheet) 85%, transparent); border: 1px solid var(--line); border-radius: var(--radius);
+                      padding: 2px 6px; white-space: nowrap; opacity: 0; transition: opacity .25s; }
+.explorer .xp-label.on { opacity: 1; }
+.explorer .xp-label small { color: var(--muted); font-weight: 400; }
+
+.explorer .xp-hud { position: absolute; left: 16px; top: 14px; max-width: min(70%, 520px); pointer-events: none; }
+.explorer .xp-title { margin: 0; font: 600 20px/1.1 var(--sans); letter-spacing: -.01em; text-wrap: balance; }
+.explorer .xp-hud p { margin: 4px 0 0; color: var(--muted); font-size: 12px; text-wrap: pretty; }
+.explorer .xp-tag { display: inline-block; margin-top: 8px; font: 500 10px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase;
+                    color: var(--signal); border: 1px solid var(--signal); padding: 4px 7px; border-radius: 2px; }
+
+/* panel */
+.explorer .xp-slider { display: grid; gap: 6px; }
+.explorer .xp-slider h2 { margin-bottom: 2px; }
+.explorer .xp-slider h2 label { cursor: pointer; }
+.explorer .xp-row { display: flex; justify-content: space-between; font: 500 12px var(--mono); }
+.explorer .xp-row span { color: var(--muted); }
+.explorer .xp-slider .actions { margin-top: 4px; }
+.explorer .xp-hint { margin: 8px 0 0; font-size: 12px; color: var(--muted); }
+.explorer .xp-disabled { opacity: .5; cursor: default; }
+.explorer .xp-layers { display: grid; grid-template-columns: 1fr; gap: 4px; }
+.explorer .xp-layers label { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+.explorer .xp-swatch { width: 10px; height: 10px; border-radius: 2px; border: 1px solid rgba(0, 0, 0, .2); flex: none; }
+
+@media (max-width: 520px) {
+  .explorer .xp-hud { left: 12px; top: 10px; right: 12px; max-width: none; }
+  .explorer .xp-title { font-size: 16px; }
+  .explorer .xp-hud p { font-size: 11px; }
+  .explorer .xp-label { font-size: 10px; padding: 1px 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) { .explorer .xp-label { transition: none; } }
