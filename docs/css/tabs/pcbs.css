@@ -1,2 +1,92 @@
 /* SPDX-License-Identifier: MIT
-   PCBs tab. */
+   PCBs tab: board picker, 3D view, and the layer plot drawn like a fab plot on vellum. */
+
+.pcbs {
+  --fr4: #CDBE8C;          /* bare laminate under the mask */
+  --plot-grid: color-mix(in srgb, var(--ink) 7%, transparent);
+  --plot-grid-major: color-mix(in srgb, var(--ink) 14%, transparent);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pcbs { --fr4: #8C7F57; } }
+:root[data-theme="dark"] .pcbs { --fr4: #8C7F57; }
+
+/* ------------------------------------------------------------ stage */
+.pcb-stage { isolation: isolate; }
+.pcb-3d, .pcb-plot { position: absolute; inset: 0; }
+.pcb-3d canvas { display: block; width: 100%; height: 100%; }
+.pcb-plot { overflow: hidden; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+.pcb-plot.dragging { cursor: grabbing; }
+.pcb-plot:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
+.pcb-svg { display: block; width: 100%; height: 100%; --hole: var(--stage); }
+
+.pcb-svg .grid-fine, .pcb-svg .grid-major { fill: none; vector-effect: non-scaling-stroke; }
+.pcb-svg .grid-fine { stroke: transparent; stroke-width: 1px; }
+.pcb-svg.zoomed .grid-fine { stroke: var(--plot-grid); }
+.pcb-svg .grid-major { stroke: var(--plot-grid-major); stroke-width: 1px; }
+
+.pcb-substrate { fill: var(--fr4); }
+.pcb-layer.far { opacity: .38; }
+.pcb-layer.kind-mask .mask-fill { opacity: .8; }
+.pcb-layer.kind-mask.far .mask-fill { opacity: .5; }
+.pcb-layer.kind-edge { color: var(--ink); }
+.pcb-layer.kind-edge path { vector-effect: non-scaling-stroke; stroke-width: 1.5px !important; }
+
+.pcb-dims { color: var(--muted); }
+.pcb-dims .dim-line { fill: none; stroke: currentColor; stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.pcb-dims text { fill: currentColor; font-family: var(--mono); font-weight: 500; }
+
+.pcb-plot-status { z-index: 2; }
+.pcb-hud-read { font-variant-numeric: tabular-nums; white-space: pre; text-align: right; }
+.pcb-scale { position: absolute; left: 14px; bottom: 14px; display: flex; flex-direction: column; gap: 4px; pointer-events: none;
+             font: 500 10px/1 var(--mono); color: var(--muted); }
+.pcb-scale-bar { display: block; height: 6px; border: 1px solid var(--ink); border-top: 0; min-width: 4px; }
+
+.pcb-tools-plot [data-flip][aria-pressed="true"] { background: var(--signal-soft); border-color: var(--signal); }
+
+/* ------------------------------------------------------------ panel */
+.pcb-panel section { min-width: 0; }
+.pcb-panel h2 { margin-bottom: 10px; }
+.pcb-boards button small { white-space: nowrap; }
+
+.pcb-3d-opts, .pcb-layer-opts { margin-top: 12px; display: grid; gap: 8px; }
+.pcb-check { display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; }
+.pcb-hint { margin: 0; font-size: 12px; color: var(--muted); }
+
+.pcb-layers { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--line); }
+.pcb-layers li { background: var(--sheet); }
+.pcb-layers label { display: grid; grid-template-columns: 15px 22px 1fr auto; align-items: center; gap: 8px; padding: 7px 8px; cursor: pointer; font-size: 13px; }
+.pcb-layers label:hover { background: var(--chip); }
+.pcb-layers small { font: 500 10px var(--mono); color: var(--muted); }
+.pcb-layers input:not(:checked) ~ .pcb-layer-name { color: var(--muted); }
+.pcb-layers input:not(:checked) ~ .pcb-swatch { opacity: .35; }
+
+.pcb-swatch { width: 22px; height: 14px; border-radius: 2px; border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent); background: var(--sw, var(--ink)); }
+.pcb-swatch.kind-mask { background: color-mix(in srgb, var(--sw) 80%, var(--fr4)); }
+.pcb-swatch.kind-silk { background: var(--sw); box-shadow: inset 0 0 0 3px var(--pcb); }
+.pcb-swatch.kind-edge { background: transparent; border: 1.5px solid var(--ink); }
+
+.pcb-parts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.pcb-parts li { display: grid; grid-template-columns: 42px 1fr; gap: 10px; align-items: baseline; font-size: 13px; }
+.pcb-ref { font: 600 11px var(--mono); color: var(--signal); }
+.pcb-part b { font-weight: 500; }
+.pcb-part small { display: block; font: 400 11px var(--mono); color: var(--muted); }
+
+.pcb-dl { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.pcb-dl .btn { justify-content: space-between; }
+.pcb-dl .btn small { font: 500 10px var(--mono); opacity: .75; }
+.pcb-gh { margin: 10px 0 0; font-size: 12px; }
+.pcb-renders { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.pcb-thumb { display: grid; gap: 4px; text-decoration: none; font: 500 10px var(--mono); color: var(--muted); }
+.pcb-thumb img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: contain; background: var(--stage); border: 1px solid var(--line); border-radius: var(--radius); }
+.pcb-thumb:hover img { border-color: var(--ink); }
+.pcb-thumb.missing img { visibility: hidden; }
+.pcb-note code { font: 500 11px var(--mono); }
+
+@media (max-width: 860px) {
+  .pcb-stage .viewer-tools { left: 12px; justify-content: flex-end; }
+  .pcb-scale { bottom: 56px; }
+}
+@media (max-width: 420px) {
+  .pcb-dl { grid-template-columns: 1fr; }
+}
+.pcb-stage .viewer-hud .eyebrow:not(:empty) { padding: 4px 6px; margin: -4px -6px; border-radius: var(--radius);
+                                              background: color-mix(in srgb, var(--stage) 82%, transparent); }

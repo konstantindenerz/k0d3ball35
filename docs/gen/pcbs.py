@@ -137,6 +137,7 @@ def board(spec: tuple, bom: dict) -> dict:
         "stem": stem,
         "folder": folder,
         "files": files,
+        "sizes": {k: (REPO / v).stat().st_size for k, v in files.items()},
         "layers": [{"id": lid, "label": label, "side": side, "kind": kind, "color": color, "path": f"{layers_dir}/{lid}.svg"}
                    for lid, label, side, kind, color in LAYERS],
         "viewbox": view,

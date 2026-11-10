@@ -16,6 +16,15 @@
     "step": "hardware/left-pcb/k0d3ball35-left.step",
     "gerbers": "hardware/left-pcb/k0d3ball35-left-gerbers.zip"
    },
+   "sizes": {
+    "kicad_pcb": 1183433,
+    "glb": 2974116,
+    "outline": 738,
+    "render_top": 479283,
+    "render_bottom": 450907,
+    "step": 350723,
+    "gerbers": 251683
+   },
    "layers": [
     {
      "id": "B.Silkscreen",
@@ -178,6 +187,15 @@
     "render_bottom": "hardware/right-pcb/renders/right-pcb-bottom.png",
     "step": "hardware/right-pcb/k0d3ball35-right.step",
     "gerbers": "hardware/right-pcb/k0d3ball35-right-gerbers.zip"
+   },
+   "sizes": {
+    "kicad_pcb": 1110956,
+    "glb": 2881448,
+    "outline": 753,
+    "render_top": 456099,
+    "render_bottom": 441376,
+    "step": 337154,
+    "gerbers": 240001
    },
    "layers": [
     {
@@ -352,6 +370,15 @@
     "render_bottom": "hardware/sensor-pcb/renders/k0d3ball35-sensor-bottom.png",
     "step": "hardware/sensor-pcb/renders/k0d3ball35-sensor.step",
     "gerbers": "hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip"
+   },
+   "sizes": {
+    "kicad_pcb": 199255,
+    "glb": 737524,
+    "outline": 1140,
+    "render_top": 433097,
+    "render_bottom": 286577,
+    "step": 3047016,
+    "gerbers": 61575
    },
    "layers": [
     {
