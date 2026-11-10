@@ -1,0 +1,632 @@
+{
+ "tickets": {
+  "P0": [
+   {
+    "slug": "hw-main-pcb-review-r1",
+    "title": "Manual review of both main PCBs (r2) before ordering",
+    "type": "task",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-main-pcb-review-r1.md"
+   },
+   {
+    "slug": "hw-sensor-vcsel-pins",
+    "title": "Confirm the PMW3610 VCSEL and laser pins against the datasheet",
+    "type": "question",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-07",
+    "path": "issues/hw-sensor-vcsel-pins.md"
+   }
+  ],
+  "P1": [
+   {
+    "slug": "doc-assembly-order-mismatch",
+    "title": "Assembly order in the docs did not match the hardware",
+    "type": "bug",
+    "area": "doc",
+    "status": "in-progress",
+    "created": "2026-11-06",
+    "path": "issues/doc-assembly-order-mismatch.md"
+   },
+   {
+    "slug": "mech-case-ball-pocket",
+    "title": "Case pocket for the 19 mm ball beside the right PCB",
+    "type": "feature",
+    "area": "mech",
+    "status": "in-progress",
+    "created": "2026-11-06",
+    "path": "issues/mech-case-ball-pocket.md"
+   },
+   {
+    "slug": "doc-build-guide",
+    "title": "Step-by-step build guide",
+    "type": "task",
+    "area": "doc",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/doc-build-guide.md"
+   },
+   {
+    "slug": "fw-cursor-axis-verification",
+    "title": "Verify trackball cursor axes on the first board",
+    "type": "task",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-cursor-axis-verification.md"
+   },
+   {
+    "slug": "hw-19mm-ball-sourcing",
+    "title": "Secure a repeatable supply of 19.05 mm trackballs and test their surface",
+    "type": "task",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-19mm-ball-sourcing.md"
+   },
+   {
+    "slug": "hw-ball-colour-tracking-test",
+    "title": "Test ball colours and materials on the PMW3610",
+    "type": "task",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-ball-colour-tracking-test.md"
+   },
+   {
+    "slug": "hw-ffc-pin-order-verification",
+    "title": "Verify the 6-pin FFC pin order between main PCB and sensor PCB",
+    "type": "task",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-ffc-pin-order-verification.md"
+   },
+   {
+    "slug": "hw-jlcpcb-order-r1",
+    "title": "Order the first PCBs (left, right and sensor) at JLCPCB",
+    "type": "task",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-jlcpcb-order-r1.md"
+   },
+   {
+    "slug": "hw-sensor-stack-height",
+    "title": "Ball-bottom-to-sensor stack height vs low profile",
+    "type": "question",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-sensor-stack-height.md"
+   },
+   {
+    "slug": "infra-ci-firmware",
+    "title": "CI build of both halves with ZMK",
+    "type": "task",
+    "area": "infra",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/infra-ci-firmware.md"
+   },
+   {
+    "slug": "infra-ci-hardware",
+    "title": "CI gates for ERC, DRC and gerber export",
+    "type": "task",
+    "area": "infra",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/infra-ci-hardware.md"
+   },
+   {
+    "slug": "mech-lm18-lens-outline-measurement",
+    "title": "Measure the real LM18-LSI lens outline",
+    "type": "task",
+    "area": "mech",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/mech-lm18-lens-outline-measurement.md"
+   },
+   {
+    "slug": "test-fab-gerber-viewer",
+    "title": "Check the gerber zip in a gerber viewer before ordering",
+    "type": "task",
+    "area": "test",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/test-fab-gerber-viewer.md"
+   }
+  ],
+  "P2": [
+   {
+    "slug": "doc-website-tabs",
+    "title": "Project website with tabs for the real 3D files, PCBs, keymap and BOM",
+    "type": "feature",
+    "area": "doc",
+    "status": "in-progress",
+    "created": "2026-11-10",
+    "path": "issues/doc-website-tabs.md"
+   },
+   {
+    "slug": "hw-branding-logo",
+    "title": "Branding on the PCBs and the case with the owner's logo",
+    "type": "feature",
+    "area": "hw",
+    "status": "in-progress",
+    "created": "2026-11-06",
+    "path": "issues/hw-branding-logo.md"
+   },
+   {
+    "slug": "mech-ball-retainer-clip",
+    "title": "Optional clip-on ball retainer with two claws away from the thumb",
+    "type": "feature",
+    "area": "mech",
+    "status": "in-progress",
+    "created": "2026-11-10",
+    "path": "issues/mech-ball-retainer-clip.md"
+   },
+   {
+    "slug": "mech-case",
+    "title": "Boxy angular 3D printed case with raised controller box and ball pocket",
+    "type": "feature",
+    "area": "mech",
+    "status": "in-progress",
+    "created": "2026-11-05",
+    "path": "issues/mech-case.md"
+   },
+   {
+    "slug": "mech-case-lid",
+    "title": "Hinged lid per half that doubles as a tenting foot",
+    "type": "feature",
+    "area": "mech",
+    "status": "in-progress",
+    "created": "2026-11-06",
+    "path": "issues/mech-case-lid.md"
+   },
+   {
+    "slug": "doc-video-source-summary",
+    "title": "Summarise the reference build video in the docs",
+    "type": "task",
+    "area": "doc",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/doc-video-source-summary.md"
+   },
+   {
+    "slug": "doc-zmk-yml-repo-url",
+    "title": "Replace the placeholder repository URL in k0d3ball35.zmk.yml",
+    "type": "task",
+    "area": "doc",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/doc-zmk-yml-repo-url.md"
+   },
+   {
+    "slug": "fw-battery-drain-measurement",
+    "title": "Measure real battery drain per half",
+    "type": "task",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-battery-drain-measurement.md"
+   },
+   {
+    "slug": "fw-cpi-tuning-19mm",
+    "title": "Tune CPI, scaling and scroll divisors for the 19 mm ball",
+    "type": "task",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-cpi-tuning-19mm.md"
+   },
+   {
+    "slug": "fw-physical-layout-exact-coords",
+    "title": "Regenerate the physical layout from the exact key coordinates",
+    "type": "task",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-physical-layout-exact-coords.md"
+   },
+   {
+    "slug": "fw-runtime-pointer-settings",
+    "title": "Runtime CPI steps, sniping toggle and auto-mouse timeout keys",
+    "type": "feature",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-runtime-pointer-settings.md"
+   },
+   {
+    "slug": "fw-scroll-axis-lock",
+    "title": "Scroll snap and axis lock for the trackball",
+    "type": "feature",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-scroll-axis-lock.md"
+   },
+   {
+    "slug": "fw-split-sleep-wake-check",
+    "title": "Verify peripheral wake from deep sleep",
+    "type": "task",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-split-sleep-wake-check.md"
+   },
+   {
+    "slug": "hw-gnd-stitching-review",
+    "title": "Review the automatic GND stitching vias and the pours",
+    "type": "task",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-gnd-stitching-review.md"
+   },
+   {
+    "slug": "mech-thumb-arc-tuning",
+    "title": "Expose and test-print thumb arc variants",
+    "type": "task",
+    "area": "mech",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/mech-thumb-arc-tuning.md"
+   },
+   {
+    "slug": "test-bench-procedure",
+    "title": "Bench test procedure for assembled halves",
+    "type": "task",
+    "area": "test",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/test-bench-procedure.md"
+   }
+  ],
+  "P3": [
+   {
+    "slug": "doc-keyball-owner-migration",
+    "title": "Migration page for Keyball39 owners",
+    "type": "task",
+    "area": "doc",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/doc-keyball-owner-migration.md"
+   },
+   {
+    "slug": "fw-ball-motion-wake",
+    "title": "Wake from deep sleep on ball motion",
+    "type": "feature",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-ball-motion-wake.md"
+   },
+   {
+    "slug": "fw-input-split-dongle",
+    "title": "Support left-ball and dongle builds via zmk,input-split",
+    "type": "feature",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-input-split-dongle.md"
+   },
+   {
+    "slug": "fw-one-handed-scroll-toggle",
+    "title": "Toggle variant of the scroll layer",
+    "type": "feature",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-one-handed-scroll-toggle.md"
+   },
+   {
+    "slug": "fw-remap-compatibility",
+    "title": "Remap (remap-keys.app) compatibility",
+    "type": "feature",
+    "area": "fw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/fw-remap-compatibility.md"
+   },
+   {
+    "slug": "hw-25mm-cradle-fallback",
+    "title": "25 mm pocket cradle as fallback (needs a wider notch)",
+    "type": "feature",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-25mm-cradle-fallback.md"
+   },
+   {
+    "slug": "hw-drc-severity-overrides",
+    "title": "Eight DRC rules are downgraded to warning, six without a substitute test",
+    "type": "task",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-07",
+    "path": "issues/hw-drc-severity-overrides.md"
+   },
+   {
+    "slug": "hw-paw3222-variant",
+    "title": "Sensor board variant with PAW3222 for lower power",
+    "type": "feature",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-paw3222-variant.md"
+   },
+   {
+    "slug": "hw-solder-only-variant",
+    "title": "Solder-only PCB variant without hot-swap sockets",
+    "type": "feature",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-solder-only-variant.md"
+   },
+   {
+    "slug": "hw-spare-pin-features",
+    "title": "Use the spare controller pins (encoder, display) in a later PCB revision",
+    "type": "feature",
+    "area": "hw",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/hw-spare-pin-features.md"
+   },
+   {
+    "slug": "infra-pcba-export",
+    "title": "PCBA order option (position file, BOM with LCSC numbers)",
+    "type": "feature",
+    "area": "infra",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/infra-pcba-export.md"
+   },
+   {
+    "slug": "mech-cradle-btu-variant",
+    "title": "Ball transfer unit cradle variant",
+    "type": "feature",
+    "area": "mech",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/mech-cradle-btu-variant.md"
+   },
+   {
+    "slug": "mech-ffc-cover-tab",
+    "title": "Cover the FFC where it climbs beside the cup",
+    "type": "feature",
+    "area": "mech",
+    "status": "open",
+    "created": "2026-11-06",
+    "path": "issues/mech-ffc-cover-tab.md"
+   },
+   {
+    "slug": "mech-keycaps",
+    "title": "Printed dished Choc keycap set",
+    "type": "feature",
+    "area": "mech",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/mech-keycaps.md"
+   },
+   {
+    "slug": "mech-pinky-column-springs",
+    "title": "Recommend light springs for the outer column",
+    "type": "task",
+    "area": "mech",
+    "status": "open",
+    "created": "2026-11-05",
+    "path": "issues/mech-pinky-column-springs.md"
+   },
+   {
+    "slug": "mech-pocket-hatch-alternative",
+    "title": "Plug-on sensor board with a floor hatch instead of the FFC",
+    "type": "question",
+    "area": "mech",
+    "status": "open",
+    "created": "2026-11-06",
+    "path": "issues/mech-pocket-hatch-alternative.md"
+   }
+  ]
+ },
+ "ticket_counts": {
+  "P0": 2,
+  "P1": 13,
+  "P2": 16,
+  "P3": 16
+ },
+ "before_ordering": {
+  "source": "spec/09-roadmap.md",
+  "title": "r2 verification before ordering",
+  "intro": "Do these before paying for anything:",
+  "steps": [
+   {
+    "number": 1,
+    "state": "done",
+    "label": "Done",
+    "summary": "r2 pipeline, both halves generated, routed, ERC/DRC clean, gerbers exported, renders in the README",
+    "open": null,
+    "text": "Done: r2 pipeline, both halves generated, routed, ERC/DRC clean, gerbers exported, renders in the README (hw-two-pcbs-r2). The left board is the x mirror of the layout frame since 2026-11-06 (hw-left-pcb-mirror, done).",
+    "tickets": [
+     {
+      "slug": "hw-two-pcbs-r2",
+      "status": "done",
+      "path": "issues/hw-two-pcbs-r2.md"
+     },
+     {
+      "slug": "hw-left-pcb-mirror",
+      "status": "done",
+      "path": "issues/hw-left-pcb-mirror.md"
+     }
+    ]
+   },
+   {
+    "number": 2,
+    "state": "partly",
+    "label": "Done (automated part)",
+    "summary": "independent gerber parse of all three zips in tests/test_gerbers.py (layers, drills, outlines, the pocket notch, no copper in the notch)",
+    "open": "upload hardware/left-pcb/k0d3ball35-left-gerbers.zip, hardware/right-pcb/k0d3ball35-right-gerbers.zip and hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip to the JLCPCB preview",
+    "text": "Done (automated part): independent gerber parse of all three zips in tests/test_gerbers.py (layers, drills, outlines, the pocket notch, no copper in the notch). Open: upload hardware/left-pcb/k0d3ball35-left-gerbers.zip, hardware/right-pcb/k0d3ball35-right-gerbers.zip and hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip to the JLCPCB preview. Ticket test-fab-gerber-viewer.",
+    "tickets": [
+     {
+      "slug": "test-fab-gerber-viewer",
+      "status": "open",
+      "path": "issues/test-fab-gerber-viewer.md"
+     }
+    ]
+   },
+   {
+    "number": 3,
+    "state": "partly",
+    "label": "Mostly done",
+    "summary": "the two defects of the first review (power switch rotation, USB overhang) are fixed and tests/test_pcb_review.py covers sockets, FH12, controller, battery bay, holes, notch, silkscreen and GND pours",
+    "open": "3D viewer pass, 1:1 paper check with a real socket and MSK12C02, routing eyeball",
+    "text": "Mostly done: the two defects of the first review (power switch rotation, USB overhang) are fixed and tests/test_pcb_review.py covers sockets, FH12, controller, battery bay, holes, notch, silkscreen and GND pours. Open for the user: 3D viewer pass, 1:1 paper check with a real socket and MSK12C02, routing eyeball. Tickets hw-main-pcb-review-r1, hw-gnd-stitching-review (non-blocking).",
+    "tickets": [
+     {
+      "slug": "hw-main-pcb-review-r1",
+      "status": "open",
+      "path": "issues/hw-main-pcb-review-r1.md"
+     },
+     {
+      "slug": "hw-gnd-stitching-review",
+      "status": "open",
+      "path": "issues/hw-gnd-stitching-review.md"
+     }
+    ]
+   },
+   {
+    "number": 4,
+    "state": "open",
+    "label": "In parallel with the order (no longer a gate)",
+    "summary": "cradle test print and sensor fit, print hardware/trackball-cradle/stl/cradle-19mm-pocket.stl and the optional retainer-19mm.stl, fit a sensor board (or a 26 x 25 mm dummy), check the lens gap with a feeler gauge",
+    "open": null,
+    "text": "In parallel with the order (no longer a gate): cradle test print and sensor fit, print hardware/trackball-cradle/stl/cradle-19mm-pocket.stl and the optional retainer-19mm.stl, fit a sensor board (or a 26 x 25 mm dummy), check the lens gap with a feeler gauge; the ball must spin without touching the rim, and with the retainer clipped on it must stay in upside down. Tickets hw-sensor-stack-height, mech-lm18-lens-outline-measurement, mech-ball-retainer-clip.",
+    "tickets": [
+     {
+      "slug": "hw-sensor-stack-height",
+      "status": "open",
+      "path": "issues/hw-sensor-stack-height.md"
+     },
+     {
+      "slug": "mech-lm18-lens-outline-measurement",
+      "status": "open",
+      "path": "issues/mech-lm18-lens-outline-measurement.md"
+     },
+     {
+      "slug": "mech-ball-retainer-clip",
+      "status": "in-progress",
+      "path": "issues/mech-ball-retainer-clip.md"
+     }
+    ]
+   },
+   {
+    "number": 5,
+    "state": "open",
+    "label": "Ball sourcing and tracking",
+    "summary": "order a pack of 3/4 inch POM balls (and a PandaKB TB19) and a bag of 2 mm ZrO2 balls now, test them on the sensor board as soon as it exists",
+    "open": null,
+    "text": "Ball sourcing and tracking: order a pack of 3/4 inch POM balls (and a PandaKB TB19) and a bag of 2 mm ZrO2 balls now, test them on the sensor board as soon as it exists. Tickets hw-19mm-ball-sourcing, hw-ball-colour-tracking-test.",
+    "tickets": [
+     {
+      "slug": "hw-19mm-ball-sourcing",
+      "status": "open",
+      "path": "issues/hw-19mm-ball-sourcing.md"
+     },
+     {
+      "slug": "hw-ball-colour-tracking-test",
+      "status": "open",
+      "path": "issues/hw-ball-colour-tracking-test.md"
+     }
+    ]
+   },
+   {
+    "number": 6,
+    "state": "open",
+    "label": null,
+    "summary": "FFC pin order with a physical cable and both connectors",
+    "open": null,
+    "text": "FFC pin order with a physical cable and both connectors; the desk check is done and tested (tests/test_ffc_pin_order.py). Ticket hw-ffc-pin-order-verification.",
+    "tickets": [
+     {
+      "slug": "hw-ffc-pin-order-verification",
+      "status": "open",
+      "path": "issues/hw-ffc-pin-order-verification.md"
+     }
+    ]
+   },
+   {
+    "number": 7,
+    "state": "open",
+    "label": "Then order",
+    "summary": "hw-jlcpcb-order-r1, shop by shop per spec/12-order-checklist.md",
+    "open": null,
+    "text": "Then order: hw-jlcpcb-order-r1, shop by shop per spec/12-order-checklist.md.",
+    "tickets": [
+     {
+      "slug": "hw-jlcpcb-order-r1",
+      "status": "open",
+      "path": "issues/hw-jlcpcb-order-r1.md"
+     }
+    ]
+   }
+  ]
+ },
+ "order": {
+  "source": "spec/12-order-checklist.md",
+  "sections": [
+   {
+    "number": 1,
+    "title": "Already ordered",
+    "done": 6,
+    "total": 8
+   },
+   {
+    "number": 2,
+    "title": "Mouser DE",
+    "done": 0,
+    "total": 5
+   },
+   {
+    "number": 3,
+    "title": "EU shops",
+    "done": 0,
+    "total": 2
+   },
+   {
+    "number": 4,
+    "title": "Amazon DE",
+    "done": 0,
+    "total": 8
+   },
+   {
+    "number": 5,
+    "title": "AliExpress",
+    "done": 0,
+    "total": 2
+   },
+   {
+    "number": 6,
+    "title": "JLCPCB and LCSC",
+    "done": 0,
+    "total": 11
+   },
+   {
+    "number": 7,
+    "title": "Printed parts",
+    "done": 0,
+    "total": 6
+   }
+  ],
+  "done": 6,
+  "total": 42,
+  "pcb_ticket": {
+   "slug": "hw-jlcpcb-order-r1",
+   "status": "open",
+   "path": "issues/hw-jlcpcb-order-r1.md"
+  }
+ }
+}

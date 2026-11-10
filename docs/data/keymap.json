@@ -1,0 +1,2489 @@
+{
+ "source": "firmware/zmk-config/config/k0d3ball35.keymap",
+ "transform": "firmware/zmk-config/config/boards/shields/k0d3ball35/k0d3ball35.dtsi",
+ "keys": [
+  {
+   "pos": 0,
+   "half": "left",
+   "row": 0,
+   "col": 0,
+   "matrix_col": 0,
+   "ref": "SW00",
+   "name": "pinky top"
+  },
+  {
+   "pos": 1,
+   "half": "left",
+   "row": 0,
+   "col": 1,
+   "matrix_col": 1,
+   "ref": "SW01",
+   "name": "ring top"
+  },
+  {
+   "pos": 2,
+   "half": "left",
+   "row": 0,
+   "col": 2,
+   "matrix_col": 2,
+   "ref": "SW02",
+   "name": "middle top"
+  },
+  {
+   "pos": 3,
+   "half": "left",
+   "row": 0,
+   "col": 3,
+   "matrix_col": 3,
+   "ref": "SW03",
+   "name": "index top"
+  },
+  {
+   "pos": 4,
+   "half": "left",
+   "row": 0,
+   "col": 4,
+   "matrix_col": 4,
+   "ref": "SW04",
+   "name": "inner top"
+  },
+  {
+   "pos": 5,
+   "half": "right",
+   "row": 0,
+   "col": 4,
+   "matrix_col": 9,
+   "ref": "SW04",
+   "name": "inner top"
+  },
+  {
+   "pos": 6,
+   "half": "right",
+   "row": 0,
+   "col": 3,
+   "matrix_col": 8,
+   "ref": "SW03",
+   "name": "index top"
+  },
+  {
+   "pos": 7,
+   "half": "right",
+   "row": 0,
+   "col": 2,
+   "matrix_col": 7,
+   "ref": "SW02",
+   "name": "middle top"
+  },
+  {
+   "pos": 8,
+   "half": "right",
+   "row": 0,
+   "col": 1,
+   "matrix_col": 6,
+   "ref": "SW01",
+   "name": "ring top"
+  },
+  {
+   "pos": 9,
+   "half": "right",
+   "row": 0,
+   "col": 0,
+   "matrix_col": 5,
+   "ref": "SW00",
+   "name": "pinky top"
+  },
+  {
+   "pos": 10,
+   "half": "left",
+   "row": 1,
+   "col": 0,
+   "matrix_col": 0,
+   "ref": "SW10",
+   "name": "pinky home"
+  },
+  {
+   "pos": 11,
+   "half": "left",
+   "row": 1,
+   "col": 1,
+   "matrix_col": 1,
+   "ref": "SW11",
+   "name": "ring home"
+  },
+  {
+   "pos": 12,
+   "half": "left",
+   "row": 1,
+   "col": 2,
+   "matrix_col": 2,
+   "ref": "SW12",
+   "name": "middle home"
+  },
+  {
+   "pos": 13,
+   "half": "left",
+   "row": 1,
+   "col": 3,
+   "matrix_col": 3,
+   "ref": "SW13",
+   "name": "index home"
+  },
+  {
+   "pos": 14,
+   "half": "left",
+   "row": 1,
+   "col": 4,
+   "matrix_col": 4,
+   "ref": "SW14",
+   "name": "inner home"
+  },
+  {
+   "pos": 15,
+   "half": "right",
+   "row": 1,
+   "col": 4,
+   "matrix_col": 9,
+   "ref": "SW14",
+   "name": "inner home"
+  },
+  {
+   "pos": 16,
+   "half": "right",
+   "row": 1,
+   "col": 3,
+   "matrix_col": 8,
+   "ref": "SW13",
+   "name": "index home"
+  },
+  {
+   "pos": 17,
+   "half": "right",
+   "row": 1,
+   "col": 2,
+   "matrix_col": 7,
+   "ref": "SW12",
+   "name": "middle home"
+  },
+  {
+   "pos": 18,
+   "half": "right",
+   "row": 1,
+   "col": 1,
+   "matrix_col": 6,
+   "ref": "SW11",
+   "name": "ring home"
+  },
+  {
+   "pos": 19,
+   "half": "right",
+   "row": 1,
+   "col": 0,
+   "matrix_col": 5,
+   "ref": "SW10",
+   "name": "pinky home"
+  },
+  {
+   "pos": 20,
+   "half": "left",
+   "row": 2,
+   "col": 0,
+   "matrix_col": 0,
+   "ref": "SW20",
+   "name": "pinky bottom"
+  },
+  {
+   "pos": 21,
+   "half": "left",
+   "row": 2,
+   "col": 1,
+   "matrix_col": 1,
+   "ref": "SW21",
+   "name": "ring bottom"
+  },
+  {
+   "pos": 22,
+   "half": "left",
+   "row": 2,
+   "col": 2,
+   "matrix_col": 2,
+   "ref": "SW22",
+   "name": "middle bottom"
+  },
+  {
+   "pos": 23,
+   "half": "left",
+   "row": 2,
+   "col": 3,
+   "matrix_col": 3,
+   "ref": "SW23",
+   "name": "index bottom"
+  },
+  {
+   "pos": 24,
+   "half": "left",
+   "row": 2,
+   "col": 4,
+   "matrix_col": 4,
+   "ref": "SW24",
+   "name": "inner bottom"
+  },
+  {
+   "pos": 25,
+   "half": "right",
+   "row": 2,
+   "col": 4,
+   "matrix_col": 9,
+   "ref": "SW24",
+   "name": "inner bottom"
+  },
+  {
+   "pos": 26,
+   "half": "right",
+   "row": 2,
+   "col": 3,
+   "matrix_col": 8,
+   "ref": "SW23",
+   "name": "index bottom"
+  },
+  {
+   "pos": 27,
+   "half": "right",
+   "row": 2,
+   "col": 2,
+   "matrix_col": 7,
+   "ref": "SW22",
+   "name": "middle bottom"
+  },
+  {
+   "pos": 28,
+   "half": "right",
+   "row": 2,
+   "col": 1,
+   "matrix_col": 6,
+   "ref": "SW21",
+   "name": "ring bottom"
+  },
+  {
+   "pos": 29,
+   "half": "right",
+   "row": 2,
+   "col": 0,
+   "matrix_col": 5,
+   "ref": "SW20",
+   "name": "pinky bottom"
+  },
+  {
+   "pos": 30,
+   "half": "left",
+   "row": 3,
+   "col": 2,
+   "matrix_col": 2,
+   "ref": "SW32",
+   "name": "thumb outer"
+  },
+  {
+   "pos": 31,
+   "half": "left",
+   "row": 3,
+   "col": 3,
+   "matrix_col": 3,
+   "ref": "SW33",
+   "name": "thumb middle"
+  },
+  {
+   "pos": 32,
+   "half": "left",
+   "row": 3,
+   "col": 4,
+   "matrix_col": 4,
+   "ref": "SW34",
+   "name": "thumb inner"
+  },
+  {
+   "pos": 33,
+   "half": "right",
+   "row": 3,
+   "col": 4,
+   "matrix_col": 9,
+   "ref": "SW34",
+   "name": "thumb inner"
+  },
+  {
+   "pos": 34,
+   "half": "right",
+   "row": 3,
+   "col": 3,
+   "matrix_col": 8,
+   "ref": "SW33",
+   "name": "thumb middle"
+  }
+ ],
+ "layers": [
+  {
+   "index": 0,
+   "id": "base",
+   "name": "Base",
+   "node": "base_layer",
+   "macro": "BASE",
+   "access": "",
+   "content": "QWERTY, home-row mods GACS on A S D F and J K L ; (hold = mod, tap = letter)",
+   "bindings": [
+    {
+     "pos": 0,
+     "raw": "&kp Q",
+     "tap": "Q",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 1,
+     "raw": "&kp W",
+     "tap": "W",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 2,
+     "raw": "&kp E",
+     "tap": "E",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 3,
+     "raw": "&kp R",
+     "tap": "R",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 4,
+     "raw": "&kp T",
+     "tap": "T",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 5,
+     "raw": "&kp Y",
+     "tap": "Y",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 6,
+     "raw": "&kp U",
+     "tap": "U",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 7,
+     "raw": "&kp I",
+     "tap": "I",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 8,
+     "raw": "&kp O",
+     "tap": "O",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 9,
+     "raw": "&kp P",
+     "tap": "P",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 10,
+     "raw": "&hml LGUI A",
+     "tap": "A",
+     "hold": "Gui",
+     "kind": "mod-tap"
+    },
+    {
+     "pos": 11,
+     "raw": "&hml LALT S",
+     "tap": "S",
+     "hold": "Alt",
+     "kind": "mod-tap"
+    },
+    {
+     "pos": 12,
+     "raw": "&hml LCTRL D",
+     "tap": "D",
+     "hold": "Ctrl",
+     "kind": "mod-tap"
+    },
+    {
+     "pos": 13,
+     "raw": "&hml LSHFT F",
+     "tap": "F",
+     "hold": "Shift",
+     "kind": "mod-tap"
+    },
+    {
+     "pos": 14,
+     "raw": "&kp G",
+     "tap": "G",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 15,
+     "raw": "&kp H",
+     "tap": "H",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 16,
+     "raw": "&hmr RSHFT J",
+     "tap": "J",
+     "hold": "Shift",
+     "kind": "mod-tap"
+    },
+    {
+     "pos": 17,
+     "raw": "&hmr RCTRL K",
+     "tap": "K",
+     "hold": "Ctrl",
+     "kind": "mod-tap"
+    },
+    {
+     "pos": 18,
+     "raw": "&hmr RALT L",
+     "tap": "L",
+     "hold": "Alt",
+     "kind": "mod-tap"
+    },
+    {
+     "pos": 19,
+     "raw": "&hmr RGUI SEMI",
+     "tap": ";",
+     "hold": "Gui",
+     "kind": "mod-tap"
+    },
+    {
+     "pos": 20,
+     "raw": "&kp Z",
+     "tap": "Z",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 21,
+     "raw": "&kp X",
+     "tap": "X",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 22,
+     "raw": "&kp C",
+     "tap": "C",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 23,
+     "raw": "&kp V",
+     "tap": "V",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 24,
+     "raw": "&kp B",
+     "tap": "B",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 25,
+     "raw": "&kp N",
+     "tap": "N",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 26,
+     "raw": "&kp M",
+     "tap": "M",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 27,
+     "raw": "&kp COMMA",
+     "tap": ",",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 28,
+     "raw": "&kp DOT",
+     "tap": ".",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 29,
+     "raw": "&kp FSLH",
+     "tap": "/",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 30,
+     "raw": "&lt SYS ESC",
+     "tap": "Esc",
+     "hold": "System",
+     "kind": "layer-tap",
+     "layer": "System"
+    },
+    {
+     "pos": 31,
+     "raw": "&lt NAV SPACE",
+     "tap": "Space",
+     "hold": "Nav",
+     "kind": "layer-tap",
+     "layer": "Nav"
+    },
+    {
+     "pos": 32,
+     "raw": "&lt NUM TAB",
+     "tap": "Tab",
+     "hold": "Num",
+     "kind": "layer-tap",
+     "layer": "Num"
+    },
+    {
+     "pos": 33,
+     "raw": "&lt SYM RET",
+     "tap": "Enter",
+     "hold": "Sym",
+     "kind": "layer-tap",
+     "layer": "Sym"
+    },
+    {
+     "pos": 34,
+     "raw": "&lt SCROLL BSPC",
+     "tap": "Bksp",
+     "hold": "Scroll",
+     "kind": "layer-tap",
+     "layer": "Scroll"
+    }
+   ]
+  },
+  {
+   "index": 1,
+   "id": "nav",
+   "name": "Nav",
+   "node": "nav_layer",
+   "macro": "NAV",
+   "access": "hold left middle thumb (Space)",
+   "content": "arrows, Home/End, PgUp/PgDn, media; left hand keeps the mods",
+   "bindings": [
+    {
+     "pos": 0,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 1,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 2,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 3,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 4,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 5,
+     "raw": "&kp PG_UP",
+     "tap": "PgUp",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 6,
+     "raw": "&kp HOME",
+     "tap": "Home",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 7,
+     "raw": "&kp UP",
+     "tap": "↑",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 8,
+     "raw": "&kp END",
+     "tap": "End",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 9,
+     "raw": "&kp INS",
+     "tap": "Ins",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 10,
+     "raw": "&kp LGUI",
+     "tap": "Gui",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 11,
+     "raw": "&kp LALT",
+     "tap": "Alt",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 12,
+     "raw": "&kp LCTRL",
+     "tap": "Ctrl",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 13,
+     "raw": "&kp LSHFT",
+     "tap": "Shift",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 14,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 15,
+     "raw": "&kp PG_DN",
+     "tap": "PgDn",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 16,
+     "raw": "&kp LEFT",
+     "tap": "←",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 17,
+     "raw": "&kp DOWN",
+     "tap": "↓",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 18,
+     "raw": "&kp RIGHT",
+     "tap": "→",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 19,
+     "raw": "&kp CAPS",
+     "tap": "Caps",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 20,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 21,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 22,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 23,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 24,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 25,
+     "raw": "&kp C_PP",
+     "tap": "Play",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 26,
+     "raw": "&kp C_PREV",
+     "tap": "Prev",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 27,
+     "raw": "&kp C_VOL_DN",
+     "tap": "Vol−",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 28,
+     "raw": "&kp C_VOL_UP",
+     "tap": "Vol+",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 29,
+     "raw": "&kp C_NEXT",
+     "tap": "Next",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 30,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 31,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 32,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 33,
+     "raw": "&kp RET",
+     "tap": "Enter",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 34,
+     "raw": "&kp DEL",
+     "tap": "Del",
+     "hold": null,
+     "kind": "key"
+    }
+   ]
+  },
+  {
+   "index": 2,
+   "id": "num",
+   "name": "Num",
+   "node": "num_layer",
+   "macro": "NUM",
+   "access": "hold left inner thumb (Tab)",
+   "content": "numpad on the left hand, brackets and operators around it",
+   "bindings": [
+    {
+     "pos": 0,
+     "raw": "&kp LBKT",
+     "tap": "[",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 1,
+     "raw": "&kp N7",
+     "tap": "7",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 2,
+     "raw": "&kp N8",
+     "tap": "8",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 3,
+     "raw": "&kp N9",
+     "tap": "9",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 4,
+     "raw": "&kp RBKT",
+     "tap": "]",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 5,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 6,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 7,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 8,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 9,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 10,
+     "raw": "&kp SEMI",
+     "tap": ";",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 11,
+     "raw": "&kp N4",
+     "tap": "4",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 12,
+     "raw": "&kp N5",
+     "tap": "5",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 13,
+     "raw": "&kp N6",
+     "tap": "6",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 14,
+     "raw": "&kp EQUAL",
+     "tap": "=",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 15,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 16,
+     "raw": "&kp RSHFT",
+     "tap": "Shift",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 17,
+     "raw": "&kp RCTRL",
+     "tap": "Ctrl",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 18,
+     "raw": "&kp RALT",
+     "tap": "Alt",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 19,
+     "raw": "&kp RGUI",
+     "tap": "Gui",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 20,
+     "raw": "&kp GRAVE",
+     "tap": "`",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 21,
+     "raw": "&kp N1",
+     "tap": "1",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 22,
+     "raw": "&kp N2",
+     "tap": "2",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 23,
+     "raw": "&kp N3",
+     "tap": "3",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 24,
+     "raw": "&kp BSLH",
+     "tap": "\\",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 25,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 26,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 27,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 28,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 29,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 30,
+     "raw": "&kp DOT",
+     "tap": ".",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 31,
+     "raw": "&kp N0",
+     "tap": "0",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 32,
+     "raw": "&kp MINUS",
+     "tap": "-",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 33,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 34,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    }
+   ]
+  },
+  {
+   "index": 3,
+   "id": "sym",
+   "name": "Sym",
+   "node": "sym_layer",
+   "macro": "SYM",
+   "access": "hold right inner thumb (Enter)",
+   "content": "symbols on the left hand mirroring the Num layer",
+   "bindings": [
+    {
+     "pos": 0,
+     "raw": "&kp LBRC",
+     "tap": "{",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 1,
+     "raw": "&kp AMPS",
+     "tap": "&",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 2,
+     "raw": "&kp STAR",
+     "tap": "*",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 3,
+     "raw": "&kp LPAR",
+     "tap": "(",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 4,
+     "raw": "&kp RBRC",
+     "tap": "}",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 5,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 6,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 7,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 8,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 9,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 10,
+     "raw": "&kp COLON",
+     "tap": ":",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 11,
+     "raw": "&kp DLLR",
+     "tap": "$",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 12,
+     "raw": "&kp PRCNT",
+     "tap": "%",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 13,
+     "raw": "&kp CARET",
+     "tap": "^",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 14,
+     "raw": "&kp PLUS",
+     "tap": "+",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 15,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 16,
+     "raw": "&kp RSHFT",
+     "tap": "Shift",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 17,
+     "raw": "&kp RCTRL",
+     "tap": "Ctrl",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 18,
+     "raw": "&kp RALT",
+     "tap": "Alt",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 19,
+     "raw": "&kp RGUI",
+     "tap": "Gui",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 20,
+     "raw": "&kp TILDE",
+     "tap": "~",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 21,
+     "raw": "&kp EXCL",
+     "tap": "!",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 22,
+     "raw": "&kp AT",
+     "tap": "@",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 23,
+     "raw": "&kp HASH",
+     "tap": "#",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 24,
+     "raw": "&kp PIPE",
+     "tap": "|",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 25,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 26,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 27,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 28,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 29,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 30,
+     "raw": "&kp LPAR",
+     "tap": "(",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 31,
+     "raw": "&kp RPAR",
+     "tap": ")",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 32,
+     "raw": "&kp UNDER",
+     "tap": "_",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 33,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 34,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    }
+   ]
+  },
+  {
+   "index": 4,
+   "id": "mouse",
+   "name": "Mouse",
+   "node": "mouse_layer",
+   "macro": "MOUSE",
+   "access": "automatic, when the ball moves",
+   "content": "right home row J K L = left / right / middle click, M , = back / forward, U = hold for scroll, I = hold for snipe, right thumbs = left / right click and scroll",
+   "bindings": [
+    {
+     "pos": 0,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 1,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 2,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 3,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 4,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 5,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 6,
+     "raw": "&mo SCROLL",
+     "tap": "Scroll",
+     "hold": null,
+     "kind": "layer",
+     "layer": "Scroll"
+    },
+    {
+     "pos": 7,
+     "raw": "&mo SNIPE",
+     "tap": "Snipe",
+     "hold": null,
+     "kind": "layer",
+     "layer": "Snipe"
+    },
+    {
+     "pos": 8,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 9,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 10,
+     "raw": "&kp LGUI",
+     "tap": "Gui",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 11,
+     "raw": "&kp LALT",
+     "tap": "Alt",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 12,
+     "raw": "&kp LCTRL",
+     "tap": "Ctrl",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 13,
+     "raw": "&kp LSHFT",
+     "tap": "Shift",
+     "hold": null,
+     "kind": "mod"
+    },
+    {
+     "pos": 14,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 15,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 16,
+     "raw": "&mkp LCLK",
+     "tap": "Left click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 17,
+     "raw": "&mkp RCLK",
+     "tap": "Right click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 18,
+     "raw": "&mkp MCLK",
+     "tap": "Middle click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 19,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 20,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 21,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 22,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 23,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 24,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 25,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 26,
+     "raw": "&mkp MB4",
+     "tap": "Back",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 27,
+     "raw": "&mkp MB5",
+     "tap": "Forward",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 28,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 29,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 30,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 31,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 32,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 33,
+     "raw": "&mkp LCLK",
+     "tap": "Left click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 34,
+     "raw": "&mkp RCLK",
+     "tap": "Right click",
+     "hold": null,
+     "kind": "mouse"
+    }
+   ]
+  },
+  {
+   "index": 5,
+   "id": "scroll",
+   "name": "Scroll",
+   "node": "scroll_layer",
+   "macro": "SCROLL",
+   "access": "hold U on the mouse layer, or right middle thumb (Backspace)",
+   "content": "ball movement becomes scrolling, clicks stay available",
+   "bindings": [
+    {
+     "pos": 0,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 1,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 2,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 3,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 4,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 5,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 6,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 7,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 8,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 9,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 10,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 11,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 12,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 13,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 14,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 15,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 16,
+     "raw": "&mkp LCLK",
+     "tap": "Left click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 17,
+     "raw": "&mkp RCLK",
+     "tap": "Right click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 18,
+     "raw": "&mkp MCLK",
+     "tap": "Middle click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 19,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 20,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 21,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 22,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 23,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 24,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 25,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 26,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 27,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 28,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 29,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 30,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 31,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 32,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 33,
+     "raw": "&mkp LCLK",
+     "tap": "Left click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 34,
+     "raw": "&mkp RCLK",
+     "tap": "Right click",
+     "hold": null,
+     "kind": "mouse"
+    }
+   ]
+  },
+  {
+   "index": 6,
+   "id": "snipe",
+   "name": "Snipe",
+   "node": "snipe_layer",
+   "macro": "SNIPE",
+   "access": "hold I on the mouse layer",
+   "content": "ball movement at one third speed",
+   "bindings": [
+    {
+     "pos": 0,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 1,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 2,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 3,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 4,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 5,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 6,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 7,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 8,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 9,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 10,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 11,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 12,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 13,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 14,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 15,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 16,
+     "raw": "&mkp LCLK",
+     "tap": "Left click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 17,
+     "raw": "&mkp RCLK",
+     "tap": "Right click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 18,
+     "raw": "&mkp MCLK",
+     "tap": "Middle click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 19,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 20,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 21,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 22,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 23,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 24,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 25,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 26,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 27,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 28,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 29,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 30,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 31,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 32,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 33,
+     "raw": "&mkp LCLK",
+     "tap": "Left click",
+     "hold": null,
+     "kind": "mouse"
+    },
+    {
+     "pos": 34,
+     "raw": "&mkp RCLK",
+     "tap": "Right click",
+     "hold": null,
+     "kind": "mouse"
+    }
+   ]
+  },
+  {
+   "index": 7,
+   "id": "system",
+   "name": "System",
+   "node": "sys_layer",
+   "macro": "SYS",
+   "access": "hold left outer thumb (Esc), or it together with the right middle thumb",
+   "content": "Bluetooth profiles, output selection, F keys, bootloader, Studio unlock, reset",
+   "bindings": [
+    {
+     "pos": 0,
+     "raw": "&bt BT_SEL 0",
+     "tap": "BT 0",
+     "hold": null,
+     "kind": "bt"
+    },
+    {
+     "pos": 1,
+     "raw": "&bt BT_SEL 1",
+     "tap": "BT 1",
+     "hold": null,
+     "kind": "bt"
+    },
+    {
+     "pos": 2,
+     "raw": "&bt BT_SEL 2",
+     "tap": "BT 2",
+     "hold": null,
+     "kind": "bt"
+    },
+    {
+     "pos": 3,
+     "raw": "&bt BT_SEL 3",
+     "tap": "BT 3",
+     "hold": null,
+     "kind": "bt"
+    },
+    {
+     "pos": 4,
+     "raw": "&bt BT_SEL 4",
+     "tap": "BT 4",
+     "hold": null,
+     "kind": "bt"
+    },
+    {
+     "pos": 5,
+     "raw": "&out OUT_USB",
+     "tap": "USB",
+     "hold": null,
+     "kind": "output"
+    },
+    {
+     "pos": 6,
+     "raw": "&out OUT_BLE",
+     "tap": "BLE",
+     "hold": null,
+     "kind": "output"
+    },
+    {
+     "pos": 7,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 8,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 9,
+     "raw": "&bootloader",
+     "tap": "Boot­loader",
+     "hold": null,
+     "kind": "system"
+    },
+    {
+     "pos": 10,
+     "raw": "&kp F1",
+     "tap": "F1",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 11,
+     "raw": "&kp F2",
+     "tap": "F2",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 12,
+     "raw": "&kp F3",
+     "tap": "F3",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 13,
+     "raw": "&kp F4",
+     "tap": "F4",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 14,
+     "raw": "&kp F5",
+     "tap": "F5",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 15,
+     "raw": "&kp F6",
+     "tap": "F6",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 16,
+     "raw": "&kp F7",
+     "tap": "F7",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 17,
+     "raw": "&kp F8",
+     "tap": "F8",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 18,
+     "raw": "&kp F9",
+     "tap": "F9",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 19,
+     "raw": "&kp F10",
+     "tap": "F10",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 20,
+     "raw": "&kp F11",
+     "tap": "F11",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 21,
+     "raw": "&kp F12",
+     "tap": "F12",
+     "hold": null,
+     "kind": "key"
+    },
+    {
+     "pos": 22,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 23,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 24,
+     "raw": "&bt BT_CLR",
+     "tap": "BT clear",
+     "hold": null,
+     "kind": "bt"
+    },
+    {
+     "pos": 25,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 26,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 27,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 28,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 29,
+     "raw": "&studio_unlock",
+     "tap": "Studio unlock",
+     "hold": null,
+     "kind": "system"
+    },
+    {
+     "pos": 30,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 31,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 32,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 33,
+     "raw": "&trans",
+     "tap": null,
+     "hold": null,
+     "kind": "trans"
+    },
+    {
+     "pos": 34,
+     "raw": "&sys_reset",
+     "tap": "Reset",
+     "hold": null,
+     "kind": "system"
+    }
+   ]
+  }
+ ],
+ "combos": [
+  {
+   "name": "combo_esc",
+   "positions": [
+    1,
+    2
+   ],
+   "binding": {
+    "raw": "&kp ESC",
+    "tap": "Esc",
+    "hold": null,
+    "kind": "key"
+   },
+   "layers": [
+    "Base"
+   ],
+   "timeout_ms": 40
+  },
+  {
+   "name": "combo_tab",
+   "positions": [
+    2,
+    3
+   ],
+   "binding": {
+    "raw": "&kp TAB",
+    "tap": "Tab",
+    "hold": null,
+    "kind": "key"
+   },
+   "layers": [
+    "Base"
+   ],
+   "timeout_ms": 40
+  },
+  {
+   "name": "combo_caps_word",
+   "positions": [
+    13,
+    16
+   ],
+   "binding": {
+    "raw": "&caps_word",
+    "tap": "Caps Word",
+    "hold": null,
+    "kind": "system"
+   },
+   "layers": [
+    "Base"
+   ],
+   "timeout_ms": 40
+  },
+  {
+   "name": "combo_sys",
+   "positions": [
+    30,
+    34
+   ],
+   "binding": {
+    "raw": "&mo SYS",
+    "tap": "System",
+    "hold": null,
+    "kind": "layer",
+    "layer": "System"
+   },
+   "layers": [],
+   "timeout_ms": 50
+  }
+ ],
+ "pointer": {
+  "sensor": "PMW3610",
+  "cpi": 600,
+  "auto_timeout_ms": 700,
+  "require_prior_idle_ms": 150,
+  "keep_positions": [
+   6,
+   7,
+   16,
+   17,
+   18,
+   26,
+   27,
+   33,
+   34
+  ],
+  "modes": [
+   {
+    "node": "scroll",
+    "processors": [
+     "&zip_xy_to_scroll_mapper",
+     "&zip_scroll_scaler 1 6"
+    ],
+    "effect": [
+     "ball movement scrolls instead of moving the cursor",
+     "scroll speed 1/6"
+    ],
+    "layer": "Scroll"
+   },
+   {
+    "node": "snipe",
+    "processors": [
+     "&zip_xy_scaler 1 3"
+    ],
+    "effect": [
+     "cursor speed 1/3"
+    ],
+    "layer": "Snipe"
+   }
+  ],
+  "auto_layer": "Mouse"
+ }
+}
