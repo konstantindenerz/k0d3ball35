@@ -51,8 +51,8 @@ thumbs:
   - { name: thumb_inner,  row: 3, col: 4, dx: -25.91, dy: 27.73, rotation: 20 }
 
 # Trackball parameters shared by every half that has a ball (centre under halves.<side>).
-# The ball sits in a case pocket BESIDE the PCB: the sensor board lies on the case floor,
-# the cradle is screwed to the case, the PCB edge gets an octagonal notch around it.
+# The ball sits in a case pocket BESIDE the PCB: the cradle (with the tilted sensor module in
+# its sleeve) stands on the case floor and is screwed to it, the PCB edge gets an octagonal notch around it.
 trackball:
   ball_diameter: 19.05          # 3/4 inch POM ball. The only supported size since r2.4.
   cradle_diameter: 28.0         # outer diameter of the cradle flange (clearance check)
@@ -208,16 +208,15 @@ halves:
       center: { x: -13.0, y: 66.0 }  # 5 mm outboard of the index column, 29.5 mm from the middle
                                      # thumb key: the band the reference designs land in once their
                                      # 34 mm ball is radius-corrected to 19.05 mm
-    fpc:                            # sensor daughterboard connector, KEY SIDE (r2.2): the cable climbs
+    fpc:                            # sensor module FFC connector, KEY SIDE (r2.2): the cable climbs
                                     # the gap between the cradle cup and the notch, folds over the board
                                     # edge at y = 49 and enters the connector from +y, so the lock stays
                                     # reachable with everything assembled (spec/08-trackball-module.md).
-      center: { x: -20.6, y: 47.0 }   # ball x - 7.6, which is the cradle's cable_ch_x: the FFC runs
-                                      # r2.4: moved 0.4 mm towards the user because the notch grew
-                                      # from apothem 15.0 to 15.5 and its edge reached J1's body.
-                                      # straight from the channel into the connector. y keeps the
-                                      # mouth inside the notch edge and the body 0.5 mm clear of the
-                                      # index keycap, so the lock stays reachable
+      center: { x: -20.6, y: 47.0 }   # the FFC comes round the cup in the gap above the PCB and
+                                      # folds over the edge into the connector. y keeps the mouth
+                                      # inside the notch edge. r2.4 moved it 0.4 mm because the notch
+                                      # grew to apothem 15.5; the index keycap edge is now 0.3 mm off
+                                      # J1 but 3 mm above it, so the lock stays reachable
       rotation: 0
       side: top
     silkscreen:                   # the thumb bridge is shorter here, so the wordmark is smaller.

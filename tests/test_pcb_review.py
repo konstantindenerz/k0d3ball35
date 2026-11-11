@@ -459,8 +459,14 @@ def test_fpc_connector_orientation(board, layout, half):
     body_top = max(y for g in j1.lines("F.Fab") for _, y in g.pts) - OFFSET[1]
     edge = layout.outline.exterior.distance(Point(f["center"]["x"], body_top))
     assert 0.3 <= edge <= 1.5, f"cable mouth {edge:.2f} mm from the PCB edge: the cable cannot fold into it"
+    # The lock faces the keys. The index keycap edge comes within 0.3 mm of J1's courtyard since
+    # the notch grew in r2.4, but it floats over it: skirt at +5.0 mm (case rim_z, flush with the
+    # skirts), FH12 body 2.0 mm, so 3 mm of height stay free for a fingernail on the lock. What
+    # must not happen is a cap over the connector, or the vertical room shrinking.
     cap_gap = min(layout.keycap_polygon(k).distance(layout.fpc_box()) for k in layout.keys)
-    assert cap_gap >= 0.5, f"J1 only {cap_gap:.2f} mm from a keycap: no room to work the lock"
+    assert cap_gap >= 0.3, f"J1 only {cap_gap:.2f} mm from a keycap"
+    skirt = float(re.search(r"^rim_z\s*=\s*([\d.]+)", (REPO / "hardware/case/params.scad").read_text(), re.M)[1])
+    assert skirt - 2.0 >= 3.0, "less than 3 mm over J1 to work the lock"
     assert "1" in {g.text for g in j1.graphics if g.kind == "text" and g.layer == "F.SilkS"}, "pin 1 marker on the front silkscreen"
 
 
@@ -754,7 +760,8 @@ def test_octagonal_notch(board, layout, half):
     on_octagon = [v for v in board.outline.exterior.coords if notch.exterior.distance(Point(v)) < 1e-3]
     assert len(on_octagon) >= 3, "the outline has vertices on the octagon"
     apothem = layout.cfg["trackball"]["cradle_diameter"] / 2 + layout.cfg["trackball"]["pocket"]["notch_clearance"]
-    assert apothem == 15.0
+    cradle = (REPO / "hardware/trackball-cradle/params.scad").read_text()
+    assert apothem == float(re.search(r"^notch_apothem\s*=\s*([\d.]+)", cradle, re.M)[1]), "PCB notch and cradle disagree"
     grown = notch.buffer(EDGE_CLEARANCE - 0.01)
     for layer in ("F.Cu", "B.Cu"):
         for desc, poly in board.copper(layer):
