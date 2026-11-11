@@ -16,7 +16,7 @@ together and how the wordmark is engraved into them. Tickets: [mech-case](../iss
 |------|-----|------------|
 | Tray | `tray-left.stl`, `tray-right.stl` | the case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, pocket for the cradle (right), five standoffs with M2 heat-set inserts, four foot magnet pockets from below, feet recesses |
 | Box cap | `box-cap-left.stl`, `box-cap-right.stl` | roof of the controller box: a plate in a rebate plus an L-shaped skirt towards the keys and the thumb keys, two M2 screws into corner bosses |
-| Lid, outer plate | `lid-outer-left.stl`, `lid-outer-right.stl` | pinky-side half of the transport cover: ball window (right), the four roof magnets, the even hinge knuckles including both ends; as a foot it lies under the controller half |
+| Lid, outer plate | `lid-outer-left.stl`, `lid-outer-right.stl` | pinky-side half of the transport cover: the four roof magnets, the even hinge knuckles including both ends; as a foot it lies under the controller half |
 | Lid, inner plate | `lid-inner-left.stl`, `lid-inner-right.stl` | controller-notch and thumb-side half: the odd knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot |
 | Lid, closed pair | `lid-left.stl`, `lid-right.stl` | both plates joined by a 2 mm steel pin, held on top by an inner lip; for the exploded view, not for printing |
 | Pocket test | `pocket-test-right.stl` | the 50 x 50 mm corner of the right tray around the ball, for the first test print with the cradle |
@@ -53,46 +53,40 @@ z = 0 is the PCB top, from `hardware/case/stack.json`:
 
 | Level | left | right | Note |
 |-------|------|-------|------|
-| Underside | -14.1 | -14.1 | flat, 2.5 mm under the deepest well |
-| Battery well and pocket floor | -11.6 | -11.6 | same plane as the cradle's `floor_z` |
+| Desk | -9.8 | -9.8 | 1 mm rubber feet in 0.8 mm recesses |
+| Underside | -9.6 | -9.6 | flat, 2.0 mm under the battery well |
+| Battery well floor | -7.6 | -7.6 | 6.0 mm under the PCB underside: 5.7 mm cell, 0.25 mm pad, flush pins |
+| Pocket floor | - | -7.1 | the cradle's `floor_z`; 2.5 mm of floor under it for the countersunk screws |
 | Key floor | -4.6 | -4.6 | hot-swap sockets 1.8 mm, diodes 1.1 mm, air |
 | PCB | -1.6 to 0 | -1.6 to 0 | on 3.0 mm standoffs |
-| Rim | +5.0 | +5.0 | flush with the keycap skirts, below the cup rim (+6.6) |
+| Pocket wall top | - | +2.9 | 0.5 mm under the cup rim (+3.4), so the thumb reaches the ball's equator |
+| Rim | +5.0 | +5.0 | flush with the keycap skirts |
 | Controller box cap, under / top | +6.7 / +8.7 | +6.7 / +8.7 | controller top +5.7 plus 1 mm |
-| Keycap top | +11.0 | +11.0 | Choc V1 |
-| Ball top | - | +17.1 | cradle `ball_top_above_pcb_top` |
-| Lid roof, under / top | +14.0 / +17.0 | +14.0 / +17.0 | 3 mm over the caps (`lid_clear`), 3 mm roof with the magnets inside; the ball looks through a window and its top is flush with the roof top |
-| Hinge strip underside | +12.0 | +12.0 | roof thickened to 5 mm within 6 mm of the hinge line, 1 mm over the caps |
-| Hinge axis | +14.5 | +14.5 | knuckles of 5 mm flush with the roof top |
+| Keycap top | +11.0 | +11.0 | Choc V1; 20.8 mm over the desk |
+| Ball top | - | +13.95 | cradle `ball_top_above_pcb_top`; 23.75 mm over the desk |
+| Hinge strip underside | +12.5 | +12.5 | roof thickened to 5 mm within 6 mm of the hinge line, 1.5 mm over the caps |
+| Lid roof, under / top | +14.5 / +17.5 | +14.5 / +17.5 | 3.5 mm over the caps (`lid_clear`), 3 mm roof with the magnets inside; 27.3 mm over the desk |
+| Hinge axis | +15.0 | +15.0 | knuckles of 5 mm flush with the roof top |
 | Lid lip bottom | +2.0 | +2.0 | 3 mm below the rim, inside the wall |
 
-Both halves share one lid height because the right lid no longer rises over the ball: in the
-default `lid_mode = "window"` a 16 mm hole in the roof lets the 19.05 mm ball look through, and
-since the hole is smaller than the ball the ball stays in the cup. `lid_mode = "flat"` puts a
-roof over the ball as before (+26.1 under, +29.1 top for the 25 mm fallback), `"dome"` a round
-turret; both render but are not part of the default build.
+The ball top sits under the roof underside, so both halves share one lid without a ball window.
 
 ## 3. Pocket
 
 ![Section through the pocket](images/img-case-pocket-detail.png)
 
 The cradle stands on the case floor in a well beside the right PCB
-(`spec/08-trackball-module.md`, `hardware/trackball-cradle/README.md`): the housing well is
-30 x 30 mm (housing 29 x 29 plus 0.5 mm) in a 34 x 34 mm block, floor at -11.6, two 2.2 mm
-holes 20 mm apart on the y axis for the M2 x 10 case screws from below. The screws are
-countersunk flat heads (90 degrees): the underside opens into a 4.8 mm cone 1.3 mm deep
-(`case_screw_cs_d`, `case_screw_cs_h`), the head sinks until the cone is as wide as it is and
-ends up 0.2 mm inside the flat underside, so nothing stands proud against the desk or the
-folded lid. 1.2 mm of floor is left at the bore, the cone's load goes into the full 2.5 mm
-around it. Above the PCB plane the cavity is the PCB notch
-(apothem 15 mm, square corner towards the keys) plus 0.2 mm, so the printed wall continues the
-PCB edge around the cup with a 2 mm wall. The rim stops at +5.0, 1.6 mm below the cup rim, and
-the thumb reaches the ball at its equator from the key side. The FFC needs nothing from the
-tray: it climbs the 2.95 mm gap between the cup and the notch inside the cradle's own wall
-channel and folds over the board edge into J1 on the key side; only the lid's lip keeps clear of
-J1 and of that corridor (`fpc_clear`). The 25 mm fallback ball is a parameter set
-(`-D ball_d=25 -D notch_apothem=16.5 -D pocket_d=35 -D ball_top_z=23.05`) and needs a
-different PCB notch; it is documented, not printed.
+(`spec/08-trackball-module.md`, `hardware/trackball-cradle/README.md`). Its floor footprint is
+the cup skirt plus the tilted sensor sleeve, 24.05 x 26.84 mm with clearance, leaning away from
+the keys; the well around it is the 24 x 29 mm housing box from the layout (centred 2.55 mm off
+the ball towards +y) plus 0.5 mm. Floor at -7.1, two 2.2 mm holes 20 mm apart on the y axis for
+the M2 x 10 case screws from below into the cup skirt. The screws are countersunk flat heads:
+a 4.8 mm, 1.3 mm deep 90 degree cone (`case_screw_cs_d`, `case_screw_cs_h`) puts the head 0.2 mm
+inside the flat underside; 1.2 mm of floor is left at the bore. Above the PCB plane the cavity is
+the PCB notch (apothem 15.5 mm, square corner towards the keys) plus 0.2 mm with a 2 mm wall,
+cut at +2.9 so the thumb reaches the ball at its equator. The FFC needs nothing from the tray: it
+climbs the gap between the cup and the notch and folds over the board edge into J1 on the key
+side; only the lid's lip keeps clear of J1 and that corridor (`fpc_clear`).
 
 ## 4. Controller box
 
@@ -117,11 +111,10 @@ This order is the only one the hardware allows, and the build guide
    about 200 C. Do this before anything else goes into the tray.
 2. Glue the magnets (four in the tray floor, four in the outer lid plate's roof) and pin the two
    lid plates together with the 2 mm rod, see section 7.
-3. Right half: trackball module into the pocket (bearings in, sensor board and cable already
-   inside the cradle, cable slot and wall channel towards the keys), then the two M2 x 10 case
-   screws from below. Do it now because the module is easier to handle and to gauge while the
-   tray is empty - it can also go in, or come out, after the PCB is screwed down: it clears the
-   board edge by 0.5 mm all round and only moves vertically (section 3).
+3. Right half: trackball module into the pocket (bearings in, sensor module and cable already
+   in the sleeve), then the two M2 x 10 case screws from below. Do it now because the module is easier to handle and to gauge while the
+   tray is empty - it can also go in, or come out, after the PCB is screwed down: it only moves
+   vertically past the square notch corner (section 3).
 4. Cell onto the back of the PCB in the dashed bay, plug into J3. The battery well is fully
    covered by the board, so the cell travels with the PCB and cannot go in afterwards.
 5. PCB into the tray over the cup, keycaps off, five M2 x 5 or x 6 machine screws from the top.
@@ -156,20 +149,19 @@ FFC reaches J1 over the board edge without a crease.
 
 The lid is two plates per half, split along the hinge line x = -13 in the layout frame
 (`hinge_x`, generated by `scripts/gen_case.py`; the left half is mirrored like everything
-else). The outer plate on the pinky side carries the ball window and all four roof magnets, the
+else). The outer plate on the pinky side carries all four roof magnets, the
 inner plate the controller box notch and the thumb cluster. On top the lid holds without
 magnets: a 1 mm lip on the inside of its skirt reaches 3 mm into the tray (0.15 mm to the
 wall) and holds by friction, the skirt sits on the rim flush with the outer wall. The lip stops
-at the controller box walls and at the pocket cup. Over the right ball the roof has a 16 mm
-window: the ball top (+17.1) is flush with the roof top, the chord at the roof underside is
-14.1 mm, and the ball cannot leave the cup through a hole smaller than itself.
+at the controller box walls and at the pocket cup. The ball top (+13.95) stays 0.55 mm under the
+roof, so the closed lid keeps the ball in the cup.
 
 ![Hinge close-up](images/img-case-lid-hinge.png)
 
 The hinge runs the full depth of the lid along the line: 9 knuckles of 8.77 mm with 0.3 mm
 gaps from y = -9.72 to +71.6 (span 81.3 mm), the outer plate owning the even knuckles and so
-both ends. The knuckles are 5 mm round and flush with the roof top, the axis at +14.5; within
-6 mm of the line the roof is thickened downward to 5 mm (underside +12.0, 1 mm over the Choc
+both ends. The knuckles are 5 mm round and flush with the roof top, the axis at +15.0; within
+6 mm of the line the roof is thickened downward to 5 mm (underside +12.5, 1.5 mm over the Choc
 caps) to carry them. A knuckle turns in a groove of the other plate with 0.3 mm radial
 clearance; the strip next to a groove is cleared so no thin lip remains. The pin is a 2 mm
 steel rod about 80 mm long in a 2.2 mm hole, pushed in from the back edge (y-min, away from
@@ -178,10 +170,10 @@ the user); the last knuckle towards the user is blind, so the pin cannot walk ou
 vertical cut faces are 0.2 mm apart.
 
 The stop is in the cut itself. Below the axis each plate's cut face is a plane through the
-axis leaning outward by `hinge_stop_deg`, half the solved fold (28.8 degrees right, 21.9
+axis leaning outward by `hinge_stop_deg`, half the solved fold (28.5 degrees right, 21.6
 left), so closed there is a V slit at the skirt bottom (about 7.5 mm wide at the front and
-back skirt, 1.5 mm under the strip), and when the lid is folded by `hinge_fold_deg` (57.6
-degrees right, 43.7 left) the two faces meet flat on flat along the whole cut - skirt ends
+back skirt, 1.5 mm under the strip), and when the lid is folded by `hinge_fold_deg` (56.9
+degrees right, 43.2 left) the two faces meet flat on flat along the whole cut - skirt ends
 and strip underside - and carry the load. Knuckle and groove are round and never take it.
 
 Magnets only hold the foot position: four 6 x 2 mm discs from below in the tray floor under
@@ -190,7 +182,7 @@ the key area next to the battery well (right (-36.94, 9.69), (-26.35, 17.69), (-
 placed by the generator where the outer plate's roof region and the tray floor region shifted
 by `foot_dx` overlap, kept 2 mm clear of the wells, J1 and the cable corridor, and four in
 the outer plate's roof at the same points shifted by -`foot_dx` (lid x about 28 to 38, clear
-of the hinge strip and the ball window), pushed in from the roof underside with 0.6 mm of
+of the hinge strip), pushed in from the roof underside with 0.6 mm of
 roof left on top, so nothing is visible from outside. Polarity: tray floor pockets north
 down, lid roof pockets south up. Eight per half, sixteen in total. Glue them after printing,
 check the snap with a loose magnet before the glue sets.
@@ -206,12 +198,12 @@ The half stands on its own outer bottom edge and on the hinge directly above the
 lip edge, so nothing is cantilevered: a thumb press or a resting palm cannot pivot the board
 against the magnets, which only keep the plate aligned. The tilt `tent_deg` = 18 degrees is the
 input; the fold is solved so that the kickstand's lip edge reaches the desk (`hinge_fold_deg`
-57.6 degrees right, 43.7 left), and the stop is cut at half of that. In numbers
-(`stack.json`, right; left in brackets): the kickstand hangs 39.6 degrees (25.7) below the
+56.9 degrees right, 43.2 left), and the stop is cut at half of that. In numbers
+(`stack.json`, right; left in brackets): the kickstand hangs 38.9 degrees (25.2) below the
 tray (`foot_beta_deg`), the hinge axis is 37.8 mm (37.8) above the desk (`foot_hinge_h`), the
-kickstand's foot stands 34.3 mm (53.2) beyond the inner wall (`foot_reach`), and the outer
-plate's free end floats 2.1 mm (7.7) above the desk (`foot_free_end_h`). The right half is the
-tight one: 2.1 mm is all the clearance the outer plate has, so a warped print or a desk mat puts
+kickstand's foot stands 34.5 mm (53.3) beyond the inner wall (`foot_reach`), and the outer
+plate's free end floats 1.6 mm (7.2) above the desk (`foot_free_end_h`). The right half is the
+tight one: 1.6 mm is all the clearance the outer plate has, so a warped print or a desk mat puts
 its free end down and the half rocks. Below about 13
 degrees of tilt the lid thickness alone would hold the board up, so `tent_deg` must stay
 above that (`tests/test_case.py` asserts more than 0.5 mm of clearance). The rubber feet at
