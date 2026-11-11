@@ -56,6 +56,34 @@
    "non_manifold_edges": 2
   },
   {
+   "id": "guard-right",
+   "path": "hardware/case/stl/guard-right.stl",
+   "group": "right",
+   "name": "PCB guard, right",
+   "role": "0.8 mm plate on the PCB between the switches, under the keycaps. Adds no height.",
+   "printed": true,
+   "doc": "hardware/case/README.md",
+   "previews": [],
+   "bbox_min": [
+    -74.46,
+    -77.78,
+    0.0
+   ],
+   "bbox_max": [
+    46.35,
+    8.75,
+    0.8
+   ],
+   "size": [
+    120.81,
+    86.53,
+    0.8
+   ],
+   "triangles": 1796,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
    "id": "box-cap-right",
    "path": "hardware/case/stl/box-cap-right.stl",
    "group": "right",
@@ -269,6 +297,34 @@
     18.3
    ],
    "triangles": 7960,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "guard-left",
+   "path": "hardware/case/stl/guard-left.stl",
+   "group": "left",
+   "name": "PCB guard, left",
+   "role": "0.8 mm plate on the PCB between the switches, under the keycaps. Adds no height.",
+   "printed": true,
+   "doc": "hardware/case/README.md",
+   "previews": [],
+   "bbox_min": [
+    -46.35,
+    -77.78,
+    0.0
+   ],
+   "bbox_max": [
+    74.46,
+    8.75,
+    0.8
+   ],
+   "size": [
+    120.81,
+    86.53,
+    0.8
+   ],
+   "triangles": 1904,
    "watertight": true,
    "non_manifold_edges": 0
   },

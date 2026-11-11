@@ -24,7 +24,8 @@ STACK_KEYS = ("ball_centre_z", "ball_top_above_pcb_top", "cup_outer_d", "lowest_
               "housing_x", "housing_y", "housing_top_z", "footprint_x", "footprint_y", "envelope_d_above_pcb", "notch_apothem")
 # STLs the explorer shows per half, in the layout frame (left files are physically mirrored); the
 # ball half adds the pocket cover and the real cradle (print frame, ball centre on the z axis)
-CASE_PARTS = {"tray": "hardware/case/stl/tray-{half}.stl", "cap": "hardware/case/stl/box-cap-{half}.stl",
+CASE_PARTS = {"tray": "hardware/case/stl/tray-{half}.stl", "guard": "hardware/case/stl/guard-{half}.stl",
+              "cap": "hardware/case/stl/box-cap-{half}.stl",
               "lid": "hardware/case/stl/lid-{half}.stl", "lid_folded": "hardware/case/stl/lid-folded-{half}.stl"}
 BALL_PARTS = {"cover": "hardware/case/stl/pocket-cover-{half}.stl",
               "cradle": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",

@@ -435,5 +435,9 @@
  "{path} is not on {ref} yet. It appears here once the branch that adds it is merged.": "{path} はまだ {ref} にありません。追加するブランチがマージされるとここに表示されます。",
  "{ref} · position {pos}": "{ref} · 位置 {pos}",
  "{tap}, hold {hold}": "{tap}、ホールドで{hold}",
- "{x} x {y} mm, {z} mm high, {lid} mm with the lid on": "{x} x {y} mm、高さ {z} mm、蓋を付けて {lid} mm"
+ "{x} x {y} mm, {z} mm high, {lid} mm with the lid on": "{x} x {y} mm、高さ {z} mm、蓋を付けて {lid} mm",
+ "PCB guard": "PCBガード",
+ "PCB guard, left": "PCBガード（左）",
+ "PCB guard, right": "PCBガード（右）",
+ "0.8 mm plate on the PCB between the switches, under the keycaps. Adds no height.": "スイッチの間でPCBの上に載る0.8 mmのプレート。キーキャップの下に収まり、高さは増えません。"
 }

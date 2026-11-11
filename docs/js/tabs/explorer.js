@@ -18,7 +18,7 @@ const col = (hex) => new THREE.Color(hex);
 const reducedMq = matchMedia('(prefers-reduced-motion: reduce)');
 const reduced = () => reducedMq.matches;
 const HALVES = ['right', 'left'];
-const CASE_KEYS = ['tray', 'cap', 'lid', 'lid_folded', 'cover', 'cradle', 'clip'];   // cover, cradle, clip: ball half only
+const CASE_KEYS = ['tray', 'guard', 'cap', 'lid', 'lid_folded', 'cover', 'cradle', 'clip'];   // cover, cradle, clip: ball half only
 
 // ---------- geometry helpers ----------
 function outlineShape(points, holes = []) {
@@ -78,6 +78,7 @@ const partMatrix = (half, key, ball) => (key === 'cradle' || key === 'clip'
 const M = {
   tray: new THREE.MeshStandardMaterial({ color: col('#CFC3AE'), roughness: .85 }),
   boxCap: new THREE.MeshStandardMaterial({ color: col('#B9A98E'), roughness: .85, transparent: true, opacity: .8 }),
+  guard: new THREE.MeshStandardMaterial({ color: col('#4A4A50'), roughness: .9 }),
   lid: new THREE.MeshStandardMaterial({ color: col('#E8762E'), roughness: .8, transparent: true, opacity: .3 }),
   clip: new THREE.MeshStandardMaterial({ color: col('#E8762E'), roughness: .7 }),
   pcb: new THREE.MeshStandardMaterial({ color: col('#2E5A3B'), roughness: .6 }),
@@ -244,6 +245,8 @@ function build(which) {
   if (ball) layer(t('Pocket cover'), 40, '#B9A98E', { x: bx + 16, y: H.case_stack.rim_z + 2, z: bz + 18 }).add(caseMesh('cover', M.boxCap));
   // --- optional retainer clip on the cover: keeps the ball in when the half is turned over (off by default) ---
   if (ball) layer(t('Retainer clip'), 50, '#E8762E', { x: bx - 16, y: H.case_stack.rim_z + 6, z: bz - 10 }, true).add(caseMesh('clip', M.clip));
+  // --- PCB guard: 0.8 mm plate on the PCB top between the switches, under the keycaps ---
+  layer(t('PCB guard'), 19, '#4A4A50', { x: B.max_x - 6, y: 3, z: B.max_y - 8 }).add(caseMesh('guard', M.guard));
   // --- bottom-side parts ---
   {
     const g = layer(t('Bottom-side parts'), -5, '#3B3B3F', { x: 20, y: -3, z: 28 });

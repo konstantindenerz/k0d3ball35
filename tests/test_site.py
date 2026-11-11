@@ -125,7 +125,7 @@ def test_layout_names_the_case_stls(tracked):
     layout = json.loads((DATA / "layout.json").read_text())
     for half, h in layout["halves"].items():
         ball = {"cover", "cradle", "clip"} if h["ball"] else set()
-        assert set(h["case_files"]) == {"tray", "cap", "lid", "lid_folded"} | ball
+        assert set(h["case_files"]) == {"tray", "guard", "cap", "lid", "lid_folded"} | ball
         for k, path in h["case_files"].items():
             assert path in tracked and (k == "cradle" or half in path)
 

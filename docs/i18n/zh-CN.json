@@ -435,5 +435,9 @@
  "{path} is not on {ref} yet. It appears here once the branch that adds it is merged.": "{path} 尚不在 {ref} 上。添加它的分支合并后即会在此显示。",
  "{ref} · position {pos}": "{ref} · 位置 {pos}",
  "{tap}, hold {hold}": "{tap}，按住 {hold}",
- "{x} x {y} mm, {z} mm high, {lid} mm with the lid on": "{x} x {y} mm，高 {z} mm，盖上盖板 {lid} mm"
+ "{x} x {y} mm, {z} mm high, {lid} mm with the lid on": "{x} x {y} mm，高 {z} mm，盖上盖板 {lid} mm",
+ "PCB guard": "PCB 护板",
+ "PCB guard, left": "PCB 护板，左",
+ "PCB guard, right": "PCB 护板，右",
+ "0.8 mm plate on the PCB between the switches, under the keycaps. Adds no height.": "位于轴体之间、覆盖在 PCB 上的 0.8 mm 板，藏在键帽下方，不增加高度。"
 }

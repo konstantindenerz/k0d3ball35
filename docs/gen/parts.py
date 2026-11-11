@@ -41,6 +41,7 @@ PARTS: dict[str, tuple[str, str, str, bool]] = {}
 def _half(half: str) -> None:
     PARTS[f"tray-{half}"] = (half, f"Tray, {half}", "The case body the PCB sits in"
                              + (", with the pocket for the trackball cradle." if half == "right" else "."), True)
+    PARTS[f"guard-{half}"] = (half, f"PCB guard, {half}", "0.8 mm plate on the PCB between the switches, under the keycaps. Adds no height.", True)
     PARTS[f"box-cap-{half}"] = (half, f"Controller box cap, {half}", "Screwed roof over the controller, with the engraved wordmark.", True)
     PARTS[f"lid-outer-{half}"] = (half, f"Lid, outer plate, {half}", "Pinky-side half of the hinged lid.", True)
     PARTS[f"lid-inner-{half}"] = (half, f"Lid, inner plate, {half}", "Thumb-side half of the hinged lid.", True)

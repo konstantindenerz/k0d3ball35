@@ -435,5 +435,9 @@
  "{path} is not on {ref} yet. It appears here once the branch that adds it is merged.": "{path} пока нет в {ref}. Он появится здесь после слияния ветки, которая его добавляет.",
  "{ref} · position {pos}": "{ref} · позиция {pos}",
  "{tap}, hold {hold}": "{tap}, удержание — {hold}",
- "{x} x {y} mm, {z} mm high, {lid} mm with the lid on": "{x} x {y} mm, высота {z} mm, с крышкой {lid} mm"
+ "{x} x {y} mm, {z} mm high, {lid} mm with the lid on": "{x} x {y} mm, высота {z} mm, с крышкой {lid} mm",
+ "PCB guard": "Защитная пластина PCB",
+ "PCB guard, left": "Защитная пластина PCB, левая",
+ "PCB guard, right": "Защитная пластина PCB, правая",
+ "0.8 mm plate on the PCB between the switches, under the keycaps. Adds no height.": "Пластина 0,8 мм на плате между переключателями, под кейкапами. Высоту не увеличивает."
 }

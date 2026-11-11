@@ -640,6 +640,7 @@
    },
    "case_files": {
     "tray": "hardware/case/stl/tray-left.stl",
+    "guard": "hardware/case/stl/guard-left.stl",
     "cap": "hardware/case/stl/box-cap-left.stl",
     "lid": "hardware/case/stl/lid-left.stl",
     "lid_folded": "hardware/case/stl/lid-folded-left.stl"
@@ -1484,6 +1485,7 @@
    },
    "case_files": {
     "tray": "hardware/case/stl/tray-right.stl",
+    "guard": "hardware/case/stl/guard-right.stl",
     "cap": "hardware/case/stl/box-cap-right.stl",
     "lid": "hardware/case/stl/lid-right.stl",
     "lid_folded": "hardware/case/stl/lid-folded-right.stl",
