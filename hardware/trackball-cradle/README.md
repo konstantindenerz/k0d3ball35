@@ -18,7 +18,7 @@ Files
 | `retention.py` | checks that the retainer keeps the ball in and stays off it, writes `retention.json` (`make retention`, about a minute) |
 | `stl/` | `cradle-19mm-pocket.stl`, `retainer-19mm.stl` (optional) |
 | `dxf/` | `floor-19mm-pocket.dxf`, the footprint on the case floor with the two screw holes |
-| `preview/` | section and assembly views |
+| `preview/` | cradle, section and assembly views |
 
 Requires OpenSCAD 2025 or newer with the Manifold backend (tested with 2026.10.11,
 `brew install --cask openscad@snapshot`). Build everything with `make`.
@@ -48,20 +48,23 @@ stays in the layout frame.
   38 degrees for a 0.06 mm gain, the 8 mm module allows 65 (`spec/08-trackball-module.md`).
 - **What sets the ball height.** The cup floor (`cup_floor_t` 2.0 mm), not the module, so the
   module's nominal lens values cannot raise the ball. `tests/test_cradle.py` asserts it.
-- **Floor footprint.** Cup skirt plus the tilted sleeve where the floor clips it: 24.05 x
-  26.84 mm with 0.5 mm clearance (`dxf/floor-19mm-pocket.dxf`), extending further on the side
-  away from the keys. The case well (the 24 x 29 mm housing box, offset 2.55 mm in y, plus
+- **Body.** One piece with vertical walls from the floor to the rim: the cup and, towards the
+  sensor, a tab as wide as the sleeve (18 mm) that ends 0.3 mm inside the PCB notch octagon,
+  with its 45 degree corners. One 0.8 mm 45 degree chamfer runs along the whole top edge; on the
+  cup it is the retainer's seat. The tilted module slot is cut into the tab and open at the back.
+- **Floor footprint.** The body's plan: 24.05 x 27.73 mm with 0.5 mm clearance
+  (`dxf/floor-19mm-pocket.dxf`), extending further on the side away from the keys. The case well (the 24 x 29 mm housing box, offset 2.55 mm in y, plus
   0.5 mm) contains it.
 - **Case screws.** Two M2 x 10 countersunk self-tapping screws come up through the case floor
   into the cup skirt, 20 mm apart on the y axis (`case_screw_sp`). The module has no holes.
-- **Above the PCB** nothing is wider than 24.1 mm (bearing bosses), inside the PCB notch
-  (apothem 15.5 mm). The notch corner towards the keys is square, so the module drops into the
+- **Above the PCB** the cup is 23.05 mm wide and the tab stays 0.3 mm inside the PCB notch
+  (apothem 15.5 mm); nothing of the cradle rises above the cup rim. The notch corner towards the keys is square, so the module drops into the
   pocket and lifts out with the PCB fitted (`issues/mech-cradle-notch-relief.md`).
 - **Cable.** The FFC leaves the sleeve below the PCB, climbs past the PCB plane in the gap
   between cup and notch, runs round the cup above the PCB and folds over the board edge into J1
   on the key side.
 - **Bearings.** Three 2.0 mm ZrO2 balls at 30, 150 and 270 degrees, 35 degrees below the equator,
-  clear of the sensor window. Seats are 1.9 mm holes drilled radially; printed holes come out
+  clear of the sensor window. Seats are 1.9 mm holes drilled radially into the solid cup skirt; printed holes come out
   undersize, ream with a 1.9 to 2.0 mm bit.
 
 ## Ball retention
@@ -105,8 +108,7 @@ stay in place.
   window 2.2 to 2.6). Otherwise set `lens_shim` to the difference (positive moves the module
   away from the ball) and reprint; the shim does not move the ball. Suspect the bearing seats
   first: a radial seat error d moves the ball centre by 1.43 d.
-- Two tight values to measure: sleeve top 0.11 mm under the cup rim, module 14.76 mm radial
-  against the 15.5 mm notch apothem.
+- Tight value to measure: module 14.76 mm radial against the 15.5 mm notch apothem.
 - With a scrap PCB at the PCB plane, the module goes into the pocket and out again vertically.
 - The FFC reaches J1 without a crease.
 - Retainer (if used): ball still spins, stays in when the half is shaken upside down, ring comes

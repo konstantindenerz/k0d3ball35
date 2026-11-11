@@ -22,7 +22,7 @@ phase has to provide that pocket. All numbers come from `hardware/layout/output/
 | PCB notch | octagon, apothem 15.5 mm, with the corner towards the keys squared off so the module can be lowered past the board edge (`mech-cradle-notch-relief`), vertices in `trackball.notch` |
 | Pocket wall above the PCB plane | circle 32 mm (`pocket_diameter`), cut at +2.925, 0.5 mm under the cup rim, so the thumb reaches the ball at its equator |
 | Pocket floor | -7.1 mm (battery well -7.6, underside -9.6; the floor is 2.5 mm thick under the pocket) |
-| Cradle floor footprint | cup skirt plus tilted module sleeve, 24.05 x 26.84 mm with 0.5 mm clearance, leaning towards layout +y (away from the keys); `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf` |
+| Cradle floor footprint | cup skirt plus the module sleeve's tab, 24.05 x 27.73 mm with 0.5 mm clearance, leaning towards layout +y (away from the keys); `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf` |
 | Pocket well | the 24 x 29 mm housing box (centred 2.55 mm off the ball towards +y) plus 0.5 mm; it contains the footprint |
 | Case screws | 2x M2 x 10 countersunk self-tapping from below through the floor into the cup skirt, 20 mm apart on the y axis, 2.2 mm holes with a 4.8 mm, 1.3 mm deep countersink |
 | Cable | the FFC leaves the sleeve below the PCB, climbs the gap between cup and notch, runs round the cup and folds over the board edge into J1 at (-20.6, +47). The tray needs no cable channel |
