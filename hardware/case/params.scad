@@ -147,12 +147,6 @@ hinge_blind     = 1.5;         // the pin hole stops this short of the y-max end
 
 // ---------------------------------------------------------------- trackball pocket
 ball_d          = 19.05;       // the only supported size since r2.4
-// Copied from hardware/trackball-cradle/params.scad so the assembly preview can draw the tilted
-// module. Geometry facts, like ball_top_z above; tests/test_case.py checks they agree.
-sensor_angle    = 65;          // cradle sensor_angle
-sensor_az       = 90;          // cradle sensor_az: the module leans towards +y
-sensor_sleeve   = [11, 18];    // cradle hous_x, hous_y
-sensor_reach    = 15.4;        // cradle STACK housing_radial_extent_x
 pocket_d        = 32.0;        // round pocket wall above the PCB plane (cradle 28 + 2 x 2 wall)
 pocket_wall     = 2.0;
 cradle_d        = 28.0;        // cradle clearance circle above the PCB plane

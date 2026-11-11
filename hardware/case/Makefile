@@ -18,7 +18,7 @@ CAM_FOLD  = --camera=-31,-30,10,60,0,140,260 --imgsize=1400,1000 --colorscheme=T
 CAM_HINGE = --camera=-31,9,14,70,0,180,60 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_BOT   = --camera=-10,-30,-10,125,0,155,400 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_CAP   = --camera=-59.5,-21.9,8.7,0,0,0,170 --imgsize=700,1200 --colorscheme=Tomorrow
-SRC       = case.scad params.scad data.scad logo_data.scad common.scad logo.scad tray.scad lid.scad
+SRC       = case.scad params.scad data.scad logo_data.scad common.scad logo.scad tray.scad lid.scad ../trackball-cradle/stl/cradle-19mm-pocket.stl
 LEFT      = -D 'half="left"'
 RIGHT     = -D 'half="right"'
 

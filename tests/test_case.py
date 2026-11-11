@@ -328,12 +328,9 @@ def test_copied_cradle_facts_agree(cradle_stack):
 
     c = cradle_stack
     assert val("ball_d") == [c["ball_d"]]
-    assert val("sensor_angle") == [c["sensor_angle"]]
-    assert val("sensor_az") == [c["window_az"]], "the case's sensor_az is the cradle's window azimuth"
-    assert val("sensor_sleeve") == [c["housing_x"], c["housing_y"]]
-    assert abs(val("sensor_reach")[0] - c["housing_radial_extent_x"]) < 0.01
     assert val("ball_top_z") == [c["ball_top_above_pcb_top"]]
     assert not re.search(r"^notch_apothem\s*=", src, re.M), "the notch comes from the layout data, not a copy"
+    assert not re.search(r"^sensor_(angle|az|sleeve|reach)\s*=", src, re.M), "the assembly imports the cradle STL"
 
 
 def test_stack_json(stack, cradle_stack):

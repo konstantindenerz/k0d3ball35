@@ -211,19 +211,9 @@ module battery_dummy() {
 
 module ball_dummy() color("white") translate([bc()[0], bc()[1], ball_centre_z()]) sphere(d = ball_d);
 
-// Stand-in for the printed cradle in the assembly view: the cup, and the sensor module sleeve
-// tilted by sensor_angle towards sensor_az. Kept in step with the real cradle by
-// tests/test_case.py (cradle_dummy must not stick out of the pocket or above the cup rim).
-module cradle_dummy() {
-    color("royalblue") translate([bc()[0], bc()[1], 0]) {
-        // cup: skirt from the pocket floor up to the cup rim
-        translate([0, 0, pocket_floor_z]) cylinder(d = cradle_cup_d(), h = cradle_rim_z() - pocket_floor_z);
-        // tilted sleeve around the module, clipped at the floor and at the cup rim like the real one
-        intersection() {
-            rotate([0, 0, sensor_az]) rotate([0, sensor_angle, 0])
-                translate([-sensor_sleeve[0] / 2, -sensor_sleeve[1] / 2, -sensor_reach - 2])
-                    cube([sensor_sleeve[0], sensor_sleeve[1], sensor_reach + 2]);
-            translate([-40, -40, pocket_floor_z]) cube([80, 80, cradle_rim_z() - pocket_floor_z]);
-        }
-    }
-}
+// The printed cradle itself in the assembly views (its STL is in the print frame and centred on
+// the ball: mirror y back to the layout frame and move it to the ball). Until the r2.4 fix this was
+// a stand-in drawn from copied numbers, which drifted away from the real part.
+module cradle_dummy()
+    color("royalblue") translate([bc()[0], bc()[1], 0]) mirror([0, 1, 0])
+        import("../trackball-cradle/stl/cradle-19mm-pocket.stl");
