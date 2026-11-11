@@ -88,9 +88,10 @@ PCB plane the cup is 23.05 mm wide and the tab stays 0.3 mm inside the notch oct
 corner towards the keys is square, so the whole module drops into the pocket and lifts out
 with the PCB fitted.
 
-Retention: the cup has nothing above its rim, the ball lifts straight out. An optional clip-on
-retainer keeps the ball in when the half is turned over (`issues/mech-ball-retainer-clip.md`);
-otherwise the case lid covers it in transport.
+Retention: the cup has nothing above its rim, the ball lifts straight out. An optional retainer
+clip on the case's pocket cover keeps the ball in when the half is turned over
+(`issues/mech-ball-retainer-clip.md`, `hardware/case/README.md`); otherwise the case lid covers it
+in transport.
 
 ## 4. Why 19.05 mm
 

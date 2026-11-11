@@ -90,7 +90,7 @@ No LCSC lines: the sensor is a bought module (`issues/hw-paw3222-variant.md`).
 
 Print service or own printer: a service (JLC3DP or Craftcloud, SLA resin or MJF nylon) gives the
 cleanest bearing seats and the flattest floor; for the cradle pick SLA. On an own FDM printer use
-0.12 mm layers, 3 perimeters, no supports except under the optional retainer's collar, and ream the
+0.12 mm layers, 3 perimeters, no supports (the optional retainer clip needs them under its ring), and ream the
 three 2 mm bearing seats with a drill bit by hand before pressing the ceramic balls in.
 
 ## 8. What waits for hardware

@@ -19,7 +19,8 @@ together and how the wordmark is engraved into them. Tickets: [mech-case](../iss
 | Lid, outer plate | `lid-outer-left.stl`, `lid-outer-right.stl` | pinky-side half of the transport cover: the four roof magnets, the even hinge knuckles including both ends; as a foot it lies under the controller half |
 | Lid, inner plate | `lid-inner-left.stl`, `lid-inner-right.stl` | controller-notch and thumb-side half: the odd knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot |
 | Lid, closed pair | `lid-left.stl`, `lid-right.stl` | both plates joined by a 2 mm steel pin, held on top by an inner lip; for the exploded view, not for printing |
-| Pocket cover | `pocket-cover-right.stl` | flush 1.4 mm plate over the cradle opening, 45 degree funnel to a 26.5 mm hole around the cup, two M2 x 6 countersunk screws |
+| Pocket cover | `pocket-cover-right.stl` | flush 1.2 mm plate over the cradle opening, a bezel over the cup rim with a 20.55 mm hole (0.75 mm round the ball), two M2 x 6 countersunk screws |
+| Retainer clip | `pocket-clip-right.stl` | optional: C-ring on the cover with two claws over the ball, two snap pins into the cover; keeps the ball in upside down |
 | Pocket test | `pocket-test-right.stl` | the 50 x 50 mm corner of the right tray around the ball, for the first test print with the cradle |
 
 The tray and the box cap carry the owner wordmark as an engraved relief (section 9).
@@ -89,10 +90,13 @@ The pocket is part of the case edge, not a box in front of it: the outline
 (`case_outline` in `data.scad`, from `scripts/gen_case.py`) runs in 90 degree steps around it
 like it does around the keys, and the tray is solid up to the rim there. Only a rectangle over
 the cradle stays open (`pocket_opening`: the well, the 28.4 mm cradle circle and the cable path
-to the board edge). A flush cover (`pocket_cover`, 1.4 mm, from +3.6 to the rim at +5.0) sits on
-a 4 mm ledge in that opening; its 45 degree funnel ends in a 26.5 mm hole around the cup, so the
-thumb reaches the ball at its equator and the optional retainer clip passes. Two M2 x 6
-countersunk screws on the user-side ledge into 1.6 mm pilots hold it. On the thumb side the
+to the board edge). A flush cover (`pocket_cover`, 1.2 mm, from +3.8 to the rim at +5.0) sits on
+a 4 mm ledge in that opening and reaches over the cup rim (0.375 mm above it) as a bezel: its
+20.55 mm hole leaves 0.75 mm round the ball, hides the cup and still lets the ball lift out. Two
+M2 x 6 countersunk screws on the user-side ledge into 1.6 mm pilots hold it. The optional
+retainer clip (`pocket_clip`) is a C-ring on the cover with two claws over the ball's shoulders,
+open towards the thumb, held by two split snap pins in two 2.4 mm holes of the cover;
+`hardware/case/retention.py` proves it keeps the ball in (0.67 mm tolerance) and stays off it. On the thumb side the
 cover ends at the PCB edge, so the seam runs straight. The lid follows the same outline and
 covers the ball (ball top +13.95, roof underside +14.5). The FFC needs nothing from the tray: it
 climbs from the module and folds over the board edge into J1 on the key side under the cover;
@@ -132,7 +136,7 @@ This order is the only one the hardware allows, and the build guide
 7. Right half: fold the FFC over the board edge into J1 on the key side, close the lock. Last
    connection of the build, and the only one you can reach with everything assembled.
 8. Right half: pocket cover on, two M2 x 6 countersunk screws from the top. Ball in through
-   the funnel, rubber feet on, lid on.
+   the bezel, optional retainer clip on, rubber feet on, lid on.
 
 Service: the trackball module comes out without touching keycaps or PCB. Take the pocket cover
 off (two screws from the top), open J1's lock, pull the cable out, undo the two screws from below

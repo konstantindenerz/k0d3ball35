@@ -78,3 +78,17 @@ Related: `mech-case-lid` (transport cover), `mech-trackball-cradle`, `mech-case-
 2026-11-11 (r2.4): rebuilt for the lower ball and the tilted sensor sleeve: fingers moved into a
 collar above the rim (in the old skirt the strain would have been 0.35), skirt relieved over the
 sleeve, fingers at 270/300/330/0. Mesh watertight, `tests/test_retainer.py` 14 of 14 green.
+
+2026-11-11 (pocket cover bezel): the clip moved from the cup rim onto the case's pocket cover.
+The cover had to keep a 26.5 mm hole (plus a funnel) only so the cup-mounted ring could pass,
+which left a 5 mm ring round the ball; the user wanted the gap small. The cover is now a bezel
+over the cup rim (20.55 mm hole, 0.75 mm round the ball), and the clip is a flat C-ring on the
+cover with the same two claws, held by two split snap pins in two 2.4 mm holes of the cover
+(`hardware/case/tray.scad` `pocket_clip`, parameters `clip_*` in `hardware/case/params.scad`,
+`stl/pocket-clip-right.stl`, centred on the ball). The cradle lost the finger pockets, the
+`retainer_*` parameters and `retainer-19mm.stl`; `retention.py` moved to `hardware/case/` and
+reads the cradle STL from there. Same result: trapped with 0.67 mm guaranteed tolerance, 0.39 mm
+off the ball at rest, pull-off never closer, 156 degrees open, pins 0.82 mm from the cradle,
+prong strain 2.2 percent (the first cut was 3.4 percent, the test caught it: slit widened to
+0.9 mm, undercut 0.12 mm). It prints pins down with supports under the ring. Open: the snap
+force on a print (`clip_pin_barb`), the 1.2 mm cover plate's stiffness.

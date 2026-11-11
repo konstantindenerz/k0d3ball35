@@ -20,7 +20,7 @@ Do these before paying for anything:
    and MSK12C02, routing eyeball. Tickets `hw-main-pcb-review-r1`, `hw-gnd-stitching-review`
    (non-blocking).
 4. In parallel with the order (no longer a gate): cradle test print and sensor fit, print
-   `hardware/trackball-cradle/stl/cradle-19mm-pocket.stl` and the optional `retainer-19mm.stl`, fit the
+   `hardware/trackball-cradle/stl/cradle-19mm-pocket.stl` (and the optional `hardware/case/stl/pocket-clip-right.stl` with the pocket cover), fit the
    PAW3222 module, check the lens gap with a feeler gauge; the ball must spin
    without touching the rim, and with the retainer clipped on it must stay in upside down. Tickets
    `mech-ball-height-23mm`, `mech-ball-retainer-clip`.

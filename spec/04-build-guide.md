@@ -80,7 +80,7 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 3 (+3) | 2.0 mm ZrO2 ceramic bearing balls | cradle | 11 |
 | 1 | printed cradle (`hardware/trackball-cradle/stl/cradle-19mm-pocket.stl`) | right half, case pocket | 11 |
 | 1 + 2 | printed pocket cover (`hardware/case/stl/pocket-cover-right.stl`) and two M2 x 6 countersunk screws | right half, flush over the cradle | 12 |
-| 1 (optional) | printed retainer (`hardware/trackball-cradle/stl/retainer-19mm.stl`), PETG | clips onto the cup, keeps the ball in when the half is turned over | 11 |
+| 1 (optional) | printed retainer clip (`hardware/case/stl/pocket-clip-right.stl`), PETG | snaps into the pocket cover, keeps the ball in when the half is turned over | 11 |
 | 2 | M2 x 8 self-tapping countersunk screws (or M2 x 8 countersunk machine screws + heat-set inserts) | case screws: from below through the case floor into the cradle's cup skirt | 11 |
 | 35 (+2) | Kailh Choc V1 switch (PG1350) | | 12 |
 | 35 | Choc 1u keycaps (MBK), 5 in an accent colour for the thumbs | | 12 |
@@ -322,9 +322,8 @@ Checkpoint: module found by the firmware, cable plugged in at the module end.
 ## 11. Trackball cradle
 
 Print `cradle-19mm-pocket.stl` upright, 0.12 mm layers, 3 perimeters, 30 percent infill, no
-supports, PETG or PLA. Optional: `retainer-19mm.stl` in PETG, with supports under the collar
-(it keeps the ball in when the half is turned over; otherwise the lid covers the ball in
-transport). Deburr the cup rim. Print settings and the test-fit list are in the
+supports, PETG or PLA. The optional retainer clip belongs to the case (chapter 12) and keeps
+the ball in when the half is turned over; otherwise the lid covers the ball in transport. Deburr the cup rim. Print settings and the test-fit list are in the
 [cradle README](../hardware/trackball-cradle/README.md).
 
 ![Pressing the ceramic bearings into the cup](images/img-build-step-cradle.png)
@@ -347,9 +346,7 @@ transport). Deburr the cup rim. Print settings and the test-fit list are in the
 6. Route the cable up the gap between cup and notch, round the cup and over the board edge into
    J1 on the **key side**, exposed metal **down**. Close the lock. Fold gently, no crease.
 7. Drop the ball in: it spins freely, a strip of paper passes between ball and rim all round.
-   (In the finished case it goes in last, through the pocket cover's funnel, chapter 12.)
-8. Optional retainer: claws left and right of the ball (it fits one way only), press until it
-   clicks. To remove: pinch the claws, pull straight up.
+   (In the finished case it goes in last, through the pocket cover, chapter 12.)
 
 ![Trackball module mounted beside the right half](images/img-build-step-ball.png)
 
@@ -386,9 +383,12 @@ hardware allows, so do not improvise.
 8. Right half: fold the FFC over the board edge into J1 on the key side and close the lock
    (chapter 11, step 6). This is the last connection of the build and the only one you can reach
    with everything assembled.
-9. Right half: put the pocket cover into its rebate (funnel up, screw holes towards you) and
-   fasten it with two M2 x 6 countersunk screws from the top, snug: it sits flush with the rim.
-   Ball into the cup through the funnel, four rubber feet onto the underside, lid on. As a stand, fold the inner lid plate down to its stop and
+9. Right half: put the pocket cover into its rebate (chamfered hole up, screw holes towards you)
+   and fasten it with two M2 x 6 countersunk screws from the top, snug: it sits flush with the rim.
+   Ball into the cup through the cover. Optional retainer clip (`pocket-clip-right.stl`, PETG,
+   pins down on the bed, supports under the ring): claws left and right of the ball, press its
+   two pins into the cover until they click; pull it straight up to take it off. Four rubber feet
+   onto the underside, lid on. As a stand, fold the inner lid plate down to its stop and
    let the outer plate snap roof-up under the controller half of the board, the folded inner
    plate just beyond the inner edge as a kickstand pointing towards the other half: the half
    stands on its outer edge and the kickstand and tilts by about 18 degrees, inner edge up.
@@ -454,9 +454,9 @@ reconnect after a power cycle.
 | cursor moves the wrong way | axis config | `invert-x` / `invert-y`, `&zip_xy_swap_mapper` |
 | mouse layer opens while typing | timing | raise `require-prior-idle-ms`, check `excluded-positions` |
 | short battery life on the right half | `force-awake` on, slide switch not in the battery line, sensor always tracking | disable `force-awake`, confirm 0 V at RAW with the switch off, make sure nothing (lid, pocket wall) presses the ball onto the bearings |
-| ball falls out when the half is carried | the cup is open by design | clip on the optional retainer (`retainer-19mm.stl`), or put the case lid on for transport (`issues/mech-case-lid.md`) |
-| retainer clips on too hard or rattles | print tolerance on the 0.25 mm snap undercut | change `retainer_nub` in the cradle `params.scad` by 0.05 mm and reprint the ring |
-| thumb catches a retainer claw | ring on the wrong way round, or a hand that sweeps wide | the ring fits one way only, claws left and right of the ball; otherwise run without the ring (the lid still covers transport) |
+| ball falls out when the half is carried | the cup is open by design | press on the optional retainer clip (`pocket-clip-right.stl`), or put the case lid on for transport (`issues/mech-case-lid.md`) |
+| retainer clip snaps in too hard or sits loose | print tolerance on the 0.12 mm pin undercut | change `clip_pin_barb` in the case `params.scad` by 0.03 mm and reprint the clip |
+| thumb catches a retainer claw | clip on the wrong way round, or a hand that sweeps wide | the pins fit one way only, claws left and right of the ball; otherwise run without the clip (the lid still covers transport) |
 | ball rubs on the PCB notch | cradle not centred in the pocket | loosen the two floor screws, centre the cup in the notch, retighten |
 | module will not go into the pocket | wrong print or a scrap board with the old octagonal notch; the corner towards the keys must be square | reprint the tray and check the notch against `hardware/layout/output/outline-right.dxf` |
 | FFC creases at the board edge | too little radius in the fold, or the cable is too long and bows in the pocket | 30 to 40 mm cable, let it arc above the board before pressing it down, deburr the board edge |
@@ -468,7 +468,7 @@ forward 0.5 to 0.7 V.
 
 ## 16. Maintenance
 
-* **Ball.** Take the retainer off if fitted (pinch the claws, pull up), lift the ball out, wipe it with a lint-free cloth and a little
+* **Ball.** Take the retainer clip off if fitted (pull it straight up), lift the ball out, wipe it with a lint-free cloth and a little
   isopropyl alcohol, brush the three bearings with a dry brush. Every few weeks, more with dry skin.
   POM balls pick up skin oil faster than phenolic ones.
 * **Bearings.** If the ball starts scraping, a bearing has shifted. Reseat it and re-glue at the
