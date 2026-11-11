@@ -1,13 +1,12 @@
 # SPDX-License-Identifier: MIT
 """Checks for the parametric trackball cradle (hardware/trackball-cradle).
 
-r2 mounts the module in a case pocket beside the right PCB (``mount = "pocket"``) with a
-19.05 mm ball; the 25 mm pocket and the r1 cutout mount stay as variants. The cup has nothing
-above its rim: the rim stays ``rim_drop`` below the equator. Keeping the ball in when the half is
-turned over is the job of the optional clip-on retainer (``part = "retainer"``, two claws away
-from the thumb, checked by ``retention.py``) or of the case lid. The housing has no screw ears: the two case screws (M2 x 10) come up through
-the case floor and the sensor board into the sensor posts, so the floor footprint is the bare
-housing. The OpenSCAD dependent tests are skipped when no OpenSCAD binary is available.
+The cradle stands in a case pocket beside the right PCB with the 19.05 mm ball (the only size since
+r2.4) and holds a bought PAW3222 module tilted 65 degrees in a sleeve beside the cup. The cup has
+nothing above its rim: the rim stays ``rim_drop`` below the equator. Keeping the ball in when the
+half is turned over is the job of the optional clip-on retainer (``part = "retainer"``, checked by
+``retention.py``) or of the case lid. Two M2 case screws come up through the case floor into the
+cup skirt; there are no screw ears. The OpenSCAD dependent tests are skipped when no OpenSCAD binary is available.
 """
 import json
 import math
@@ -74,6 +73,18 @@ def stack():
 @pytest.fixture(scope="module")
 def trackball_cfg():
     return yaml.safe_load(LAYOUT.read_text())["trackball"]
+
+
+@pytest.mark.skipif(openscad() is None, reason="openscad not installed")
+def test_module_can_be_inserted(tmp_path):
+    """The bought module must be able to get INTO its sleeve: along its own axis from the back,
+    until the board rests on the shoulder round the lens cavity. r2.4 first shipped a sleeve
+    closed on every side, which no clearance check notices because the seated module touches
+    nothing. Swept 40 mm back from the seat, the board must not meet the cradle anywhere."""
+    out = tmp_path / "insert.stl"
+    res = subprocess.run([openscad(), "--backend", "manifold", "-D", 'part="insert_path"',
+                          "-o", str(out), str(SCAD)], capture_output=True, text=True, timeout=600)
+    assert "Current top level object is empty" in res.stderr, "the module's way into the sleeve is blocked"
 
 
 def test_sources_present():
@@ -266,20 +277,6 @@ def test_floor_dxf_is_housing_with_two_screw_holes():
         assert abs(b[1] - b[0] - 2.2) < 0.1, "M2 clearance hole"
     assert abs(centres[0][1] + CASE_SCREW_SP / 2) < 0.05
     assert abs(centres[1][1] - CASE_SCREW_SP / 2) < 0.05
-
-
-@pytest.mark.skipif(openscad() is None, reason="openscad not installed")
-def test_render_other_variants(tmp_path):
-    for overrides in (
-        {"ball_d": 25, "mount": "pocket", "notch_apothem": 16.5},
-        {"ball_d": 25, "mount": "cutout"},
-    ):
-        out = tmp_path / "part.stl"
-        values, log = run_scad(overrides, out)
-        assert "ERROR" not in log
-        assert out.stat().st_size > 10_000
-        if overrides.get("mount") == "cutout":
-            assert values["cup_outer_d"] < values["pcb_cutout_d"]
 
 
 # --------------------------------------------------------------------- r2.4: the tilted module

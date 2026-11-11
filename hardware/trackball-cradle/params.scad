@@ -64,7 +64,7 @@ sensor_pcb_w    = 8;       // module width, IN the tilt plane - the dimension th
 sensor_pcb_t    = 1.0;     // module board thickness, nominal
 sensor_pcb_gap  = 0.2;     // clearance per side between the module and the sleeve walls
 sensor_pins_h   = 1.2;     // tallest part on the back: the 6-pin 0.5 mm FPC connector, nominal
-sleeve_back     = 1.2;     // printed material behind the module
+sleeve_back     = 1.2;     // the sleeve walls run on this far behind the module; the back itself is open
 sensor_angle    = 65;      // tilt from vertical, towards +x. Largest angle whose optical window
                            // clears the cup rim (6 deg below the equator) and whose upper board
                            // edge stays under the rim. 0 = straight below the ball.
@@ -172,12 +172,10 @@ with_retainer      = true;   // show the retainer in the assembly and section vi
 housing_wall    = 2.0;     // walls around the sensor board / lens cavity (y, the key-facing side)
 housing_wall_x  = 1.5;     // same on x: 29 mm total, 1 mm narrower than the notch across flats, so
                            // the housing clears the PCB edge when the module is lowered into the pocket
-// FFC channel : the cable leaves the sensor connector under the board, turns up
-// inside the key-facing wall and climbs past the PCB plane in the gap between the cup and the
-// notch, where it folds over the board edge into J1 on the key side of the main PCB.
-// cable_ch_x is the local x of the cable, i.e. (J1 x in the layout frame) - (ball centre x).
-cable_ch_x      = -7.6;
-cable_ch_w      = 6.0;
+// FFC exit: a notch in the sleeve wall under the module's connector. From there the cable
+// climbs past the PCB plane in the gap between the cup and the notch, runs round the cup and
+// folds over the board edge into J1 on the key side of the main PCB.
+ffc_exit_w      = 6.0;
 
 // ---------------------------------------------------------------- rendering
 $fn             = 96;

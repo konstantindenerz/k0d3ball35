@@ -1,12 +1,11 @@
 // k0d3ball35 trackball cradle
 //
-// A 3D printed holder for a 19.05 mm (or 25 mm) trackball with three static ceramic
-// bearings and a PMW3610 / LM18-LSI sensor daughterboard underneath. The cup rim stays
-// below the ball equator and the cup has nothing above it: the ball rests in the cup by
-// gravity. An optional clip-on retainer (part = "retainer") puts two claws over the ball's
-// shoulders, away from the thumb, so the ball stays in when the half is turned over; it
-// snaps onto a chamfer and four pockets on the cup (issues/mech-ball-retainer-clip.md).
-// Without it the case lid covers the ball in transport (issues/mech-case-lid.md).
+// A 3D printed holder for a 19.05 mm trackball on three static ceramic bearings, with a
+// bought PAW3222 sensor module tilted 65 degrees into a sleeve beside the cup. The cup rim
+// stays below the ball equator: the ball rests in the cup by gravity. An optional clip-on
+// retainer (part = "retainer") snaps onto the rim chamfer so the ball stays in when the half
+// is turned over (issues/mech-ball-retainer-clip.md); otherwise the case lid covers the ball
+// in transport (issues/mech-case-lid.md).
 //
 // The module stands on the case floor in a pocket beside the main PCB; the PCB edge has
 // an octagonal notch around the cup. 19.05 mm ball only (r2.4 dropped the 25 mm ball and
@@ -149,8 +148,6 @@ echo(str("STACK floor_z=", floor_z));
 echo(str("STACK depth_below_pcb_bottom=", depth_below_pcb));
 echo(str("STACK housing_radial_extent_x=", radial_ext));
 echo(str("STACK housing_x=", hous_x));
-echo(str("STACK cable_channel_x=", cable_ch_x));
-echo(str("STACK cable_channel_w=", cable_ch_w));
 echo(str("STACK housing_y=", hous_y));
 echo(str("STACK housing_top_z=", hous_top));
 echo(str("STACK footprint_x=", hous_x));
@@ -227,15 +224,17 @@ module sensor_pocket_cuts() {
     // lens + chip cavity between the module and the cup
     translate([-(lens_l + 1.0) / 2, -(lens_w + 1.0) / 2, -L_pcb - 0.01])
         cube([lens_l + 1.0, lens_w + 1.0, cav_h + 0.01]);
-    // the module slot and the room its back-side parts need, open towards -z so it slides in
-    translate([-bw / 2, -bl / 2, -L_low - 0.01]) cube([bw, bl, L_low - L_pcb + 0.02]);
+    // the module slot and the room its back-side parts need, open at the back (-z): the module
+    // slides in along its axis until its board rests on the shoulder round the lens cavity, which
+    // sets the lens distance. A strip of tape over the opening keeps it there (build guide).
+    translate([-bw / 2, -bl / 2, -L_low - sleeve_back - 1]) cube([bw, bl, L_low + sleeve_back + 1 - L_pcb + 0.01]);
     // FFC exit: a notch in the sleeve's local +x wall, which rotate([0,0,sensor_az]) puts on the
     // KEY side (layout -y) for sensor_az = 270 - mind the frame, the STL export flips y again.
     // From the notch the cable climbs the 2.95 mm annular gap between the cup envelope (r 12.05)
     // and the PCB notch (r 15.0) round to J1: the r2.2 mechanism, so the main PCB keeps J1 where
     // it is. The bearing bosses are inside r 12.05, so the gap is clear all the way round.
-    translate([bw / 2 - 0.01, -cable_ch_w / 2, -L_low - 0.01])
-        cube([hwx + 1.01, cable_ch_w, L_low - L_pcb - sensor_pcb_t + 0.02]);
+    translate([bw / 2 - 0.01, -ffc_exit_w / 2, -L_low - 0.01])
+        cube([hwx + 1.01, ffc_exit_w, L_low - L_pcb - sensor_pcb_t + 0.02]);
 }
 
 module cradle_cuts() {
@@ -248,10 +247,6 @@ module cradle_cuts() {
     // No posts and no holes in the module since r2.4 - the sleeve holds the module.
     for (sy = [-1, 1]) translate([0, sy * case_screw_sp / 2, floor_z - 1])
         cylinder(d = screw_pocket_d, h = 1 + screw_depth);
-    // FFC channel on from the module towards the keys: the cable turns up outside the sleeve and
-    // climbs past the PCB plane in the gap between the cup and the notch (r2.2)
-    translate([cable_ch_x - cable_ch_w / 2, -hous_y / 2 - 1, floor_z - 0.01])
-        cube([cable_ch_w, hw + 2, hous_top - floor_z + 0.02]);
     // PCB keep-out: nothing above the PCB underside outside the notch (with clearance)
     difference() {
         translate([0, 0, -pcb_t - pcb_clear]) cylinder(d = 200, h = 100);
@@ -470,6 +465,13 @@ module dispatch() {
     else if (part == "clash")    intersection() { cradle(); retainer(); }   // must be empty (tests)
     else if (part == "sensor_dummy") sensor_dummy();
     else if (part == "floor2d")  floor2d();
+    else if (part == "insert_path") {     // must be empty (tests): the module's way in along -z
+        intersection() {
+            cradle();
+            sensor_frame() hull() for (t = [0, 40]) translate([0, 0, -t])
+                translate([-sensor_pcb_w / 2, -sensor_pcb_l / 2, -L_low]) cube([sensor_pcb_w, sensor_pcb_l, L_low - L_pcb]);
+        }
+    }
     else if (part == "section") {           // half model for section previews: the x = 0 plane cuts
         difference() {                      // through both claws, the thumb (-x) half is removed
             union() { cradle(); retainer_view(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
