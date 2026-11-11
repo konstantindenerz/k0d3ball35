@@ -1,7 +1,7 @@
 (kicad_sch (version 20231120) (generator "k0d3ball35") (generator_version "1.0")
   (uuid "4be7f3d9-0797-5525-8458-b327c8972e15")
   (paper "A2")
-  (title_block (title "k0d3ball35 right half") (date "2026-11-06") (rev "r2.3") (company "k0d3ball35 project")
+  (title_block (title "k0d3ball35 right half") (date "2026-11-06") (rev "r2.4") (company "k0d3ball35 project")
     (comment 1 "Right half: 15 finger + 2 thumb keys, trackball sensor on the 6-pin FPC connector")
     (comment 2 "Licensed under CERN-OHL-P-2.0"))
   (lib_symbols
