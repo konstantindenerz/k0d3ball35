@@ -208,7 +208,10 @@ def test_render_19mm_pocket_stl(tmp_path):
     # The old bound was the sleeve rectangle. Since r2.4 the cup skirt is the widest thing on the
     # floor across the lean, and the sleeve only sticks out along it.
     assert abs(on_floor[:, 0]).max() <= cup_r + 0.05
-    assert values["footprint_x"] == values["housing_x"]
+    # footprint_x / footprint_y are the body's plan, the same at every height (the slot only opens
+    # the floor under the module), which the site publishes as the floor footprint
+    assert abs(values["footprint_x"] - 2 * cup_r) < 1e-6
+    assert abs(values["footprint_y"] - (cup_r + max(-v[:, 1].min(), v[:, 1].max()))) < 0.05
     # The case screws changed in r2.4: with the module beside the ball the floor under the ball is
     # solid plastic, so the two M2 x 10 go straight up into the cup skirt instead of through
     # sensor posts. Check the 1.6 mm pilot is there, well above the floor so a short bore fails.

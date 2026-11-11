@@ -12,11 +12,12 @@ PYTHON   ?= python3
 # layout-frame view mirrored in y (target y -> -y, rot_z -> 180 - rot_z)
 CAM_SEC   = --camera=0,0,3,80,0,270,110 --imgsize=1200,900 --colorscheme=Tomorrow
 CAM_ASM   = --camera=0,0,5,55,0,145,170 --imgsize=1200,900 --colorscheme=Tomorrow
+CAM_BODY  = --camera=0,0,0,55,0,325,90 --imgsize=1200,900 --colorscheme=Tomorrow
 POCKET19  = -D ball_d=19.05
 
 STL = stl/cradle-19mm-pocket.stl stl/retainer-19mm.stl
 DXF = dxf/floor-19mm-pocket.dxf
-PNG = preview/section-19mm-pocket.png preview/assembly-19mm-pocket.png
+PNG = preview/section-19mm-pocket.png preview/assembly-19mm-pocket.png preview/cradle-19mm-pocket.png
 
 .PHONY: all stls dxfs previews stack retention clean
 all: stls dxfs previews stack retention
@@ -40,6 +41,10 @@ preview/section-19mm-pocket.png: cradle.scad params.scad | preview
 	$(OSC) --render -D 'part="section"'  $(POCKET19) $(CAM_SEC) -o $@ $<
 preview/assembly-19mm-pocket.png: cradle.scad params.scad | preview
 	$(OSC) --render -D 'part="assembly"' $(POCKET19) $(CAM_ASM) -o $@ $<
+
+# the printed body alone, from the sleeve side: tab, open back, rim chamfer
+preview/cradle-19mm-pocket.png: cradle.scad params.scad | preview
+	$(OSC) --render -D 'part="cradle"'   $(POCKET19) $(CAM_BODY) -o $@ $<
 
 stack: stack.json
 stack.json: cradle.scad params.scad stack.py

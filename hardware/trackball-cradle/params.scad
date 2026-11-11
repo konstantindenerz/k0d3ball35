@@ -64,7 +64,6 @@ sensor_pcb_w    = 8;       // module width, IN the tilt plane - the dimension th
 sensor_pcb_t    = 1.0;     // module board thickness, nominal
 sensor_pcb_gap  = 0.2;     // clearance per side between the module and the sleeve walls
 sensor_pins_h   = 1.2;     // tallest part on the back: the 6-pin 0.5 mm FPC connector, nominal
-sleeve_back     = 1.2;     // the sleeve walls run on this far behind the module; the back itself is open
 sensor_angle    = 65;      // tilt from vertical, towards +x. Largest angle whose optical window
                            // clears the cup rim (6 deg below the equator) and whose upper board
                            // edge stays under the rim. 0 = straight below the ball.
@@ -169,9 +168,10 @@ retainer_nub_flat  = 0.3;    // flat tip of the nub
 retainer_release   = 30;     // nub top face, degrees from vertical: smaller pulls off easier
 retainer_pocket_clear = 0.1; // clearance of the nub in its pocket in the cup wall
 with_retainer      = true;   // show the retainer in the assembly and section views
-housing_wall    = 2.0;     // walls around the sensor board / lens cavity (y, the key-facing side)
-housing_wall_x  = 1.5;     // same on x: 29 mm total, 1 mm narrower than the notch across flats, so
-                           // the housing clears the PCB edge when the module is lowered into the pocket
+housing_wall    = 2.0;     // sleeve wall either side of the 14 mm module: sets the width of the body's
+                           // tab, 14 + 2 x 2 = 18 mm (cradle.scad tab_w)
+housing_wall_x  = 1.5;     // sleeve wall across the tilt; only the derived sleeve envelope (drop_housing,
+                           // sleeve_top_z, housing_radial_extent_x) uses it, the body is cut at the rim
 // FFC exit: a notch in the sleeve wall under the module's connector. From there the cable
 // climbs past the PCB plane in the gap between the cup and the notch, runs round the cup and
 // folds over the board edge into J1 on the key side of the main PCB.
