@@ -45,8 +45,8 @@ face, so a type B cable joins pin 1 to pin 1. A type A cable presents insulation
 and connects nothing. `tests/test_ffc_pin_order.py` derives this; the first physical cable gets a
 continuity check (`issues/hw-ffc-pin-order-verification.md`).
 
-Cable route: the FFC leaves the sleeve below the PCB, climbs past the PCB plane in the 3.45 mm gap
-between the cup (24.1 mm envelope) and the PCB notch (apothem 15.5 mm), runs round the cup above
+Cable route: the FFC leaves the sleeve below the PCB, climbs past the PCB plane in the 3.98 mm gap
+between the cup (23.05 mm) and the PCB notch (apothem 15.5 mm), runs round the cup above
 the PCB and folds over the board edge into J1. The lock stays reachable with the keyboard
 assembled, so the module can be unplugged and lifted out without touching the PCB.
 
@@ -79,12 +79,14 @@ main PCB top:
 
 r2.3 for comparison: keycaps 25.6, ball 31.7, transport 31.7 mm over the desk.
 
-Floor footprint (`dxf/floor-19mm-pocket.dxf`): the cup skirt plus the tilted sleeve where the floor
-clips it, 24.05 x 26.84 mm including 0.5 mm clearance, extending further on the side away from
-the keys. The case well around it is 25 x 30 mm. Two M2 x 10 countersunk self-tapping screws come
-up through the case floor into the cup skirt, 20 mm apart on the y axis; the module itself has no
-holes. Above the PCB plane nothing is wider than 24.1 mm, and the notch corner towards the keys is
-square, so the whole module drops into the pocket and lifts out with the PCB fitted.
+Floor footprint (`dxf/floor-19mm-pocket.dxf`): the cradle is one body with vertical walls, the
+cup plus a tab as wide as the sleeve, so its plan is the same at every height: 24.05 x 27.73 mm
+including 0.5 mm clearance, extending further on the side away from the keys. The case well
+around it is 25 x 30 mm. Two M2 x 10 countersunk self-tapping screws come up through the case
+floor into the cup skirt, 20 mm apart on the y axis; the module itself has no holes. Above the
+PCB plane the cup is 23.05 mm wide and the tab stays 0.3 mm inside the notch octagon. The notch
+corner towards the keys is square, so the whole module drops into the pocket and lifts out
+with the PCB fitted.
 
 Retention: the cup has nothing above its rim, the ball lifts straight out. An optional clip-on
 retainer keeps the ball in when the half is turned over (`issues/mech-ball-retainer-clip.md`);
@@ -117,8 +119,8 @@ PCB stay where they are.
 
 ## 7. Open points (tickets)
 
-* First print of the 65 degree mount, lens distance with a feeler gauge, and the two tight
-  values: sleeve top 0.11 mm under the cup rim, module 14.76 mm radial against the 15.5 mm notch
+* First print of the 65 degree mount, lens distance with a feeler gauge, and the tight
+  value: module 14.76 mm radial against the 15.5 mm notch
   (`issues/mech-ball-height-23mm.md`).
 * Firmware: CPI and tilt scaling tuned on hardware (`issues/fw-cpi-tuning-19mm.md`).
 * FFC pin order on the first physical cable (`issues/hw-ffc-pin-order-verification.md`).

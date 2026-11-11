@@ -32,7 +32,7 @@ module fits. The 65 degree mount has not been printed yet.
 
 - [ ] Print `hardware/case/stl/pocket-test-right.stl` and the cradle at 0.12 mm, module in the sleeve
 - [ ] Lens distance with the 2.0 mm feeler gauge within 2.3 to 2.5 mm; otherwise set `lens_shim` and reprint
-- [ ] Measure the two tight values: sleeve top 0.11 mm under the cup rim, module 14.76 mm radial against the 15.5 mm notch apothem
+- [ ] Measure the tight value: module 14.76 mm radial against the 15.5 mm notch apothem
 - [ ] Ball top measured on the assembled right half, within 0.3 mm of 23.75 mm over the desk
 - [ ] Module slides into the sleeve from the open back and seats on the shoulder; Kapton tape holds it
 - [ ] Lens gauge fits the 4 mm window: a feeler blade may be too wide, use a 2.0 mm pin or drill shank

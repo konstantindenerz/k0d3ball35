@@ -68,7 +68,7 @@ trackball:
     housing_offset: { x: 0.0, y: 2.55 }   # ball any more: the sleeve leans towards +y, so the box
                                     # spans y 54.05 .. 83.05; x only needs the cup. The upper bound
                                     # is the tray overhang check in tests/test_case_handedness.py.
-    cup_envelope: 24.1          # widest part of the cradle above the PCB plane (bearing bosses), cradle stack.json
+    cup_envelope: 23.05         # widest part of the cradle cup above the PCB plane, cradle stack.json
     cable_gap_min: 1.5          # radial room the FFC needs between the cup envelope and the notch edge
     housing_clearance: 0.5      # gap between housing and pocket wall at floor level
     case_screw_spacing: 20.0    # two M2 x 10 from below through the floor into the cup skirt, on the y axis
