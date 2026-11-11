@@ -15,13 +15,12 @@ LAYOUT     := hardware/layout/k0d3ball35.yaml
 LAYOUT_OUT := hardware/layout/output
 HALF_SCHS  := $(foreach h,$(HALVES),hardware/$(h)-pcb/k0d3ball35-$(h).kicad_sch)
 HALF_PCBS  := $(foreach h,$(HALVES),hardware/$(h)-pcb/k0d3ball35-$(h).kicad_pcb)
-SENSOR_DIR := hardware/sensor-pcb
-SENSOR_SCH := $(SENSOR_DIR)/k0d3ball35-sensor.kicad_sch
-SENSOR_PCB := $(SENSOR_DIR)/k0d3ball35-sensor.kicad_pcb
 BUILD      := build
 
-SCHS := $(wildcard $(HALF_SCHS) $(SENSOR_SCH))
-PCBS := $(wildcard $(HALF_PCBS) $(SENSOR_PCB))
+# Since r2.4 the trackball sensor is a bought PAW3222 module, so the two halves are the only
+# KiCad projects left; the wildcard keeps `erc` and `drc` quiet before `make sch` / `make pcb`.
+SCHS := $(wildcard $(HALF_SCHS))
+PCBS := $(wildcard $(HALF_PCBS))
 
 .PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case site share-card pcb-3d exploded site-serve print print-check print-plots clean help
 

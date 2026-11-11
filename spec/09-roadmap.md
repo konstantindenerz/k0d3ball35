@@ -9,10 +9,10 @@ Do these before paying for anything:
 1. Done: r2 pipeline, both halves generated, routed, ERC/DRC clean, gerbers exported, renders in
    the README (`hw-two-pcbs-r2`). The left board is the x mirror of the layout frame since
    2026-11-06 (`hw-left-pcb-mirror`, done).
-2. Done (automated part): independent gerber parse of all three zips in `tests/test_gerbers.py`
+2. Done (automated part): independent gerber parse of both zips in `tests/test_gerbers.py`
    (layers, drills, outlines, the pocket notch, no copper in the notch). Open: upload
-   `hardware/left-pcb/k0d3ball35-left-gerbers.zip`, `hardware/right-pcb/k0d3ball35-right-gerbers.zip`
-   and `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip` to the JLCPCB preview. Ticket
+   `hardware/left-pcb/k0d3ball35-left-gerbers.zip` and
+   `hardware/right-pcb/k0d3ball35-right-gerbers.zip` to the JLCPCB preview. Ticket
    `test-fab-gerber-viewer`.
 3. Mostly done: the two defects of the first review (power switch rotation, USB overhang) are fixed
    and `tests/test_pcb_review.py` covers sockets, FH12, controller, battery bay, holes, notch,
@@ -43,7 +43,7 @@ person needs to order parts, build the two halves and flash them.
 | Feasibility, design spec r2, BOM | done | |
 | Layout generator per half, coordinate tables, stepped outline, pocket notch | done | `hw-two-pcbs-r2` |
 | Left and right PCB schematic, routing, DRC, gerbers | done | `hw-two-pcbs-r2`, `hw-left-pcb-mirror`, `hw-main-pcb-review-r1` |
-| Sensor PCB | done (r1, lens envelope per datasheet) | `hw-sensor-pcb-r1` |
+| Sensor | r2.4: our PMW3610 daughterboard dropped for the bought PAW3222 module, so there is no board to fabricate; J1 re-ordered to the module's pinout | `hw-paw3222-variant`, `hw-ffc-pin-order-verification` |
 | Cradle 19 mm pocket mount (25 mm pocket and r1 cutout as variants) | done, test print in parallel with the order | `mech-trackball-cradle` |
 | ZMK shield with 35 keys, keymap, CI build | in progress | `fw-zmk-shield`, `infra-ci-firmware` |
 | Build guide, firmware guide, fabrication guide | written for r2, to be verified on the first build | `doc-build-guide` |

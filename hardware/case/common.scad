@@ -10,15 +10,14 @@ function maxy(p) = max([for (q = p) q[1]]);
 function bc() = ball_center(half);
 function ball_centre_z() = ball_top_z - ball_d / 2;
 function cradle_rim_z() = ball_centre_z() - 1.0;              // cradle rim_drop
+// Top of the pocket wall: below the cup rim, never above the general rim.
+function pocket_rim_z() = min(rim_z, cradle_rim_z() - pocket_rim_drop);
 function cradle_cup_d() = ball_d + 2 * 0.4 + 2 * 1.6;          // ball_gap and cup wall of the cradle
 
-// lid heights depend on the half: with lid_mode "flat" the ball half needs the roof above the
-// ball; "window" and "dome" keep the roof at keycap height everywhere
-lid_roof_under_z = (has_ball(half) && lid_mode == "flat") ? max(cap_top_z, ball_top_z) + lid_clear
-                                                         : cap_top_z + lid_clear;
+// One lid for both halves: the roof clears the caps, and since r2.4 it clears the ball too
+// (ball_top_z 13.95 < lid_roof_under_z 14.5), so there is nothing to cut for the ball.
+lid_roof_under_z = cap_top_z + lid_clear;
 lid_top_z        = lid_roof_under_z + lid_roof_t;
-dome_top_z       = ball_top_z + lid_clear + lid_roof_t;
-lid_window       = lid_mode == "window" && has_ball(half);
 
 // ---------------------------------------------------------------- lid hinge
 hx               = hinge_x(half);                               // hinge line x
@@ -149,7 +148,11 @@ module outer_2d() {
     if (has_ball(half)) housing_footprint_2d();
 }
 // outer footprint from the PCB plane up: plus the round pocket wall
+// Footprint from the PCB plane up to the rim. Deliberately WITHOUT the pocket: the housing
+// footprint belongs to the body below the PCB plane only, and above the plane the pocket is
+// bounded by pocket_ring_2d() extruded to pocket_rim_z instead (tray_body). Returning outer_2d()
+// here, as this did until r2.4, carried the pocket block all the way to the rim and silently
+// undid the lowered pocket wall - the ring measured 5.01 instead of 2.925.
 module outer_top_2d() {
-    outer_2d();
-    if (has_ball(half)) pocket_ring_2d();
+    offset(delta = wall) pcb_cavity_2d();
 }

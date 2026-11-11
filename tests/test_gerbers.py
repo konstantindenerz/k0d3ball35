@@ -17,6 +17,7 @@ from collections import Counter
 from pathlib import Path
 
 import pytest
+import yaml
 
 gerbonara = pytest.importorskip("gerbonara")
 from gerbonara import LayerStack  # noqa: E402
@@ -44,16 +45,10 @@ BOARDS = {
         "protel": False,
         "outlines": 1,
     },
-    "sensor": {
-        "zip": "hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip",
-        "pcb": "hardware/sensor-pcb/k0d3ball35-sensor.kicad_pcb",
-        "prefix": "k0d3ball35-sensor-",
-        "size": (26.0, 25.0),
-        "keys": 0,
-        "protel": False,  # hardware/sensor-pcb/export.sh passes --no-protel-ext like the main boards
-        "outlines": 2,  # outer outline plus the sensor window
-    },
 }
+# Since r2.4 the sensor is a bought PAW3222 module, so the two main PCBs are the only boards this
+# repository has fabricated (issues/hw-paw3222-variant.md). MAIN is kept as the name for the
+# subset of checks that only make sense on a key matrix board.
 MAIN = ("left", "right")
 
 LAYER_FILES = {
@@ -83,7 +78,10 @@ BAY_KICAD = (55.6, 57.0, 76.6, 98.0)   # right board; the left board is mirrored
 BAY_TEXTS = ("LP552035 cell", "350 mAh", "leads +y")
 # controller footprint area in KiCad coordinates (centre (62, 74), 18 x 33.5 mm)
 CONTROLLER_KICAD = (53.0, 57.25, 71.0, 90.75)
-NOTCH_APOTHEM = 15.0  # cradle radius 14 + 1 mm clearance
+# Derived, not pinned: the notch grew from 15.0 to 15.5 in r2.4 when the tilted sensor module
+# left only 0.04 mm to the old apothem, and a literal here would have hidden that.
+_TB = yaml.safe_load((REPO / "hardware/layout/k0d3ball35.yaml").read_text())["trackball"]
+NOTCH_APOTHEM = _TB["cradle_diameter"] / 2 + _TB["pocket"]["notch_clearance"]
 PAGE_X = 120.0        # KiCad x of the layout origin; the left board mirrors x about it
 
 
@@ -181,8 +179,6 @@ def test_all_layers_parse(board: str):
     stack = _stack(board)
     assert set(stack.graphic_layers) == GRAPHIC_LAYERS
     for key, layer in stack.graphic_layers.items():
-        if key[1] == "paste" and board == "sensor" and key[0] == "bottom":
-            continue  # the sensor board has no bottom SMD parts
         assert len(layer.objects) > 0, f"{board}: layer {key} is empty"
     drills = {p.original_path.name.split("-")[-1].split(".")[0]: p for p in stack.drill_layers}
     assert set(drills) == {"PTH", "NPTH"}, f"{board}: drill files {sorted(drills)}"

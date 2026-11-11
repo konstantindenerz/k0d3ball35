@@ -81,14 +81,20 @@ sensor; the kscan pin set is shared.
 
 Right PCB connector J1 pin order (fixed):
 
-| Pin | Signal |
-|-----|--------|
-| 1 | VCC 3.3 V |
-| 2 | GND |
-| 3 | TB_SCLK |
-| 4 | TB_SDIO |
-| 5 | TB_NCS |
-| 6 | TB_MOT |
+| Pin | Signal | Sensor module pin |
+|-----|--------|-------------------|
+| 1 | VCC 3.3 V | 1 3.3V |
+| 2 | TB_NCS | 2 CS |
+| 3 | TB_MOT | 3 MOTION |
+| 4 | TB_SDIO | 4 SDIO |
+| 5 | TB_SCLK | 5 SCLK |
+| 6 | GND | 6 GND |
+
+Since r2.4 the sensor is the bought PixArt PAW3222 module, whose FFC pinout is fixed by its
+vendor, so J1 follows the module rather than the other way round: with the type B cable the
+pairing is pin for pin, so J1 carries the module's own order. The PCBs were not ordered when the
+module was chosen, so this cost nothing but a pad relabelling
+(`issues/hw-ffc-pin-order-verification.md`).
 
 J1 sits on the **key side** of the right PCB at (-20.6, +47.4), below the middle column's bottom
 key and 1.05 mm clear of its keycap, with the cable mouth 0.5 mm short of the notch edge. The

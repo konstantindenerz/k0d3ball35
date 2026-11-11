@@ -582,7 +582,7 @@
       "y": 41.0
      }
     },
-    "depth_below_pcb": 9.0,
+    "depth_below_pcb": 6.0,
     "edge_clearance": 1.5,
     "leads": "+y",
     "bay_polygon": [
@@ -607,33 +607,33 @@
       -3.0
      ]
     ],
-    "well_floor_z": -10.6
+    "well_floor_z": -7.6
    },
    "stack": null,
    "case_stack": {
-    "base_z": -14.1,
+    "base_z": -9.6,
     "floor_z_key": -4.6,
-    "well_floor_z": -11.6,
-    "pocket_floor_z": -11.6,
+    "well_floor_z": -7.6,
+    "pocket_floor_z": -7.1,
     "rim_z": 5.0,
     "standoff_h": 3.0,
     "box_roof_under_z": 6.7,
     "box_top_z": 8.7,
-    "lid_roof_under_z": 14.0,
-    "lid_top_z": 17.0,
+    "lid_roof_under_z": 14.5,
+    "lid_top_z": 17.5,
     "lid_lip_depth": 3.0,
     "hinge_x": -13.0,
-    "hinge_axis_z": 14.5,
-    "hinge_fold_deg": 43.7204,
+    "hinge_axis_z": 15.0,
+    "hinge_fold_deg": 43.1994,
     "tent_deg": 18.0,
     "foot_dx": -67.828,
     "foot_hinge_h": 37.7569,
-    "foot_reach": 53.2041,
+    "foot_reach": 53.3325,
     "case_screw_d": 2.2,
     "case_screw_head_d": 4.4,
     "case_screw_cs_d": 4.8,
     "case_screw_cs_h": 1.3,
-    "case_screw_head_z": -13.9
+    "case_screw_head_z": -9.4
    },
    "case_files": {
     "tray": "hardware/case/stl/tray-left.stl",
@@ -1186,143 +1186,155 @@
      ]
     ],
     "sensor_board": {
-     "width": 26.0,
-     "height": 25.0,
+     "width": 14.0,
+     "height": 5.4,
      "x": -13.0,
      "y": 66.0
     },
     "housing_footprint": [
      [
-      4.0,
-      52.0
+      1.5,
+      54.55
      ],
      [
-      3.942,
-      51.415
+      1.442,
+      53.965
      ],
      [
-      3.772,
-      50.852
+      1.272,
+      53.402
      ],
      [
-      3.494,
-      50.333
+      0.994,
+      52.883
      ],
      [
-      3.121,
-      49.879
+      0.621,
+      52.429
      ],
      [
-      2.667,
-      49.506
+      -0.086,
+      51.904
      ],
      [
-      2.148,
-      49.228
+      -0.629,
+      51.679
      ],
      [
-      1.294,
-      49.014
+      -1.206,
+      51.564
      ],
      [
-      -27.0,
-      49.0
+      -24.5,
+      51.55
      ],
      [
-      -27.585,
-      49.058
+      -25.085,
+      51.608
      ],
      [
-      -28.148,
-      49.228
+      -25.648,
+      51.778
      ],
      [
-      -28.903,
-      49.681
+      -26.167,
+      52.056
      ],
      [
-      -29.494,
-      50.333
+      -26.621,
+      52.429
      ],
      [
-      -29.772,
-      50.852
+      -26.994,
+      52.883
      ],
      [
-      -29.942,
-      51.415
+      -27.272,
+      53.402
      ],
      [
-      -30.0,
-      52.0
+      -27.442,
+      53.965
      ],
      [
-      -30.0,
-      80.0
+      -27.5,
+      54.55
      ],
      [
-      -29.871,
-      80.871
+      -27.5,
+      82.55
      ],
      [
-      -29.646,
-      81.414
+      -27.442,
+      83.135
      ],
      [
-      -29.319,
-      81.903
+      -27.272,
+      83.698
      ],
      [
-      -28.903,
-      82.319
+      -26.994,
+      84.217
      ],
      [
-      -28.148,
-      82.772
+      -26.621,
+      84.671
      ],
      [
-      -27.585,
-      82.942
+      -26.167,
+      85.044
      ],
      [
-      -27.0,
-      83.0
+      -25.648,
+      85.322
      ],
      [
-      1.0,
-      83.0
+      -25.085,
+      85.492
      ],
      [
-      1.585,
-      82.942
+      -24.5,
+      85.55
      ],
      [
-      2.148,
-      82.772
+      -1.5,
+      85.55
      ],
      [
-      2.903,
-      82.319
+      -0.915,
+      85.492
      ],
      [
-      3.319,
-      81.903
+      -0.352,
+      85.322
      ],
      [
-      3.646,
-      81.414
+      0.167,
+      85.044
      ],
      [
-      3.942,
-      80.585
+      0.621,
+      84.671
      ],
      [
-      4.0,
-      80.0
+      0.994,
+      84.217
      ],
      [
-      4.0,
-      52.0
+      1.272,
+      83.698
+     ],
+     [
+      1.442,
+      83.135
+     ],
+     [
+      1.5,
+      82.55
+     ],
+     [
+      1.5,
+      54.55
      ]
     ],
     "case_screws": [
@@ -1394,7 +1406,7 @@
       "y": 41.0
      }
     },
-    "depth_below_pcb": 9.0,
+    "depth_below_pcb": 6.0,
     "edge_clearance": 1.5,
     "leads": "+y",
     "bay_polygon": [
@@ -1419,51 +1431,51 @@
       -3.0
      ]
     ],
-    "well_floor_z": -10.6
+    "well_floor_z": -7.6
    },
    "stack": {
-    "ball_centre_z": 7.575,
-    "ball_top_above_pcb_top": 17.1,
+    "ball_centre_z": 4.425,
+    "ball_top_above_pcb_top": 13.95,
     "cup_outer_d": 23.05,
-    "lowest_plastic_z": -11.6,
-    "lowest_sensor_board_z": -11.6,
+    "lowest_plastic_z": -7.1,
+    "lowest_sensor_board_z": -6.22626,
     "lens_reference_plane_dist": 2.4,
-    "bearing_contact_z": 2.11168,
-    "rim_z": 6.575,
-    "floor_z": -11.6,
-    "sensor_pcb_plane_z": -7.75,
-    "housing_x": 29.0,
-    "housing_y": 29.0,
-    "housing_top_z": -1.9,
-    "footprint_x": 29.0,
-    "footprint_y": 29.0,
+    "bearing_contact_z": -1.03832,
+    "rim_z": 3.425,
+    "floor_z": -7.1,
+    "sensor_pcb_plane_z": -1.67127,
+    "housing_x": 11.0,
+    "housing_y": 18.0,
+    "housing_top_z": 3.425,
+    "footprint_x": 11.0,
+    "footprint_y": 18.0,
     "envelope_d_above_pcb": 24.1003,
     "notch_apothem": 15.0
    },
    "case_stack": {
-    "base_z": -14.1,
+    "base_z": -9.6,
     "floor_z_key": -4.6,
-    "well_floor_z": -11.6,
-    "pocket_floor_z": -11.6,
+    "well_floor_z": -7.6,
+    "pocket_floor_z": -7.1,
     "rim_z": 5.0,
     "standoff_h": 3.0,
     "box_roof_under_z": 6.7,
     "box_top_z": 8.7,
-    "lid_roof_under_z": 14.0,
-    "lid_top_z": 17.0,
+    "lid_roof_under_z": 14.5,
+    "lid_top_z": 17.5,
     "lid_lip_depth": 3.0,
     "hinge_x": -31.0,
-    "hinge_axis_z": 14.5,
-    "hinge_fold_deg": 57.6238,
+    "hinge_axis_z": 15.0,
+    "hinge_fold_deg": 56.9033,
     "tent_deg": 18.0,
     "foot_dx": -49.828,
     "foot_hinge_h": 37.7569,
-    "foot_reach": 34.3311,
+    "foot_reach": 34.4895,
     "case_screw_d": 2.2,
     "case_screw_head_d": 4.4,
     "case_screw_cs_d": 4.8,
     "case_screw_cs_h": 1.3,
-    "case_screw_head_z": -13.9
+    "case_screw_head_z": -9.4
    },
    "case_files": {
     "tray": "hardware/case/stl/tray-right.stl",

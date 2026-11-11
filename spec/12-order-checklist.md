@@ -8,7 +8,7 @@ and write the order number next to it. "You do" names the step that needs a pers
 Why the PCBs no longer wait for the cradle print: the sensor height is set by
 `hardware/trackball-cradle/params.scad`, not by any PCB; the right board's notch is fixed by the
 layout and its tests; and the only outcome that would change a PCB (a 25 mm ball instead of 19 mm)
-cannot be tested without the sensor PCB in hand. The exposure is one right-hand batch, about
+cannot be tested without the sensor module in hand. The exposure is one right-hand batch, about
 30 to 40 EUR. Details in `issues/hw-jlcpcb-order-r1.md`.
 
 ## 1. Already ordered
@@ -30,7 +30,7 @@ One cart; everything ships from the same warehouse.
 
 | Done | Qty | Part | Mouser number | Status | You do |
 |------|-----|------|---------------|--------|--------|
-| [ ] | 2 | FPC connector, 6 pin 0.5 mm, bottom contact | 798-FH12-6S-0.5SH55 | open | one for the right PCB (J1, key side), one for the sensor PCB |
+| [ ] | 1 (+1) | FPC connector, 6 pin 0.5 mm, bottom contact | 798-FH12-6S-0.5SH55 | open | for the right PCB (J1, key side); since r2.4 the sensor module brings its own connector |
 | [ ] | 2 | Battery connector JST PH 2.0 side entry | 306-S2B-PH-SM4-TB | open | |
 | [ ] | 2 | Reset button, side actuated | 667-EVQ-P7A01P | open | |
 | [ ] | 1 (+1), optional | FFC cable 6 pos 0.5 mm, **type B** (opposite-side contacts), 30 to 40 mm | Molex 15166 series, 6 circuits, type B | open | type B is mandatory, a type A cable does not connect (`spec/08-trackball-module.md` 2.2); or take the AliExpress cable below |
@@ -49,7 +49,7 @@ One cart; everything ships from the same warehouse.
 |------|-----|------|------|--------|--------|
 | [ ] | 1 pack | Ball 19.05 mm | 3/4 inch POM (Delrin) bearing balls, pack of 10 to 20 | open | test two or three balls on the sensor (`issues/hw-ball-colour-tracking-test.md`) |
 | [ ] | 3 (+3) | Bearing ball | 2.0 mm ZrO2 (zirconia) precision balls | open | AliExpress is the usual source, Amazon if in stock |
-| [ ] | 2 | Cradle screw | M2 x 10 self-tapping countersunk (90 degree flat head) | open | plus 2 x M2 x 5 self-tapping for the bench test of the sensor board in the cradle posts |
+| [ ] | 2 | Cradle screw | M2 x 10 self-tapping countersunk (90 degree flat head) | open | up through the case floor into the cup skirt; since r2.4 the module has no screw holes of its own (`hardware/trackball-cradle/params.scad`) |
 | [ ] | 1 pack (50) | Heat-set threaded insert | brass, M2, 3 mm long, about 3.5 mm OD, for a 3.2 mm hole | open | 14 used: 5 PCB standoffs + 2 controller-cap bosses per half; Amazon DE or AliExpress |
 | [ ] | 1 pack (14 used) | PCB and cap screw | M2 x 5 (or x 6) machine screw, pan or button head, head max 3.5 mm dia | open | 7 per half; the alternative is self-tapping into a 1.6 mm pilot (`-D pcb_screws="pilot"` in `hardware/case/params.scad`) |
 | [ ] | 8 | Bumper | GLIPLUS pads or 3M SJ5302 | open | |
@@ -65,39 +65,23 @@ One cart; everything ships from the same warehouse.
 
 ## 6. JLCPCB and LCSC (open)
 
-Upload the three zips, one order each, in the same cart:
+Upload the two zips, one order each, in the same cart:
 
 - `hardware/left-pcb/k0d3ball35-left-gerbers.zip`
 - `hardware/right-pcb/k0d3ball35-right-gerbers.zip`
-- `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip`
 
 Parameters from [spec/06](06-fabrication.md): 2 layers, quantity 5 per design, FR-4 TG 135 or
-higher, 1.6 mm, 1 oz, ENIG (lead-free HASL is acceptable for the two main boards, ENIG for the
-sensor board), tented vias, remove order number ("specify a location" or "yes"), white silkscreen.
+higher, 1.6 mm, 1 oz, ENIG (lead-free HASL is acceptable), tented vias, remove order number
+("specify a location" or "yes"), white silkscreen.
 
 | Done | Step | Status | You do |
 |------|------|--------|--------|
-| [ ] | Upload preview: 2 layers detected, about 121 x 87, 121 x 87 and 26 x 25 mm, no DFM complaint about the notch or the sensor window | open | `issues/test-fab-gerber-viewer.md` |
-| [ ] | Order the three batches | open | record order number, cost and the tag `v0.2.0-r2-order` in `issues/hw-jlcpcb-order-r1.md` |
+| [ ] | Upload preview: 2 layers detected, about 121 x 87 mm each, no DFM complaint about the notch | open | `issues/test-fab-gerber-viewer.md` |
+| [ ] | Order the two batches | open | record order number, cost and the tag `v0.2.0-r2-order` in `issues/hw-jlcpcb-order-r1.md` |
 
-LCSC lines for the sensor board, in the same cart (quantities for one board plus spares; codes
-from `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-bom.csv`):
-
-| Done | Qty | Part | LCSC |
-|------|-----|------|------|
-| [ ] | 2 | XC6206P182MR LDO 1.8 V, SOT-23 | C5446 |
-| [ ] | 2 | 1 uF 0603 X5R 10 V (C1, C2) | C15849 |
-| [ ] | 1 | 3.3 uF 0603 X7R 16 V (C3) | C1678 |
-| [ ] | 3 | 100 nF 0603 X7R 16 V (C4, C5, C6) | C14663 |
-| [ ] | 2 | 10 nF 0603 X7R 16 V (C7, C9) | C57112 |
-| [ ] | 1 | 10 uF 0603 X7R 16 V (C8) | C19702 |
-| [ ] | 2 | 10 k 0603 (R1, R2) | C25804 |
-| [ ] | 1 | 1 k 0603 (R3) | C21190 |
-| [ ] | 2, optional | FPC connector 6 pin 0.5 mm, FH12 equivalent (if not from Mouser) | C2764370 |
-
-0603 parts come in minimum lots of 10 to 20 at LCSC; the cost is cents either way, so order the
-minimum lot of each and keep the rest as spares. The sensor itself (C42442560) comes with the lens
-in the AliExpress kit; LCSC only matters for a later assembly run.
+No LCSC lines any more. They were the sensor daughterboard's regulator, passives and pull-ups;
+r2.4 replaced that board with a bought PAW3222 module, so nothing on the two main boards needs a
+component order beside the parts listed in the sections above (`issues/hw-paw3222-variant.md`).
 
 ## 7. Printed parts
 
@@ -120,7 +104,7 @@ three 2 mm bearing seats with a drill bit by hand before pressing the ceramic ba
 These cannot be done from the files and are the remaining steps before, during and after the
 order:
 
-- JLCPCB upload preview of the three zips, then the order (`issues/hw-jlcpcb-order-r1.md`)
+- JLCPCB upload preview of the two zips, then the order (`issues/hw-jlcpcb-order-r1.md`)
 - 1:1 paper check of a socket and the MSK12C02 on `make print-plots` (`issues/hw-main-pcb-review-r1.md` step 2b)
 - KiCad 3D viewer pass of both main boards (same ticket)
 - GitHub push so CI builds the firmware and runs the suite (`issues/infra-ci-firmware.md`, `issues/infra-ci-hardware.md`)

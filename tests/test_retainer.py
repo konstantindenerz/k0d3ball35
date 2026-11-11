@@ -8,8 +8,9 @@ on each side of the thumb's approach (issues/mech-ball-retainer-clip.md). What i
   (retention.py: configuration-space flood fill, committed as retention.json),
 * never touch the ball in use, and not drag it along when it is pulled off,
 * leave the thumb side open above the cup rim,
-* fit the cradle (no overlap, clear of the bearing bosses) and the case (pocket wall, lid roof,
-  lid hinge strip, FFC corridor),
+* fit the cradle (no overlap, clear of whatever of it stands outside the cup wall above the board
+  plane - the bearing bosses, and since r2.4 the tilted sensor sleeve) and the case (pocket wall,
+  lid roof, lid hinge strip, FFC corridor),
 * come off by hand: a snap with a small undercut on fingers that do not overstrain.
 """
 import json
@@ -30,10 +31,11 @@ SCAD = CRADLE / "cradle.scad"
 CASE = ROOT / "hardware" / "case"
 LAYOUT_OUT = ROOT / "hardware" / "layout" / "output" / "points-right.json"
 
+# One variant since r2.4: the 25 mm ball and the r1 "cutout" mount (cup through a round PCB
+# cutout, flange under the board) were dropped, and with them the `mount` parameter, so the
+# three-variant table collapsed to the single supported build (params.scad, "mounting").
 VARIANTS = {
-    "19mm-pocket": {"ball_d": 19.05, "mount": "pocket"},
-    "25mm-pocket": {"ball_d": 25, "mount": "pocket", "notch_apothem": 16.5},
-    "25mm-cutout": {"ball_d": 25, "mount": "cutout"},
+    "19mm-pocket": {"ball_d": 19.05},
 }
 MIN_GUARANTEED_MARGIN = 0.5   # mm of combined looseness (print error, small ball, claw flex) the trap survives
 MIN_REST_GAP = 0.35           # design gap 0.4 (ball_gap) less facetting
@@ -54,6 +56,13 @@ def render(part, overrides, out):
         cmd += ["-D", f'{k}="{v}"' if isinstance(v, str) else f"{k}={v}"]
     cmd += ["-o", str(out), str(SCAD)]
     return subprocess.run(cmd, capture_output=True, text=True, timeout=600)
+
+
+def finger_table():
+    """retainer_fingers from params.scad as [[azimuth, width], ...]."""
+    params = (CRADLE / "params.scad").read_text()
+    m = re.search(r"^retainer_fingers\s*=\s*(\[.*?\]);", params, re.M | re.S)
+    return json.loads(m.group(1))
 
 
 def scad_values(path):
@@ -122,7 +131,16 @@ def test_thumb_keys_point_into_the_open_sector(retention):
         assert az - reach >= MIN_THUMB_TO_CLAW, (k["name"], az, reach)
 
 
-def test_retainer_clears_bearing_bosses(retention):
+def test_retainer_clears_the_cradle_outside_the_cup(retention):
+    """Clearance to whatever of the cradle stands outside the cup wall above the board plane.
+
+    Up to r2.3 that was only the three bearing bosses, which is why retention.json still calls the
+    number boss_clearance (docs/gen/parts.py publishes it under that name). Since r2.4 the bosses
+    top out below the ring's bottom edge and the thing the ring has to dodge is the tilted sensor
+    sleeve, which stands beside the cup and is clipped flat at the rim plane: it fills the ring's
+    annulus over about 113 degrees of azimuth, so the skirt is relieved there and the collar
+    crosses the gap (hardware/trackball-cradle/params.scad, retainer_sleeve_clear).
+    """
     for name, v in retention.items():
         assert v["boss_clearance"] is None or v["boss_clearance"] >= 0.5, name
 
@@ -143,17 +161,20 @@ def test_retainer_fits_pocket_lid_and_hinge(stack, retention):
     # under the lid roof with the lid closed
     roof_under = case["cap_top_z"] + case["lid_clear"]
     assert s["retainer_top_z"] <= roof_under - 0.5
-    # the hinge strip under the roof (x = hinge_x_right +- hinge_strip_w, from the roof top down
-    # by hinge_knuckle_d) never meets the claws
+    # The hinge strip under the roof (x = hinge_x_right +- hinge_strip_w, from the roof top down by
+    # hinge_knuckle_d) must never meet the ring. Up to r2.3 the claws reached into that band and
+    # had to dodge it sideways, which is what this used to assert; r2.4 dropped the ball by 3.15 mm
+    # and the claw tops now end clear underneath the strip, so height alone settles it. Assert the
+    # gap, and keep the sideways check for anything that does reach that high.
     strip_bottom = roof_under + case["lid_roof_t"] - case["hinge_knuckle_d"]
     strip_x = (data["hinge_x_right"] - case["hinge_strip_w"], data["hinge_x_right"] + case["hinge_strip_w"])
     ball_x = layout["halves"]["right"]["trackball"]["center"]["x"]
     trimesh = pytest.importorskip("trimesh")
     stl = CRADLE / "stl" / "retainer-19mm.stl"
     v = load_layout_frame(stl).vertices
+    assert s["retainer_top_z"] <= strip_bottom - 0.5, (s["retainer_top_z"], strip_bottom)
     high = v[v[:, 2] > strip_bottom - 0.5]
-    assert len(high) > 0                                   # the claw tops do reach that high ...
-    assert (high[:, 0] + ball_x > strip_x[1] + 0.5).all()  # ... but well away from the strip
+    assert len(high) == 0 or (high[:, 0] + ball_x > strip_x[1] + 0.5).all()
 
 
 def test_retainer_clears_ffc_corridor():
@@ -181,10 +202,16 @@ def test_snap_is_gentle(stack, name):
 
 
 def test_fingers_key_the_ring():
-    """Two finger widths: the ring only fits one way round, so the claws cannot end up on the thumb side."""
-    params = (CRADLE / "params.scad").read_text()
-    m = re.search(r"^retainer_fingers\s*=\s*(\[.*?\]);", params, re.M | re.S)
-    fingers = json.loads(m.group(1))
+    """The ring only fits one way round, so the claws cannot end up on the thumb side.
+
+    A rotation can only put the fingers back in their pockets if it maps the whole set of finger
+    azimuths onto itself, and then the two different finger widths have to stop it: a wide finger
+    has to land on a narrow pocket. Since r2.4 the fingers all live in the one arc that has both
+    skirt and collar, so no rotation maps the set onto itself at all and the positions key the ring
+    on their own - but the widths stay, both as the second key and because they tune the snap, and
+    this still fails if someone makes the set symmetric with equal widths.
+    """
+    fingers = finger_table()
     widths = {}
     for az, w in fingers:
         widths[az % 360] = w
@@ -242,14 +269,17 @@ def test_cradle_carries_seat_and_pockets(stack):
     assert v[:, 2].max() <= s["rim_z"] + 1e-3
     r = np.hypot(v[:, 0], v[:, 1])
     r_out = s["cup_outer_d"] / 2
-    # chamfer: the rim's outer edge is 0.8 mm in, so no vertex at full radius on the rim plane
-    on_rim = v[np.abs(v[:, 2] - s["rim_z"]) < 1e-3]
-    assert r[np.abs(v[:, 2] - s["rim_z"]) < 1e-3].max() < r_out - 0.7
-    assert len(on_rim) > 0
-    # pockets: vertices inside the cup wall radius at the nub height, at the four finger azimuths
+    # Chamfer: the rim's outer edge is 0.8 mm in, so no vertex at full radius on the rim plane.
+    # Only the cup's own rim counts - since r2.4 the tilted sensor sleeve stands beside the cup and
+    # is clipped flat at the rim plane as well, so its top face and the corners the PCB notch cuts
+    # out of it also lie at rim_z, but out at r 12.5 to 15.9.
+    on_rim = (np.abs(v[:, 2] - s["rim_z"]) < 1e-3) & (r < r_out + 0.5)
+    assert on_rim.any()
+    assert r[on_rim].max() < r_out - 0.7
+    # pockets: vertices inside the cup wall radius at the nub height, at every finger azimuth
     band = (v[:, 2] > s["retainer_bottom_z"]) & (v[:, 2] < s["retainer_bottom_z"] + 2.5) & (r < r_out - 0.2) & (r > r_out - 0.6)
     az = np.degrees(np.arctan2(v[band, 1], v[band, 0])) % 360
-    for target in (30, 150, 210, 330):
+    for target, _w in finger_table():
         assert (np.abs((az - target + 180) % 360 - 180) < 10).any(), target
 
 

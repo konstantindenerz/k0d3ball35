@@ -36,7 +36,7 @@ case pocket right beside the thumb keys.
 | Layout generator | r2.3 done, per-half outputs, exact coordinates in [spec/02-layout.md](spec/02-layout.md) | [hardware/layout](hardware/layout) |
 | Left PCB (KiCad 10) | r2.3 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/left-pcb](hardware/left-pcb) |
 | Right PCB (KiCad 10) | r2.3 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/right-pcb](hardware/right-pcb) |
-| Sensor PCB (PMW3610) | r1 done, ERC and DRC clean, gerbers exported, unchanged in r2 | [hardware/sensor-pcb](hardware/sensor-pcb) |
+| Trackball sensor | r2.4: bought PAW3222 module, no board of ours to fabricate; J1 re-ordered to the module's pinout | [spec/08-trackball-module.md](spec/08-trackball-module.md) |
 | Trackball cradle | r2.3 pocket mount for 19.05 mm done (25 mm pocket and r1 cutout as variants), test print pending | [hardware/trackball-cradle](hardware/trackball-cradle) |
 | Firmware (ZMK) | r2.3 in progress: 35 keys, one shared pin set | [firmware/zmk-config](firmware/zmk-config) |
 | Documentation | build guide, firmware, fabrication, testing written for r2 | [docs](docs) |
@@ -87,7 +87,6 @@ docs/                 the published project page (tabs: exploded view, case, tra
 hardware/layout/      layout source (yaml), generated points, outline DXFs and previews per half
 hardware/left-pcb/    KiCad project of the left PCB (18 keys), gerbers and renders
 hardware/right-pcb/   KiCad project of the right PCB (17 keys, FPC connector, pocket notch)
-hardware/sensor-pcb/  KiCad project of the PMW3610 daughterboard
 hardware/lib/         project symbol and footprint libraries
 hardware/trackball-cradle/  parametric cradle (pocket mount), STL and floor-footprint DXF exports
 firmware/zmk-config/  ZMK shield, keymap, build matrix
@@ -162,8 +161,9 @@ make case-data case                           # hardware/case: data.scad from th
 `kicad-cli` and KiCad's bundled Python at
 `/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli` and
 `/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/Current/bin/python3`;
-override with `KICAD_CLI=` and `KPY=`. The sensor board has its own generator:
-`hardware/sensor-pcb/generate.py all` followed by `hardware/sensor-pcb/export.sh`.
+override with `KICAD_CLI=` and `KPY=`. Since r2.4 the two halves are the only KiCad projects in
+the repository: the trackball sensor is a bought PAW3222 module, so there is nothing to generate
+or fabricate for it.
 
 Firmware is built by GitHub Actions from `firmware/zmk-config`; see
 [spec/05-firmware.md](spec/05-firmware.md) for local builds and flashing.

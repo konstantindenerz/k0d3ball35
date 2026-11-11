@@ -7,23 +7,28 @@ area: hw
 created: 2026-11-05
 ---
 
-# Verify the 6-pin FFC pin order between main PCB and sensor PCB
+# Verify the 6-pin FFC pin order between main PCB and sensor module
 
 ## Context
 
 Both FPC connectors are bottom-contact parts, but since r2.2 they look at the cable from opposite
 faces: J1 sits on the key side of the right PCB with the cable on top of the board, the sensor
-connector hangs under the sensor board. The cable must therefore be a **type B** FFC (contacts on
-opposite faces at its two ends) and the pin order runs straight through, 1 to 1. The main PCB
-order is fixed in the design spec (3V3, GND, SCLK, SDIO, NCS, MOT); the sensor PCB matches it.
-A wrong cable type connects nothing at one end, a wrong order would swap 3V3 and MOT.
+connector sits on the back of the sensor. The cable must therefore be a **type B** FFC (contacts
+on opposite faces at its two ends) and the pin order runs straight through, 1 to 1. Since r2.4 the
+far end is the bought PAW3222 module, whose pinout is the vendor's, so J1 follows it instead of
+the other way round. A wrong cable type connects nothing at one end; a wrong order now shorts 3V3
+to GND, because the module puts those two on the outer pins.
 
 ## Acceptance criteria
 
 - [x] Pin order on both boards drawn in one diagram with the cable in between, in `spec/08-trackball-module.md`
 - [ ] Physical check with a cable and two connectors on breakout boards, or a continuity test on the first PCBs before the sensor is connected
-- [x] `tests/test_ffc_pin_order.py` cross-checks main PCB connector nets against the sensor PCB connector nets
-  (reads the pads of both boards, models the type B cable, pairs the pads and compares the nets)
+- [x] `tests/test_ffc_pin_order.py` checks J1 against the module's declared pinout (derives the
+  type B pairing from the two mounting faces, cross-checks the sign against torabo-tsuki LP's
+  published type A wiring of the same module, compares J1's copper with the generator model)
+- [ ] `make pcb` / `make route` re-run on the right board after the r2.4 pin reorder, so the
+  copper carries the new nets (`tests/test_ffc_pin_order.py::test_right_j1_copper_matches_the_model`
+  and `tests/test_pcb_review.py` fail until then)
 - [ ] The first cable must be type B: check the two ends against the light before plugging anything in
 
 ## Notes
@@ -34,11 +39,11 @@ Both boards use the same connector, Hirose FH12-6S-0.5SH (0.5 mm, 6 contacts, bo
 in two single-face footprint variants. Main PCB pin order (fixed): 1 VCC 3.3 V, 2 GND, 3 TB_SCLK,
 4 TB_SDIO, 5 TB_NCS, 6 TB_MOT.
 
-**Current answer (r2.2, see the desk check at the bottom): the cable is type B and the pin order is
-straight through, 1 to 1.** The sensor board carries the same order as the main board:
-1 VCC, 2 GND, 3 SCLK, 4 SDIO, 5 NCS, 6 MOT_J. R3 (1 k in series with MOTION) and R2 (NCS pull-up) keep a
-wrongly inserted cable non-destructive. Still to do: the physical check with the first cable and connectors
-before ordering main PCBs in quantity.
+**Current answer (r2.4, see the desk check at the bottom): the cable is type B and the pin order is
+straight through, 1 to 1, and J1 now carries the module's own order:
+1 VCC, 2 TB_NCS, 3 TB_MOT, 4 TB_SDIO, 5 TB_SCLK, 6 GND.** R3 and R2 went with the sensor
+daughterboard, so a mis-made cable is no longer current-limited by anything of ours. Still to do:
+the physical check with the first cable and connectors before ordering main PCBs in quantity.
 
 An earlier paragraph here said the sensor order was mirrored (1 MOT ... 6 VCC) for a **type A** cable. That
 was the r2 answer and it was removed on 2026-11-07, because it was not merely superseded: it described a
@@ -144,3 +149,65 @@ thanks to R3 and R2.
 3. Set the multimeter to continuity and probe TP1 (VCC) on the sensor board against the right PCB's VCC net (controller 3V3 socket pin or the J1 pad 1 fillet); expect a beep.
 4. Repeat for GND (there is no GND test point: probe a metal-fitting pad of the sensor J1, which is on GND, against the right PCB GND), then TP3 SCLK, TP4 SDIO, TP5 NCS and TP6 MOT against the controller holes D15, D16, D10 and D14 of the right PCB; each must beep only against its own net and stay open against the other five. With a type B cable the pairing is pin for pin, so pad 1 meets pad 1.
 5. If any pair is swapped, stop and open a defect ticket before fitting the sensor; only after six clean passes fit U1 and U2 and power the board.
+
+### Desk check 2026-11-11, r2.4 (current)
+
+The sensor daughterboard is gone (`hw-paw3222-variant`): r2.4 buys the 14 x 8 mm PixArt PAW3222
+module (sekigon-gonnoc / nogikes-ya, as in torabo-tsuki LP) and tilts it beside the ball, so
+`hardware/sensor-pcb/` and `tests/test_sensor_pcb_vs_cradle.py` were deleted. There is no second
+`.kicad_pcb` to read the far end from, so the module's pinout is a declared constant in
+`tests/test_ffc_pin_order.py` and the pairing is derived instead of measured.
+
+Module pinout (vendor's, the same one `spec/08-trackball-module.md` section 2.2 already quoted as
+torabo-tsuki's module side): **1 3.3V, 2 CS, 3 MOTION, 4 SDIO, 5 SCLK, 6 GND**.
+
+Faces are unchanged from r2.2 on our side and equivalent on the module side: J1 is on the key side
+with the cable on top of the board, so its contact window points DOWN; the module's connector is on
+its back face, away from the ball, so the cable lies against that face and its contact window points
+UP and inwards. Opposite faces, so the cable stays **type B**.
+
+Why type B pairs pin i with pin i, without needing either board's coordinates. For one cable end
+write `m` for the direction the cable leaves the mouth and `c` for the normal from the contacts
+towards the cable; the direction from pin 1 to pin 6 has a fixed handedness for a given connector
+family, `p = m x c`. In the cable's own frame (`u` from the keyboard end to the module end, `n`
+normal to the cable):
+
+| | keyboard end | module end |
+|---|---|---|
+| cable leaves the mouth along | `m = +u` | `m = -u` |
+| its board lies on the | `-n` side | `+n` side (type B: the other face) |
+| contacts point at the cable along | `c = +n` | `c = -n` |
+| pin 1 -> pin 6 runs along | `p = u x n` | `p = (-u) x (-n) = u x n` |
+
+Both ends number their pins in the same lateral direction, and an untwisted cable keeps every
+conductor on its own side, so pin i meets pin i. A type A cable would keep `c = +n` at the module
+end, flip `p` and reverse the mapping to `i + j = 7` -- which is exactly how torabo-tsuki LP, with
+both connectors under its boards and a type A cable, ends up wiring its keyboard side as
+1 GND, 2 SCLK, 3 SDIO, 4 MOTION, 5 CS, 6 3.3V against this same module. That published pair is the
+independent check on the sign and the test asserts it.
+
+J1 therefore becomes the module's order in our net names. The main PCBs were not ordered yet, so
+this cost a pad relabelling in `scripts/k0d3/netlist.py` and nothing else:
+
+| J1 pin | J1 net (r2.3) | J1 net (r2.4) | Module pin | Module signal |
+|---|---|---|---|---|
+| 1 | VCC | VCC | 1 | 3.3V |
+| 2 | GND | TB_NCS | 2 | CS |
+| 3 | TB_SCLK | TB_MOT | 3 | MOTION |
+| 4 | TB_SDIO | TB_SDIO | 4 | SDIO |
+| 5 | TB_NCS | TB_SCLK | 5 | SCLK |
+| 6 | TB_MOT | GND | 6 | GND |
+
+What got worse, and it is worth saying out loud. Until r2.3 VCC faced MOT across the cable and a
+laterally reversed cable was current-limited by R3 (1 k in series with MOTION) on our own sensor
+board. The module's fixed order puts 3.3V on pin 1 and GND on pin 6, so the two supply pins now sit
+at opposite cable edges, and R3 went with the board. The common mistakes are still harmless, because
+a type A cable, a cable swapped end for end and a cable inserted upside down all present insulation
+to the contacts at one end and connect nothing. But a cable whose contact window is on the wrong
+face at one end would short 3.3V to GND. Hence: continuity test before power, every time, and the
+palindromic-pinout idea stays parked in `spec/08-trackball-module.md` section 6.
+
+Open assumption. `p = m x c` needs the same sign at both ends, i.e. the module has to call the same
+end of its contact row "1" as the Hirose part does. Two identical footprints made that free in
+r2.2; a bought module does not. This is the one thing in the chain that no file in this repository
+can settle, and it is a continuity test on the first physical cable.

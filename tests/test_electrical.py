@@ -130,13 +130,22 @@ def test_the_sensor_bus_fits_the_connector_pitch(half):
         f"a {cls['track_width']} mm track leaves {gap:.3f} mm to the next contact, rule is {cls['clearance']}"
 
 
-def test_the_sensor_bus_carries_its_supply_and_a_ground_beside_the_clock(half):
-    """Six conductors: the supply and its return at one end, then the three SPI lines, then the
-    interrupt. The ground sits next to the clock, which is the only fast edge on the cable."""
+def test_the_sensor_bus_carries_a_ground_beside_the_clock(half):
+    """Six conductors: supply, chip select, the interrupt, then SDIO, SCLK and the return.
+
+    Since r2.4 this order is not ours to pick: it is the bought PAW3222 module's own FFC pinout,
+    which J1 follows pin for pin across the type B cable (tests/test_ffc_pin_order.py derives
+    that). The one signal-integrity property we used to design in survives it -- the return sits
+    next to the clock, the only fast edge on the cable -- so the assertion stays.
+
+    What does NOT survive is "supply and return are an adjacent pair": the module puts 3.3V on
+    pin 1 and GND on pin 6, so they sit at opposite cable edges. That assertion is gone with the
+    freedom that justified it; the hazard it used to guard is asserted and explained in
+    tests/test_ffc_pin_order.py::test_power_pins_sit_at_opposite_cable_edges.
+    """
     order = [FPC_PINS[i] for i in sorted(FPC_PINS)]
-    assert order == ["VCC", "GND", "TB_SCLK", "TB_SDIO", "TB_NCS", "TB_MOT"], order
+    assert order == ["VCC", "TB_NCS", "TB_MOT", "TB_SDIO", "TB_SCLK", "GND"], order
     assert abs(order.index("GND") - order.index("TB_SCLK")) == 1, "the return must sit beside the clock"
-    assert abs(order.index("VCC") - order.index("GND")) == 1, "supply and return must be a pair"
 
 
 # ----------------------------------------------------------------- ground

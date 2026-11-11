@@ -8,7 +8,7 @@ Since r2 the two halves are separate, non-reversible PCBs with identical control
 use. Controller holes are numbered like the physical Pro Micro footprint seen from the
 top with the USB connector up: 1-12 down the left column, 13-24 down the right column.
 The only difference between the halves is what hangs on the four sensor pins: the SPI
-lines of the trackball sensor on the right, test pads on the left.
+lines of the trackball sensor module on the right, test pads on the left.
 """
 from __future__ import annotations
 
@@ -34,7 +34,9 @@ _HOLE_NET_COMMON = {
     13: "RAW", 15: "RST", 16: "VCC",
     17: "ROW0", 18: "ROW1", 19: "ROW2", 20: "ROW3",
 }
-# Sensor pins: SPI to the trackball daughterboard on the right, test pads on the left.
+# Sensor pins: SPI to the trackball sensor module on the right, test pads on the left. Which
+# controller pin carries which signal is unchanged by the r2.4 module swap - only J1's pin order
+# moved (see FPC_PINS), because that is a property of the cable, not of the controller.
 _SENSOR_HOLES = {21: "TB_SCLK", 22: "TB_MOT", 23: "TB_SDIO", 24: "TB_NCS"}
 
 
@@ -54,7 +56,15 @@ def spare_pad_nets(half: str) -> list[str]:
     return nets
 
 
-FPC_PINS = {1: "VCC", 2: "GND", 3: "TB_SCLK", 4: "TB_SDIO", 5: "TB_NCS", 6: "TB_MOT"}
+# J1, the 6-pin 0.5 mm FFC to the trackball sensor module. Since r2.4 the sensor is the bought
+# PixArt PAW3222 module (sekigon-gonnoc / nogikes-ya, as in torabo-tsuki LP) instead of our own
+# PMW3610 daughterboard, so its pinout is given and ours has to follow:
+#     module 1 3.3V, 2 CS, 3 MOTION, 4 SDIO, 5 SCLK, 6 GND
+# The cable stays a type B FFC (contact windows on opposite faces at its two ends), which joins
+# pin i to pin i, so J1 is wired exactly like the module. Deriving that pairing and the hazard it
+# leaves on the power pins: tests/test_ffc_pin_order.py and issues/hw-ffc-pin-order-verification.md.
+# The PCBs were not ordered yet, so this is a pad relabelling, not an adapter cable.
+FPC_PINS = {1: "VCC", 2: "TB_NCS", 3: "TB_MOT", 4: "TB_SDIO", 5: "TB_SCLK", 6: "GND"}
 
 
 @dataclass
@@ -116,7 +126,7 @@ def build_components(layout: Layout) -> list[Component]:
         comps.append(Component("J1", "FH12-6S-0.5SH", f"FPC_0.5mm_6P_FH12-6S_{side}",
                                {str(p): n for p, n in FPC_PINS.items()}, "fpc",
                                *place(f["center"]["x"], f["center"]["y"], f["rotation"]),
-                               f"Sensor daughterboard, 6-pin 0.5 mm FPC, {side} side",
+                               f"Trackball sensor module, 6-pin 0.5 mm FPC, {side} side",
                                {"side": side}))
     b = cfg["battery_pads"]
     comps.append(Component("J2", "BAT", "BatteryPads_2x1.8mm_P2.54mm",
@@ -164,9 +174,11 @@ def net_classes() -> dict[str, dict]:
                   "nets": ["RAW", "BAT+"]},   # GND is pour-fed, stays in Default
         # The sensor bus ends on the FH12's 0.3 mm pads at 0.5 mm pitch. A 0.25 mm track centred
         # on such a pad still keeps 0.5 - 0.125 - 0.15 = 0.225 mm to the neighbouring pad, so the
-        # 0.15 mm of r2.2 bought nothing and only added resistance: Keyball runs the same PMW
-        # sensor bus 130 mm long at 0.25 mm with no guard trace. VCC rides in this class because
-        # it has to enter the same pad field; the sensor draws single-digit mA.
+        # 0.15 mm of r2.2 bought nothing and only added resistance: Keyball runs a comparable
+        # PixArt sensor bus 130 mm long at 0.25 mm with no guard trace. VCC rides in this class
+        # because it has to enter the same pad field; the sensor draws single-digit mA.
+        # The r2.4 pin reorder (see FPC_PINS) changed which pad carries which net, not the net
+        # set, so this class is unchanged. GND stays pour-fed even though it is now on pin 6.
         "FPC": {"clearance": 0.2, "track_width": 0.25, "via_diameter": 0.6, "via_drill": 0.3,
                 "nets": ["TB_SCLK", "TB_SDIO", "TB_NCS", "TB_MOT", "VCC"]},
     }

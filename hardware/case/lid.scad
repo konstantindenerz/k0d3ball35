@@ -72,12 +72,6 @@ module lid_lip(under) {
             lip_2d(lid_fit + lid_lip_chamfer - i * dz);
 }
 
-// the ball looks through the roof; the hole is smaller than the ball, so the ball stays in
-module lid_window() {
-    if (lid_window)
-        translate([bc()[0], bc()[1], lid_roof_under_z - 1]) cylinder(d = ball_window_d, h = lid_roof_t + 2);
-}
-
 // body (children) minus the cavity and the box notch, plus the lip, minus the roof magnets
 module lid_shell(under) {
     difference() {
@@ -102,7 +96,6 @@ module hinge_strip() {
 module lid_full() {
     difference() {
         union() { lid_shell(lid_roof_under_z) lid_body(lid_top_z); hinge_strip(); }
-        lid_window();
     }
 }
 
@@ -185,16 +178,3 @@ module on_desk() {
     translate([px, 0, 0]) rotate([0, tent_deg, 0]) translate([-px, 0, -base_z]) children();
 }
 
-// dome variant for the ball half: flat roof at keycap height plus a round turret over the pocket
-module lid_dome() {
-    under = cap_top_z + lid_clear;
-    difference() {
-        lid_shell(under) {
-            lid_body(under + lid_roof_t);
-            if (has_ball(half))
-                translate([bc()[0], bc()[1], under]) cylinder(d = cradle_d + 2 * pocket_wall, h = dome_top_z - under);
-        }
-        if (has_ball(half))
-            translate([bc()[0], bc()[1], under - 1]) cylinder(d = cradle_d, h = ball_top_z + lid_clear - under + 1);
-    }
-}

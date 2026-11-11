@@ -10,9 +10,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 VARIANTS = {
-    "19mm-pocket": {"ball_d": 19.05, "mount": "pocket"},
-    "25mm-pocket": {"ball_d": 25, "mount": "pocket", "notch_apothem": 16.5},
-    "25mm-cutout": {"ball_d": 25, "mount": "cutout"},
+    "19mm-pocket": {"ball_d": 19.05},
 }
 
 

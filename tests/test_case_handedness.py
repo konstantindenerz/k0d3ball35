@@ -80,22 +80,36 @@ def test_ball_pocket_sits_in_the_board_notch():
     assert ((r > 14.0) & (r < 20.0)).sum() > 50, "the pocket wall rings the ball"
 
 
-def test_cradle_cable_slot_faces_the_keys():
-    """J1 and the cable lie on the key side of the ball, so the slot in the housing wall must face
-    the switches of the right board: +y in the print frame."""
+def test_tilted_sensor_leans_away_from_the_keys():
+    """The tilted module must sit away from the keys, and its FFC notch must face them.
+
+    Until r2.4 the sensor sat straight under the ball in an axis-aligned housing, so this test
+    looked for a slot at a fixed coordinate in that wall. The module is tilted now (sensor_az), so
+    there is no such wall; what still has to hold is the DIRECTION. The sleeve has to lean away
+    from the keys - towards the sleeve the PCB carries the thumb bridge and J1, and a sleeve on
+    that side does not fit - and the cable has to leave towards the keys to reach J1 through the
+    2.95 mm annular gap between the cup envelope and the PCB notch.
+
+    Two frames meet here and both bit the author of r2.4: the STACK values and sensor_az are in
+    the LAYOUT frame, while cradle.scad flips y once for the export, so the printed part has the
+    keys at +y. A wrong azimuth, or forgetting the flip, puts the module on the keys - which is
+    what this test catches.
+    """
     b = board("right")
     right = json.loads((ROOT / "hardware/layout/output/points-right.json").read_text())
     ball_y = OFFSET[1] - (right["trackball"]["center"]["y"] + OFFSET[1])
     keys_y = np.mean([p[1] for ref, p in b["refs"].items() if re.fullmatch(r"SW\d+", ref)])
-    assert keys_y > ball_y
+    assert keys_y > ball_y, "the keys are on +y of the ball in the print frame"
+
     s = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
     v = trimesh.load(CRADLE / "stl" / "cradle-19mm-pocket.stl", force="mesh").vertices
-    half_y = s["housing_y"] / 2
+    cup_r = s["cup_outer_d"] / 2
 
-    def slot_edges(face_y):
-        face = v[np.abs(v[:, 1] - face_y) < 0.05]
-        return [len(face[np.abs(face[:, 0] - (s["cable_channel_x"] + sx * s["cable_channel_w"] / 2)) < 0.05])
-                for sx in (-1, 1)]
-
-    assert all(n > 0 for n in slot_edges(+half_y)), "slot in the key-side wall"
-    assert slot_edges(-half_y) == [0, 0], "no slot in the wall facing the user"
+    # everything beyond the cup's own radius is the tilted sleeve
+    sleeve = v[np.hypot(v[:, 0], v[:, 1]) > cup_r + 0.2]
+    assert len(sleeve) > 0, "no sleeve outside the cup radius - is the sensor still tilted?"
+    reach_keys, reach_away = sleeve[:, 1].max(), -sleeve[:, 1].min()
+    assert reach_away > reach_keys, (
+        f"the sleeve reaches {reach_keys:.2f} mm towards the keys but only {reach_away:.2f} mm "
+        "away from them: the tilt azimuth or the export's y flip is wrong")
+    assert reach_away > cup_r, "the sleeve does not reach past the cup at all"

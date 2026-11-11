@@ -54,20 +54,29 @@ thumbs:
 # The ball sits in a case pocket BESIDE the PCB: the sensor board lies on the case floor,
 # the cradle is screwed to the case, the PCB edge gets an octagonal notch around it.
 trackball:
-  ball_diameter: 19.05          # 3/4 inch POM ball (25 mm cradle still available as a parameter)
+  ball_diameter: 19.05          # 3/4 inch POM ball. The only supported size since r2.4.
   cradle_diameter: 28.0         # outer diameter of the cradle flange (clearance check)
   min_keycap_clearance: 1.0     # cradle flange to any keycap
   pocket:
-    notch_clearance: 1.0        # PCB notch = cradle radius + this (octagon apothem)
+    notch_clearance: 1.5        # PCB notch = cradle radius + this (octagon apothem). Was 1.0 until
+                                # r2.4: the tilted module reaches 14.96 mm inside the PCB slab, so
+                                # an apothem of 15.0 left 0.04 mm - no margin for a printed sleeve
+                                # and a module whose 8.0 mm width is a nominal figure. 15.5 gives
+                                # 0.54 mm. Changed while the PCBs were still unordered.
     wall: 2.0                   # case wall around the cradle (pocket circle above the PCB plane)
-    housing: { x: 29.0, y: 29.0 }   # cradle housing on the case floor (sensor board 26 x 25 plus walls), no ears.
-                                    # x is 1 mm narrower than the notch across flats so the housing clears the
-                                    # board edge at x = -10 on its way into the pocket (walls 1.5 mm on x, 2 on y).
+    housing: { x: 24.0, y: 29.0 }   # cup (23.05) plus the tilted module sleeve. Not centred on the
+    housing_offset: { x: 0.0, y: 2.55 }   # ball any more: the sleeve leans towards +y, so the box
+                                    # spans y 54.05 .. 83.05; x only needs the cup. The upper bound
+                                    # is the tray overhang check in tests/test_case_handedness.py.
     cup_envelope: 24.1          # widest part of the cradle above the PCB plane (bearing bosses), cradle stack.json
     cable_gap_min: 1.5          # radial room the FFC needs between the cup envelope and the notch edge
     housing_clearance: 0.5      # gap between housing and pocket wall at floor level
-    case_screw_spacing: 20.0    # two M2 x 10 from below through floor and sensor board into the posts, on the y axis
-    sensor_board: { x: 26.0, y: 25.0 }   # daughterboard inside the housing, long side along x
+    case_screw_spacing: 20.0    # two M2 x 10 from below through the floor into the cup skirt, on the y axis
+    sensor_board: { x: 14.0, y: 4.4 }    # PROJECTION of the tilted 14 x 8 mm PAW3222 module: 14 mm
+    sensor_board_offset: { x: 0.0, y: 13.5 }   # across the tilt, 4.4 mm along it, centred 13.5 mm
+                                    # towards +y of the ball axis. Spans 11.3..15.7, which is the
+                                    # module from its near face to its far corner (cradle
+                                    # stack.json board_reach / module_reach).
     # r2.2: the module is a cartridge. It is lowered into the pocket and lifted out again with
     # the PCB fitted, so nothing of it may be covered by the board. The notch's 45 degree facet
     # towards the keys used to overhang the housing corner by 5.86 mm and the sensor board by
@@ -98,7 +107,7 @@ battery:
   capacity_mah: 350
   size: { x: 20.5, y: 37.5, z: 5.7 }            # PKCELL datasheet maxima incl. protection circuit
   bay: { center: { x: -53.9, y: 17.5 }, size: { x: 21.0, y: 41.0 } }   # on the back, x -64.4..-43.4, y -3..38
-  depth_below_pcb: 9.0          # well floor below the PCB underside: tails 1.0 + pad 0.5 + up to 7.2 mm cell + 0.3 clearance
+  depth_below_pcb: 6.0          # well floor below the PCB underside: tails 0.1 + pad 0.25 + 5.7 mm cell + 0.1
   edge_clearance: 1.5           # minimum distance from the bay to the PCB edge
   leads: "+y"                   # lead end towards J3 / J2
 
@@ -203,7 +212,9 @@ halves:
                                     # the gap between the cradle cup and the notch, folds over the board
                                     # edge at y = 49 and enters the connector from +y, so the lock stays
                                     # reachable with everything assembled (spec/08-trackball-module.md).
-      center: { x: -20.6, y: 47.4 }   # ball x - 7.6, which is the cradle's cable_ch_x: the FFC runs
+      center: { x: -20.6, y: 47.0 }   # ball x - 7.6, which is the cradle's cable_ch_x: the FFC runs
+                                      # r2.4: moved 0.4 mm towards the user because the notch grew
+                                      # from apothem 15.0 to 15.5 and its edge reached J1's body.
                                       # straight from the channel into the connector. y keeps the
                                       # mouth inside the notch edge and the body 0.5 mm clear of the
                                       # index keycap, so the lock stays reachable

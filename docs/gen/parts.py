@@ -52,11 +52,8 @@ for _h in ("right", "left"):
     _half(_h)
 
 PARTS["pocket-test-right"] = ("test", "Pocket test, right", "The corner of the right tray around the ball pocket, to test the cradle fit.", True)
-PARTS["cradle-19mm-pocket"] = ("cradle", "Cradle, 19.05 mm ball, pocket", "Cup on three ceramic bearings with the sensor board housing. The default.", True)
-PARTS["cradle-25mm-pocket"] = ("cradle", "Cradle, 25 mm ball, pocket", "Fallback for a 25 mm ball; needs a different PCB notch.", True)
-PARTS["cradle-25mm-cutout"] = ("cradle", "Cradle, 25 mm ball, PCB cutout (r1)", "The r1 design, kept for reference.", True)
+PARTS["cradle-19mm-pocket"] = ("cradle", "Cradle, 19.05 mm ball", "Cup on three ceramic bearings, with the tilted sensor module sleeve beside it. The only variant since r2.4.", True)
 PARTS["retainer-19mm"] = ("retainer", "Retainer, 19.05 mm ball", "Optional clip-on ring that keeps the ball in when the half is turned over.", True)
-PARTS["retainer-25mm"] = ("retainer", "Retainer, 25 mm ball", "The same ring for the 25 mm cups.", True)
 
 # STLs in the two folders that the page does not list, with the reason
 EXCLUDED: dict[str, str] = {}
@@ -74,15 +71,11 @@ PREVIEWS = {
     f"{CASE_PREVIEW}/lid-folded-right.png": ("Lid folded, right", ("lid-folded-right",)),
     f"{CASE_PREVIEW}/lid-foot-right.png": ("Lid as tenting foot, right", ("lid-folded-right",)),
     f"{CRADLE_PREVIEW}/assembly-19mm-pocket.png": ("Cradle assembled, 19.05 mm ball", ("cradle-19mm-pocket", "retainer-19mm")),
-    f"{CRADLE_PREVIEW}/assembly-25mm-pocket.png": ("Cradle assembled, 25 mm ball", ("cradle-25mm-pocket", "retainer-25mm")),
     f"{CRADLE_PREVIEW}/section-19mm-pocket.png": ("Section, 19.05 mm ball, pocket", ("cradle-19mm-pocket",)),
-    f"{CRADLE_PREVIEW}/section-25mm-cutout.png": ("Section, 25 mm ball, PCB cutout", ("cradle-25mm-cutout",)),
 }
 
 VARIANTS = (
     ("19mm-pocket", "19 mm pocket", "retainer-19mm"),
-    ("25mm-pocket", "25 mm pocket", "retainer-25mm"),
-    ("25mm-cutout", "25 mm cutout", "retainer-25mm"),
 )
 STACK_KEYS = ("ball_d", "ball_centre_z", "ball_top_above_pcb_top", "ball_bottom_z", "bearing_contact_z", "rim_z",
               "rim_below_equator", "lens_reference_plane_dist", "sensor_pcb_plane_z", "lowest_plastic_z", "floor_z",

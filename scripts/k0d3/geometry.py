@@ -125,11 +125,19 @@ class Layout:
         return Point(*self.ball_center).buffer(tb["cradle_diameter"] / 2 + tb["pocket"]["wall"], 64)
 
     def housing_box(self) -> Polygon | None:
-        """Cradle housing on the case floor (below the PCB plane), centred on the ball."""
+        """Cradle housing on the case floor (below the PCB plane).
+
+        Since r2.4 the sensor module is tilted and sits beside the ball rather than under it, so
+        the housing is no longer symmetric: `housing_offset` shifts the box off the ball centre
+        towards the side the module leans to (-x for sensor_az = 0).
+        """
         if not self.has_ball:
             return None
-        h = self.cfg["trackball"]["pocket"]["housing"]
-        bx, by = self.ball_center
+        pk = self.cfg["trackball"]["pocket"]
+        h = pk["housing"]
+        off = pk.get("housing_offset", {"x": 0.0, "y": 0.0})
+        bx = self.ball_center[0] + off.get("x", 0.0)
+        by = self.ball_center[1] + off.get("y", 0.0)
         return box(bx - h["x"] / 2, by - h["y"] / 2, bx + h["x"] / 2, by + h["y"] / 2)
 
     def housing_footprint(self) -> Polygon | None:
@@ -184,9 +192,18 @@ class Layout:
         return band.intersection(self.outline.buffer(1.0, join_style=2))
 
     def sensor_board(self) -> Polygon:
-        """Sensor daughterboard in the layout frame (26 x 25 mm, long side along x)."""
-        sb = self.cfg["trackball"]["pocket"]["sensor_board"]
-        bx, by = self.ball_center
+        """Plan view of the sensor module in the layout frame.
+
+        Since r2.4 the module is tilted, so this is its PROJECTION, not the board itself, and it
+        does not sit on the ball axis: `sensor_board_offset` moves it along the tilt azimuth.
+        Both numbers come from the cradle (STACK board_reach / sensor_angle in
+        hardware/trackball-cradle/stack.json) the same way cup_envelope does.
+        """
+        pk = self.cfg["trackball"]["pocket"]
+        sb = pk["sensor_board"]
+        off = pk.get("sensor_board_offset", {"x": 0.0, "y": 0.0})
+        bx = self.ball_center[0] + off.get("x", 0.0)
+        by = self.ball_center[1] + off.get("y", 0.0)
         return box(bx - sb["x"] / 2, by - sb["y"] / 2, bx + sb["x"] / 2, by + sb["y"] / 2)
 
     def insertion_corridor(self) -> Polygon | None:

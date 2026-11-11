@@ -102,31 +102,11 @@ def test_bom_connector_part_matches_pcb(rows):
     assert re.search(r"fh12-6s|fh12", text), "BOM does not mention the FH12-6S-0.5SH connector used on the PCB"
 
 
-SENSOR_FAB_BOM = REPO / "hardware" / "sensor-pcb" / "fab" / "k0d3ball35-sensor-r1-bom.csv"
-
-
-def test_sensor_bom_matches_fab_export():
-    """Section 6 of spec/03-bom.md lists every LCSC code of the sensor board fab export with at
-    least the exported quantity (summed over the rows that carry the code)."""
-    import csv
-
-    fab: dict[str, int] = {}
-    with SENSOR_FAB_BOM.open(newline="") as f:
-        for row in csv.DictReader(f):
-            fab[row["LCSC"]] = fab.get(row["LCSC"], 0) + int(row["Quantity"])
-    assert fab, "fab BOM is empty"
-
-    text = BOM.read_text()
-    start = text.index("## 6.")
-    end = text.index("## 7.")
-    section = text[start:end]
-    docs: dict[str, int] = {}
-    for row in _rows_from(section):
-        m = re.search(r"\bC\d{3,}\b", row.get("lcsc", ""))
-        if m:
-            docs[m.group(0)] = docs.get(m.group(0), 0) + row["_qty"]
-    missing = {code: qty for code, qty in fab.items() if docs.get(code, 0) < qty}
-    assert not missing, f"spec/03-bom.md section 6 short of the fab export: {missing} (docs: {docs})"
+# r2.4: test_sensor_bom_matches_fab_export is gone with its subject. It compared section 6 of
+# spec/03-bom.md against hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-bom.csv, the JLCPCB export
+# of our own PMW3610 daughterboard. The sensor is now a bought PAW3222 module, so there is no
+# second board, no fab BOM to export and no per-component LCSC list to keep in step: the module
+# is one line in the BOM like the ball or the controller (issues/hw-paw3222-variant.md).
 
 
 def _rows_from(markdown: str) -> list[dict]:

@@ -8,6 +8,10 @@ module tray_body() {
     // rim: the edge the hand touches and the lid skirt meets. Not under the controller box,
     // whose walls stand on the rim - a chamfer there would undercut them.
     translate([0, 0, -pcb_t]) linear_extrude(rim_z + pcb_t - rim_chamfer + eps) outer_top_2d();
+    // the pocket wall stops at the cup rim, not at the general rim, so the thumb reaches the ball
+    // at its equator. It is CUT here rather than built lower, because the wall is not the pocket
+    // block: it is what `offset(delta = wall) pcb_cavity_2d()` leaves when it grows into the PCB
+    // notch, and that reaches r 12.3 around the ball whatever the block does (r2.4).
     chamfer_down(rim_z, rim_chamfer) difference() {
         outer_top_2d();
         if (controller_box) offset(delta = pcb_clear + wall) box_2d();
@@ -46,9 +50,14 @@ module tray_cuts() {
     if (has_ball(half)) {
         translate([0, 0, pocket_floor_z]) linear_extrude(-pcb_t - pocket_floor_z + eps) pocket_well_2d();
         translate([0, 0, -pcb_t]) linear_extrude(box_top_z + 20) pocket_cavity_2d();
+        // the pocket wall above the cup rim: with the ball this low the general rim would stand
+        // over the cup and block the thumb's path to the equator
+        if (has_ball(half))
+            translate([0, 0, pocket_rim_z()]) linear_extrude(rim_z - pocket_rim_z() + 20)
+                pocket_ring_2d();
         // through hole plus a 90 degree countersink, so the flat-head screws sit below the underside
         for (s = case_screws(half)) {
-            translate([s[0], s[1], base_z - 1]) cylinder(d = case_screw_d, h = floor_t + 2);
+            translate([s[0], s[1], base_z - 1]) cylinder(d = case_screw_d, h = (pocket_floor_z - base_z) + 2);
             translate([s[0], s[1], base_z - eps])
                 cylinder(d1 = case_screw_cs_d + 2 * eps, d2 = case_screw_d, h = case_screw_cs_h + eps);
         }
@@ -73,7 +82,7 @@ module tray_cuts() {
         cube([wall + 2, switch_slot[0], switch_slot[1] + eps]);
     // reset pin hole through the floor of the well
     rs = reset(half);
-    translate([rs[0], rs[1], base_z - 1]) cylinder(d = reset_hole_d, h = well_floor_z - base_z + 2);
+    translate([rs[0], rs[1], base_z - 1]) cylinder(d = reset_hole_d, h = (well_floor_z - base_z) + 2);
     magnet_pockets_bottom();
     for (f = feet(half))
         translate([f[0], f[1], base_z - 1]) cylinder(d = foot_d, h = 1 + foot_recess);
@@ -185,10 +194,19 @@ module battery_dummy() {
 
 module ball_dummy() color("white") translate([bc()[0], bc()[1], ball_centre_z()]) sphere(d = ball_d);
 
+// Stand-in for the printed cradle in the assembly view: the cup, and the sensor module sleeve
+// tilted by sensor_angle towards sensor_az. Kept in step with the real cradle by
+// tests/test_case.py (cradle_dummy must not stick out of the pocket or above the cup rim).
 module cradle_dummy() {
-    hb = housing_box(half);
-    color("royalblue") {
-        translate([bc()[0], bc()[1], -pcb_t - 0.3]) cylinder(d = cradle_cup_d(), h = cradle_rim_z() + pcb_t + 0.3);
-        translate([minx(hb), miny(hb), pocket_floor_z]) cube([maxx(hb) - minx(hb), maxy(hb) - miny(hb), -pcb_t - 0.3 - pocket_floor_z]);
+    color("royalblue") translate([bc()[0], bc()[1], 0]) {
+        // cup: skirt from the pocket floor up to the cup rim
+        translate([0, 0, pocket_floor_z]) cylinder(d = cradle_cup_d(), h = cradle_rim_z() - pocket_floor_z);
+        // tilted sleeve around the module, clipped at the floor and at the cup rim like the real one
+        intersection() {
+            rotate([0, 0, sensor_az]) rotate([0, sensor_angle, 0])
+                translate([-sensor_sleeve[0] / 2, -sensor_sleeve[1] / 2, -sensor_reach - 2])
+                    cube([sensor_sleeve[0], sensor_sleeve[1], sensor_reach + 2]);
+            translate([-40, -40, pocket_floor_z]) cube([80, 80, cradle_rim_z() - pocket_floor_z]);
+        }
     }
 }

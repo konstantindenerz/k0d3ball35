@@ -9,7 +9,7 @@
 
 // ---------------------------------------------------------------- selection
 half            = "right";     // "left" | "right"
-part            = "assembly";  // tray | box_cap | lid | lid_outer | lid_inner | lid_folded | lid_dome | pocket_test | assembly | section | floor2d
+part            = "assembly";  // tray | box_cap | lid | lid_outer | lid_inner | lid_folded | pocket_test | assembly | section | floor2d
 mirror_left     = true;        // mirror x once at the top level for the left half (physical part)
 
 // ---------------------------------------------------------------- PCB and walls
@@ -28,13 +28,22 @@ chamfer_step    = 0.1;         // a taper is stepped this finely, well under one
 wall            = 3.0;         // case wall outside the PCB cavity
 under_pcb_clear = 3.0;         // cavity under the key area: hot-swap sockets 1.8 + diodes 1.1 + air
 rim_z           = 5.0;         // top of the tray walls (flush with the Choc keycap skirts)
+pocket_rim_drop = 0.5;         // the pocket wall stops this far below the cup rim, so the thumb
+                               // reaches the ball at its equator instead of over a lip. Since r2.4
+                               // the ball sits low enough that rim_z would otherwise be above it.
 
 // ---------------------------------------------------------------- floors
-well_floor_z    = -11.6;       // battery well floor (bay 9.0 below the PCB underside allowed, shared with the pocket)
-pocket_floor_z  = -11.6;       // cradle floor, cradle stack.json floor_z
-floor_t         = 2.5;         // floor under the deepest well; the underside is flat everywhere
+well_floor_z    = -7.6;        // battery well floor: 6.0 under the PCB underside (tails 0.1 + pad 0.25 +
+                               // LP552035 5.7 mm + 0.1). Was -11.6, shared with the pocket floor until r2.4.
+pocket_floor_z  = -7.1;        // cradle floor, cradle stack.json floor_z. Since r2.4 the sensor is
+                               // tilted beside the ball, so the pocket no longer sets the case depth.
+floor_t         = 2.0;         // floor under the deepest well; the underside is flat everywhere
 floor_z_key     = -pcb_t - under_pcb_clear;          // -4.6
-base_z          = min(well_floor_z, pocket_floor_z) - floor_t;   // -14.1
+// One flat underside for the whole half: the deepest well sets it. Since r2.4 the two wells are
+// no longer at the same level - the battery needs -7.6, the pocket only -7.1 - so the floor comes
+// out 2.0 mm thick under the battery and 2.5 mm under the pocket, which is what the countersunk
+// cradle screws need (case_screw_floor_left in case.scad).
+base_z          = min(well_floor_z, pocket_floor_z) - floor_t;   // -9.6
 
 // ---------------------------------------------------------------- PCB fastening
 // Default: M2 heat-set inserts (brass, M2 x 3 mm, OD about 3.5) in the standoffs and the cap
@@ -97,7 +106,7 @@ magnet_h        = 2.2;
 magnet_skin     = 0.6;         // roof left above the lid magnets (lid_roof_t - magnet_h - magnet_pocket_extra)
 magnet_pocket_extra = 0.2;     // pocket depth = magnet_h + this (glue film)
 foot_d          = 10.5;        // rubber feet recess
-foot_recess     = 0.5;
+foot_recess     = 0.8;         // 1 mm feet stand 0.2 mm proud: flush would not grip (r2.4)
 
 // ---------------------------------------------------------------- lid
 // Two plates per half joined by a pin hinge along x = hinge_x (data.scad): the outer plate
@@ -106,15 +115,15 @@ foot_recess     = 0.5;
 // shifted by foot_dx, the outer plate roof-up under the controller half on the floor magnets
 // and the inner plate as the kickstand beyond the inner edge. See spec/11-case.md section 7.
 cap_top_z       = 11.0;        // Choc V1 keycap top
-lid_clear       = 3.0;         // roof underside over the caps; also room for the hinge strip
+lid_clear       = 3.5;         // roof underside over the caps; also room for the hinge strip. Since
+                               // r2.4 the ball top (13.95) sits UNDER the roof underside (14.5), so
+                               // there is no ball window any more and both halves get the same lid.
 lid_roof_t      = 3.0;         // takes the 2.4 mm magnet pockets plus the 0.6 mm skin
 lid_lip_t       = 1.0;         // inner lip that holds the lid on the tray by friction
 lid_lip_depth   = 3.0;         // how far the lip reaches into the tray below the rim
 lid_fit         = 0.15;        // clearance between the lip and the inner wall face
 lid_lip_chamfer = 0.5;         // lead-in on the lower outer edge of the lip
 lid_lip_steps   = 5;
-lid_mode        = "window";    // "window" (ball looks through a hole smaller than itself) | "flat" (roof over the ball) | "dome"
-ball_window_d   = 16.0;        // through the roof at the ball centre; < ball_d keeps the ball in the cup
 lid_box_clear   = 0.3;         // lid skirt around the controller box walls
 
 // ---------------------------------------------------------------- lid hinge and tenting foot
@@ -136,12 +145,18 @@ hinge_pin_fit   = 0.2;         // hole = pin + this
 hinge_blind     = 1.5;         // the pin hole stops this short of the y-max end (towards the user)
 
 // ---------------------------------------------------------------- trackball pocket
-ball_d          = 19.05;       // 25 mm fallback: -D ball_d=25 -D notch_apothem=16.5 -D pocket_d=35
+ball_d          = 19.05;       // the only supported size since r2.4
+// Copied from hardware/trackball-cradle/params.scad so the assembly preview can draw the tilted
+// module. Geometry facts, like ball_top_z above; tests/test_case.py checks they agree.
+sensor_angle    = 65;          // cradle sensor_angle
+sensor_az       = 90;          // cradle sensor_az: the module leans towards +y
+sensor_sleeve   = [11, 18];    // cradle hous_x, hous_y
+sensor_reach    = 15.4;        // cradle STACK housing_radial_extent_x
 notch_apothem   = 15.0;        // PCB notch octagon (layout cradle_diameter / 2 + 1)
 pocket_d        = 32.0;        // round pocket wall above the PCB plane (cradle 28 + 2 x 2 wall)
 pocket_wall     = 2.0;
 cradle_d        = 28.0;        // cradle clearance circle above the PCB plane
-ball_top_z      = 17.1;        // cradle stack.json ball_top_above_pcb_top (19.05 mm ball)
+ball_top_z      = 13.95;        // cradle stack.json ball_top_above_pcb_top (19.05 mm ball)
 case_screw_d      = 2.2;       // clearance holes for the M2 x 10 case screws from below
 case_screw_head_d = 4.4;       // widest countersunk M2 head: DIN 7982 ST2.2 is 4.4, DIN 7991/965 M2 is 3.8
 case_screw_cs_d   = case_screw_head_d + 0.4;              // 90 degree countersink mouth in the flat underside

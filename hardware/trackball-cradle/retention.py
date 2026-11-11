@@ -33,9 +33,7 @@ HERE = Path(__file__).resolve().parent
 GRID = 0.2                 # mm, configuration-space grid
 SAMPLE = 0.12              # mm, surface sampling pitch
 VARIANTS = {
-    "19mm-pocket": {"ball_d": 19.05, "mount": "pocket"},
-    "25mm-pocket": {"ball_d": 25, "mount": "pocket", "notch_apothem": 16.5},
-    "25mm-cutout": {"ball_d": 25, "mount": "cutout"},
+    "19mm-pocket": {"ball_d": 19.05},
 }
 
 
@@ -199,8 +197,11 @@ def analyse(binary, name, overrides, build):
     out["retainer_top_z"] = float(rp[:, 2].max() + zc)
     out["retainer_bottom_z"] = float(rp[:, 2].min() + zc)
     out["retainer_outer_r"] = float(np.hypot(rp[:, 0], rp[:, 1]).max())
-    # clearance to the bearing bosses (the only part of the cradle outside the cup wall above
-    # the PCB): cradle points outside the cup cylinder, against the retainer
+    # Clearance to whatever of the cradle stands outside the cup wall above the board plane:
+    # cradle points outside the cup cylinder, against the retainer. Up to r2.3 that was only the
+    # three bearing bosses, which is where the key's name comes from (docs/gen/parts.py publishes
+    # it); since r2.4 the bosses top out below the ring and the number is the gap to the tilted
+    # sensor sleeve, which the ring's skirt is relieved around (cradle.scad, ret_sleeve_half).
     r_out = stack["cup_outer_d"] / 2
     boss = cp[(np.hypot(cp[:, 0], cp[:, 1]) > r_out + 0.05) & (cp[:, 2] + zc > 0.0)]
     near = rp[rp[:, 2] < (boss[:, 2].max() + 3 if len(boss) else -np.inf)]
@@ -209,7 +210,7 @@ def analyse(binary, name, overrides, build):
                  for i in range(0, len(near), 2000))
         out["boss_clearance"] = d2 ** 0.5
     else:
-        out["boss_clearance"] = None   # bosses lie below the skirt bottom by more than 3 mm
+        out["boss_clearance"] = None   # nothing of it within 3 mm below the skirt's bottom edge
     return out
 
 

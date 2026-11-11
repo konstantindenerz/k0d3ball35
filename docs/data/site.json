@@ -105,14 +105,14 @@
    "label": "Size per half",
    "x": 121.0,
    "y": 86.7,
-   "z": 22.8,
+   "z": 18.3,
    "source": "hardware/layout/output/points-right.json",
-   "text": "121 x 87 mm, 22.8 mm high with the case",
+   "text": "121 x 87 mm, 18.3 mm high with the case",
    "tpl": "{x} x {y} mm, {z} mm high with the case",
    "params": {
     "x": 121,
     "y": 87,
-    "z": "22.8"
+    "z": "18.3"
    }
   }
  ],

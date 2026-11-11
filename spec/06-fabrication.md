@@ -1,8 +1,9 @@
 # Fabrication
 
-Three boards go to the fab house: the left PCB (18 keys), the right PCB (17 keys, FPC connector,
-notch for the ball pocket) and the small PMW3610 sensor PCB. All are plain two-layer
-boards. Since r2 the two main boards are different designs; order each as its own 5-piece batch.
+Two boards go to the fab house: the left PCB (18 keys) and the right PCB (17 keys, FPC connector,
+notch for the ball pocket). Both are plain two-layer boards. Since r2 they are different designs;
+order each as its own 5-piece batch. Since r2.4 the trackball sensor is a bought PAW3222 module,
+so there is no third board (`issues/hw-paw3222-variant.md`).
 
 ## Main PCB order settings (JLCPCB, left and right)
 
@@ -47,15 +48,11 @@ about before the first fit:
 The right board's notch is a regular octagon with 15 mm apothem, with the corner towards the keys
 squared off; JLCPCB mills it without a note.
 
-## Sensor PCB order settings
+## Sensor
 
-Same as above except: 26 x 25 mm, 1.6 mm, ENIG strongly preferred (the 16-pin lead-frame sensor and
-the 0.5 mm connector), quantity 5. Upload the zip `hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip` (the loose
-files are in `hardware/sensor-pcb/gerbers/`).
-
-Optional assembly: the PMW3610DM-SUDU is JLCPCB part C42442560 (extended part), so economic PCBA can
-place the sensor, LDO and capacitors. The lens is clipped on by hand afterwards. For five boards the
-extended-part fees roughly double the price; hand assembly is fine for a first spin.
+Nothing to order from the fab house. Since r2.4 the sensor is the ready-made 14 x 8 mm PixArt
+PAW3222 module (sekigon-gonnoc / nogikes-ya), bought as a part and listed in `spec/03-bom.md`
+with the other bought parts.
 
 ## What the export produces
 
@@ -70,15 +67,12 @@ extended-part fees roughly double the price; hand assembly is fine for a first s
 | `hardware/<half>-pcb/k0d3ball35-<half>-schematic.pdf` | schematic |
 | `hardware/<half>-pcb/k0d3ball35-<half>-bom.csv`, `-pos.csv` | BOM and placement file (for PCBA, not needed for a bare board) |
 
-The sensor board has its own `hardware/sensor-pcb/export.sh` with the same outputs.
-
 ## Checklist before ordering
 
 - [ ] `make erc` and `make drc` report zero errors for both halves (DRC runs with schematic parity)
 - [ ] `make test` green (geometry, netlist, KiCad gates)
 - [ ] Open both zips in a gerber viewer (JLCPCB's upload preview is enough): outline closed, no
-      internal cutout on the main boards (the sensor board has the 16.96 x 8.60 mm sensor slot),
-      the pocket notch on the right board only, five mounting holes per board,
+      internal cutout, the pocket notch on the right board only, five mounting holes per board,
       J1 only on the right board, no missing layers
 - [ ] The left board outline is the mirror image of the right one: seen from the top the controller
       block sits at the right-hand edge on the left board and at the left-hand edge on the right
@@ -102,8 +96,9 @@ The sensor board has its own `hardware/sensor-pcb/export.sh` with the same outpu
 - [ ] The two sheet families cross-checked against each other: held against a window the outlines
       coincide and the key grid falls on the switch holes
 - [ ] Ticket `hw-main-pcb-review-r1` closed (manual review of both boards in the KiCad GUI)
-- [ ] Ticket `hw-ffc-pin-order-verification` resolved for the sensor board
-- [ ] Quantity 5 for all three boards, 1.6 mm, ENIG or HASL as decided
+- [ ] Ticket `hw-ffc-pin-order-verification` resolved against the bought sensor module: J1 carries
+      the module's own pin order, which only a continuity test on the physical cable can confirm
+- [ ] Quantity 5 for both boards, 1.6 mm, ENIG or HASL as decided
 
 ## Cost and lead time
 
@@ -111,11 +106,10 @@ The sensor board has its own `hardware/sensor-pcb/export.sh` with the same outpu
 |------|------------------|
 | Left or right PCB, 5 pcs, HASL | 10 to 15 EUR each design |
 | Left or right PCB, 5 pcs, ENIG | 30 to 40 EUR each design |
-| Sensor PCB, 5 pcs | 2 to 5 EUR |
 | Shipping to Germany | 15 to 35 EUR depending on service |
 | Import VAT | 19 percent on goods plus shipping |
 
-Expect about 80 to 120 EUR for one prototype spin with all three boards in one order. Production
+Expect about 80 to 120 EUR for one prototype spin with both boards in one order. Production
 takes 2 to 4 days, shipping 1 to 3 weeks depending on the service.
 
 ## Local toolchain

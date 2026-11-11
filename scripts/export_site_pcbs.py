@@ -40,7 +40,6 @@ KPY = os.environ.get("KPY", "/Applications/KiCad/KiCad.app/Contents/Frameworks/P
 BOARDS = {
     "left": "hardware/left-pcb/k0d3ball35-left.kicad_pcb",
     "right": "hardware/right-pcb/k0d3ball35-right.kicad_pcb",
-    "sensor": "hardware/sensor-pcb/k0d3ball35-sensor.kicad_pcb",
 }
 # file name in renders/layers/ -> KiCad layer name
 LAYERS = {

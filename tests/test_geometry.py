@@ -186,7 +186,14 @@ def test_battery_bay_fits_cell_and_board(layout):
     bat = layout.cfg["battery"]
     assert bat["cell"] == "LP552035"
     assert bat["bay"]["size"]["x"] - bat["size"]["x"] >= 0.5 and bat["bay"]["size"]["y"] - bat["size"]["y"] >= 1.0
-    assert bat["size"]["z"] + 1.5 <= bat["depth_below_pcb"]
+    # The well depth is the documented stack-up, not a round number: the cell plus whatever sits
+    # between it and the PCB underside. Since r2.4 that is only 0.3 mm, which REQUIRES the
+    # controller socket tails to be flush (conthrough pins, or trimmed after soldering) - the
+    # 1.0 mm of protruding tails the r2.3 well allowed would not fit. spec/04-build-guide.md.
+    head = bat["depth_below_pcb"] - bat["size"]["z"]
+    assert head >= 0.3 - 1e-9, f"only {head:.2f} mm above the cell, needs 0.3"
+    assert head <= 1.0, (f"{head:.2f} mm above the cell is more than the stack-up needs - "
+                         "the well is deeper than it has to be, which costs the same in height")
     assert layout.outline.contains(bay)
     assert layout.outline.exterior.distance(bay) >= bat["edge_clearance"] - 0.05
     for name, poly in layout.back_parts().items():

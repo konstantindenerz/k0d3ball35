@@ -90,7 +90,8 @@ def test_every_url_the_page_loads_is_versioned():
         for s in _strings(json.loads((DATA / f"{name}.json").read_text())):
             if re.search(r"\.(stl|glb|svg|png)$", s) and (ROOT / s).is_file():
                 assert s in versions, s
-    for literal in ("spec/images/concept-render.png", "hardware/sensor-pcb/renders/k0d3ball35-sensor.glb"):
+    # literals the page carries in its own code rather than in the data files
+    for literal in ("spec/images/concept-render.png",):
         assert literal in versions
 
 
@@ -257,16 +258,16 @@ def pcbs() -> dict:
     return json.loads((DATA / "pcbs.json").read_text())
 
 
-def test_pcbs_names_three_boards_with_existing_files(pcbs, tracked):
-    assert [b["id"] for b in pcbs["boards"]] == ["left", "right", "sensor"]
+def test_pcbs_names_both_boards_with_existing_files(pcbs, tracked):
+    # r2.4: the bought PAW3222 module replaced our sensor daughterboard, so the PCBs tab shows
+    # the two halves only (issues/hw-paw3222-variant.md).
+    assert [b["id"] for b in pcbs["boards"]] == ["left", "right"]
     for b in pcbs["boards"]:
         paths = [*b["files"].values(), *(l["path"] for l in b["layers"])]
         for p in paths:
             assert (ROOT / p).is_file(), f"{b['id']}: {p} missing"
             assert p in tracked, f"{b['id']}: {p} not committed"
         assert {l["id"] for l in b["layers"]} == {"F.Cu", "B.Cu", "F.Silkscreen", "B.Silkscreen", "F.Mask", "B.Mask", "Edge.Cuts"}
-    # the Case and Trackball tabs load the sensor board from this exact path
-    assert pcbs["boards"][2]["files"]["glb"] == "hardware/sensor-pcb/renders/k0d3ball35-sensor.glb"
 
 
 def test_pcb_layer_svgs_share_one_viewbox(pcbs):
@@ -293,7 +294,9 @@ def test_pcb_glbs_are_gltf2_and_match_the_outline(pcbs):
         def walk(i, t):
             nonlocal lo, hi
             n = js["nodes"][i]
-            assert "matrix" not in n and "rotation" not in n and "scale" not in n or b["id"] == "sensor"
+            # the sensor board used to be exempt here; with only the two halves left, every
+            # GLB node must be a plain translation the way KiCad writes it (r2.4).
+            assert "matrix" not in n and "rotation" not in n and "scale" not in n
             t = t + np.array(n.get("translation", [0, 0, 0]))
             if "mesh" in n and js["meshes"][n["mesh"]].get("name", "").startswith(b["stem"]):
                 for p in js["meshes"][n["mesh"]]["primitives"]:

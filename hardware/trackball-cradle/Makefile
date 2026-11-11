@@ -3,8 +3,7 @@
 # `brew install --cask openscad@snapshot`). The 2021.01 release renders the same
 # geometry but is roughly 100x slower and lacks --backend.
 #
-# Variants: 19.05 mm ball in the case pocket (r2 default), 25 mm ball in a wider pocket
-# (fallback, needs a PCB with a 16.5 mm notch apothem), 25 mm ball through a PCB cutout (r1).
+# One variant since r2.4: the 19.05 mm ball in the case pocket, sensor module tilted beside it.
 
 OPENSCAD ?= $(shell command -v openscad 2>/dev/null || echo /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD)
 OSC       = $(OPENSCAD) --backend manifold
@@ -13,15 +12,11 @@ PYTHON   ?= python3
 # layout-frame view mirrored in y (target y -> -y, rot_z -> 180 - rot_z)
 CAM_SEC   = --camera=0,0,3,80,0,270,110 --imgsize=1200,900 --colorscheme=Tomorrow
 CAM_ASM   = --camera=0,0,5,55,0,145,170 --imgsize=1200,900 --colorscheme=Tomorrow
-POCKET19  = -D 'mount="pocket"' -D ball_d=19.05
-POCKET25  = -D 'mount="pocket"' -D ball_d=25 -D notch_apothem=16.5
-CUTOUT25  = -D 'mount="cutout"' -D ball_d=25
+POCKET19  = -D ball_d=19.05
 
-STL = stl/cradle-19mm-pocket.stl stl/cradle-25mm-pocket.stl stl/cradle-25mm-cutout.stl \
-      stl/retainer-19mm.stl stl/retainer-25mm.stl
-DXF = dxf/floor-19mm-pocket.dxf dxf/floor-25mm-pocket.dxf dxf/cutout-25mm.dxf
-PNG = preview/section-19mm-pocket.png preview/assembly-19mm-pocket.png \
-      preview/assembly-25mm-pocket.png preview/section-25mm-cutout.png
+STL = stl/cradle-19mm-pocket.stl stl/retainer-19mm.stl
+DXF = dxf/floor-19mm-pocket.dxf
+PNG = preview/section-19mm-pocket.png preview/assembly-19mm-pocket.png
 
 .PHONY: all stls dxfs previews stack retention clean
 all: stls dxfs previews stack retention
@@ -34,31 +29,17 @@ stl dxf preview:
 
 stl/cradle-19mm-pocket.stl: cradle.scad params.scad | stl
 	$(OSC) -D 'part="cradle"'   $(POCKET19) -o $@ $<
-stl/cradle-25mm-pocket.stl: cradle.scad params.scad | stl
-	$(OSC) -D 'part="cradle"'   $(POCKET25) -o $@ $<
-stl/cradle-25mm-cutout.stl: cradle.scad params.scad | stl
-	$(OSC) -D 'part="cradle"'   $(CUTOUT25) -o $@ $<
-# optional clip-on retainer; the same ring fits both 25 mm mounts
+# optional clip-on retainer
 stl/retainer-19mm.stl: cradle.scad params.scad | stl
 	$(OSC) -D 'part="retainer"' $(POCKET19) -o $@ $<
-stl/retainer-25mm.stl: cradle.scad params.scad | stl
-	$(OSC) -D 'part="retainer"' $(POCKET25) -o $@ $<
 
 dxf/floor-19mm-pocket.dxf: cradle.scad params.scad | dxf
 	$(OSC) -D 'part="floor2d"'  $(POCKET19) -o $@ $<
-dxf/floor-25mm-pocket.dxf: cradle.scad params.scad | dxf
-	$(OSC) -D 'part="floor2d"'  $(POCKET25) -o $@ $<
-dxf/cutout-25mm.dxf: cradle.scad params.scad | dxf
-	$(OSC) -D 'part="cutout2d"' $(CUTOUT25) -o $@ $<
 
 preview/section-19mm-pocket.png: cradle.scad params.scad | preview
 	$(OSC) --render -D 'part="section"'  $(POCKET19) $(CAM_SEC) -o $@ $<
 preview/assembly-19mm-pocket.png: cradle.scad params.scad | preview
 	$(OSC) --render -D 'part="assembly"' $(POCKET19) $(CAM_ASM) -o $@ $<
-preview/assembly-25mm-pocket.png: cradle.scad params.scad | preview
-	$(OSC) --render -D 'part="assembly"' $(POCKET25) $(CAM_ASM) -o $@ $<
-preview/section-25mm-cutout.png: cradle.scad params.scad | preview
-	$(OSC) --render -D 'part="section"'  $(CUTOUT25) $(CAM_SEC) -o $@ $<
 
 stack: stack.json
 stack.json: cradle.scad params.scad stack.py

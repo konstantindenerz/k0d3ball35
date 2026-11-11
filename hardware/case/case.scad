@@ -1,6 +1,6 @@
 // k0d3ball35 printed case - entry point
 // Usage: openscad --backend manifold -D half=\"right\" -D part=\"tray\" -o tray-right.stl case.scad
-// Parts: tray | box_cap | lid | lid_outer | lid_inner | lid_folded | lid_dome | pocket_test | assembly | section | floor2d
+// Parts: tray | box_cap | lid | lid_outer | lid_inner | lid_folded | pocket_test | assembly | section | floor2d
 // Previews: lid_on | lid_foot (tilted on the desk) | lid_foot_flat
 // Layout facts come from data.scad (scripts/gen_case.py), dimensions from params.scad.
 
@@ -30,8 +30,6 @@ echo(str("STACK lid_roof_t=", lid_roof_t));
 echo(str("STACK edge_chamfer=", edge_chamfer));
 echo(str("STACK rim_chamfer=", rim_chamfer));
 echo(str("STACK lid_lip_depth=", lid_lip_depth));
-echo(str("STACK lid_window=", lid_window ? 1 : 0));
-echo(str("STACK ball_window_d=", ball_window_d));
 echo(str("STACK hinge_x=", hx));
 echo(str("STACK hinge_axis_z=", hinge_axis_z));
 echo(str("STACK hinge_knuckle_d=", hinge_knuckle_d));
@@ -53,6 +51,7 @@ echo(str("STACK foot_free_end_h=", foot_free_end_h()));
 echo(str("STACK has_ball=", has_ball(half) ? 1 : 0));
 echo(str("STACK ball_top_z=", ball_top_z));
 echo(str("STACK cradle_rim_z=", cradle_rim_z()));
+echo(str("STACK pocket_rim_z=", pocket_rim_z()));
 echo(str("STACK housing_x=", has_ball(half) ? maxx(housing_box(half)) - minx(housing_box(half)) : 0));
 echo(str("STACK housing_y=", has_ball(half) ? maxy(housing_box(half)) - miny(housing_box(half)) : 0));
 echo(str("STACK case_screw_sp=", has_ball(half) ? case_screws(half)[1][1] - case_screws(half)[0][1] : 0));
@@ -61,7 +60,7 @@ echo(str("STACK case_screw_head_d=", case_screw_head_d));
 echo(str("STACK case_screw_cs_d=", case_screw_cs_d));
 echo(str("STACK case_screw_cs_h=", case_screw_cs_h));
 echo(str("STACK case_screw_head_z=", base_z + (case_screw_cs_d - case_screw_head_d) / 2));
-echo(str("STACK case_screw_floor_left=", floor_t - case_screw_cs_h));
+echo(str("STACK case_screw_floor_left=", (pocket_floor_z - base_z) - case_screw_cs_h));
 echo(str("STACK bbox_min_x=", minx(ob)));
 echo(str("STACK bbox_min_y=", miny(ob)));
 echo(str("STACK bbox_max_x=", maxx(ob)));
@@ -120,7 +119,6 @@ module dispatch() {
     else if (part == "lid_outer") lid_plate("outer");
     else if (part == "lid_inner") lid_plate("inner");
     else if (part == "lid_folded") lid_folded();
-    else if (part == "lid_dome") lid_dome();
     else if (part == "pocket_test") pocket_test();
     else if (part == "assembly") assembly();
     else if (part == "section") section();

@@ -1,12 +1,15 @@
 # SPDX-License-Identifier: MIT
-"""docs/data/pcbs.json: the three boards for the PCBs tab.
+"""docs/data/pcbs.json: the two main boards for the PCBs tab.
 
 Per board: the repo paths of the KiCad file, the GLB and the layer SVGs written by `make pcb-3d`
-(scripts/export_site_pcbs.py), the PNG renders, STEP and gerber zip written by `make gerbers` and
-hardware/sensor-pcb/export.sh, the shared viewBox of the layer SVGs, and facts read from the board
+(scripts/export_site_pcbs.py), the PNG renders, STEP and gerber zip written by `make gerbers`,
+the shared viewBox of the layer SVGs, and facts read from the board
 file (copper layers, thickness, footprints, tracks, vias), from the outline SVG (size), from
 hardware/layout/output/points-<half>.json (keys, ball notch) and from spec/03-bom.md (finish, the
-notes column) and spec/06-fabrication.md (the sensor slot). Nothing here is measured in a browser, so the file is deterministic.
+notes column). Nothing here is measured in a browser, so the file is deterministic.
+
+Since r2.4 the trackball sensor is a bought PAW3222 module, not a board of ours, so the tab shows
+the left and right halves only (issues/hw-paw3222-variant.md).
 """
 from __future__ import annotations
 
@@ -24,10 +27,6 @@ BOARDS = (
      ("renders/right-pcb-top.png", "renders/right-pcb-bottom.png"), "k0d3ball35-right.step", "k0d3ball35-right-gerbers.zip",
      {"U1": "Controller", "J1": "Sensor cable connector", "J3": "Battery connector", "J2": "Battery pads",
       "PS1": "Power switch", "RB1": "Reset button"}),
-    ("sensor", "Sensor PCB", "hardware/sensor-pcb", "k0d3ball35-sensor",
-     ("renders/k0d3ball35-sensor-top.png", "renders/k0d3ball35-sensor-bottom.png"), "renders/k0d3ball35-sensor.step",
-     "fab/k0d3ball35-sensor-r1-gerbers.zip",
-     {"U1": "Optical sensor", "U2": "1.8 V regulator", "J1": "Cable connector"}),
 )
 # layer file -> label, side, kind, colour on the plot. Order: drawn first to last when seen from the front.
 LAYERS = (
@@ -40,8 +39,8 @@ LAYERS = (
     ("Edge.Cuts", "Board edge", "both", "edge", None),
 )
 SIDE = {"F.Cu": "front", "B.Cu": "back"}
-# what each face is in use (the sensor board has the lens on its back, facing the ball)
-FACE = {"left": {"F.Cu": "front (key side)"}, "right": {"F.Cu": "front (key side)"}, "sensor": {"B.Cu": "back (ball side)"}}
+# what each face is in use
+FACE = {"left": {"F.Cu": "front (key side)"}, "right": {"F.Cu": "front (key side)"}}
 
 
 def _footprints(text: str) -> list[dict]:
@@ -111,10 +110,6 @@ def board(spec: tuple, bom: dict) -> dict:
         facts.append(["Key positions", str(keys)])
     if notch:
         facts.append(["Ball pocket notch", f"octagon, apothem {notch:g} mm"])
-    if bid == "sensor":
-        m = re.search(r"([\d.]+ x [\d.]+ mm) slot", (REPO / "spec/06-fabrication.md").read_text())
-        if m:
-            facts.append(["Sensor slot", m.group(1)])
     facts += [["Footprints", str(len(fps))],
               ["Track segments", str(len(re.findall(r"^\t\(segment\b", text, re.M)))],
               ["Vias", str(len(re.findall(r"^\t\(via\b", text, re.M)))]]
@@ -155,7 +150,7 @@ def board(spec: tuple, bom: dict) -> dict:
 def build() -> dict:
     bom = _bom_rows()
     return {
-        "source": "make pcb-3d (scripts/export_site_pcbs.py), make gerbers, hardware/sensor-pcb/export.sh",
+        "source": "make pcb-3d (scripts/export_site_pcbs.py), make gerbers",
         "glb_frame": "glTF as KiCad writes it: Y up, metres, KiCad board coordinates (x right, -y up)",
         "boards": [board(b, bom) for b in BOARDS],
     }

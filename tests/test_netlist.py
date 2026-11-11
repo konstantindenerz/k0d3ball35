@@ -149,8 +149,10 @@ def test_fpc_only_on_the_right(half, comps):
     if half == "right":
         assert [c.ref for c in fpc] == ["J1"]
         spec = _spec_fpc_table()
-        assert spec == {1: "VCC 3.3 V", 2: "GND", 3: "TB_SCLK", 4: "TB_SDIO", 5: "TB_NCS", 6: "TB_MOT"}
-        assert FPC_PINS == {1: "VCC", 2: "GND", 3: "TB_SCLK", 4: "TB_SDIO", 5: "TB_NCS", 6: "TB_MOT"}
+        # r2.4: J1 carries the bought PAW3222 module's own pin order, because the type B cable
+        # joins pin i to pin i (tests/test_ffc_pin_order.py derives this).
+        assert spec == {1: "VCC 3.3 V", 2: "TB_NCS", 3: "TB_MOT", 4: "TB_SDIO", 5: "TB_SCLK", 6: "GND"}
+        assert FPC_PINS == {1: "VCC", 2: "TB_NCS", 3: "TB_MOT", 4: "TB_SDIO", 5: "TB_SCLK", 6: "GND"}
         assert fpc[0].pads == {str(p): n for p, n in FPC_PINS.items()}
     else:
         assert fpc == []

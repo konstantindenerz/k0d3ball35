@@ -210,7 +210,7 @@
         "y": 41.0
       }
     },
-    "depth_below_pcb": 9.0,
+    "depth_below_pcb": 6.0,
     "edge_clearance": 1.5,
     "leads": "+y",
     "bay_polygon": [
@@ -235,7 +235,7 @@
         -3.0
       ]
     ],
-    "well_floor_z": -10.6
+    "well_floor_z": -7.6
   },
   "fpc": null,
   "outline": [

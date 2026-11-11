@@ -14,21 +14,20 @@ another step has not produced yet skip with a reason instead of failing.
 | `tests/test_issues.py` | every ticket in `issues/` has valid frontmatter (type, priority, status, area, date), the file name matches its area, and `issues/README.md` equals the rendered index |
 | `tests/test_docs.py` | every relative markdown link resolves; every `spec/NN-*.md` named in the spec or README exists or is ticketed; no tool attribution strings; markdown is English (German marker heuristic); no image references without a file (pictures are prompt blocks) |
 | `tests/test_license.py` | MIT and CERN-OHL-P-2.0 texts present; every script and test carries an SPDX header |
-| `tests/test_kicad_gates.py` | `kicad-cli sch erc` and `kicad-cli pcb drc --schematic-parity` report zero errors for the left, right and sensor boards; reports are written to `build/*.json` |
+| `tests/test_kicad_gates.py` | `kicad-cli sch erc` and `kicad-cli pcb drc --schematic-parity` report zero errors for the left and right boards; reports are written to `build/*.json` |
 | `tests/test_geometry.py` | 18 keys left / 17 right, 18 x 17 pitch, stagger values per spec, thumb arc, no keycap overlap, cradle circle clear of caps and of the outline outside the notch (right only), points files up to date |
 | `tests/test_netlist.py` | each switch has exactly one diode, unique matrix cells per half (row 3 cols 2-4 left, 2-3 right), controller holes match the single spec pin table on both halves, FPC only on the right with the spec pin order, no jumpers, power path, unique references |
 | `tests/test_footprints.py` | pad sets of the project footprints, no overlapping pads of different numbers, hole positions of the Choc footprint, controller 2x12 geometry, library files parse |
 | `tests/test_firmware_pins.py` | devicetree pins of both overlays equal the single spec table, 35 bindings per layer, transform row 3 per half |
 | `tests/test_cradle.py` | pocket cradle renders in OpenSCAD, STL watertight, stands on the floor and stays inside the 15 mm notch apothem, 19 mm default matches the layout, stack heights within the datasheet window |
-| `tests/test_bom.py` | BOM quantities cover the parts placed on both PCBs (35 switches and diodes, one FPC connector), every BOM line has a source; section 6 carries every LCSC code of the sensor fab BOM with at least the exported quantity |
+| `tests/test_bom.py` | BOM quantities cover the parts placed on both PCBs (35 switches and diodes, one FPC connector), every BOM line has a source |
 | `tests/test_pcb_review.py` | automated part of the board review: socket pads versus the kiswitch reference, FH12 on the right only, controller hole nets and labels, USB overhang, battery bay, mounting holes, power switch at the inner edge, diode orientation, silkscreen, test pads, edge clearance, pocket notch with its square corner, J1 on the key side, filled GND pours without unanchored islands |
-| `tests/test_gerbers.py` | independent parse of the three gerber zips with gerbonara: file set and naming, two copper layers, extents, closed outlines, drill hit counts against the boards, the notch, battery bay silkscreen, no copper outside the outline; renders `build/gerber-check/*.png` for a visual pass |
-| `tests/test_ffc_pin_order.py` | the sensor board's FPC pin order matches the right PCB's pin for pin, which is what an opposite-side-contact (type B) cable needs: both connectors are bottom contact, but J1 sits on the key side of the right PCB and the sensor's under its own board |
-| `tests/test_sensor_pcb_vs_cradle.py` | sensor board against the cradle: outline, hole spacing, optical centre, sensor cutout and lens envelope (LM18-LSI datasheet) inside the cavity, parts on the floor side below the component gap, connector in front of the cable slot; OpenSCAD render when available |
+| `tests/test_gerbers.py` | independent parse of both gerber zips with gerbonara: file set and naming, two copper layers, extents, closed outlines, drill hit counts against the boards, the notch, battery bay silkscreen, no copper outside the outline; renders `build/gerber-check/*.png` for a visual pass |
+| `tests/test_ffc_pin_order.py` | J1's pin order against the bought sensor module's declared pinout: derives the pin pairing of the opposite-side-contact (type B) cable from the two mounting faces, cross-checks the derivation's sign against torabo-tsuki LP's published type A wiring of the same module, and compares the right board's J1 copper with the generator model |
 | `tests/test_firmware_build_config.py` | firmware build configuration: the GitHub workflow runs west in the config workspace, the build matrix against the shield files, the pinned ZMK revision, Kconfig symbols and the devicetree/keymap references a build would resolve |
 | `tests/test_case.py` | case geometry, generated data, renders |
 
-Current state: run `.venv/bin/pytest -q`; the KiCad gates run against the generated left, right and sensor PCBs and skip while a board file does not exist yet.
+Current state: run `.venv/bin/pytest -q`; the KiCad gates run against the generated left and right PCBs and skip while a board file does not exist yet.
 
 ### Hardware pipeline checks
 
@@ -93,7 +92,7 @@ misbehave.
 | 4.4 CPI sanity | Roll the ball by one full turn along x (circumference 59.8 mm at 19.05 mm) | cursor travel in pixels roughly equals CPI x 2.36; adjust `res-cpi` to taste |
 
 If 4.1 shows a product id of 0x00 or 0xff, check the cable type (type B) and its orientation (ticket
-`hw-ffc-pin-order-verification`) and the 1.8 V rail on the sensor board.
+`hw-ffc-pin-order-verification`) and the 3.3 V supply reaching the sensor module.
 
 ### 5. Bluetooth and sleep
 
