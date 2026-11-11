@@ -94,10 +94,10 @@ half gave up its outer thumb key to the ball pocket in r2.3.
 | Ball diameter | 19.05 mm (3/4 inch POM), the only supported size |
 | Cradle clearance circle | 28 mm diameter (`trackball.cradle_diameter`); the printed cup is 23.05 mm wide above the PCB plane |
 | PCB notch | octagon, apothem 15.5 mm (cradle radius + 1.5 mm `notch_clearance`), with the corner towards the keys and the inner column squared off so the module can be lowered into the pocket past the board edge; vertices in `points-right.json` under `trackball.notch` |
-| Case pocket | 32 mm circle (`pocket_diameter`, cradle + 2 mm wall) above the PCB plane; below it a well around the 24 x 29 mm housing box (`trackball.housing`, centred 2.55 mm off the ball towards +y), which contains the cradle's floor footprint (cup plus tilted sensor sleeve); two M2 x 10 case screws come up through the floor into the cup skirt, 20 mm apart on the y axis |
+| Case pocket | 32 mm circle (`pocket_diameter`, cradle + 2 mm wall) above the PCB plane; below it a well around the 24 x 29 mm housing box (`trackball.housing`, centred 2.55 mm off the ball towards +y), which contains the cradle's floor footprint (cup plus tilted sensor sleeve); two M2 x 8 case screws come up through the floor into the cup skirt, 20 mm apart on the x axis through the ball |
 | Sensor module | PAW3222 module, 14 x 8 mm, tilted 65 degrees beside the ball, leaning away from the keys; its 14 x 4.4 mm projection is centred 13.5 mm towards +y of the ball (`trackball.sensor_board`) |
 | Keycap clearance | at least 1.0 mm between the 28 mm circle and any keycap (checked by the generator) |
-| Mounting | cradle screwed to the case floor (two M2 x 10 from below into the cup skirt, 20 mm apart); no cradle holes on the PCB |
+| Mounting | cradle screwed to the case floor (two M2 x 8 from below into the cup skirt, 20 mm apart); no cradle holes on the PCB |
 | Insertion corridor | the housing and the sensor module must not be covered by the board: `Layout.insertion_corridor()` keeps 0.50 mm to the outline all round, which is what makes the module a cartridge (in and out with the PCB fitted) |
 
 The ball centre was moved until the 28 mm circle cleared the middle thumb cap and the index and

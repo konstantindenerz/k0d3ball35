@@ -38,7 +38,7 @@ BALL_D = 19.05
 HOLES = [(27.0, 10.8), (27.0, 44.5), (-9.0, 40.0), (-27.0, 8.0)]
 HOLE5 = {"left": (-32.0, 61.0), "right": (-31.0, 49.0)}
 BALL = (-13.0, 66.0)
-CASE_SCREWS = [(BALL[0], BALL[1] - 10.0), (BALL[0], BALL[1] + 10.0)]
+CASE_SCREWS = [(BALL[0] - 10.0, BALL[1]), (BALL[0] + 10.0, BALL[1])]   # x axis: clear of the bearings
 # downward facing area above the base that the known bridges and 45 degree boss chamfers add up
 # to: four 6.2 mm foot magnet pockets from below (121), the shelf over the pocket well corners
 # and the FFC channel (154 on the right), USB (11) and LED (9) openings, boss chamfers (46).

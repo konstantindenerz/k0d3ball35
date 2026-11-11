@@ -72,7 +72,7 @@ housing_box_right = [[-1, 54.05], [-1, 83.05], [-25, 83.05], [-25, 54.05]];
 function housing_box(h) = h == "left" ? housing_box_left : housing_box_right;
 
 case_screws_left = [];
-case_screws_right = [[-13, 56], [-13, 76]];
+case_screws_right = [[-23, 66], [-3, 66]];
 function case_screws(h) = h == "left" ? case_screws_left : case_screws_right;
 
 case_outline_left = [];

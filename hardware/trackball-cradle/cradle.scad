@@ -23,7 +23,7 @@
 include <params.scad>
 
 // ------------------------------------------------------------------ derived values
-floor_t_assumed = 2.0;                 // case floor the M2 x 10 passes before the skirt
+floor_t_assumed = 2.0;                 // case floor the case screw passes before the skirt
 R      = ball_d / 2;
 R_in   = R + ball_gap;                 // cup inner radius
 R_out  = R_in + wall;                  // cup outer radius
@@ -78,7 +78,7 @@ hous_top     = rim_z;
 tab_w        = hous_y;
 tab_back     = notch_apothem - pcb_clear;
 skirt_z      = floor_z;                                             // bottom of the cylindrical cup skirt
-screw_depth  = min(10.0 - floor_t_assumed, rim_z - floor_z - 1.0);   // thread length in the skirt
+screw_depth  = min(case_screw_len - floor_t_assumed, rim_z - floor_z - 1.0);   // thread length in the skirt
 // largest diameter of the cup above the PCB underside: must stay inside the layout's cradle
 // clearance circle (trackball.cradle_diameter). The bearing seats end at R_out along their axis,
 // 35 degrees below the equator, so they sit inside the cup skirt and need no bosses of their own.
@@ -261,7 +261,7 @@ module cradle_cuts() {
     sensor_frame() sensor_pocket_cuts();
     // Case screws: straight up from the floor into the cup skirt.
     // No posts and no holes in the module since r2.4 - the sleeve holds the module.
-    for (sy = [-1, 1]) translate([0, sy * case_screw_sp / 2, floor_z - 1])
+    for (sx = [-1, 1]) translate([sx * case_screw_sp / 2, 0, floor_z - 1])
         cylinder(d = screw_pocket_d, h = 1 + screw_depth);
     // bearing seats
     for (az = bearing_az) radial(az, bearing_elev)
@@ -450,7 +450,7 @@ module case_floor_dummy() {   // the case floor the module stands on
 module floor2d() {
     difference() {
         offset(r = 0.5) plan_2d();
-        for (sy = [-1, 1]) translate([0, sy * case_screw_sp / 2]) circle(d = case_screw_d + 0.2);
+        for (sx = [-1, 1]) translate([sx * case_screw_sp / 2, 0]) circle(d = case_screw_d + 0.2);
     }
 }
 

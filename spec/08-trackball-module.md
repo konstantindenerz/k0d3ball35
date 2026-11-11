@@ -82,8 +82,8 @@ r2.3 for comparison: keycaps 25.6, ball 31.7, transport 31.7 mm over the desk.
 Floor footprint (`dxf/floor-19mm-pocket.dxf`): the cradle is one body with vertical walls, the
 cup plus a tab as wide as the sleeve, so its plan is the same at every height: 24.05 x 27.73 mm
 including 0.5 mm clearance, extending further on the side away from the keys. The case well
-around it is 25 x 30 mm. Two M2 x 10 countersunk self-tapping screws come up through the case
-floor into the cup skirt, 20 mm apart on the y axis; the module itself has no holes. Above the
+around it is 25 x 30 mm. Two M2 x 8 countersunk self-tapping screws come up through the case
+floor into the cup skirt, 20 mm apart on the x axis through the ball; the module itself has no holes. Above the
 PCB plane the cup is 23.05 mm wide and the tab stays 0.3 mm inside the notch octagon. The notch
 corner towards the keys is square, so the whole module drops into the pocket and lifts out
 with the PCB fitted.

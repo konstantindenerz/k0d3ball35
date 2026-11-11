@@ -151,9 +151,11 @@ class Layout:
     def case_screws(self) -> list[tuple[float, float]]:
         if not self.has_ball:
             return []
+        # On the x axis through the ball: the bearings sit at 30, 150 and 270 degrees, so the
+        # y axis (90/270) would put a screw through the 270 degree bearing seat.
         sp = self.cfg["trackball"]["pocket"]["case_screw_spacing"]
         bx, by = self.ball_center
-        return [(bx, round(by - sp / 2, 3)), (bx, round(by + sp / 2, 3))]
+        return [(round(bx - sp / 2, 3), by), (round(bx + sp / 2, 3), by)]
 
     @property
     def fpc_side(self) -> str:

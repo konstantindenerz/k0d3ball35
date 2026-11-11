@@ -81,7 +81,7 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 1 | printed cradle (`hardware/trackball-cradle/stl/cradle-19mm-pocket.stl`) | right half, case pocket | 11 |
 | 1 + 2 | printed pocket cover (`hardware/case/stl/pocket-cover-right.stl`) and two M2 x 6 countersunk screws | right half, flush over the cradle | 12 |
 | 1 (optional) | printed retainer (`hardware/trackball-cradle/stl/retainer-19mm.stl`), PETG | clips onto the cup, keeps the ball in when the half is turned over | 11 |
-| 2 | M2 x 10 self-tapping countersunk screws (or M2 x 10 countersunk machine screws + heat-set inserts) | case screws: from below through the case floor into the cradle's cup skirt | 11 |
+| 2 | M2 x 8 self-tapping countersunk screws (or M2 x 8 countersunk machine screws + heat-set inserts) | case screws: from below through the case floor into the cradle's cup skirt | 11 |
 | 35 (+2) | Kailh Choc V1 switch (PG1350) | | 12 |
 | 35 | Choc 1u keycaps (MBK), 5 in an accent colour for the thumbs | | 12 |
 | 8 | bumpers (GLIPLUS pads or 3M SJ5302) | underside | 15 |
@@ -342,7 +342,7 @@ transport). Deburr the cup rim. Print settings and the test-fit list are in the
 
 ![Checking the lens-to-ball distance with a feeler gauge](images/img-build-step-lens-gauge.png)
 
-5. Lower the cradle into the case pocket and fasten it with two M2 x 10 countersunk
+5. Lower the cradle into the case pocket and fasten it with two M2 x 8 countersunk
    self-tapping screws from below, through the floor into the cup skirt. Snug, not tight.
 6. Route the cable up the gap between cup and notch, round the cup and over the board edge into
    J1 on the **key side**, exposed metal **down**. Close the lock. Fold gently, no crease.
@@ -372,7 +372,7 @@ hardware allows, so do not improvise.
    of the two lid plates and push the 2 mm rod in from the back edge until it bottoms in the
    blind end knuckle; a drop of glue at the entry if it is loose.
 3. Right half: lower the finished trackball module (chapter 11) into its pocket and fasten it with
-   the two M2 x 10 countersunk screws from below. It drops straight in and lifts straight out, also later with
+   the two M2 x 8 countersunk screws from below. It drops straight in and lifts straight out, also later with
    the PCB fitted, so this step can be repeated at any time.
 4. Cell onto the back of the PCB in the dashed bay and into J3 (chapter 7). The battery well is
    completely covered by the board, so the cell has to travel with the PCB.

@@ -80,10 +80,12 @@ pcb_clear       = 0.3;     // nothing of the module closer than this to the PCB 
 notch_apothem   = 15.5;    // PCB notch, regular octagon apothem
                            // (layout trackball.cradle_diameter / 2 + notch_clearance)
 // Case screws: since r2.4 the module sits beside the ball, so the floor under the ball is free
-// plastic (the cup skirt runs down to the floor). The two M2 x 10 screws come up from below
+// plastic (the cup skirt runs down to the floor). The two M2 x 8 screws come up from below
 // through the case floor straight into that skirt - no posts, no holes in the module, and the
 // spacing is unchanged, so the main PCB keeps its case holes. Clear of the bearing bosses.
 case_screw_d    = 2.0;     // case screw diameter (M2); the floor DXF gets d + 0.2 clearance holes
+case_screw_len  = 8;       // M2 x 8: a 10 mm screw ended 0.9 mm over the PCB plane, where the
+                           // cup is only 9.28 mm in radius, and its thread broke into the cup
 case_screw_sp   = 20;      // spacing on the local y axis (layout trackball.case_screw_spacing)
 screw_pocket_d  = 1.6;     // pilot for the M2 self-tapping screw in the cup skirt
 cable_slot_w    = -1;      // width of the FFC slot in the key-facing (-y) wall; -1 = wall width minus 2 corner posts

@@ -70,7 +70,7 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   side. At floor level the well
   is the 24 x 29 housing box (centred 2.55 mm off the ball towards +y) plus 0.5, which
   contains the cradle footprint (cup skirt plus tilted sleeve, 24.05 x 26.84 with clearance),
-  floor at -7.1 (2.5 mm floor), two 2.2 mm holes 20 mm apart on the y axis with a 4.8 mm, 1.3 mm deep
+  floor at -7.1 (2.5 mm floor), two 2.2 mm holes 20 mm apart on the x axis through the ball with a 4.8 mm, 1.3 mm deep
   90 degree countersink from below (`case_screw_cs_d`, `case_screw_cs_h`): the flat head of
   an M2 countersunk screw ends up 0.2 mm inside the underside, 1.2 mm of floor is left at
   the bore. The tray only keeps the lid lip off J1 and the cable corridor on the key side
@@ -170,7 +170,7 @@ Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
   for assembly.
 - Alternative: `-D pcb_screws="pilot"` turns the holes into 1.6 mm pilots for M2 self-tapping
   screws (6 mm deep).
-- Cradle: two M2 x 10 countersunk self-tapping screws from below through the countersunk
+- Cradle: two M2 x 8 countersunk self-tapping screws from below through the countersunk
   floor holes into the cradle's cup skirt (`hardware/trackball-cradle/README.md`).
 - Pocket cover: two M2 x 6 countersunk screws from the top into 1.6 mm pilots in the ledge.
 
@@ -187,7 +187,7 @@ Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
 4. Drop the PCB in (keycaps off), screw it to the standoffs, put the keycaps on.
 5. Controller box: plug the controller, put the cap on (skirt towards the keys and the thumb
    keys), two M2 screws into the bosses.
-6. Right half: stand the cradle module in the pocket, fasten the two M2 x 10 from below, route
+6. Right half: stand the cradle module in the pocket, fasten the two M2 x 8 from below, route
    the FFC round the cup into J1. Pocket cover on (two M2 x 6 from the top), drop the ball in
    through its funnel.
 7. Battery into the well, JST into J3, press the rubber feet into their recesses.

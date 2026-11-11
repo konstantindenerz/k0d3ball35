@@ -71,7 +71,7 @@ trackball:
     cup_envelope: 23.05         # widest part of the cradle cup above the PCB plane, cradle stack.json
     cable_gap_min: 1.5          # radial room the FFC needs between the cup envelope and the notch edge
     housing_clearance: 0.5      # gap between housing and pocket wall at floor level
-    case_screw_spacing: 20.0    # two M2 x 10 from below through the floor into the cup skirt, on the y axis
+    case_screw_spacing: 20.0    # two M2 x 8 from below through the floor into the cup skirt, on the x axis through the ball (clear of the bearings)
     sensor_board: { x: 14.0, y: 4.4 }    # PROJECTION of the tilted 14 x 8 mm PAW3222 module: 14 mm
     sensor_board_offset: { x: 0.0, y: 13.5 }   # across the tilt, 4.4 mm along it, centred 13.5 mm
                                     # towards +y of the ball axis. Spans 11.3..15.7, which is the

@@ -55,8 +55,8 @@ stays in the layout frame.
 - **Floor footprint.** The body's plan: 24.05 x 27.73 mm with 0.5 mm clearance
   (`dxf/floor-19mm-pocket.dxf`), extending further on the side away from the keys. The case well (the 24 x 29 mm housing box, offset 2.55 mm in y, plus
   0.5 mm) contains it.
-- **Case screws.** Two M2 x 10 countersunk self-tapping screws come up through the case floor
-  into the cup skirt, 20 mm apart on the y axis (`case_screw_sp`). The module has no holes.
+- **Case screws.** Two M2 x 8 countersunk self-tapping screws come up through the case floor
+  into the cup skirt, 20 mm apart on the x axis through the ball (`case_screw_sp`). The module has no holes.
 - **Above the PCB** the cup is 23.05 mm wide and the tab stays 0.3 mm inside the PCB notch
   (apothem 15.5 mm); nothing of the cradle rises above the cup rim. The notch corner towards the keys is square, so the module drops into the
   pocket and lifts out with the PCB fitted (`issues/mech-cradle-notch-relief.md`).
@@ -92,7 +92,7 @@ only. Over the sensor sleeve the skirt is relieved and the collar bridges it.
    each seat rim. Roll the trackball: no click, no scrape.
 2. Plug the type B FFC into the module. Seat the module in the sleeve, lens towards the ball.
 3. Check the lens distance (test-fit list below).
-4. Stand the cradle in the case pocket, two M2 x 10 countersunk screws from below. Snug, not tight.
+4. Stand the cradle in the case pocket, two M2 x 8 countersunk screws from below. Snug, not tight.
 5. Route the cable round the cup and over the board edge into J1, contacts down, close the lock.
 6. Drop the ball in. Optional: retainer on, claws left and right of the ball, press until it clicks.
 

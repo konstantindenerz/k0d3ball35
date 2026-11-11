@@ -230,7 +230,7 @@ function build(which) {
   if (ball) {
     const g = layer(t('Trackball cradle (pocket mount)'), -8, '#CFC5B3', { x: bx - 18, y: 4, z: bz });
     g.add(caseMesh('cradle', M.cradle));
-    // M2 x 10 flat heads in the 90 degree countersinks: the flat face sits below the tray underside
+    // M2 x 8 flat heads in the 90 degree countersinks: the flat face sits below the tray underside
     const CS = H.case_stack, headK = (CS.case_screw_head_d - 2.0) / 2;
     for (const [sx, sz] of ball.case_screws) g.add(cyl(CS.case_screw_head_d / 2, headK, M.metal, sx, CS.case_screw_head_z + headK / 2, sz, 1.0));
     for (const a of [60, 180, 300]) {                                                     // 2 mm ZrO2 bearings, 35 deg below the equator

@@ -126,7 +126,7 @@ def test_no_screw_ears():
     for text, name in ((params, "params.scad"), (scad, "cradle.scad"), (readme, "README.md")):
         assert not EAR_RE.search(text), name
     assert "43 x 29" not in readme and "36 mm apart" not in readme
-    assert "M2 x 10" in readme
+    assert "M2 x 8" in readme
 
 
 def test_stack_json_values(stack):
@@ -213,11 +213,11 @@ def test_render_19mm_pocket_stl(tmp_path):
     assert abs(values["footprint_x"] - 2 * cup_r) < 1e-6
     assert abs(values["footprint_y"] - (cup_r + max(-v[:, 1].min(), v[:, 1].max()))) < 0.05
     # The case screws changed in r2.4: with the module beside the ball the floor under the ball is
-    # solid plastic, so the two M2 x 10 go straight up into the cup skirt instead of through
+    # solid plastic, so the two M2 x 8 go straight up into the cup skirt instead of through
     # sensor posts. Check the 1.6 mm pilot is there, well above the floor so a short bore fails.
-    for sy in (-1, 1):
-        axis_y = sy * CASE_SCREW_SP / 2
-        r = np.hypot(v[:, 0], v[:, 1] - axis_y)
+    for sx in (-1, 1):
+        axis_y = sx * CASE_SCREW_SP / 2     # (named axis_y for the messages; the screws sit on x)
+        r = np.hypot(v[:, 0] - axis_y, v[:, 1])
         pilot = v[(np.abs(r - 0.8) < 0.05) & (v[:, 2] >= values["floor_z"] - 1e-6)]
         assert len(pilot) > 0, f"no 1.6 mm screw pilot at y = {axis_y}"
         thread = pilot[:, 2].max() - values["floor_z"]
@@ -275,11 +275,11 @@ def test_floor_dxf_is_housing_with_two_screw_holes():
     assert foot[:, 1].max() > -foot[:, 1].min() + 1.0, "STL leans the other way than the DXF"
     assert abs(foot[:, 1].max() + 0.5 - lean) < 0.6, (foot[:, 1].max(), lean)
     centres = sorted(((b[0] + b[1]) / 2, (b[2] + b[3]) / 2) for b in holes)
-    for (cx, cy), b in zip(centres, sorted(holes, key=lambda b: (b[2] + b[3]) / 2)):
-        assert abs(cx) < 0.05
+    for (cx, cy), b in zip(centres, sorted(holes, key=lambda b: (b[0] + b[1]) / 2)):
+        assert abs(cy) < 0.05, "case screws sit on the x axis through the ball"
         assert abs(b[1] - b[0] - 2.2) < 0.1, "M2 clearance hole"
-    assert abs(centres[0][1] + CASE_SCREW_SP / 2) < 0.05
-    assert abs(centres[1][1] - CASE_SCREW_SP / 2) < 0.05
+    assert abs(centres[0][0] + CASE_SCREW_SP / 2) < 0.05
+    assert abs(centres[1][0] - CASE_SCREW_SP / 2) < 0.05
 
 
 # --------------------------------------------------------------------- r2.4: the tilted module
@@ -405,3 +405,49 @@ def test_layout_pocket_offsets_follow_the_real_tilt(stack, trackball_cfg):
     assert abs(far - v["module_reach"]) <= 0.5, f"corridor ends at {far:.2f}, module at {v['module_reach']:.2f}"
     assert near > 0, "the corridor must start off the ball axis, on the side the module leans to"
     assert near <= v["board_reach"], f"corridor starts at {near:.2f}, past the module's near face"
+
+
+def _seg_line_dist(p0, p1, q, steps=400):
+    """Smallest distance between the segment p0-p1 and the vertical line through q (x, y, ztop),
+    counting only the line below ztop."""
+    best = 1e9
+    for t in np.linspace(0.0, 1.0, steps):
+        p = p0 + t * (p1 - p0)
+        d = math.hypot(p[0] - q[0], p[1] - q[1]) if p[2] <= q[2] else math.dist(p, (q[0], q[1], q[2]))
+        best = min(best, d)
+    return best
+
+
+def test_case_screws_miss_the_bearing_seats():
+    """The M2 case screws run up into the cup skirt; until this check the screw at layout y -10
+    ran straight through the 270 degree bearing seat, and driving it would have pushed the
+    ceramic ball out. Every pilot keeps 0.5 mm of plastic to every seat."""
+    stack = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
+    params = (CRADLE / "params.scad").read_text()
+    scad = SCAD.read_text()
+    az = json.loads(re.search(r"^bearing_az\s*=\s*(\[[^\]]*\])", params, re.M).group(1))
+    elev = math.radians(_param("bearing_elev"))
+    r_in = _param("ball_d") / 2 + _param("ball_gap")
+    seat_d = _param("bearing_d") - 2 * _param("bearing_fit")
+    seat_depth = _param("bearing_d") - _param("ball_gap")
+    pilot_d = _param("screw_pocket_d")
+    zc = stack["ball_centre_z"]
+    floor_z, rim_z = stack["floor_z"], stack["rim_z"]
+    screw_top = floor_z + min(_param("case_screw_len") - 2.0, rim_z - floor_z - 1.0)
+    sp = stack["case_screw_sp"]
+    # where the screws are drawn: on the local x or y axis
+    m = re.search(r"translate\(\[([^\]]*)\]\)\s*\n?\s*cylinder\(d = screw_pocket_d", scad)
+    assert m, "case screw pilots not found in cradle.scad"
+    on_x = m.group(1).split(",")[0].strip() != "0"
+    screws = [(s * sp / 2, 0.0) if on_x else (0.0, s * sp / 2) for s in (-1, 1)]
+    for a in az:
+        u = np.array([math.cos(elev) * math.cos(math.radians(a)), math.cos(elev) * math.sin(math.radians(a)), -math.sin(elev)])
+        c = np.array([0.0, 0.0, zc])
+        p0, p1 = c + u * r_in, c + u * (r_in + seat_depth)
+        for sx, sy in screws:
+            d = _seg_line_dist(p0, p1, (sx, sy, screw_top))
+            assert d >= seat_d / 2 + pilot_d / 2 + 0.5, f"screw at ({sx}, {sy}) cuts the {a} deg bearing seat ({d:.2f} mm)"
+    # and the screw thread (M2, 1.0 radius) keeps 0.5 mm of plastic to the ball cavity at its tip
+    for sx, sy in screws:
+        r_cup = math.sqrt(max(0.0, r_in ** 2 - (zc - screw_top) ** 2))
+        assert math.hypot(sx, sy) - 1.0 - r_cup >= 0.5, f"screw tip breaks into the cup ({math.hypot(sx, sy) - 1.0 - r_cup:.2f} mm)"

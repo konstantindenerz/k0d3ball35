@@ -80,8 +80,8 @@ The cradle stands on the case floor in a well beside the right PCB
 (`spec/08-trackball-module.md`, `hardware/trackball-cradle/README.md`). Its floor footprint is
 the cup skirt plus the sensor sleeve's tab, 24.05 x 27.73 mm with clearance, leaning away from
 the keys; the well around it is the 24 x 29 mm housing box from the layout (centred 2.55 mm off
-the ball towards +y) plus 0.5 mm. Floor at -7.1, two 2.2 mm holes 20 mm apart on the y axis for
-the M2 x 10 case screws from below into the cup skirt. The screws are countersunk flat heads:
+the ball towards +y) plus 0.5 mm. Floor at -7.1, two 2.2 mm holes 20 mm apart on the x axis through the ball for
+the M2 x 8 case screws from below into the cup skirt. The screws are countersunk flat heads:
 a 4.8 mm, 1.3 mm deep 90 degree cone (`case_screw_cs_d`, `case_screw_cs_h`) puts the head 0.2 mm
 inside the flat underside; 1.2 mm of floor is left at the bore.
 
@@ -122,7 +122,7 @@ This order is the only one the hardware allows, and the build guide
 2. Glue the magnets (four in the tray floor, four in the outer lid plate's roof) and pin the two
    lid plates together with the 2 mm rod, see section 7.
 3. Right half: trackball module into the pocket (bearings in, sensor module and cable already
-   in the sleeve), then the two M2 x 10 case screws from below. Do it now because the module is easier to handle and to gauge while the
+   in the sleeve), then the two M2 x 8 case screws from below. Do it now because the module is easier to handle and to gauge while the
    tray is empty - it can also go in, or come out, after the PCB is screwed down: it only moves
    vertically past the square notch corner (section 3).
 4. Cell onto the back of the PCB in the dashed bay, plug into J3. The battery well is fully
