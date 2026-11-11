@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: MIT
-"""Write docs/img/share-card.jpg, the 1200 x 630 preview a link to the project page unfolds into.
+"""Write docs/img/share-card-cafe.jpg, the 1200 x 630 preview a link to the project page unfolds into.
 
 Without it a link posted to LinkedIn, Mastodon, Slack or Discord is a bare URL: those scrapers
 read `og:image` out of the page head and nothing else, they do not run JavaScript and they do not
@@ -28,25 +28,29 @@ from pathlib import Path
 from k0d3 import logo
 from k0d3.geometry import REPO
 
-OUT = REPO / "docs" / "img" / "share-card.jpg"
+# A new card gets a new name: LinkedIn, Slack and co. cache og:image by URL for days, so
+# overwriting the old file would keep showing the old picture in fresh link previews.
+OUT = REPO / "docs" / "img" / "share-card-cafe.jpg"
 RENDER = REPO / "spec" / "images" / "concept-render.png"
 
 SIZE = (1200, 630)             # the size every scraper expects; og:image:width/height say so too
-MARGIN = 64
+PAD = 48                       # inner margin of the text panel
+PHOTO_W = 840                  # the 4:3 render at the card's height of 630
+PANEL = "#11100E"
 INK = "#F7F5F0"
 MUTED = "#D8D2C6"
 SANS = "Helvetica,Arial,sans-serif"
 
 TITLE = "k0d3ball35"
-SUBTITLE = "Wireless split keyboard · 35 Choc keys · 19 mm trackball"
-BYLINE = "Designed and built by Konstantin Denerz"
+SUBTITLE = ("Wireless split keyboard", "35 Choc keys", "19 mm trackball")
+BYLINE = ("Designed and built by", "Konstantin Denerz")
 
 
-def cover(src: Path, size: tuple[int, int]) -> str:
+def fit(src: Path, size: tuple[int, int]) -> str:
     """`src` scaled to cover `size` and centre-cropped, as a data URI.
 
-    Cropping here rather than in the SVG keeps the embedded image at the card's own resolution:
-    letting the renderer scale a 1536 x 1024 original would carry about three times the pixels
+    Scaling here rather than in the SVG keeps the embedded image at the card's own resolution:
+    letting the renderer scale the 1448 x 1086 original would carry about three times the pixels
     into the PNG for no visible gain.
     """
     from PIL import Image
@@ -62,7 +66,7 @@ def cover(src: Path, size: tuple[int, int]) -> str:
 
 
 def wordmark(cell: float, x: float, y: float) -> str:
-    """The owner wordmark, baseline-left at (x, y), from the same grid as the case engraving."""
+    """The owner wordmark, top-left at (x, y), from the same grid as the case engraving."""
     w, h = logo.size(cell)
     paths = []
     for poly in logo.polygons(cell):
@@ -71,29 +75,36 @@ def wordmark(cell: float, x: float, y: float) -> str:
     return "".join(paths)
 
 
+def lines(x: float, y: float, step: float, size: int, weight: int, fill: str, texts) -> str:
+    return "".join(f'<text x="{x}" y="{y + i * step:.0f}" font-family="{SANS}" font-size="{size}" '
+                   f'font-weight="{weight}" fill="{fill}">{t}</text>' for i, t in enumerate(texts))
+
+
 def build() -> str:
+    """Text panel on the left, the whole render on the right.
+
+    The render is 4:3 and the keyboard fills its lower half, so a full-bleed 1200 x 630 crop would
+    either cut the scene or put the title over the keys. At the card's height the render is
+    PHOTO_W wide; the rest is a plain panel the text cannot hide anything on.
+    """
     w, h = SIZE
-    img = cover(RENDER, SIZE)
-    mark_cell = 3.2
-    mark_w, mark_h = logo.size(mark_cell)
-    base = h - MARGIN
+    photo_x = w - PHOTO_W
+    mark_cell = 2.6
+    _, mark_h = logo.size(mark_cell)
     return f"""<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" \
 width="{w}" height="{h}" viewBox="0 0 {w} {h}">
-<defs><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
-  <stop offset="0" stop-color="#11100E" stop-opacity="0"/>
-  <stop offset="0.5" stop-color="#11100E" stop-opacity="0.5"/>
-  <stop offset="0.78" stop-color="#11100E" stop-opacity="0.86"/>
-  <stop offset="1" stop-color="#11100E" stop-opacity="0.94"/>
+<defs><linearGradient id="fade" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0" stop-color="{PANEL}" stop-opacity="1"/>
+  <stop offset="1" stop-color="{PANEL}" stop-opacity="0"/>
 </linearGradient></defs>
-<image x="0" y="0" width="{w}" height="{h}" xlink:href="{img}"/>
-<rect x="0" y="{h * 0.40:.0f}" width="{w}" height="{h * 0.60:.0f}" fill="url(#fade)"/>
-<text x="{MARGIN}" y="{base - 96:.0f}" font-family="{SANS}" font-size="78" font-weight="700" \
-fill="{INK}" letter-spacing="-1.5">{TITLE}</text>
-<text x="{MARGIN}" y="{base - 52:.0f}" font-family="{SANS}" font-size="27" font-weight="500" \
-fill="{INK}">{SUBTITLE}</text>
-<text x="{MARGIN}" y="{base - 8:.0f}" font-family="{SANS}" font-size="22" font-weight="400" \
-fill="{MUTED}">{BYLINE}</text>
-{wordmark(mark_cell, w - MARGIN - mark_w, base - mark_h - 4)}
+<rect width="{w}" height="{h}" fill="{PANEL}"/>
+<image x="{photo_x}" y="0" width="{PHOTO_W}" height="{h}" xlink:href="{fit(RENDER, (PHOTO_W, h))}"/>
+<rect x="{photo_x}" y="0" width="60" height="{h}" fill="url(#fade)"/>
+<text x="{PAD}" y="150" font-family="{SANS}" font-size="58" font-weight="700" fill="{INK}" \
+letter-spacing="-1.5">{TITLE}</text>
+{lines(PAD, 200, 37, 27, 500, INK, SUBTITLE)}
+{lines(PAD, 318, 28, 22, 400, MUTED, BYLINE)}
+{wordmark(mark_cell, PAD, h - PAD - mark_h)}
 </svg>
 """
 

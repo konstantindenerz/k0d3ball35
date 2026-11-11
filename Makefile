@@ -104,7 +104,7 @@ site-serve: ## Serve the page with the working-tree files (SITE_HOST=0.0.0.0 for
 	@echo "http://localhost:$(SITE_PORT)/docs/"
 	$(PY) scripts/site_serve.py $(SITE_PORT) $(SITE_HOST)
 
-share-card: ## Regenerate docs/img/share-card.jpg (the link preview of the project page)
+share-card: ## Regenerate docs/img/share-card-cafe.jpg (the link preview of the project page)
 	$(PY) scripts/gen_share_card.py
 
 print: print-check print-plots ## Everything to print on paper before the order

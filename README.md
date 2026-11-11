@@ -10,9 +10,9 @@ Keyball-inspired column stagger and thumb arc, Kailh Choc V1 hot-swap switches, 
 on each half, ZMK firmware, two flat angular PCBs (18 keys left, 17 keys right) and the ball in a
 case pocket right beside the thumb keys.
 
-![k0d3ball35 concept render: both halves on a desk, trackball in the right half's case pocket](spec/images/concept-render.png)
+![k0d3ball35 concept render: both halves on a café table, trackball in the right half's case pocket](spec/images/concept-render.png)
 
-*Concept render, not a photo of a finished build — generated from the prompt below.*
+*Concept render, not a photo of a finished build.*
 
 > ## ⚠️ Work in progress — do not build or order parts from this repository
 >

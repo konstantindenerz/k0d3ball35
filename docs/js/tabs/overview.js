@@ -38,7 +38,7 @@ export async function mount(section, ctx) {
         <p class="ov-views">${t('From the repository files:')} ${views}</p>
       </div>
       <figure class="ov-fig">
-        <img src="${assetUrl(HERO)}" alt="${esc(t('Both halves of the keyboard on a desk: light grey keys, orange thumb keys, a white ball in a pocket on the right half'))}" width="1536" height="1024" decoding="async">
+        <img src="${assetUrl(HERO)}" alt="${esc(t('Both halves of the keyboard on a café table: light grey keys, orange thumb keys, a white ball in a pocket on the right half'))}" width="1448" height="1086" decoding="async">
         <figcaption>${t('Concept render, not a photo.')}</figcaption>
       </figure>
     </header>
