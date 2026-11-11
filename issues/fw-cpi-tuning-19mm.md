@@ -27,3 +27,11 @@ value, the scroll divisor and the auto mouse layer movement threshold must be fo
 ## Notes
 
 Renamed from fw-cpi-tuning-25mm on 2026-11-06.
+
+r2.4 (PAW3222 module tilted 65 degrees beside the ball): the sensor sees the ball 25 degrees
+below the equator, so thumb motion across the tilt plane (screen X) reaches it at only
+cos 65 = 0.42 of the speed of motion along it (screen Y). The starting point is
+`res-cpi = <1444>` with `zip_y_scaler 11 26` (`BALL_TILT` in `k0d3ball35_right.overlay`),
+about 610 counts per inch on both axes. Check first whether the sensor's X axis really runs
+across the tilt plane: if the cursor is fast up/down and slow sideways, move the scale to
+`zip_x_scaler`. The driver only accepts multiples of 38 CPI between 608 and 4826.
