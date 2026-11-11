@@ -176,6 +176,7 @@ ORDER_PHASES = [
     ("cell onto the PCB", r"cell onto the back of the pcb"),
     ("PCB into the tray", r"pcb into the tray"),
     ("controller and box cap", r"controller on"),
+    ("PCB guard before the switches", r"pcb guard"),
     ("keycaps", r"keycaps on"),
     ("FFC into J1", r"ffc over the board edge into j1"),
     ("ball", r"ball in(to)?\b"),

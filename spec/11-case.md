@@ -19,6 +19,7 @@ together and how the wordmark is engraved into them. Tickets: [mech-case](../iss
 | Lid, outer plate | `lid-outer-left.stl`, `lid-outer-right.stl` | pinky-side half of the transport cover: the four roof magnets, the even hinge knuckles including both ends; as a foot it lies under the controller half |
 | Lid, inner plate | `lid-inner-left.stl`, `lid-inner-right.stl` | controller-notch and thumb-side half: the odd knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot |
 | Lid, closed pair | `lid-left.stl`, `lid-right.stl` | both plates joined by a 2 mm steel pin, held on top by an inner lip; for the exploded view, not for printing |
+| PCB guard | `guard-left.stl`, `guard-right.stl` (`dxf/guard-*.dxf` for a laser-cut sheet) | 0.8 mm plate on the PCB top between the switches, like the Keyball39 cover plate; held by the switch flanges, no screws, no extra height (section 5a) |
 | Pocket cover | `pocket-cover-right.stl` | flush 1.2 mm plate over the cradle opening, a bezel over the cup rim with a 20.55 mm hole (0.75 mm round the ball), two M2 x 6 countersunk screws |
 | Retainer clip | `pocket-clip-right.stl` | optional: C-ring on the cover with two claws over the ball, two snap pins into the cover; keeps the ball in upside down |
 | Pocket test | `pocket-test-right.stl` | the 50 x 50 mm corner of the right tray around the ball, for the first test print with the cradle |
@@ -61,6 +62,7 @@ z = 0 is the PCB top, from `hardware/case/stack.json`:
 | Pocket floor | - | -7.1 | the cradle's `floor_z`; 2.5 mm of floor under it for the countersunk screws |
 | Key floor | -4.6 | -4.6 | hot-swap sockets 1.8 mm, diodes 1.1 mm, air |
 | PCB | -1.6 to 0 | -1.6 to 0 | on 3.0 mm standoffs |
+| PCB guard | 0 to +0.8 | 0 to +0.8 | 1.2 mm under a pressed keycap skirt (+2.0) |
 | Pocket wall top | - | +2.9 | 0.5 mm under the cup rim (+3.4), so the thumb reaches the ball's equator |
 | Rim | +5.0 | +5.0 | flush with the keycap skirts |
 | Controller box cap, under / top | +6.7 / +8.7 | +6.7 / +8.7 | controller top +5.7 plus 1 mm |
@@ -132,17 +134,46 @@ This order is the only one the hardware allows, and the build guide
 4. Cell onto the back of the PCB in the dashed bay, plug into J3. The battery well is fully
    covered by the board, so the cell travels with the PCB and cannot go in afterwards.
 5. PCB into the tray over the cup, keycaps off, five M2 x 5 or x 6 machine screws from the top.
-6. Controller on, box cap on, two M2 screws. Keycaps on.
-7. Right half: fold the FFC over the board edge into J1 on the key side, close the lock. Last
+6. Controller on, box cap on, two M2 screws.
+7. PCB guard onto the PCB top (holes over the screw heads), then the switches through it into
+   the sockets: their flanges hold it down. Keycaps on.
+8. Right half: fold the FFC over the board edge into J1 on the key side, close the lock. Last
    connection of the build, and the only one you can reach with everything assembled.
-8. Right half: pocket cover on, two M2 x 6 countersunk screws from the top. Ball in through
+9. Right half: pocket cover on, two M2 x 6 countersunk screws from the top. Ball in through
    the bezel, optional retainer clip on, rubber feet on, lid on.
 
 Service: the trackball module comes out without touching keycaps or PCB. Take the pocket cover
 off (two screws from the top), open J1's lock, pull the cable out, undo the two screws from below
 and lift the module out of the pocket. Everything
 else (cell, controller, switches) needs the five PCB screws out, which means the keycaps come off
-first: their skirts overhang the screw heads by 1.5 mm.
+first: their skirts overhang the screw heads by 1.5 mm. The guard has holes over the screw
+heads, so the screws come out without it; the guard itself only comes off with the switches.
+
+### 5a. PCB guard
+
+The Keyball39 has a plate over the PCB between the switches. Here it is a printed 0.8 mm plate
+(`guard`) that lies directly on the PCB top. It adds no height because it only fills air that is
+already there: the keycap skirt sits at +5.0 and bottoms out at +2.0 after the 3 mm travel, and
+nothing else is on the PCB top between the switches (diodes and sockets are on the bottom
+face). That leaves 1.2 mm over the guard (`guard_min_air` 0.8 is the asserted minimum). Rim,
+keycap top and lid stay where they are.
+
+- Cut-outs: a 14.2 mm square per switch (13.8 mm lower housing plus `guard_fit` 0.2), rotated
+  with the thumb keys. The 15 mm upper housing flange reaches over the edge and holds the guard
+  down, so it needs no screws.
+- Holes of 4.4 mm over the five PCB screws: the heads keep sitting on the PCB, because a head
+  on top of the guard would stand above a pressed keycap.
+- Left open: the controller box, J1 and the FFC path, the cradle opening.
+- One piece: the screw holes cut some of the webs between the keys. `scripts/gen_case.py`
+  (`guard_polygon`) therefore cuts every web narrower than `guard_min_web` (1.2 mm), keeps
+  the largest piece and grows it back, so no loose strip can end up in the case. The outline
+  is in `data.scad`, the fits in `params.scad`.
+- Since the keycaps are 17.5 x 16.5 on an 18 x 17 pitch, the guard mostly shows at the thumb
+  keys and along the edge. What it does is keep dust and crumbs off the board and cover the top
+  pads of the reversible footprints.
+- Print it flat, PLA or PETG, 0.2 mm layers. Or cut it from 0.8 mm acrylic or FR4 with
+  `dxf/guard-*.dxf`. Do not make it thicker than 1.2 mm without measuring a pressed keycap
+  first (`cap_skirt_z`, `switch_travel`).
 
 ## 6. Printing
 
@@ -274,5 +305,9 @@ Set `logo_on_cap = false` for a plain case.
 - The kickstand reaches about 54 mm (right; 57 left) inward beyond the inner wall; the two
   halves need that gap between them.
 - First print: pocket test, then the right tray, then the four lid plates.
+- PCB guard: `cap_skirt_z` 5.0 and `switch_travel` 3.0 come from the keycap model and the Choc
+  V1 data. Press a real MBK-capped switch all the way down and check that the skirt clears
+  the guard (1.2 mm expected). Check also that the flange holds the guard without lifting the
+  switch out of its socket.
 - The supplied wordmark is cropped at the top; the frame foot is mirrored in to close it. If
   the owner supplies the uncropped original, drop `close_frame` in `scripts/gen_logo.py`.

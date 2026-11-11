@@ -355,8 +355,8 @@ Checkpoint: ball spins freely, lens distance 2.3 to 2.5 mm, cable without a crea
 ## 12. Case and closing up
 
 Printed parts, heights and the parameter list are in [printed case](11-case.md) and
-[hardware/case/README.md](../hardware/case/README.md). Four parts per half: tray, controller box
-cap and the two lid plates, which a 2 mm steel pin joins into the hinged lid. This chapter is the order in which they go together; it is the only order the
+[hardware/case/README.md](../hardware/case/README.md). Five parts per half: tray, controller box
+cap, PCB guard and the two lid plates, which a 2 mm steel pin joins into the hinged lid. This chapter is the order in which they go together; it is the only order the
 hardware allows, so do not improvise.
 
 ![Exploded view of one half](images/img-case-exploded.png)
@@ -379,7 +379,9 @@ hardware allows, so do not improvise.
 6. Controller onto its sockets, box cap on, two M2 screws into the bosses - the engraved
    wordmark faces up. USB-C in its opening, the slide switch lever in its slot, the reset button
    over its pin hole in the floor.
-7. Keycaps on (chapter 13).
+7. Lay the PCB guard onto the PCB top, the holes over the five screw heads and the open corner
+   over the controller box and J1. It lies loose until the switches go in; their flanges hold
+   it. Switches and keycaps on (chapter 13).
 8. Right half: fold the FFC over the board edge into J1 on the key side and close the lock
    (chapter 11, step 6). This is the last connection of the build and the only one you can reach
    with everything assembled.
@@ -397,7 +399,8 @@ hardware allows, so do not improvise.
 Service, in the other direction: the trackball module comes out with the keycaps and the PCB in
 place - pocket cover off (two screws from the top), open J1's lock, pull the cable, undo the two
 screws from below, lift the module out.
-Anything else (cell, controller, a switch) means keycaps off and the five PCB screws out.
+Anything else (cell, controller, a switch) means keycaps off and the five PCB screws out. The
+guard comes off only with the switches out.
 
 Checkpoint: both halves closed, no part under strain, lid holds on top and under the half, USB-C
 and the switch reachable, ball spins freely.
