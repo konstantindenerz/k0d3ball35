@@ -31,7 +31,7 @@ The 8 mm module allows 65 degrees.
 ## 2. Connector and cable
 
 Right PCB connector J1: Hirose FH12-6S-0.5SH (or the pin-compatible LCSC part), bottom contact,
-on the **key side** of the right PCB at (-20.6, +47.0). Its pin order follows the module, pin for
+on the **key side** of the right PCB at (-20.6, +47). Its pin order follows the module, pin for
 pin:
 
 | Pin | 1 | 2 | 3 | 4 | 5 | 6 |

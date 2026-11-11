@@ -25,7 +25,7 @@ phase has to provide that pocket. All numbers come from `hardware/layout/output/
 | Cradle floor footprint | cup skirt plus tilted module sleeve, 24.05 x 26.84 mm with 0.5 mm clearance, leaning towards layout +y (away from the keys); `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf` |
 | Pocket well | the 24 x 29 mm housing box (centred 2.55 mm off the ball towards +y) plus 0.5 mm; it contains the footprint |
 | Case screws | 2x M2 x 10 countersunk self-tapping from below through the floor into the cup skirt, 20 mm apart on the y axis, 2.2 mm holes with a 4.8 mm, 1.3 mm deep countersink |
-| Cable | the FFC leaves the sleeve below the PCB, climbs the gap between cup and notch, runs round the cup and folds over the board edge into J1 at (-20.6, +47.0). The tray needs no cable channel |
+| Cable | the FFC leaves the sleeve below the PCB, climbs the gap between cup and notch, runs round the cup and folds over the board edge into J1 at (-20.6, +47). The tray needs no cable channel |
 | Cup | 23.05 mm outer diameter, rim at +3.425 mm (1 mm below the equator), nothing above the rim |
 
 The cup is open: the ball is held by gravity and, in transport, by the case lid (`mech-case-lid`)

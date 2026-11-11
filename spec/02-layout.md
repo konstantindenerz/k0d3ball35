@@ -116,7 +116,7 @@ notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 | JST J3 | (-56, 44) | default battery connection, 6 mm tall, bottom side, below the bay inside the same well | both |
 | Battery pads J2 | (-57, 50.5) | 2.54 mm pitch, B+ is the square pad, solder alternative to J3 | both |
 | Test pads TP1.. | left: row from (-69.5, 54.5) along x; right: from (-66, 45.0) along y, 2.5 mm pitch | right: D0, D1, D2, D3, D9; left: the same plus D10, D14, D15, D16 | both |
-| FPC J1 | (-20.6, 47.0) | FH12-6S, **key side**, below the middle column's bottom key; the cable climbs beside the cup, folds over the notch edge into the mouth (0.5 mm from the edge) and the lock stays reachable when assembled | right only |
+| FPC J1 | (-20.6, +47) | FH12-6S, **key side**, below the middle column's bottom key; the cable climbs beside the cup, folds over the notch edge into the mouth (0.5 mm from the edge) and the lock stays reachable when assembled | right only |
 
 | Owner wordmark | centre (-35, 48.4), 13.9 x 4.7 mm, back silkscreen | the `kode` mark from `spec/images/logo.svg`, turned 90 degrees, under the thumb bridge; 0.26 mm strokes; `silkscreen.logo` in the layout yaml | both |
 

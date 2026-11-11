@@ -96,7 +96,7 @@ pairing is pin for pin, so J1 carries the module's own order. The PCBs were not 
 module was chosen, so this cost nothing but a pad relabelling
 (`issues/hw-ffc-pin-order-verification.md`).
 
-J1 sits on the **key side** of the right PCB at (-20.6, +47.0), below the middle column's bottom
+J1 sits on the **key side** of the right PCB at (-20.6, +47), below the middle column's bottom
 key and 1.05 mm clear of its keycap, with the cable mouth 0.5 mm short of the notch edge. The
 cable climbs the gap between the cradle cup and the notch, folds over the board edge and goes
 into the mouth from +y, so the lock stays reachable with the keyboard assembled and the trackball
