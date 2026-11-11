@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // Trackball tab: the cradle of each variant in section, with the ball and its three bearings drawn
-// from stack.json, the optional retainer and the sensor board GLB in place.
+// from stack.json and the optional retainer.
 // Data: docs/data/parts.json (docs/gen/parts.py). Route: #trackball/<variant>, e.g. #trackball/25mm-pocket.
 //
 // Frame: the cradle STLs are in the print frame (mm, z = 0 on the main PCB top, ball centre on the
@@ -13,7 +13,6 @@ import { ModelViewer, parseSTL } from '../viewer.js';
 import { loadData, fetchBuffer, assetUrl, githubUrl, downloadFile, fmt, esc } from '../assets.js';
 import { t } from '../i18n.js';
 
-const SENSOR_GLB = 'hardware/sensor-pcb/renders/k0d3ball35-sensor.glb';
 const BEARING_D = 2.0;                 // ZrO2 balls, hardware/trackball-cradle/README.md "Bearings"
 const BEARING_AZ = [60, 180, 300];
 const views = () => [['iso', t('Iso')], ['front', t('Front')], ['top', t('Top')], ['bottom', t('Bottom')], ['side', t('Side')]];
@@ -22,12 +21,10 @@ const signed = (v, d = 2) => (v == null ? '-' : `${v >= 0 ? '+' : '−'}${fmt(Ma
 
 let root, viewer, data, ctx;
 let variant = null;
-const objs = { cradle: null, ball: null, retainer: null, sensor: null };
+const objs = { cradle: null, ball: null, retainer: null };
 const geomCache = new Map();
-let sensorState = 'idle';               // idle | loading | ok | missing | error
-let sensorRoot = null;                  // the placed GLB (kept across variants, the board is the same)
 let token = 0;
-const state = { view: 'iso', ball: true, retainer: false, sensor: true, clip: true, at: 0, flip: false };
+const state = { view: 'iso', ball: true, retainer: false, clip: true, at: 0, flip: false };
 
 const variantById = (id) => data.trackball.variants.find((v) => v.id === id);
 const part = (id) => data.parts.find((p) => p.id === id);
@@ -89,102 +86,17 @@ function ballObject(s) {
   return g;
 }
 
-/** Sensor board GLB (KiCad export) placed in the cradle frame. loadGLB turns it into KiCad's 3D
- *  frame (x right, y = -pcb y, z up from the B face). The cradle STL is in the print frame
- *  (x outward, y away from the user, z up), and the board hangs component side down with its lens
- *  ("BALL SIDE", B face) against the housing face at sensor_pcb_plane_z. That is a half turn about
- *  y through the board centre (x -> -x, z -> -z), which puts J1 at local x = -7.6 in front of the
- *  cable channel (cable_channel_x in stack.json; tests/test_sensor_pcb_vs_cradle.py checks the
- *  same in the layout frame). A real board, so a rotation: no mirror. */
-function placeSensor(glbRoot, planeZ) {
-  // the board substrate: the thinnest mesh that spans more than 20 mm on x and y and is over 1 mm
-  // thick (copper and soldermask layers span the board too, but are thicker or flat)
-  glbRoot.updateMatrixWorld(true);
-  let box = null;
-  glbRoot.traverse((o) => {
-    if (!o.isMesh) return;
-    const b = new THREE.Box3().setFromObject(o);
-    const sz = b.getSize(new THREE.Vector3());
-    if (sz.x > 20 && sz.y > 20 && sz.z > 1 && (!box || sz.z < box.getSize(new THREE.Vector3()).z)) box = b;
-  });
-  if (!box) box = new THREE.Box3().setFromObject(glbRoot);
-  const c = box.getCenter(new THREE.Vector3());
-  const wrap = new THREE.Group();
-  wrap.name = 'sensor';
-  wrap.add(glbRoot);
-  wrap.scale.set(-1, 1, -1);
-  // the board centre c goes to (0, 0): x and z are negated by the turn, y is not
-  wrap.position.set(c.x, -c.y, planeZ + box.min.z);
-  return wrap;
-}
-
-/** U1 (PMW3610) and its LM18-LSI lens have no 3D model in the board file. A stand-in from the
- *  numbers in hardware/trackball-cradle/README.md and spec/08: the sensor body fills the
- *  16.96 x 8.60 mm board cutout (long side along the 26 mm board side, x), protrudes 0.7 mm on the
- *  lens side and 1.65 mm past the component side; the lens is drawn as a 9 mm disc (the aperture
- *  hole in the cup) at the lens reference plane, lens_reference_plane_dist under the ball. */
-function sensorStandIn(s) {
-  const g = new THREE.Group();
-  g.name = 'sensor-stand-in';
-  const plane = s.sensor_pcb_plane_z;
-  const bodyTop = plane + 0.7, bodyBottom = plane - 1.6 - 1.65;
-  const body = solid(new THREE.BoxGeometry(16.96, 8.6, bodyTop - bodyBottom), '--tb-sensor', '#2B2F2C', '--tb-sensor', '#2B2F2C');
-  body.position.set(0, 0, (bodyTop + bodyBottom) / 2);
-  const lensZ = s.ball_bottom_z - s.lens_reference_plane_dist;
-  const lens = solid(new THREE.CylinderGeometry(4.5, 4.5, Math.max(0.3, lensZ - bodyTop), 48).rotateX(Math.PI / 2), '--tb-lens', '#A9C6CF', '--tb-lens', '#A9C6CF');
-  lens.position.set(0, 0, (lensZ + bodyTop) / 2);
-  g.add(body, lens);
-  return g;
-}
-
-async function ensureSensor(s) {
-  if (sensorRoot) {
-    // same board for every variant; only the stand-in follows the variant's stack numbers
-    const old = sensorRoot.getObjectByName('sensor-stand-in');
-    sensorRoot.remove(old);
-    old.traverse((o) => { o.geometry?.dispose(); o.material?.dispose?.(); });
-    sensorRoot.add(sensorStandIn(s));
-    return sensorRoot;
-  }
-  if (sensorState === 'loading' || sensorState === 'missing') return null;
-  sensorState = 'loading';
-  renderSensorNote();
-  try {
-    const glb = await viewer.loadGLB(SENSOR_GLB, { add: false, status: false });
-    sensorRoot = new THREE.Group();
-    sensorRoot.name = 'sensor';
-    sensorRoot.add(placeSensor(glb, s.sensor_pcb_plane_z), sensorStandIn(s));
-    sensorState = 'ok';
-  } catch (e) {
-    sensorState = e.status === 404 ? 'missing' : 'error';
-    if (sensorState === 'error') console.warn(e);
-  }
-  renderSensorNote();
-  return sensorRoot;
-}
-
 function detach(key) {
   const o = objs[key];
   if (!o) return;
-  if (key === 'sensor') {           // keep the GLB: same board for every variant
-    viewer.content.remove(o);
-    viewer.requestRender();
-  } else {
-    viewer.remove(o);
-  }
+  viewer.remove(o);
   objs[key] = null;
 }
 
 function attach(key, obj) {
   detach(key);
   objs[key] = obj;
-  if (obj) {
-    if (key === 'sensor') {
-      // materials were made when the GLB loaded: give them the current section plane
-      obj.traverse((o) => { if (o.isMesh) [].concat(o.material).forEach((m) => { m.clippingPlanes = viewer.clip.on ? [viewer.clipPlane] : []; m.needsUpdate = true; }); });
-    }
-    viewer.add(obj);
-  }
+  if (obj) viewer.add(obj);
 }
 
 async function sync({ refit = false } = {}) {
@@ -220,12 +132,6 @@ async function sync({ refit = false } = {}) {
     if (my === token) viewer.showError(e.message);
     return;
   }
-
-  if (state.sensor) {
-    const sr = await ensureSensor(s);
-    if (my !== token) return;
-    if (sr && state.sensor) attach('sensor', sr);
-  } else detach('sensor');
 
   if (refit) frame(state.view);
   applyClip();
@@ -282,7 +188,7 @@ function renderPanel() {
       [t('Rim below the ball equator'), `${fmt(s.rim_below_equator, 2)} mm`],
       [t('Bearing contact'), `${signed(s.bearing_contact_z)} mm`, t('Where the ball touches the three 2 mm ceramic bearings, 35° below the equator')],
       [t('Ball bottom'), `${signed(s.ball_bottom_z)} mm`],
-      [t('Ball surface to lens reference plane'), `${fmt(s.lens_reference_plane_dist, 2)} mm`, t('PMW3610 datasheet: 2.4 mm, 2.2 to 2.6')],
+      [t('Ball surface to lens reference plane'), `${fmt(s.lens_reference_plane_dist, 2)} mm`, t('Nominal, not yet measured on the PAW3222 module')],
       [t('Sensor board, lens-side face'), `${signed(s.sensor_pcb_plane_z)} mm`],
       floorRow,
     ])}
@@ -320,28 +226,12 @@ function renderPanel() {
   root.querySelector('.tb-previews').hidden = !previews;
 }
 
-function renderSensorNote() {
-  const n = root.querySelector('.tb-sensor-note');
-  const msg = {
-    idle: '', ok: '',
-    loading: t('Loading the sensor board model…'),
-    missing: t('The sensor board model (k0d3ball35-sensor.glb) is not in this branch yet; it appears once the board export is merged.'),
-    error: t('The sensor board model did not load. Reload the page to try again.'),
-  }[sensorState];
-  n.textContent = msg;
-  n.hidden = !msg;
-  const box = root.querySelector('input[data-toggle="sensor"]');
-  box.disabled = sensorState === 'missing';
-  box.closest('label').classList.toggle('tb-off', sensorState === 'missing');
-}
-
 function updateHud() {
   const v = variantById(variant);
   const files = [part(v.cradle).path.split('/').pop()];
   if (objs.retainer) files.push(part(v.retainer).path.split('/').pop());
-  if (objs.sensor) files.push('k0d3ball35-sensor.glb');
   root.querySelector('.tb-files').textContent = files.join(' + ');
-  const shown = [t('cradle'), objs.ball && t('ball with its three bearings'), objs.retainer && t('retainer'), objs.sensor && t('sensor board')].filter(Boolean);
+  const shown = [t('cradle'), objs.ball && t('ball with its three bearings'), objs.retainer && t('retainer')].filter(Boolean);
   const aria = { variant: t(v.label), parts: shown.join(', ') };
   viewer.canvas.setAttribute('aria-label', state.clip
     ? t('3D model, {variant} variant: {parts}, cut through the ball centre. Drag to rotate, scroll to zoom.', aria)
@@ -396,7 +286,7 @@ export async function mount(section, c) {
       <header>
         <p class="eyebrow">${t('Sheet 4 · trackball module')}</p>
         <h1 class="display">${t('Trackball')}</h1>
-        <p class="tb-lede">${t('A printed cup on three ceramic bearings with the PMW3610 sensor board straight underneath, standing on the case floor beside the right PCB. The view is cut through the ball centre; the ball and the bearings are drawn from the stack numbers, the rest are the real files.')}</p>
+        <p class="tb-lede">${t('A printed cup on three ceramic bearings for the 19.05 mm ball, with a bought PAW3222 sensor module tilted beside it, on the case floor beside the right PCB. The view is cut through the ball centre; ball and bearings are drawn from the stack numbers, the rest are the real files.')}</p>
       </header>
       <section>
         <h2 id="tb-variant-h">${t('Variant')}</h2>
@@ -408,10 +298,7 @@ export async function mount(section, c) {
         <div class="toggles">
           <label><input type="checkbox" data-toggle="ball" checked> ${t('Ball and its three bearings')}</label>
           <label><input type="checkbox" data-toggle="retainer"> ${t('Retainer (optional clip-on ring)')}</label>
-          <label><input type="checkbox" data-toggle="sensor" checked> ${t('Sensor board under the cup')}</label>
         </div>
-        <p class="tb-hint">${t('The board is the KiCad export. The sensor has no 3D model there, so its body (dark box) and lens (blue disc at the lens reference plane) are drawn from the datasheet numbers.')}</p>
-        <p class="tb-sensor-note tb-hint" hidden></p>
       </section>
       <section class="tb-stack"></section>
       <section class="tb-retention"></section>

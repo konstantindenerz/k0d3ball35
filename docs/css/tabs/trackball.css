@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: MIT
-   Trackball tab: the cradle in section with ball, bearings, retainer and sensor board. Layout, panel,
+   Trackball tab: the cradle in section with ball, bearings, and retainer. Layout, panel,
    .seg, .toggles, .dims, .btn and the viewer overlays come from site.css. */
 
 :root {
@@ -9,8 +9,6 @@
   --tb-ball-cut: #8A6418;  /* the ball where the section plane cuts it */
   --tb-bearing: #F2F0E8;   /* ZrO2 bearings */
   --tb-cut: #1E5A3E;       /* section faces */
-  --tb-sensor: #2B2F2C;    /* stand-in for the PMW3610 body (no 3D model in the board file) */
-  --tb-lens: #A9C6CF;      /* stand-in for the LM18-LSI lens */
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) { --tb-cradle: #9AA59D; --tb-retainer: #5E6C63; --tb-ball: #D5A640; --tb-ball-cut: #8E6C22; --tb-bearing: #E6E4DC; --tb-cut: #5FB487; }
