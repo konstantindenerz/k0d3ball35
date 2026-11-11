@@ -4,7 +4,7 @@
     "19mm-pocket": {
       "ball_d": 19.05,
       "sensor_angle": 65.0,
-      "window_az": 90.0,
+      "window_az": 0.0,
       "ball_centre_z": 4.425,
       "ball_top_above_pcb_top": 13.95,
       "ball_bottom_z": -5.1,

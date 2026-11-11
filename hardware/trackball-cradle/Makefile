@@ -10,7 +10,7 @@ OSC       = $(OPENSCAD) --backend manifold
 PYTHON   ?= python3
 # cameras look at the exported (print frame) scene: y and the turn about z are those of the
 # layout-frame view mirrored in y (target y -> -y, rot_z -> 180 - rot_z)
-CAM_SEC   = --camera=0,0,3,80,0,270,110 --imgsize=1200,900 --colorscheme=Tomorrow
+CAM_SEC   = --camera=0,0,3,80,0,180,110 --imgsize=1200,900 --colorscheme=Tomorrow
 CAM_ASM   = --camera=0,0,5,55,0,145,170 --imgsize=1200,900 --colorscheme=Tomorrow
 CAM_BODY  = --camera=0,0,0,55,0,325,90 --imgsize=1200,900 --colorscheme=Tomorrow
 POCKET19  = -D ball_d=19.05

@@ -20,13 +20,10 @@ bearing_d       = 2.0;     // ZrO2 / Si3N4 ceramic ball diameter
 bearing_fit     = 0.05;    // press-fit interference per side (seat = bearing_d - 2*fit)
 bearing_depth   = 0.6;     // how far the bearing centre sits behind the cup inner surface
 bearing_elev    = 35;      // degrees below the equator where the bearings touch the ball
-bearing_az      = [30, 150, 270];  // azimuths (deg). Rotated 30 deg in r2.4 so the sensor window is
-                                   // free of bearing bosses. CAREFUL with the sign: sensor_frame()
-                                   // turns by sensor_az and then tilts about the LOCAL y axis, so
-                                   // the window ends up at layout azimuth -sensor_az = 90, not at
-                                   // sensor_az. A first attempt put the bosses at [90, 210, 330]
-                                   // and dropped a bearing seat straight into the window; STACK
-                                   // window_az echoes the real value so nothing has to re-derive it.
+bearing_az      = [60, 180, 300];  // azimuths (deg, layout frame). The sensor window sits at 0 (+x), so
+                                   // the bosses stay 60 degrees either side of it and one sits
+                                   // straight on the thumb side. STACK window_az echoes the window's
+                                   // real azimuth so nothing has to re-derive it from sensor_az.
 
 // ---------------------------------------------------------------- sensor stack (PAW3222 module)
 // Since r2.4 the sensor is the ready-made 14 x 8 mm PAW3222 module (sekigon-gonnoc /
@@ -67,11 +64,12 @@ sensor_pins_h   = 1.2;     // tallest part on the back: the 6-pin 0.5 mm FPC con
 sensor_angle    = 65;      // tilt from vertical, towards +x. Largest angle whose optical window
                            // clears the cup rim (6 deg below the equator) and whose upper board
                            // edge stays under the rim. 0 = straight below the ball.
-sensor_az       = 270;     // azimuth of the tilt direction: the module leans towards +y, the back edge.
-                           // NOTE the frame: STACK values and bearing_az are layout frame, but the STL
-                           // export flips y (cradle.scad bottom), so +y here is -y in the printed part.
-                           // -x is blocked by the PCB thumb bridge, +x and -y by the keys and J1, and
-                           // the other azimuths by a bearing boss. bearing_az keeps 270 free.
+sensor_az       = 180;     // turn of the sensor frame about z. The frame tilts about its local y axis,
+                           // which points the optical axis (and the module) at sensor_az + 180, so
+                           // 180 leans the module towards layout +x, under the middle-finger column.
+                           // There the PCB already ends at y 42.8, 16 mm above the module, so the
+                           // sleeve costs no board area; leaning towards +y (r2.4 first cut, 270)
+                           // made the case 5 mm deeper. -x is the PCB thumb bridge, -y the keys and J1.
 
 // ---------------------------------------------------------------- main PCB and case interface
 pcb_t           = 1.6;     // main PCB thickness

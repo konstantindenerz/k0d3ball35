@@ -88,9 +88,11 @@ rim_ch       = rim_chamfer;                         // 45 degree edge break alon
 echo(str("STACK ball_d=", ball_d));
 echo(str("STACK sensor_angle=", th));
 // The window's real layout azimuth. sensor_frame() turns by sensor_az and then tilts about the
-// LOCAL y axis, which lands the optical axis at -sensor_az - not at sensor_az, as one would read
-// off the parameter. Echoed so tests and the layout do not each re-derive the sign and get it wrong.
-echo(str("STACK window_az=", (360 - sensor_az) % 360));
+// LOCAL y axis, which tips the optical axis towards local -x: the window lands at sensor_az + 180,
+// not at sensor_az. (Until r2.4b this read -sensor_az, which agrees only at 90 and 270.)
+// Echoed so tests and the layout do not each re-derive the sign and get it wrong.
+win_az = (sensor_az + 180) % 360;
+echo(str("STACK window_az=", win_az));
 echo(str("STACK ball_centre_z=", zc));
 echo(str("STACK ball_top_above_pcb_top=", zc + R));
 echo(str("STACK ball_bottom_z=", zc - R));
@@ -120,7 +122,7 @@ echo(str("STACK housing_top_z=", hous_top));
 echo(str("STACK footprint_x=", 2 * R_out));
 echo(str("STACK footprint_y=", R_out + tab_back));
 echo(str("STACK body_back_reach=", tab_back));
-echo(str("STACK case_screw_sp=", case_screw_sp));   // case screws, local x axis
+echo(str("STACK case_screw_sp=", case_screw_sp));   // case screws, local y axis
 echo(str("STACK cup_outer_d=", 2 * R_out));
 echo(str("STACK envelope_d_above_pcb=", envelope_d));
 echo(str("STACK notch_apothem=", notch_apothem));
@@ -149,7 +151,7 @@ module octagon(apothem) { rotate([0, 0, 22.5]) circle(r = apothem / cos(22.5), $
 // T-junctioned where their faceting differs. Everything the module needs is cut in afterwards.
 module tab_2d() {
     intersection() {
-        rotate([0, 0, -sensor_az]) translate([0, -tab_w / 2]) square([tab_back + 1, tab_w]);
+        rotate([0, 0, win_az]) translate([0, -tab_w / 2]) square([tab_back + 1, tab_w]);
         octagon(tab_back);
     }
 }
@@ -183,7 +185,10 @@ module sensor_pocket_cuts() {
     // Optical path through the cup wall: sized on the aperture (optical_d), not on the lens body.
     // The window it opens in the cup subtends asin(optical_d/2 / R_in) around the axis, and with
     // the lens-body width it would reach above the cup rim at this tilt.
-    cylinder(d = optical_d, h = L_pcb + 0.01);
+    // It runs along local -z, from the ball centre down to the module. Until r2.4b it ran along
+    // +z, away from the sensor, and left the whole cup wall between ball and lens solid
+    // (tests/test_cradle.py now casts a ray along the axis through the mesh).
+    translate([0, 0, -L_pcb - 0.01]) cylinder(d = optical_d, h = L_pcb + 0.02);
     // lens + chip cavity between the module and the cup
     translate([-(lens_l + 1.0) / 2, -(lens_w + 1.0) / 2, -L_pcb - 0.01])
         cube([lens_l + 1.0, lens_w + 1.0, cav_h + 0.01]);
@@ -205,7 +210,7 @@ module cradle_cuts() {
     sensor_frame() sensor_pocket_cuts();
     // Case screws: straight up from the floor into the cup skirt.
     // No posts and no holes in the module since r2.4 - the sleeve holds the module.
-    for (sx = [-1, 1]) translate([sx * case_screw_sp / 2, 0, floor_z - 1])
+    for (sy = [-1, 1]) translate([0, sy * case_screw_sp / 2, floor_z - 1])
         cylinder(d = screw_pocket_d, h = 1 + screw_depth);
     // bearing seats
     for (az = bearing_az) radial(az, bearing_elev)
@@ -253,7 +258,7 @@ module case_floor_dummy() {   // the case floor the module stands on
 module floor2d() {
     difference() {
         offset(r = 0.5) plan_2d();
-        for (sx = [-1, 1]) translate([sx * case_screw_sp / 2, 0]) circle(d = case_screw_d + 0.2);
+        for (sy = [-1, 1]) translate([0, sy * case_screw_sp / 2]) circle(d = case_screw_d + 0.2);
     }
 }
 
@@ -274,10 +279,10 @@ module dispatch() {
                 translate([-sensor_pcb_w / 2, -sensor_pcb_l / 2, -L_low]) cube([sensor_pcb_w, sensor_pcb_l, L_low - L_pcb]);
         }
     }
-    else if (part == "section") {           // half model for section previews: the x = 0 plane cuts
-        difference() {                      // through both claws, the thumb (-x) half is removed
+    else if (part == "section") {           // half model for section previews: the y = 0 plane cuts
+        difference() {                      // along the tilt plane, the key side (-y) half is removed
             union() { cradle(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }
-            translate([-200, -100, -100]) cube([200, 200, 200]);
+            translate([-100, -200, -100]) cube([200, 200, 200]);
         }
     }
     else { cradle(); ball(); sensor_dummy(); main_pcb_dummy(); case_floor_dummy(); }

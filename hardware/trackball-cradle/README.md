@@ -40,7 +40,7 @@ stays in the layout frame.
 | ball top | +13.95 (23.75 mm over the desk) |
 
 - **Sensor.** The 14 x 8 mm module sits in a sleeve beside the cup, tilted 65 degrees from
-  vertical (`sensor_angle`) and leaning away from the keys (`sensor_az` = 270). It looks at the
+  vertical (`sensor_angle`) and leaning towards +x, under the middle column (`sensor_az` = 180, window azimuth 0). It looks at the
   ball through a 4 mm window 25 degrees below the equator; lens distance 2.4 mm nominal.
 - **Why 65 degrees works.** Tilted, the upper board edge must stay under the cup rim, so the
   board's width in the tilt plane decides: the old PMW3610 board (at least 13 mm there) allowed
@@ -50,18 +50,18 @@ stays in the layout frame.
 - **Body.** One piece with vertical walls from the floor to the rim: the cup and, towards the
   sensor, a tab as wide as the sleeve (18 mm) that ends 0.3 mm inside the PCB notch octagon,
   with its 45 degree corners. One 0.8 mm 45 degree chamfer runs along the whole top edge. The tilted module slot is cut into the tab and open at the back.
-- **Floor footprint.** The body's plan: 24.05 x 27.73 mm with 0.5 mm clearance
-  (`dxf/floor-19mm-pocket.dxf`), extending further on the side away from the keys. The case well (the 24 x 29 mm housing box, offset 2.55 mm in y, plus
+- **Floor footprint.** The body's plan: 27.73 x 24.05 mm (x by y) with 0.5 mm clearance
+  (`dxf/floor-19mm-pocket.dxf`), extending further on the +x side (the sleeve). The case well (the 29 x 24 mm housing box, offset 2.55 mm in x, plus
   0.5 mm) contains it.
 - **Case screws.** Two M2 x 8 countersunk self-tapping screws come up through the case floor
-  into the cup skirt, 20 mm apart on the x axis through the ball (`case_screw_sp`). The module has no holes.
+  into the cup skirt, 20 mm apart on the y axis through the ball (`case_screw_sp`). The module has no holes.
 - **Above the PCB** the cup is 23.05 mm wide and the tab stays 0.3 mm inside the PCB notch
   (apothem 15.5 mm); nothing of the cradle rises above the cup rim. The notch corner towards the keys is square, so the module drops into the
   pocket and lifts out with the PCB fitted (`issues/mech-cradle-notch-relief.md`).
 - **Cable.** The FFC leaves the sleeve below the PCB, climbs past the PCB plane in the gap
   between cup and notch, runs round the cup above the PCB and folds over the board edge into J1
   on the key side.
-- **Bearings.** Three 2.0 mm ZrO2 balls at 30, 150 and 270 degrees, 35 degrees below the equator,
+- **Bearings.** Three 2.0 mm ZrO2 balls at 60, 180 and 300 degrees, 35 degrees below the equator,
   clear of the sensor window. Seats are 1.9 mm holes drilled radially into the solid cup skirt; printed holes come out
   undersize, ream with a 1.9 to 2.0 mm bit.
 
