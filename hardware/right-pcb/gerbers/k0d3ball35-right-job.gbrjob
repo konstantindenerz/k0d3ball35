@@ -5,13 +5,13 @@
       "Application": "Pcbnew",
       "Version": "10.0.7"
     },
-    "CreationDate": "2026-11-11T14:08:15+01:00"
+    "CreationDate": "2026-11-11T15:04:35+01:00"
   },
   "GeneralSpecs": {
     "ProjectId": {
       "Name": "k0d3ball35-right",
       "GUID": "6b306433-6261-46c6-9c33-352d72696768",
-      "Revision": "r2.3"
+      "Revision": "r2.4"
     },
     "Size": {
       "X": 121.0285,

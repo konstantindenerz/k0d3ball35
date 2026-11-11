@@ -19,8 +19,8 @@ stroke:currentColor; stroke-width:0.1200; stroke-opacity:1;
 stroke-linecap:round; stroke-linejoin:round;">
 <text x="98.3500" y="39.8500"
 textLength="22.2952" font-size="1.0667" lengthAdjust="spacingAndGlyphs"
-text-anchor="middle" opacity="0" stroke-opacity="0">k0d3ball35 r2.3  CERN-OHL-P-2.0</text>
-<g class="stroked-text"><desc>k0d3ball35 r2.3  CERN-OHL-P-2.0</desc>
+text-anchor="middle" opacity="0" stroke-opacity="0">k0d3ball35 r2.4  CERN-OHL-P-2.0</text>
+<g class="stroked-text"><desc>k0d3ball35 r2.4  CERN-OHL-P-2.0</desc>
 <path d="M87.4929 39.8139
 L87.4929 39.0139
 " />
@@ -405,44 +405,14 @@ L96.0643 39.7377
 <path d="M96.0643 39.7377
 L96.0643 39.8139
 " />
-<path d="M96.3690 39.0139
-L96.8643 39.0139
+<path d="M96.7881 39.2805
+L96.7881 39.8139
 " />
-<path d="M96.8643 39.0139
-L96.5976 39.3186
+<path d="M96.5976 38.9758
+L96.4071 39.5472
 " />
-<path d="M96.5976 39.3186
-L96.7119 39.3186
-" />
-<path d="M96.7119 39.3186
-L96.7881 39.3567
-" />
-<path d="M96.7881 39.3567
-L96.8262 39.3948
-" />
-<path d="M96.8262 39.3948
-L96.8643 39.4710
-" />
-<path d="M96.8643 39.4710
-L96.8643 39.6615
-" />
-<path d="M96.8643 39.6615
-L96.8262 39.7377
-" />
-<path d="M96.8262 39.7377
-L96.7881 39.7758
-" />
-<path d="M96.7881 39.7758
-L96.7119 39.8139
-" />
-<path d="M96.7119 39.8139
-L96.4833 39.8139
-" />
-<path d="M96.4833 39.8139
-L96.4071 39.7758
-" />
-<path d="M96.4071 39.7758
-L96.3690 39.7377
+<path d="M96.4071 39.5472
+L96.9024 39.5472
 " />
 <path d="M98.8833 39.7377
 L98.8452 39.7758

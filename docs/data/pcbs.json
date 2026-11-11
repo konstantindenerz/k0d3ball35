@@ -17,13 +17,13 @@
     "gerbers": "hardware/left-pcb/k0d3ball35-left-gerbers.zip"
    },
    "sizes": {
-    "kicad_pcb": 1183427,
-    "glb": 2974116,
+    "kicad_pcb": 1183399,
+    "glb": 2974244,
     "outline": 738,
-    "render_top": 480252,
-    "render_bottom": 450647,
+    "render_top": 479488,
+    "render_bottom": 451498,
     "step": 350723,
-    "gerbers": 251645
+    "gerbers": 251560
    },
    "layers": [
     {
@@ -189,13 +189,13 @@
     "gerbers": "hardware/right-pcb/k0d3ball35-right-gerbers.zip"
    },
    "sizes": {
-    "kicad_pcb": 1082125,
-    "glb": 2881448,
+    "kicad_pcb": 1082116,
+    "glb": 2845596,
     "outline": 753,
-    "render_top": 460827,
-    "render_bottom": 439797,
+    "render_top": 461205,
+    "render_bottom": 439650,
     "step": 337178,
-    "gerbers": 233312
+    "gerbers": 233251
    },
    "layers": [
     {

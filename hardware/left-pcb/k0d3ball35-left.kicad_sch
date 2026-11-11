@@ -1,7 +1,7 @@
 (kicad_sch (version 20231120) (generator "k0d3ball35") (generator_version "1.0")
   (uuid "972c4140-672c-5918-ae3e-c65777a9eb5d")
   (paper "A2")
-  (title_block (title "k0d3ball35 left half") (date "2026-11-06") (rev "r2.3") (company "k0d3ball35 project")
+  (title_block (title "k0d3ball35 left half") (date "2026-11-06") (rev "r2.4") (company "k0d3ball35 project")
     (comment 1 "Left half: 15 finger + 3 thumb keys, no trackball; sensor pins broken out as test pads")
     (comment 2 "Licensed under CERN-OHL-P-2.0"))
   (lib_symbols

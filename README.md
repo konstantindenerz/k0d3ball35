@@ -32,13 +32,13 @@ case pocket right beside the thumb keys.
 
 | Subsystem | State | Where |
 |-----------|-------|-------|
-| Design specification | r2.3 (two PCBs, 35 keys, 19 mm ball pocket, battery bay under the controller on both halves) | [spec/01-design-spec.md](spec/01-design-spec.md) |
-| Layout generator | r2.3 done, per-half outputs, exact coordinates in [spec/02-layout.md](spec/02-layout.md) | [hardware/layout](hardware/layout) |
-| Left PCB (KiCad 10) | r2.3 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/left-pcb](hardware/left-pcb) |
-| Right PCB (KiCad 10) | r2.3 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/right-pcb](hardware/right-pcb) |
+| Design specification | r2.4 (two PCBs, 35 keys, 19 mm ball pocket, battery bay under the controller on both halves) | [spec/01-design-spec.md](spec/01-design-spec.md) |
+| Layout generator | r2.4 done, per-half outputs, exact coordinates in [spec/02-layout.md](spec/02-layout.md) | [hardware/layout](hardware/layout) |
+| Left PCB (KiCad 10) | r2.4 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/left-pcb](hardware/left-pcb) |
+| Right PCB (KiCad 10) | r2.4 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/right-pcb](hardware/right-pcb) |
 | Trackball sensor | r2.4: bought PAW3222 module, no board of ours to fabricate; J1 re-ordered to the module's pinout | [spec/08-trackball-module.md](spec/08-trackball-module.md) |
 | Trackball cradle | r2.4 pocket mount for 19.05 mm with the module tilted 65 degrees beside the ball, test print pending | [hardware/trackball-cradle](hardware/trackball-cradle) |
-| Firmware (ZMK) | r2.3 in progress: 35 keys, one shared pin set | [firmware/zmk-config](firmware/zmk-config) |
+| Firmware (ZMK) | r2.4 in progress: 35 keys, one shared pin set | [firmware/zmk-config](firmware/zmk-config) |
 | Documentation | build guide, firmware, fabrication, testing written for r2 | [docs](docs) |
 | Case | later phase; pocket geometry specified | [issues/mech-case.md](issues/mech-case.md), [issues/mech-case-ball-pocket.md](issues/mech-case-ball-pocket.md) |
 | Tests and CI | pytest suite, workflows ready for GitHub | [tests](tests), [.github/workflows](.github/workflows) |
