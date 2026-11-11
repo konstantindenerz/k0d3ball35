@@ -90,6 +90,7 @@ img { max-width: 100%; }
 .tb-name span { font: 700 22px/1 var(--wordmark); letter-spacing: 0; }
 .tb-title .tb-val { font-family: var(--sans); font-weight: 500; }
 .tb-actions { display: flex; align-items: center; gap: 6px; padding-right: var(--gutter); }
+.sha { color: inherit; font-family: var(--mono); }
 .tb-sheet .tb-val b { color: var(--signal); font-weight: 600; }
 
 /* title block actions: square icon buttons (language, theme, GitHub), compact enough for a phone */

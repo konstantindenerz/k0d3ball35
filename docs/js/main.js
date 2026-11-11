@@ -8,7 +8,7 @@
 //   export function hide()                      the tab was left: stop render loops
 // Only mount is required.
 
-import { assetBaseLabel, loadData, loadVersions } from './assets.js';
+import { assetBaseLabel, loadCommit, loadData, loadVersions } from './assets.js';
 import { LANGS, LANG_LABELS, lang, loadCatalog, setLang, t, translateStatic } from './i18n.js';
 
 const chrome = document.getElementById('chrome');
@@ -127,6 +127,13 @@ renderLang();
 applyTheme(readTheme());
 document.getElementById('assetBase').textContent = assetBaseLabel();
 if (site.revision) document.getElementById('tbRev').textContent = site.revision;
+// the commit the 3D files come from, in the title block and the footer; GitHub answers after the first paint
+loadCommit().then((c) => {
+  if (!c) return;
+  const link = () => Object.assign(document.createElement('a'), { href: c.url, rel: 'noopener', className: 'sha', textContent: c.short, title: `${c.sha} · ${c.date}` });
+  document.getElementById('tbRev').append(' · ', link());
+  document.getElementById('assetBase').append(' · ', link(), ` · ${c.date}`);
+});
 // the release stamp follows the order ticket: preliminary until the PCBs are ordered
 if (site.status?.pcbs_ordered) {
   const stamp = document.getElementById('wipBtn');

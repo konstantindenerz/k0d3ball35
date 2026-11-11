@@ -46,6 +46,17 @@ export function assetUrl(repoPath) {
 export const githubUrl = (repoPath) => `https://github.com/${REPO}/blob/${ref}/${repoPath.replace(/^\/+/, '')}`;
 export const githubTreeUrl = (repoPath) => `https://github.com/${REPO}/tree/${ref}/${repoPath.replace(/^\/+/, '')}`;
 
+/** The commit {ref} points at on GitHub: { sha, short, date, url }, or null on localhost or when GitHub does not answer. */
+export async function loadCommit() {
+  if (isLocal) return null;
+  try {
+    const r = await fetch(`https://api.github.com/repos/${REPO}/commits/${encodeURIComponent(ref)}`);
+    if (!r.ok) return null;
+    const c = await r.json();
+    return { sha: c.sha, short: c.sha.slice(0, 7), date: (c.commit?.committer?.date || '').slice(0, 10), url: c.html_url };
+  } catch (e) { console.warn(e); return null; }
+}
+
 export const assetBaseLabel = () => (isLocal ? t('the working tree (localhost)') : `github.com/${REPO} @ ${ref}`);
 
 export class AssetError extends Error {
