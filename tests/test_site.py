@@ -55,6 +55,20 @@ def test_every_file_the_page_loads_is_in_the_repo(tracked):
     assert not untracked, f"named in docs/data but not committed: {untracked}"
 
 
+def test_repo_files_load_from_the_commit_not_the_branch():
+    """raw.githubusercontent.com serves the old file under `main` for minutes after a push, and the
+    browser then keeps those old bytes under the new ?v= URL. A commit URL cannot go stale, so the
+    page resolves the branch to its sha before the first tab mounts and builds every raw URL from it."""
+    assets = (DOCS / "js" / "assets.js").read_text()
+    main = (DOCS / "js" / "main.js").read_text()
+    assert re.search(r"raw\.githubusercontent\.com/\$\{REPO\}/\$\{pinned \|\|", assets), \
+        "assetUrl no longer builds raw URLs from the pinned commit"
+    assert "pinned = c.sha" in assets, "loadCommit no longer pins the commit"
+    start = main.index("await Promise.all(")
+    assert "loadCommit()" in main[start:main.index("\n", start)], "main.js mounts tabs before the commit is known"
+    assert main.index("loadCommit()") < main.rindex("route();"), "the first tab mounts before the commit is known"
+
+
 def test_shell_lists_every_tab(site):
     html = (DOCS / "index.html").read_text()
     for i, tab in enumerate(site["tabs"], 1):

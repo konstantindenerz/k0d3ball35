@@ -11,6 +11,11 @@
 // Every URL carries a content hash (?v=) from docs/build.py: the data files from the
 // #dataVersions block of index.html, the repository files from data/versions.json. A page load
 // then never pairs a module of one version with a cached file of another.
+//
+// Repository files load from the commit {ref} points at, not from the branch name. For a few minutes
+// after a push raw.githubusercontent.com still serves the old file under the branch, and a browser
+// would keep those old bytes under the new ?v= URL. A commit URL never changes its content. If GitHub's
+// API does not answer (offline, rate limit of 60 requests an hour), the files load from the branch.
 
 import { t } from './i18n.js';
 
@@ -32,13 +37,14 @@ export async function loadVersions() {
   try { fileVersions = await loadData('versions'); } catch (e) { console.warn(e); fileVersions = {}; }
 }
 const withVersion = (url, v) => (v ? `${url}?v=${v}` : url);
+let pinned = null;   // the commit sha from loadCommit(); main.js awaits it before the first tab mounts
 
 /** URL of a file given by its path from the repository root, e.g. "hardware/case/stl/tray-right.stl". */
 export function assetUrl(repoPath) {
   const p = repoPath.replace(/^\/+/, '');
   const url = isLocal
     ? new URL(`../${p}`, document.baseURI).href
-    : `https://raw.githubusercontent.com/${REPO}/${encodeURIComponent(ref).replace(/%2F/g, '/')}/${p}`;
+    : `https://raw.githubusercontent.com/${REPO}/${pinned || encodeURIComponent(ref).replace(/%2F/g, '/')}/${p}`;
   return withVersion(url, fileVersions[p]);
 }
 
@@ -46,13 +52,17 @@ export function assetUrl(repoPath) {
 export const githubUrl = (repoPath) => `https://github.com/${REPO}/blob/${ref}/${repoPath.replace(/^\/+/, '')}`;
 export const githubTreeUrl = (repoPath) => `https://github.com/${REPO}/tree/${ref}/${repoPath.replace(/^\/+/, '')}`;
 
-/** The commit {ref} points at on GitHub: { sha, short, date, url }, or null on localhost or when GitHub does not answer. */
+/** The commit {ref} points at on GitHub: { sha, short, date, url }, or null on localhost or when GitHub
+ *  does not answer within a few seconds. Pins assetUrl() to that commit. */
 export async function loadCommit() {
   if (isLocal) return null;
   try {
-    const r = await fetch(`https://api.github.com/repos/${REPO}/commits/${encodeURIComponent(ref)}`);
+    const r = await fetch(`https://api.github.com/repos/${REPO}/commits/${encodeURIComponent(ref)}`,
+      { signal: AbortSignal.timeout(2500) });
     if (!r.ok) return null;
     const c = await r.json();
+    if (!/^[0-9a-f]{40}$/.test(c.sha || '')) return null;
+    pinned = c.sha;
     return { sha: c.sha, short: c.sha.slice(0, 7), date: (c.commit?.committer?.date || '').slice(0, 10), url: c.html_url };
   } catch (e) { console.warn(e); return null; }
 }

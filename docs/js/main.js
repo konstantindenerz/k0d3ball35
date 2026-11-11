@@ -123,19 +123,21 @@ document.getElementById('langList').addEventListener('click', (e) => {
 // ---------- start ----------
 new ResizeObserver(setChromeHeight).observe(chrome);
 setChromeHeight();
-try { [site] = await Promise.all([loadData('site'), loadVersions(), loadCatalog()]); } catch (e) { console.error(e); site = {}; }
+// the commit pins every repository file the tabs load (see assets.js), so it is awaited here too
+let commit = null;
+try { [site, , , commit] = await Promise.all([loadData('site'), loadVersions(), loadCatalog(), loadCommit()]); } catch (e) { console.error(e); site = {}; }
 translateStatic(document);
 renderLang();
 applyTheme(readTheme());
 document.getElementById('assetBase').textContent = assetBaseLabel();
 if (site.revision) document.getElementById('tbRev').textContent = site.revision;
-// the commit the 3D files come from, in the title block and the footer; GitHub answers after the first paint
-loadCommit().then((c) => {
-  if (!c) return;
+// the commit the 3D files come from, in the title block and the footer
+if (commit) {
+  const c = commit;
   const link = () => Object.assign(document.createElement('a'), { href: c.url, rel: 'noopener', className: 'sha', textContent: c.short, title: `${c.sha} · ${c.date}` });
   document.getElementById('tbRev').append(' · ', link());
   document.getElementById('assetBase').append(' · ', link(), ` · ${c.date}`);
-});
+}
 // the release stamp follows the order ticket: preliminary until the PCBs are ordered
 if (site.status?.pcbs_ordered) {
   const stamp = document.getElementById('wipBtn');
