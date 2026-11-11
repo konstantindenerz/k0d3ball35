@@ -20,12 +20,12 @@ Do these before paying for anything:
    and MSK12C02, routing eyeball. Tickets `hw-main-pcb-review-r1`, `hw-gnd-stitching-review`
    (non-blocking).
 4. In parallel with the order (no longer a gate): cradle test print and sensor fit, print
-   `hardware/trackball-cradle/stl/cradle-19mm-pocket.stl` and the optional `retainer-19mm.stl`, fit a sensor
-   board (or a 26 x 25 mm dummy), check the lens gap with a feeler gauge; the ball must spin
+   `hardware/trackball-cradle/stl/cradle-19mm-pocket.stl` and the optional `retainer-19mm.stl`, fit the
+   PAW3222 module, check the lens gap with a feeler gauge; the ball must spin
    without touching the rim, and with the retainer clipped on it must stay in upside down. Tickets
-   `hw-sensor-stack-height`, `mech-lm18-lens-outline-measurement`, `mech-ball-retainer-clip`.
+   `mech-ball-height-23mm`, `mech-ball-retainer-clip`.
 5. Ball sourcing and tracking: order a pack of 3/4 inch POM balls (and a PandaKB TB19) and a bag of
-   2 mm ZrO2 balls now, test them on the sensor board as soon as it exists. Tickets
+   2 mm ZrO2 balls now, test them on the sensor module as soon as it arrives. Tickets
    `hw-19mm-ball-sourcing`, `hw-ball-colour-tracking-test`.
 6. FFC pin order with a physical cable and both connectors; the desk check is done and tested
    (`tests/test_ffc_pin_order.py`). Ticket `hw-ffc-pin-order-verification`.
@@ -34,8 +34,7 @@ Do these before paying for anything:
 ## r2.3 (current revision)
 
 Scope: two main PCBs (left 18 keys, right 17 keys with the FPC connector and the pocket notch),
-PMW3610 sensor PCB, parametric cradle for a 19.05 mm ball standing in a case pocket (25 mm as a
-parameter), ZMK shield with 35 keys and Studio, documentation, automated checks. Everything a
+bought PAW3222 sensor module, parametric cradle for a 19.05 mm ball standing in a case pocket, ZMK shield with 35 keys and Studio, documentation, automated checks. Everything a
 person needs to order parts, build the two halves and flash them.
 
 | Item | State | Ticket |
@@ -44,13 +43,13 @@ person needs to order parts, build the two halves and flash them.
 | Layout generator per half, coordinate tables, stepped outline, pocket notch | done | `hw-two-pcbs-r2` |
 | Left and right PCB schematic, routing, DRC, gerbers | done | `hw-two-pcbs-r2`, `hw-left-pcb-mirror`, `hw-main-pcb-review-r1` |
 | Sensor | r2.4: our PMW3610 daughterboard dropped for the bought PAW3222 module, so there is no board to fabricate; J1 re-ordered to the module's pinout | `hw-paw3222-variant`, `hw-ffc-pin-order-verification` |
-| Cradle 19 mm pocket mount (25 mm pocket and r1 cutout as variants) | done, test print in parallel with the order | `mech-trackball-cradle` |
+| Cradle 19 mm pocket mount, module tilted 65 degrees (r2.4) | done, test print in parallel with the order | `mech-trackball-cradle` |
 | ZMK shield with 35 keys, keymap, CI build | in progress | `fw-zmk-shield`, `infra-ci-firmware` |
 | Build guide, firmware guide, fabrication guide | written for r2, to be verified on the first build | `doc-build-guide` |
 | Case pocket geometry handed to the case phase | specified | `mech-case-ball-pocket` |
 | Verify FFC pin order with a physical cable | open | `hw-ffc-pin-order-verification` |
 | Secure 19 mm ball supply | open | `hw-19mm-ball-sourcing` |
-| Print cradle, confirm sensor stack height | open | `hw-sensor-stack-height` |
+| Print cradle and pocket, confirm the r2.4 heights | open | `mech-ball-height-23mm` |
 | Tune CPI and scaling for 19 mm | open after first build | `fw-cpi-tuning-19mm` |
 
 ## r2.1 - case
@@ -58,9 +57,9 @@ person needs to order parts, build the two halves and flash them.
 Boxy, angular printed case in the style of the reference build: flat tray following the stepped
 PCB outline, walls flush with the keycap skirts, a rectangular controller box at the inner edge
 with the LED window, USB-C opening, power switch slot and reset hole (the controller top is only
-+5.7 mm now, so raising the box is a styling choice), a 9 mm deep battery well under the
++5.7 mm now, so raising the box is a styling choice), a 6.0 mm deep battery well under the
 controller block on both halves for the LP552035 cell (`battery` block in `points-*.json`), a 32 mm
-pocket beside the right PCB for the ball with the sensor board on its floor, bumper recesses. A hinged two-plate lid per half covers keys and ball
+pocket beside the right PCB for the ball and the tilted sensor module, bumper recesses. A hinged two-plate lid per half covers keys and ball
 for transport (the cup is open; the lid, or the optional clip-on retainer, keeps the ball in a bag) and folds
 under the half on magnets as a tenting foot. Depends on the final PCB outlines
 (`outline-left.dxf`, `outline-right.dxf`) and the cradle floor footprint
@@ -87,9 +86,7 @@ Tickets: `mech-case`, `mech-case-ball-pocket`, `mech-case-lid` (`mech-case-ball-
 | Rename to k0d3ball35 | the board has 35 keys since r2; folder, shield and library names still say 36 | (lead decision, last step of the r2 plan) |
 | Dongle variant | both halves as peripherals with `zmk,input-split`, lower latency on the host, better battery; needs a third nRF52840 board | `fw-input-split-dongle` |
 | Left-ball build | mirror build for left-handed pointing; needs a mirrored right PCB with the pocket on the left side, firmware swaps central and sensor overlays | `fw-input-split-dongle` (same mechanism) |
-| 25 mm cradle fallback | if 19 mm balls do not track well or feel too light; cradle is parametric, needs a right PCB with a 16.5 mm notch apothem and a 35 mm pocket | `hw-25mm-cradle-fallback` |
-| PAW3222 sensor variant | about half the tracking current of the PMW3610 and a thinner module; needs a second sensor PCB and the sekigon ZMK driver | `hw-paw3222-variant` |
-| PCBA order option | JLCPCB assembly of diodes, sockets, connectors and the PMW3610 (C42442560) for people who do not want to solder; adds a position file and BOM export | `infra-pcba-export` |
+| PCBA order option | JLCPCB assembly of diodes, sockets and connectors for people who do not want to solder; adds a position file and BOM export | `infra-pcba-export` |
 | Keycap set | 3D printed dished Choc caps with smoothed thumb caps as in the video, printable in two colours | `mech-keycaps` |
 | Encoder or display pads | spare pins D0 to D3 and D9 are broken out as test pads on both halves; a later PCB revision could add footprints | `hw-spare-pin-features` |
 | Solder-only PCB variant | thinner build without hot-swap sockets for people who want the lowest possible height | `hw-solder-only-variant` |

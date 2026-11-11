@@ -37,7 +37,7 @@ case pocket right beside the thumb keys.
 | Left PCB (KiCad 10) | r2.3 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/left-pcb](hardware/left-pcb) |
 | Right PCB (KiCad 10) | r2.3 routed, ERC and DRC clean, gerbers exported; battery bay on the back silkscreen | [hardware/right-pcb](hardware/right-pcb) |
 | Trackball sensor | r2.4: bought PAW3222 module, no board of ours to fabricate; J1 re-ordered to the module's pinout | [spec/08-trackball-module.md](spec/08-trackball-module.md) |
-| Trackball cradle | r2.3 pocket mount for 19.05 mm done (25 mm pocket and r1 cutout as variants), test print pending | [hardware/trackball-cradle](hardware/trackball-cradle) |
+| Trackball cradle | r2.4 pocket mount for 19.05 mm with the module tilted 65 degrees beside the ball, test print pending | [hardware/trackball-cradle](hardware/trackball-cradle) |
 | Firmware (ZMK) | r2.3 in progress: 35 keys, one shared pin set | [firmware/zmk-config](firmware/zmk-config) |
 | Documentation | build guide, firmware, fabrication, testing written for r2 | [docs](docs) |
 | Case | later phase; pocket geometry specified | [issues/mech-case.md](issues/mech-case.md), [issues/mech-case-ball-pocket.md](issues/mech-case-ball-pocket.md) |
@@ -65,8 +65,9 @@ Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 
 - Column stagger and thumb arc derived from the Keyball39 geometry, scaled to Choc spacing
 - Kailh Choc V1 switches in hot-swap sockets (hot-swap only, like the Keyball)
 - 19.05 mm (3/4 inch) POM trackball on the right half, resting on three 2 mm ceramic balls in a
-  printed cradle that stands in a case pocket beside the PCB; PMW3610 sensor on a small
-  daughterboard on the case floor, connected with a 6-pin flat cable; ball top 17 mm above the PCB
+  printed cradle that stands in a case pocket beside the PCB; bought PAW3222 sensor module tilted
+  65 degrees beside the ball, connected with a 6-pin flat cable
+- Low: keycaps 20.8 mm over the desk, ball top 23.75 mm, 27.3 mm with the transport lid on
 - Fully wireless: nice!nano v2 (or SuperMini nRF52840) per half on 2.5 mm low-profile sockets,
   Bluetooth split, one LP552035 LiPo cell (350 mAh) per half in a bay under the PCB below the
   controller (the same bay on both halves), the controller's charger, JST-PH connector, slide
@@ -75,7 +76,7 @@ Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 
   no empty ball cutout on the left
 - Angular outline: 90 degree steps along the column stagger, rectangular controller block, no rounding
 - No LEDs, display or encoder on the PCB, to keep the height and the power draw down
-- ZMK firmware on a pinned `main` revision with the upstream PMW3610 driver, automatic mouse layer,
+- ZMK firmware on a pinned `main` revision with the PAW3222 driver, automatic mouse layer,
   scroll and snipe modes, ZMK Studio
 - All geometry comes from one layout file; schematic, PCB, footprints and tests are generated from the same data
 
@@ -107,7 +108,7 @@ issues/               markdown tickets and the generated index
 | [05 Firmware](spec/05-firmware.md) | flashing, pairing, tuning, battery |
 | [06 Fabrication](spec/06-fabrication.md) | PCB order settings for both boards, gerber checklist |
 | [07 Testing](spec/07-testing.md) | automated checks and bench procedure |
-| [08 Trackball module](spec/08-trackball-module.md) | sensor board, lens distance, pocket mount, 19 versus 25 mm |
+| [08 Trackball module](spec/08-trackball-module.md) | sensor module, cable, heights, pocket mount |
 | [09 Roadmap](spec/09-roadmap.md) | verification before ordering, case, dongle, sensor variants |
 | [10 Lessons from Keyball](spec/10-lessons-from-keyball.md) | holykeebs and Yowkees designs, known weaknesses and our response |
 | [11 Printed case](spec/11-case.md) | tray, controller box cap, ball pocket, hinged lid as transport cover and tenting foot |
@@ -176,7 +177,7 @@ pocket where a third would be, a nice!nano
 controller on low profile sockets in a rectangular block at the inner edge, a dashed rectangle
 printed on the board under it marking the battery bay on the other face, an octagonal notch in the lower outer edge of the board where a beige
 printed cradle holding a white 19 mm ball stands beside the PCB, a tiny flat flex cable running
-from under the cradle to a connector on the PCB. Clean, technical, product photography style.
+from the cradle round the cup to a connector on the PCB. Clean, technical, product photography style.
 ```
 
 ## Credits
@@ -184,13 +185,13 @@ from under the cradle to a connector on the PCB. Clean, technical, product photo
 - [Keyball](https://github.com/Yowkees/keyball) by Yowkees: the column stagger, thumb arc and the
   idea of a trackball at the thumb are the design inspiration. No Keyball files are used.
 - [torabo-tsuki-lp](https://github.com/sekigon-gonnoc/torabo-tsuki-lp) by sekigon-gonnoc: reference
-  for a low profile trackball with 25 and 19.05 mm POM balls and a sensor module on a flat cable.
+  for a low profile trackball with 25 and 19.05 mm POM balls and the PAW3222 module on a flat cable.
 - [LiNEA40](https://github.com/keyfreaks/LiNEA40) by keyfreaks: precedent for a 19 mm ball on a PMW3610.
 - [roBa](https://github.com/kumamuk-git/roBa) by kumamuk: reference for a ZMK trackball split with
   PMW3610.
 - [kiswitch](https://github.com/kiswitch/kiswitch) and [marbastlib](https://github.com/ebastler/marbastlib):
   switch, socket and controller footprints.
-- [ZMK](https://zmk.dev) and the Zephyr PMW3610 driver.
+- [ZMK](https://zmk.dev) and sekigon-gonnoc's PAW3222 driver (`zmk-driver-paw3222`).
 
 ```prompt
 Three quarter view close-up of the trackball pocket on the right half: a matte white 19 mm ball
