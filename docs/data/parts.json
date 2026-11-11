@@ -51,9 +51,9 @@
     97.5,
     18.3
    ],
-   "triangles": 10074,
-   "watertight": true,
-   "non_manifold_edges": 0
+   "triangles": 9612,
+   "watertight": false,
+   "non_manifold_edges": 2
   },
   {
    "id": "box-cap-right",
@@ -101,7 +101,7 @@
    ],
    "bbox_min": [
     -33.5,
-    -85.55,
+    -71.87,
     2.0
    ],
    "bbox_max": [
@@ -111,12 +111,12 @@
    ],
    "size": [
     83.05,
-    97.5,
+    83.82,
     15.51
    ],
-   "triangles": 5196,
+   "triangles": 4640,
    "watertight": false,
-   "non_manifold_edges": 11
+   "non_manifold_edges": 12
   },
   {
    "id": "lid-inner-right",
@@ -145,9 +145,9 @@
     91.77,
     15.51
    ],
-   "triangles": 2408,
-   "watertight": false,
-   "non_manifold_edges": 2
+   "triangles": 2410,
+   "watertight": true,
+   "non_manifold_edges": 0
   },
   {
    "id": "lid-right",
@@ -163,7 +163,7 @@
    ],
    "bbox_min": [
     -78.73,
-    -85.55,
+    -82.05,
     2.0
    ],
    "bbox_max": [
@@ -173,12 +173,12 @@
    ],
    "size": [
     128.28,
-    97.5,
+    94.0,
     15.51
    ],
-   "triangles": 7648,
+   "triangles": 7116,
    "watertight": false,
-   "non_manifold_edges": 11
+   "non_manifold_edges": 14
   },
   {
    "id": "lid-folded-right",
@@ -194,7 +194,7 @@
    ],
    "bbox_min": [
     -58.82,
-    -85.55,
+    -82.05,
     -30.45
    ],
    "bbox_max": [
@@ -204,12 +204,12 @@
    ],
    "size": [
     108.37,
-    97.5,
+    94.0,
     47.96
    ],
-   "triangles": 7714,
+   "triangles": 7160,
    "watertight": false,
-   "non_manifold_edges": 14
+   "non_manifold_edges": 15
   },
   {
    "id": "tray-left",
@@ -410,9 +410,9 @@
     44.55,
     14.61
    ],
-   "triangles": 3756,
-   "watertight": true,
-   "non_manifold_edges": 0
+   "triangles": 3298,
+   "watertight": false,
+   "non_manifold_edges": 3
   },
   {
    "id": "cradle-19mm-pocket",
@@ -433,15 +433,15 @@
    ],
    "bbox_max": [
     11.53,
-    11.53,
+    12.05,
     3.43
    ],
    "size": [
     23.05,
-    28.24,
+    28.77,
     10.53
    ],
-   "triangles": 8424,
+   "triangles": 8460,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -459,7 +459,7 @@
    "bbox_min": [
     -12.92,
     -12.92,
-    -2.17
+    1.0
    ],
    "bbox_max": [
     12.92,
@@ -469,11 +469,11 @@
    "size": [
     25.85,
     25.85,
-    11.6
+    8.43
    ],
-   "triangles": 2648,
-   "watertight": false,
-   "non_manifold_edges": 52
+   "triangles": 2254,
+   "watertight": true,
+   "non_manifold_edges": 0
   }
  ],
  "excluded": {},
@@ -596,7 +596,7 @@
      "floor_z": -7.1,
      "cup_outer_d": 23.05,
      "envelope_d_above_pcb": 24.1,
-     "notch_apothem": 15.0,
+     "notch_apothem": 15.5,
      "housing_x": 11.0,
      "housing_y": 18.0,
      "footprint_x": 11.0,
@@ -610,9 +610,9 @@
      "guaranteed_margin": 0.669,
      "ball_lift_play": 0.82,
      "rest_gap": 0.389,
-     "pull_off_min_gap": 0.358,
-     "open_sector_deg": 158.989,
-     "boss_clearance": 0.001
+     "pull_off_min_gap": 0.389,
+     "open_sector_deg": 156.0,
+     "boss_clearance": 0.8
     },
     "previews": [
      "hardware/trackball-cradle/preview/assembly-19mm-pocket.png",
