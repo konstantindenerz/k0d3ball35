@@ -1448,9 +1448,9 @@
     "housing_x": 11.0,
     "housing_y": 18.0,
     "housing_top_z": 3.425,
-    "footprint_x": 11.0,
-    "footprint_y": 18.0,
-    "envelope_d_above_pcb": 24.1003,
+    "footprint_x": 23.05,
+    "footprint_y": 26.725,
+    "envelope_d_above_pcb": 23.05,
     "notch_apothem": 15.5
    },
    "case_stack": {

@@ -427,21 +427,21 @@
     "hardware/trackball-cradle/preview/section-19mm-pocket.png"
    ],
    "bbox_min": [
-    -11.53,
-    -16.72,
+    -11.52,
+    -15.2,
     -7.1
    ],
    "bbox_max": [
-    11.53,
-    12.05,
+    11.52,
+    11.52,
     3.43
    ],
    "size": [
     23.05,
-    28.77,
+    26.73,
     10.53
    ],
-   "triangles": 8520,
+   "triangles": 7658,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -595,12 +595,12 @@
      "lowest_plastic_z": -7.1,
      "floor_z": -7.1,
      "cup_outer_d": 23.05,
-     "envelope_d_above_pcb": 24.1,
+     "envelope_d_above_pcb": 23.05,
      "notch_apothem": 15.5,
      "housing_x": 11.0,
      "housing_y": 18.0,
-     "footprint_x": 11.0,
-     "footprint_y": 18.0,
+     "footprint_x": 23.05,
+     "footprint_y": 26.725,
      "retainer_top_z": 9.426,
      "retainer_outer_d": 25.85
     },
