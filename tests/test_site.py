@@ -124,9 +124,10 @@ def test_modules_import_only_pinned_or_local_code():
 def test_layout_names_the_case_stls(tracked):
     layout = json.loads((DATA / "layout.json").read_text())
     for half, h in layout["halves"].items():
-        assert set(h["case_files"]) == {"tray", "cap", "lid", "lid_folded"}
-        for path in h["case_files"].values():
-            assert path in tracked and half in path
+        ball = {"cover", "cradle"} if h["ball"] else set()
+        assert set(h["case_files"]) == {"tray", "cap", "lid", "lid_folded"} | ball
+        for k, path in h["case_files"].items():
+            assert path in tracked and (k == "cradle" or half in path)
 
 
 def test_explorer_loads_every_case_part():
@@ -137,10 +138,17 @@ def test_explorer_loads_every_case_part():
     names = re.search(r"CASE_KEYS\s*=\s*\[([^\]]*)\]", js)
     assert names, "explorer.js lists the case parts it loads in CASE_KEYS"
     keys = set(re.findall(r"'(\w+)'", names.group(1)))
-    for half, h in layout["halves"].items():
-        assert keys == set(h["case_files"]), f"{half}: explorer loads {sorted(keys)}, layout has {sorted(h['case_files'])}"
+    assert keys == set().union(*(h["case_files"] for h in layout["halves"].values())), keys
     for k in keys:
         assert f"caseMesh('{k}'" in js, f"explorer.js never places the {k} mesh"
+
+
+def test_explorer_draws_the_real_cradle():
+    """r2.4 shipped an Explorer whose cradle was a box and a disc drawn from stack numbers, long
+    after the real part had changed shape. The cradle and the pocket cover are the STLs now."""
+    js = (DOCS / "js" / "tabs" / "explorer.js").read_text()
+    assert "caseMesh('cradle'" in js and "caseMesh('cover'" in js
+    assert "BoxGeometry(S.housing_x" not in js and "cup skirt" not in js, "primitive cradle still drawn"
 
 
 # ---------------------------------------------------------------- keymap, build and overview tabs

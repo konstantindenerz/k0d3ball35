@@ -22,8 +22,12 @@ TEST_PADS = {"left": ["D0", "D1", "D2", "D3", "D9", "D10", "D14", "D15", "D16"],
 STACK_KEYS = ("ball_centre_z", "ball_top_above_pcb_top", "cup_outer_d", "lowest_plastic_z", "lowest_sensor_board_z",
               "lens_reference_plane_dist", "bearing_contact_z", "rim_z", "floor_z", "sensor_pcb_plane_z",
               "housing_x", "housing_y", "housing_top_z", "footprint_x", "footprint_y", "envelope_d_above_pcb", "notch_apothem")
-# STLs the explorer shows per half, in the layout frame (left files are physically mirrored)
-CASE_PARTS = {"tray": "tray-{half}", "cap": "box-cap-{half}", "lid": "lid-{half}", "lid_folded": "lid-folded-{half}"}
+# STLs the explorer shows per half, in the layout frame (left files are physically mirrored); the
+# ball half adds the pocket cover and the real cradle (print frame, ball centre on the z axis)
+CASE_PARTS = {"tray": "hardware/case/stl/tray-{half}.stl", "cap": "hardware/case/stl/box-cap-{half}.stl",
+              "lid": "hardware/case/stl/lid-{half}.stl", "lid_folded": "hardware/case/stl/lid-folded-{half}.stl"}
+BALL_PARTS = {"cover": "hardware/case/stl/pocket-cover-{half}.stl",
+              "cradle": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl"}
 
 
 def _ring(poly) -> list[list[float]]:
@@ -67,7 +71,8 @@ def feet(outline: list[list[float]], inset: float = 7.0) -> list[list[float]]:
 CASE_STACK_KEYS = ("base_z", "floor_z_key", "well_floor_z", "pocket_floor_z", "rim_z", "standoff_h",
                    "box_roof_under_z", "box_top_z", "lid_roof_under_z", "lid_top_z", "lid_lip_depth",
                    "hinge_x", "hinge_axis_z", "hinge_fold_deg", "tent_deg", "foot_dx", "foot_hinge_h", "foot_reach",
-                   "case_screw_d", "case_screw_head_d", "case_screw_cs_d", "case_screw_cs_h", "case_screw_head_z")
+                   "case_screw_d", "case_screw_head_d", "case_screw_cs_d", "case_screw_cs_h", "case_screw_head_z",
+                   "cover_z0", "cover_hole_d")
 
 
 def half_data(half: str, cfg: dict, stack: dict) -> dict:
@@ -97,7 +102,7 @@ def half_data(half: str, cfg: dict, stack: dict) -> dict:
         "battery": points["battery"],   # same cell and bay on both halves, under the PCB below the controller
         "stack": {k: stack[k] for k in STACK_KEYS if k in stack} if ball else None,
         "case_stack": case_stack(half),
-        "case_files": {k: f"hardware/case/stl/{v.format(half=half)}.stl" for k, v in CASE_PARTS.items()},
+        "case_files": {k: v.format(half=half) for k, v in {**CASE_PARTS, **(BALL_PARTS if ball else {})}.items()},
     }
 
 

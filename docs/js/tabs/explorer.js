@@ -18,7 +18,7 @@ const col = (hex) => new THREE.Color(hex);
 const reducedMq = matchMedia('(prefers-reduced-motion: reduce)');
 const reduced = () => reducedMq.matches;
 const HALVES = ['right', 'left'];
-const CASE_KEYS = ['tray', 'cap', 'lid', 'lid_folded'];
+const CASE_KEYS = ['tray', 'cap', 'lid', 'lid_folded', 'cover', 'cradle'];   // cover and cradle: ball half only
 
 // ---------- geometry helpers ----------
 function outlineShape(points, holes = []) {
@@ -69,6 +69,10 @@ const UNMIRROR = new THREE.Matrix4().makeScale(-1, 1, 1);
 const caseMatrix = (half) => (half === 'left'
   ? SWAP.clone().multiply(UNMIRROR).multiply(TO_LAYOUT)
   : SWAP.clone().multiply(TO_LAYOUT));
+// The cradle STL is in the same print frame but centred on the ball: move it to the ball after the turn.
+const partMatrix = (half, key, ball) => (key === 'cradle'
+  ? new THREE.Matrix4().makeTranslation(ball.x, 0, ball.y).multiply(caseMatrix(half))
+  : caseMatrix(half));
 
 // ---------- materials ----------
 const M = {
@@ -222,24 +226,21 @@ function build(which) {
     g.add(box(cell.x, cell.z, cell.y, M.battery, bay.center.x, -PCB_T - 1.5 - cell.z / 2, bay.center.y));
     g.add(box(cell.x - 2, 1.0, 2.0, M.black, bay.center.x, -PCB_T - 1.5 - cell.z / 2, bay.center.y + cell.y / 2 - 1.0));   // PCM / lead end
   }
-  // --- cradle (pocket mount) ---
+  // --- cradle (pocket mount): the printed part from hardware/trackball-cradle, with its bearings and screws ---
   if (ball) {
     const g = layer(t('Trackball cradle (pocket mount)'), -8, '#CFC5B3', { x: bx - 18, y: 4, z: bz });
-    const housing = new THREE.Mesh(new THREE.BoxGeometry(S.housing_x, S.housing_top_z - S.floor_z, S.housing_y), M.cradle);
-    housing.position.set(bx, (S.housing_top_z + S.floor_z) / 2, bz); g.add(housing);
+    g.add(caseMesh('cradle', M.cradle));
     // M2 x 10 flat heads in the 90 degree countersinks: the flat face sits below the tray underside
     const CS = H.case_stack, headK = (CS.case_screw_head_d - 2.0) / 2;
     for (const [sx, sz] of ball.case_screws) g.add(cyl(CS.case_screw_head_d / 2, headK, M.metal, sx, CS.case_screw_head_z + headK / 2, sz, 1.0));
-    g.add(cyl(S.cup_outer_d / 2, S.rim_z - S.housing_top_z, M.cradle, bx, (S.rim_z + S.housing_top_z) / 2, bz));         // cup skirt
-    const bowl = new THREE.Mesh(new THREE.SphereGeometry(ball.d / 2 + 1.2, 48, 24, 0, Math.PI * 2, Math.PI / 2 + 0.25, Math.PI / 2 - 0.25), M.cradle);
-    bowl.position.set(bx, S.ball_centre_z, bz); g.add(bowl);
-    // open cup: the rim stays 1 mm below the equator; the optional clip-on retainer is not drawn here
     for (const a of [60, 180, 300]) {                                                     // 2 mm ZrO2 bearings, 35 deg below the equator
       const t = THREE.MathUtils.degToRad(a), r = (ball.d / 2 + 1) * Math.cos(THREE.MathUtils.degToRad(35));
       const m = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 12), M.bearing);
       m.position.set(bx + r * Math.cos(t), S.bearing_contact_z - 0.5, bz + r * Math.sin(t)); g.add(m);
     }
   }
+  // --- pocket cover: flush plate over the cradle opening, funnel down to the ball ---
+  if (ball) layer(t('Pocket cover'), 40, '#B9A98E', { x: bx + 16, y: H.case_stack.rim_z + 2, z: bz + 18 }).add(caseMesh('cover', M.boxCap));
   // --- bottom-side parts ---
   {
     const g = layer(t('Bottom-side parts'), -5, '#3B3B3F', { x: 20, y: -3, z: 28 });
@@ -325,19 +326,19 @@ function build(which) {
 function loadCase(which) {
   if (!caseCache.has(which)) {
     const files = D.halves[which].case_files;
-    const frac = Object.fromEntries(CASE_KEYS.map((k) => [k, 0]));
+    const keys = CASE_KEYS.filter((k) => files[k]);
+    const frac = Object.fromEntries(keys.map((k) => [k, 0]));
     let failed = false;   // the other files keep reporting progress after one failed; keep the error on screen
     const report = () => {
       if (half !== which || failed) return;
-      const f = CASE_KEYS.reduce((s, k) => s + frac[k], 0) / CASE_KEYS.length;
+      const f = keys.reduce((s, k) => s + frac[k], 0) / keys.length;
       showStatus(which === 'left' ? t('Loading the left case parts') : t('Loading the right case parts'), f);
     };
     report();
-    const matrix = caseMatrix(which);
-    const p = Promise.all(CASE_KEYS.map(async (k) => {
+    const p = Promise.all(keys.map(async (k) => {
       const buf = await fetchBuffer(files[k], (f) => { frac[k] = f ?? 0.5; report(); });
       frac[k] = 1; report();
-      const geom = transformGeometry(parseSTL(buf), matrix);
+      const geom = transformGeometry(parseSTL(buf), partMatrix(which, k, D.halves[which].ball));
       geom.computeVertexNormals();
       geom.computeBoundingSphere();
       return [k, geom];
@@ -357,7 +358,7 @@ async function attachCase(which) {
     return;
   }
   if (half !== which) return;      // switched halves while loading
-  for (const k of CASE_KEYS) caseMeshes[k].geometry = geoms[k];
+  for (const k of Object.keys(geoms)) if (caseMeshes[k]) caseMeshes[k].geometry = geoms[k];
   hideStatus();
 }
 
@@ -428,9 +429,8 @@ function buildDims() {
     [t('Case floor under the module'), `${S.floor_z.toFixed(1)} mm`],
     [t('Cup outer diameter'), `${S.cup_outer_d.toFixed(1)} mm`],
     [t('Cradle envelope above PCB'), `${S.envelope_d_above_pcb.toFixed(1)} mm`],
-    [t('PCB notch'), t('octagon, apothem {a} mm', { a: S.notch_apothem.toFixed(0) })],
-    [t('Case pocket'), t('{d} mm ring above the PCB', { d: H.ball.pocket_d.toFixed(0) })],
-    [t('Housing on the floor'), t('{x} x {y} mm, 2 x M2 from below', { x: S.housing_x.toFixed(0), y: S.housing_y.toFixed(0) })],
+    [t('Pocket cover'), t('flush at +{z} mm, {d} mm funnel to the ball', { z: H.case_stack.rim_z.toFixed(1), d: H.case_stack.cover_hole_d.toFixed(1) })],
+    [t('Cradle on the floor'), t('2 x M2 from below')],
   );
   el.dims.replaceChildren();
   for (const [k, v] of dims) {
@@ -439,7 +439,7 @@ function buildDims() {
     el.dims.append(dt, dd);
   }
   el.note.innerHTML = H.ball
-    ? `<b>${t('Reading the stack.')}</b> ${t('PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets, the LP552035 cell under the PCB below it in a well of the printed tray, as on the left half. The trackball cradle stands on the tray floor beside the PCB; its cup rises through the octagonal notch without touching the PCB. Tray, controller box cap and lid are the printed parts from hardware/case.')}`
+    ? `<b>${t('Reading the stack.')}</b> ${t('PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets, the LP552035 cell under the PCB below it in a well of the printed tray, as on the left half. The trackball cradle stands on the tray floor beside the PCB, under a flush pocket cover whose funnel leads down to the ball. Tray, controller box cap, pocket cover and lid are the printed parts from hardware/case; the cradle comes from hardware/trackball-cradle.')}`
     : `<b>${t('Reading the stack.')}</b> ${t('PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets, the LP552035 cell under the PCB below it in a well of the printed tray, as on the right half. The left half has three thumb keys and no ball, no FPC connector and nine test pads.')}`;
 }
 

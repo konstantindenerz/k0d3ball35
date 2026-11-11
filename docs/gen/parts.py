@@ -51,6 +51,7 @@ def _half(half: str) -> None:
 for _h in ("right", "left"):
     _half(_h)
 
+PARTS["pocket-cover-right"] = ("right", "Pocket cover, right", "Flush plate over the cradle opening, with the funnel down to the ball. Two M2 x 6 countersunk screws.", True)
 PARTS["pocket-test-right"] = ("test", "Pocket test, right", "The corner of the right tray around the ball pocket, to test the cradle fit.", True)
 PARTS["cradle-19mm-pocket"] = ("cradle", "Cradle, 19.05 mm ball", "Cup on three ceramic bearings, with the tilted sensor module sleeve beside it. The only variant since r2.4.", True)
 PARTS["retainer-19mm"] = ("retainer", "Retainer, 19.05 mm ball", "Optional clip-on ring that keeps the ball in when the half is turned over.", True)
@@ -60,7 +61,7 @@ EXCLUDED: dict[str, str] = {}
 
 # preview renders: path -> (caption, parts it shows)
 PREVIEWS = {
-    f"{CASE_PREVIEW}/assembly-right.png": ("Right half assembled", ("tray-right", "box-cap-right")),
+    f"{CASE_PREVIEW}/assembly-right.png": ("Right half assembled", ("tray-right", "box-cap-right", "pocket-cover-right")),
     f"{CASE_PREVIEW}/assembly-left.png": ("Left half assembled", ("tray-left", "box-cap-left")),
     f"{CASE_PREVIEW}/section-right.png": ("Section through the ball, right half", ("tray-right", "pocket-test-right")),
     f"{CASE_PREVIEW}/tray-bottom-right.png": ("Tray from below, right", ("tray-right",)),

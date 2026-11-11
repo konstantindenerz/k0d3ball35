@@ -38,7 +38,7 @@
    ],
    "bbox_min": [
     -78.73,
-    -85.55,
+    -89.55,
     -9.6
    ],
    "bbox_max": [
@@ -48,10 +48,10 @@
    ],
    "size": [
     128.28,
-    97.5,
+    101.5,
     18.3
    ],
-   "triangles": 9530,
+   "triangles": 9152,
    "watertight": false,
    "non_manifold_edges": 2
   },
@@ -101,7 +101,7 @@
    ],
    "bbox_min": [
     -33.5,
-    -71.87,
+    -89.55,
     2.0
    ],
    "bbox_max": [
@@ -111,12 +111,12 @@
    ],
    "size": [
     83.05,
-    83.82,
+    101.5,
     15.51
    ],
-   "triangles": 4540,
-   "watertight": false,
-   "non_manifold_edges": 13
+   "triangles": 4318,
+   "watertight": true,
+   "non_manifold_edges": 0
   },
   {
    "id": "lid-inner-right",
@@ -163,7 +163,7 @@
    ],
    "bbox_min": [
     -78.73,
-    -82.05,
+    -89.55,
     2.0
    ],
    "bbox_max": [
@@ -173,12 +173,12 @@
    ],
    "size": [
     128.28,
-    94.0,
+    101.5,
     15.51
    ],
-   "triangles": 7014,
+   "triangles": 6792,
    "watertight": false,
-   "non_manifold_edges": 15
+   "non_manifold_edges": 2
   },
   {
    "id": "lid-folded-right",
@@ -194,7 +194,7 @@
    ],
    "bbox_min": [
     -58.82,
-    -82.05,
+    -89.55,
     -30.45
    ],
    "bbox_max": [
@@ -204,12 +204,42 @@
    ],
    "size": [
     108.37,
-    94.0,
+    101.5,
     47.96
    ],
-   "triangles": 7058,
+   "triangles": 6852,
    "watertight": false,
-   "non_manifold_edges": 16
+   "non_manifold_edges": 1
+  },
+  {
+   "id": "pocket-cover-right",
+   "path": "hardware/case/stl/pocket-cover-right.stl",
+   "group": "right",
+   "name": "Pocket cover, right",
+   "role": "Flush plate over the cradle opening, with the funnel down to the ball. Two M2 x 6 countersunk screws.",
+   "printed": true,
+   "doc": "hardware/case/README.md",
+   "previews": [
+    "hardware/case/preview/assembly-right.png"
+   ],
+   "bbox_min": [
+    -28.15,
+    -87.4,
+    3.6
+   ],
+   "bbox_max": [
+    5.05,
+    -46.15,
+    5.0
+   ],
+   "size": [
+    33.2,
+    41.25,
+    1.4
+   ],
+   "triangles": 1184,
+   "watertight": true,
+   "non_manifold_edges": 0
   },
   {
    "id": "tray-left",
@@ -397,7 +427,7 @@
    ],
    "bbox_min": [
     -38.0,
-    -85.55,
+    -89.55,
     -9.6
    ],
    "bbox_max": [
@@ -407,12 +437,12 @@
    ],
    "size": [
     50.0,
-    44.55,
+    48.55,
     14.61
    ],
-   "triangles": 3216,
+   "triangles": 2898,
    "watertight": false,
-   "non_manifold_edges": 3
+   "non_manifold_edges": 2
   },
   {
    "id": "cradle-19mm-pocket",
@@ -491,6 +521,7 @@
    "caption": "Right half assembled",
    "parts": [
     "box-cap-right",
+    "pocket-cover-right",
     "tray-right"
    ]
   },
