@@ -21,9 +21,16 @@ are.
 ## Acceptance criteria
 
 - [x] Part `guard` per half (`hardware/case`, STL plus DXF for a laser-cut sheet): the PCB
-      minus a 14.2 mm square per switch, 4.4 mm holes over the PCB screw heads (a head on top
-      of the guard would stand above a pressed keycap), open over the controller box, J1/FFC
-      and the cradle opening. Held by the switch flanges, no screws
+      minus a 14.2 mm square per switch, 3.7 mm holes over the PCB screw heads (a head on top
+      of the guard would stand above a pressed keycap), open over J1 (body and tails), the
+      FFC path, the cradle and the inside of the controller box. Held by the switch flanges,
+      no screws
+- [x] No bare PCB visible from above (review 2026-11-11: the first version showed green
+      beside J1, at the thumb screw and along the box). Cut-outs sized to the parts (BOM
+      head 3.5 mm, J1 F.Fab body plus tails instead of the courtyard), the guard runs on under
+      the box cap skirt, square corners. `test_no_bare_pcb_from_above` allows fit gaps only.
+      The explorer drew J1 under the board since r2.2; it now sits on the key side, with the
+      screw heads
 - [x] One piece with no web under `guard_min_web`: the outline comes from
       `scripts/gen_case.py` (`guard_polygon`, shapely: cut through thin webs, keep the
       largest piece, grow it back). Done in OpenSCAD, an opening left an L-shaped strip

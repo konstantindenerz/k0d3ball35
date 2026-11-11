@@ -161,13 +161,20 @@ keycap top and lid stay where they are.
 - Cut-outs: a 14.2 mm square per switch (13.8 mm lower housing plus `guard_fit` 0.2), rotated
   with the thumb keys. The 15 mm upper housing flange reaches over the edge and holds the guard
   down, so it needs no screws.
-- Holes of 4.4 mm over the five PCB screws: the heads keep sitting on the PCB, because a head
-  on top of the guard would stand above a pressed keycap.
-- Left open: the controller box, J1 and the FFC path, the cradle opening.
-- One piece: the screw holes cut some of the webs between the keys. `scripts/gen_case.py`
-  (`guard_polygon`) therefore cuts every web narrower than `guard_min_web` (1.2 mm), keeps
-  the largest piece and grows it back, so no loose strip can end up in the case. The outline
-  is in `data.scad`, the fits in `params.scad`.
+- Holes of 3.7 mm over the five PCB screws (heads max 3.5 mm, BOM): the heads keep sitting on
+  the PCB, because a head on top of the guard would stand above a pressed keycap.
+- Left open: J1's body and contact tails (not its courtyard) and the FFC path, the cradle, and
+  the inside of the controller box. Along the key side and the thumb side of the box the guard
+  runs on under the box cap's skirt, and the skirt stands on the guard (`box_skirt_z`).
+- Nothing green from above: keycaps, guard, box, J1, screw heads and the pocket cover cover the
+  whole PCB except the fit gaps (0.1 mm round a head, 0.2 mm round J1).
+  `tests/test_case_guard.py` (`test_no_bare_pcb_from_above`) fails on any wider strip. The first
+  version left 43 mm2 of bare PCB beside J1, at the thumb screw and along the box.
+- One piece: the screw holes cut into some of the webs between the keys. `scripts/gen_case.py`
+  (`guard_polygon`) therefore cuts every web narrower than `guard_min_web` (1.0 mm, two
+  perimeters of a 0.4 mm nozzle), keeps the largest piece and grows it back with square
+  corners, so no loose strip can end up in the case. The outline is in `data.scad`, the fits
+  in `params.scad`.
 - Since the keycaps are 17.5 x 16.5 on an 18 x 17 pitch, the guard mostly shows at the thumb
   keys and along the edge. What it does is keep dust and crumbs off the board and cover the top
   pads of the reversible footprints.
