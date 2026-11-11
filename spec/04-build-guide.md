@@ -337,6 +337,9 @@ transport). Deburr the cup rim. Print settings and the test-fit list are in the
 4. Lens distance (ball out): a 2.0 mm feeler gauge on the lens through
    the 4 mm window must sit flush with the cup's inner surface (2.0 + 0.4 mm ball gap = 2.4 mm).
    Outside 2.3 to 2.5 mm: set `lens_shim` and reprint (cradle README).
+
+![Checking the lens-to-ball distance with a feeler gauge](images/img-build-step-lens-gauge.png)
+
 5. Lower the cradle into the case pocket and fasten it with two M2 x 10 countersunk
    self-tapping screws from below, through the floor into the cup skirt. Snug, not tight.
 6. Route the cable up the gap between cup and notch, round the cup and over the board edge into
