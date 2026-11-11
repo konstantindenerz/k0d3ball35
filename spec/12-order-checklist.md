@@ -5,11 +5,9 @@ cart is placed once. Part numbers, specs and prices are those of the [bill of
 materials](03-bom.md); this page only sequences the carts. Tick a line when the order is placed
 and write the order number next to it. "You do" names the step that needs a person.
 
-Why the PCBs no longer wait for the cradle print: the sensor height is set by
-`hardware/trackball-cradle/params.scad`, not by any PCB; the right board's notch is fixed by the
-layout and its tests; and the only outcome that would change a PCB (a 25 mm ball instead of 19 mm)
-cannot be tested without the sensor module in hand. The exposure is one right-hand batch, about
-30 to 40 EUR. Details in `issues/hw-jlcpcb-order-r1.md`.
+Why the PCBs do not wait for the cradle print: the sensor height is set by
+`hardware/trackball-cradle/params.scad`, not by any PCB, and the right board's notch is fixed by
+the layout and its tests. Details in `issues/hw-jlcpcb-order-r1.md`.
 
 ## 1. Already ordered
 
@@ -33,8 +31,7 @@ One cart; everything ships from the same warehouse.
 | [ ] | 1 (+1) | FPC connector, 6 pin 0.5 mm, bottom contact | 798-FH12-6S-0.5SH55 | open | for the right PCB (J1, key side); since r2.4 the sensor module brings its own connector |
 | [ ] | 2 | Battery connector JST PH 2.0 side entry | 306-S2B-PH-SM4-TB | open | |
 | [ ] | 2 | Reset button, side actuated | 667-EVQ-P7A01P | open | |
-| [ ] | 1 (+1), optional | FFC cable 6 pos 0.5 mm, **type B** (opposite-side contacts), 30 to 40 mm | Molex 15166 series, 6 circuits, type B | open | type B is mandatory, a type A cable does not connect (`spec/08-trackball-module.md` 2.2); or take the AliExpress cable below |
-| [ ] | 2, optional | LDO 1.8 V SOT-23 | Torex XC6206P182MR | open | only if the LCSC lines are not ordered with the PCBs |
+| [ ] | 1 (+1), optional | FFC cable 6 pos 0.5 mm, **type B** (opposite-side contacts), 30 to 40 mm | Molex 15166 series, 6 circuits, type B | open | type B is mandatory, a type A cable does not connect (`spec/08-trackball-module.md` section 2); or take the AliExpress cable below |
 
 ## 3. EU shops (open)
 
@@ -56,11 +53,11 @@ One cart; everything ships from the same warehouse.
 | [ ] | 1 pack (20) | Magnet | 6 x 2 mm neodymium disc | open | 16 used: 4 in the tray floor and 4 in the outer lid plate's roof per half (`issues/mech-case-lid.md`) |
 | [ ] | 2 | Hinge pin | 2 mm steel rod, about 80 mm (2 mm round bar or a 2 x 80 mm dowel pin, cut to length) | open | one per lid hinge; a piece of 1.75 mm filament is the fallback (`hardware/case/README.md`) |
 
-## 5. AliExpress (open)
+## 5. Sensor module and AliExpress (open)
 
 | Done | Qty | Part | Spec | Status | You do |
 |------|-----|------|------|--------|--------|
-| [ ] | 1 (+1) | Sensor and lens kit | PMW3610DM-SUDU + LM18-LSI, https://www.aliexpress.com/item/1005006208592770.html | open | measure the lens flange and clips on arrival (`issues/mech-lm18-lens-outline-measurement.md`) |
+| [ ] | 1 | PAW3222 trackball sensor module, 14 x 8 mm | beekeeb (https://shop.beekeeb.com, worldwide, free shipping from 80 USD) or BOOTH (https://booth.pm); price: see shop | open | EU shipping is fine; check the pinout on arrival (1 3.3V, 2 CS, 3 MOTION, 4 SDIO, 5 SCLK, 6 GND) |
 | [ ] | 2 | FFC cable (alternative to Mouser) | 6 pin 0.5 mm, 30 to 40 mm, **type B** opposite-side contacts | open | only one of the two cable lines is needed; check the two ends against the light before ordering a batch |
 
 ## 6. JLCPCB and LCSC (open)
@@ -79,16 +76,13 @@ higher, 1.6 mm, 1 oz, ENIG (lead-free HASL is acceptable), tented vias, remove o
 | [ ] | Upload preview: 2 layers detected, about 121 x 87 mm each, no DFM complaint about the notch | open | `issues/test-fab-gerber-viewer.md` |
 | [ ] | Order the two batches | open | record order number, cost and the tag `v0.2.0-r2-order` in `issues/hw-jlcpcb-order-r1.md` |
 
-No LCSC lines any more. They were the sensor daughterboard's regulator, passives and pull-ups;
-r2.4 replaced that board with a bought PAW3222 module, so nothing on the two main boards needs a
-component order beside the parts listed in the sections above (`issues/hw-paw3222-variant.md`).
+No LCSC lines: the sensor is a bought module (`issues/hw-paw3222-variant.md`).
 
 ## 7. Printed parts
 
 | Done | Part | File | Status | You do |
 |------|------|------|--------|--------|
 | [ ] | Cradle, 19 mm pocket mount | `hardware/trackball-cradle/stl/cradle-19mm-pocket.stl` | orderable now | print in parallel with the PCB order |
-| [ ] | Cradle, 25 mm fallback | `hardware/trackball-cradle/stl/cradle-25mm-pocket.stl` | orderable now | only if the 19 mm ball disappoints (`issues/hw-25mm-cradle-fallback.md`) |
 | [ ] | Case trays | `hardware/case/stl/tray-left.stl`, `hardware/case/stl/tray-right.stl` | being generated in `hardware/case/` | wait for the case ticket (`issues/mech-case.md`) |
 | [ ] | Controller caps | `hardware/case/stl/box-cap-left.stl`, `hardware/case/stl/box-cap-right.stl` | being generated | same |
 | [ ] | Lid plates | `hardware/case/stl/lid-outer-left.stl`, `lid-inner-left.stl`, `lid-outer-right.stl`, `lid-inner-right.stl` | being generated | same (`issues/mech-case-lid.md`); `lid-left.stl` / `lid-right.stl` are the closed pairs for the exploded view, not for printing |
@@ -96,7 +90,7 @@ component order beside the parts listed in the sections above (`issues/hw-paw322
 
 Print service or own printer: a service (JLC3DP or Craftcloud, SLA resin or MJF nylon) gives the
 cleanest bearing seats and the flattest floor; for the cradle pick SLA. On an own FDM printer use
-0.12 mm layers, 3 perimeters, no supports (the parts are designed to print flat), and ream the
+0.12 mm layers, 3 perimeters, no supports except under the optional retainer's collar, and ream the
 three 2 mm bearing seats with a drill bit by hand before pressing the ceramic balls in.
 
 ## 8. What waits for hardware
@@ -108,7 +102,6 @@ order:
 - 1:1 paper check of a socket and the MSK12C02 on `make print-plots` (`issues/hw-main-pcb-review-r1.md` step 2b)
 - KiCad 3D viewer pass of both main boards (same ticket)
 - GitHub push so CI builds the firmware and runs the suite (`issues/infra-ci-firmware.md`, `issues/infra-ci-hardware.md`)
-- Cradle and pocket test prints, lens gap with a feeler gauge (`issues/hw-sensor-stack-height.md`)
+- Cradle and pocket test prints, lens gap with a feeler gauge (`issues/mech-ball-height-23mm.md`)
 - FFC continuity with a physical cable and both connectors (`issues/hw-ffc-pin-order-verification.md`)
-- LM18-LSI flange and clip measurement (`issues/mech-lm18-lens-outline-measurement.md`)
 - Ball tracking test, POM versus phenolic (`issues/hw-ball-colour-tracking-test.md`)

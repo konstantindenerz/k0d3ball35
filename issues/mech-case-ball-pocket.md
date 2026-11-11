@@ -18,31 +18,24 @@ phase has to provide that pocket. All numbers come from `hardware/layout/output/
 
 | Item | Value |
 |------|-------|
-| Ball centre (layout frame, right half) | (-13.0, +66.0) |
-| PCB notch | octagon, apothem 15.0 mm, with the corner towards the keys squared off so the module can be lowered past the board edge (`mech-cradle-notch-relief`), vertices in `trackball.notch` |
-| Pocket wall above the PCB plane | circle 32 mm (`pocket_diameter`): 28 mm cradle clearance + 2 mm wall |
-| Floor under the module | -11.6 mm (sensor board component side down; a floor of 1.6 mm below the PCB underside is NOT enough, the pocket is a deep well like the r1 cutout zone was) |
-| Housing footprint on the floor | 29 x 29 mm box, no ears (`footprint_x` / `footprint_y` in `stack.json`); `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf` is that outline with 0.5 mm clearance (30 x 30 mm) plus the two screw holes |
-| Case screws | 2x M2 x 10 self-tapping from below through the case floor (2 mm), the 2.25 mm component gap and the sensor board into the cradle's sensor posts; 20 mm apart on the y axis through the ball centre (`case_screw_sp`), 2.2 mm clearance holes in the floor. The same screws clamp the sensor board, there are no separate cradle-to-case screws |
-| Pocket at floor level | rounded rectangle 34 x 34 mm with 3 mm corner radius around the housing (29 x 29 + 2 x 0.5 mm clearance + 2 mm wall) centred on the ball, from the floor up to the PCB underside; it merges into the general cavity under the PCB on the key side. The 32 mm circle applies only above the PCB plane |
-| Sensor board | 26 x 25 mm (`trackball.sensor_board`), lies inside the housing; the FFC leaves the housing through the slot in its key-facing wall, turns up the 6 mm channel in the same wall and climbs the gap between cup and notch to J1 at (-20.6, +47.4) on the key side of the PCB. The tray needs no cable channel |
-| Cup | 23.1 mm outer diameter, rim at +6.6 mm (1 mm below the equator), nothing above the rim; ball top +17.1 mm |
-| Clearance | nothing of the cradle is closer than 0.3 mm to the PCB underside; the case must not add anything between the housing top (-1.9 mm) and the PCB |
+| Ball centre (layout frame, right half) | (-13.0, +66.0), +4.4 mm; ball top +13.95 mm |
+| PCB notch | octagon, apothem 15.5 mm, with the corner towards the keys squared off so the module can be lowered past the board edge (`mech-cradle-notch-relief`), vertices in `trackball.notch` |
+| Pocket wall above the PCB plane | circle 32 mm (`pocket_diameter`), cut at +2.925, 0.5 mm under the cup rim, so the thumb reaches the ball at its equator |
+| Pocket floor | -7.1 mm (battery well -7.6, underside -9.6; the floor is 2.5 mm thick under the pocket) |
+| Cradle floor footprint | cup skirt plus tilted module sleeve, 24.05 x 26.84 mm with 0.5 mm clearance, leaning towards layout +y (away from the keys); `hardware/trackball-cradle/dxf/floor-19mm-pocket.dxf` |
+| Pocket well | the 24 x 29 mm housing box (centred 2.55 mm off the ball towards +y) plus 0.5 mm; it contains the footprint |
+| Case screws | 2x M2 x 10 countersunk self-tapping from below through the floor into the cup skirt, 20 mm apart on the y axis, 2.2 mm holes with a 4.8 mm, 1.3 mm deep countersink |
+| Cable | the FFC leaves the sleeve below the PCB, climbs the gap between cup and notch, runs round the cup and folds over the board edge into J1 at (-20.6, +47.0). The tray needs no cable channel |
+| Cup | 23.05 mm outer diameter, rim at +3.425 mm (1 mm below the equator), nothing above the rim |
 
-Where the housing lies under the PCB (towards the keys), it shares the general case cavity; the
-case floor there must also be at -11.6 mm or deeper. The pocket wall must stay below the cup rim
-(+6.6 mm) or at least leave the thumb side open so the thumb reaches the ball at its equator
-(+7.6 mm) from the inner side. The cup is open: the ball is held by gravity and, in transport,
-by the removable case lid (`mech-case-lid`) or the optional clip-on retainer on the cup
-(`mech-ball-retainer-clip`), so the pocket itself needs no lip. The retainer stays inside a
-25.9 mm circle, i.e. 1.1 mm inside the 28 mm pocket cavity, and its claws end at +12.6 mm.
+The cup is open: the ball is held by gravity and, in transport, by the case lid (`mech-case-lid`)
+or the optional clip-on retainer (`mech-ball-retainer-clip`), so the pocket itself needs no lip.
 
 ## Acceptance criteria
 
 - [x] Parametric pocket in `hardware/case/` built from the layout (notch polygon, housing box and footprint, case screws via `scripts/gen_case.py`), checked against `floor-19mm-pocket.dxf` in `tests/test_case.py`
-- [x] Floor depth -11.6 mm under the module, two 2.2 mm holes 20 mm apart on the y axis for the M2 x 10 case screws (counterbored, 2.0 mm floor remains), drainage for dust optional
+- [x] Floor at -7.1 mm under the module, two 2.2 mm holes 20 mm apart on the y axis for the M2 x 10 case screws (countersunk, 1.2 mm floor left at the bore)
 - [ ] Test print of the pocket corner alone with the cradle and a scrap PCB with the notch: 0.3 mm gap all round, the module drops in and lifts out vertically with the board in place, FFC folds over the board edge into J1 without a crease
-- [x] 25 mm fallback documented as a parameter (notch apothem 16.5 mm, pocket 35 mm) but not printed
 - [x] Image prompt for the pocket detail in `spec/images/PROMPTS.md` (`img-case-pocket-detail`)
 
 ## Notes
@@ -63,3 +56,8 @@ See `spec/11-case.md`.
 29 x 29 in a 30 x 30 well inside a 34 x 34 block, notch corner towards the keys square, no FFC
 channel in the tray any more (the cradle carries the cable up its own wall), and the lid lip keeps
 clear of J1 and the cable corridor on the key side.
+
+2026-11-11 (r2.4): tilted PAW3222 module beside the ball. Pocket floor -11.6 -> -7.1, decoupled
+from the battery well (-7.6); the footprint is no longer a 29 x 29 / 30 x 30 box but cup plus
+sleeve (24.05 x 26.84), well 25 x 30; pocket wall cut below the cup rim; the 25 mm fallback is
+gone (`hw-25mm-cradle-fallback`). Open: the test print, see `mech-ball-height-23mm`.

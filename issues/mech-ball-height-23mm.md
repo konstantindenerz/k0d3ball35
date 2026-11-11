@@ -1,30 +1,43 @@
 ---
-title: Ball sits 23 mm above the main PCB with the sensor straight below
-type: question
+title: Ball top 23.75 mm over the desk - verify the r2.4 flat stack on a print
+type: task
 priority: P1
-status: done
+status: open
 area: mech
 created: 2026-11-05
 ---
 
-# Ball sits 23 mm above the main PCB with the sensor straight below
+# Ball top 23.75 mm over the desk - verify the r2.4 flat stack on a print
 
 ## Context
 
-With the PMW3610 mounted directly under the ball (Keyball style) the stack below the ball surface is fixed by the
-parts: 2.4 mm lens-to-surface gap + 3.4 mm LM18-LSI lens + 1.6 mm sensor board + 2.25 mm package and solder.
-For a 25 mm ball the cradle puts the ball top at about +23 mm above the main PCB top surface and the lowest
-plastic 7.75 mm below the PCB underside (see `hardware/trackball-cradle/stack.json`). Choc caps top out around
-11 mm, so the ball forms a dome like on the Keyball39ish-LP in the reference video.
+r2.4 lowered the keyboard with the same 350 mAh cell. The PAW3222 module sits tilted 65 degrees
+beside the ball instead of straight under it, the ball pocket is decoupled from the battery well
+(floors -7.1 and -7.6 mm), `floor_t` is 2.0 mm and the 1 mm feet sit in 0.8 mm recesses.
+Numbers from `hardware/case/stack.json` and `hardware/trackball-cradle/stack.json`, over the desk:
+
+| | r2.3 | r2.4 |
+|---|---|---|
+| keycap top | 25.6 | **20.8** |
+| ball top | 31.7 | **23.75** |
+| ball over the caps | +6.1 | +2.95 |
+| transport with lid | 31.7 | 27.3 |
+| case underside (`base_z`, from the PCB top) | -14.1 | -9.6 |
+
+The cup floor sets the ball height (`drop_cup` 11.53 mm against `drop_board` 10.65 mm), so the
+nominal, unmeasured PAW3222 lens values cannot raise the ball; they only decide whether the
+module fits. The 65 degree mount has not been printed yet.
 
 ## Acceptance criteria
 
-- [x] Decide between: accept the dome (default), tilted sensor (evaluated: only helps beyond 60 deg and needs a keyhole cutout), PAW3222 thin module (hw-paw3222-variant), or moving the ball zone off the PCB
-- [x] Decision recorded in spec/08-trackball-module.md and spec/09-roadmap.md
-- [ ] Case design (mech-case) uses the chosen stack
+- [ ] Print `hardware/case/stl/pocket-test-right.stl` and the cradle at 0.12 mm, module in the sleeve
+- [ ] Lens distance with the 2.0 mm feeler gauge within 2.3 to 2.5 mm; otherwise set `lens_shim` and reprint
+- [ ] Measure the two tight values: sleeve top 0.11 mm under the cup rim, module 14.76 mm radial against the 15.5 mm notch apothem
+- [ ] Ball top measured on the assembled right half, within 0.3 mm of 23.75 mm over the desk
+- [ ] Cursor tracks in both axes on the printed mount
 
 ## Notes
 
-The tilted variant stays available as `sensor_angle` in `hardware/trackball-cradle/params.scad` (cutout mount only) but is not built or recommended.
-
-2026-11-06: resolved by r2. Decision: 19.05 mm ball (research in `spec/00-feasibility.md` section 4a) in a case pocket beside the right PCB; sensor stack unchanged, ball top +17.1 mm above the PCB top, 6 mm above the caps (`hw-two-pcbs-r2`, `mech-case-ball-pocket`). The tilted sensor and the PAW3222 variant stay documented as further levers.
+Until 2026-11-06 this ticket tracked the r1 question (25 mm ball, sensor straight below, ball top
+about 23 mm over the PCB); r2 answered it with the 19.05 mm ball, r2.4 with the tilted module.
+Related: `hw-paw3222-variant`, `mech-case-ball-pocket`, `mech-trackball-cradle`.

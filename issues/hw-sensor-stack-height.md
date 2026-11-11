@@ -2,7 +2,7 @@
 title: Ball-bottom-to-sensor stack height vs low profile
 type: question
 priority: P1
-status: open
+status: done
 area: hw
 created: 2026-11-05
 ---
@@ -58,3 +58,9 @@ Mitigation, since the cradle is a print and reprinting is free: `lens_shim` in
 the axis, positive away from the ball. Measure with the feeler gauge, set the difference, reprint. The
 README acceptance window was tightened to 2.3 to 2.5 mm so there is room left when the real lens and a
 second print disagree.
+
+2026-11-11 (r2.4): closed. The stack no longer sits under the ball: the PAW3222 module is tilted
+65 degrees beside it (`hw-paw3222-variant`) and the cup floor, not the sensor, sets the ball height.
+Ball top 23.75 mm over the desk, keycaps 20.8 (`spec/08-trackball-module.md`). The tolerance stack
+above still applies along the tilted axis; `lens_shim` moves the module along it without raising the
+ball. The print check moved to `mech-ball-height-23mm`.
