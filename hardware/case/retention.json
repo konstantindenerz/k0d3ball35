@@ -1,0 +1,23 @@
+{
+  "grid_mm": 0.2,
+  "sample_mm": 0.12,
+  "variants": {
+    "19mm-pocket": {
+      "ball_d": 19.05,
+      "ball_centre_z": 4.425,
+      "without_clip_trapped": false,
+      "trapped": true,
+      "critical_margin": 1.015625,
+      "guaranteed_margin": 0.6692148384862245,
+      "ball_lift_play": 0.82,
+      "rest_gap": 0.38946551347594927,
+      "pull_off_min_gap": 0.38946551347594927,
+      "clip_max_abs_az": 102.00000000000001,
+      "open_sector_deg": 155.99999999999997,
+      "clip_top_z": 9.425625000000002,
+      "clip_bottom_z": 3.3029829407782816,
+      "clip_outer_r": 15.075000000000003,
+      "pin_cradle_clearance": 0.8231629640671665
+    }
+  }
+}

@@ -4,8 +4,8 @@ Parametric OpenSCAD model of the trackball holder: an open cup with three static
 bearings for a 19.05 mm ball, and beside it a sleeve that holds the bought PAW3222 sensor module
 tilted 65 degrees. The cradle stands on the case floor in a pocket beside the right PCB. The cup
 rim stays below the ball equator, so the ball rests by gravity and lifts straight out for
-cleaning. An optional clip-on retainer keeps the ball in when the half is turned over; otherwise
-the case lid covers it in transport.
+cleaning. Keeping it in when the half is turned over is the job of the optional clip on the
+case's pocket cover (`hardware/case/README.md`), or of the case lid in transport.
 
 Files
 
@@ -15,8 +15,7 @@ Files
 | `params.scad` | every dimension, documented |
 | `Makefile` | builds STL, DXF (floor footprint), PNG previews and `stack.json` |
 | `stack.py` | collects the computed stack heights into `stack.json` |
-| `retention.py` | checks that the retainer keeps the ball in and stays off it, writes `retention.json` (`make retention`, about a minute) |
-| `stl/` | `cradle-19mm-pocket.stl`, `retainer-19mm.stl` (optional) |
+| `stl/` | `cradle-19mm-pocket.stl` |
 | `dxf/` | `floor-19mm-pocket.dxf`, the footprint on the case floor with the two screw holes |
 | `preview/` | cradle, section and assembly views |
 
@@ -50,8 +49,7 @@ stays in the layout frame.
   module's nominal lens values cannot raise the ball. `tests/test_cradle.py` asserts it.
 - **Body.** One piece with vertical walls from the floor to the rim: the cup and, towards the
   sensor, a tab as wide as the sleeve (18 mm) that ends 0.3 mm inside the PCB notch octagon,
-  with its 45 degree corners. One 0.8 mm 45 degree chamfer runs along the whole top edge; on the
-  cup it is the retainer's seat. The tilted module slot is cut into the tab and open at the back.
+  with its 45 degree corners. One 0.8 mm 45 degree chamfer runs along the whole top edge. The tilted module slot is cut into the tab and open at the back.
 - **Floor footprint.** The body's plan: 24.05 x 27.73 mm with 0.5 mm clearance
   (`dxf/floor-19mm-pocket.dxf`), extending further on the side away from the keys. The case well (the 24 x 29 mm housing box, offset 2.55 mm in y, plus
   0.5 mm) contains it.
@@ -69,22 +67,15 @@ stays in the layout frame.
 
 ## Ball retention
 
-The cup has nothing above its rim. The **optional retainer** (`stl/retainer-19mm.stl`,
-`issues/mech-ball-retainer-clip.md`) is a ring on a 0.8 mm chamfer of the rim with two claws
-0.4 mm off the ball at +-80 degrees, nothing in the 156 degree sector facing the thumb.
-`retention.py` confirms the ball stays trapped with at least 0.67 mm of combined looseness and
-never touches a claw in use (0.39 mm at rest). Four snap fingers at 270, 300, 330 and 0 degrees
-sit in a collar above the rim (strain 1.85 percent against a 2.5 percent limit) and fit one way
-only. Over the sensor sleeve the skirt is relieved and the collar bridges it.
+The cup has nothing above its rim. The optional retainer clip sits on the case's pocket cover,
+not on the cradle (`hardware/case/README.md`, `issues/mech-ball-retainer-clip.md`); its proof
+`hardware/case/retention.py` uses this cradle's STL.
 
 ## Printing
 
 - PETG or PLA, 0.12 mm layers, 3 perimeters, 30 percent infill.
 - Cradle: upright as exported, no supports.
-- Retainer: PETG, upright as exported, **supports under the relieved collar** over the sensor
-  sleeve (about 15 mm unsupported). If it clips on too hard or too loose, change `retainer_nub`
-  by 0.05 and reprint.
-- Deburr the cup rim and the inside of the claws: a stray strand there makes the ball scrape.
+- Deburr the cup rim: a stray strand there makes the ball scrape.
 
 ## Assembly
 
@@ -94,7 +85,7 @@ only. Over the sensor sleeve the skirt is relieved and the collar bridges it.
 3. Check the lens distance (test-fit list below).
 4. Stand the cradle in the case pocket, two M2 x 8 countersunk screws from below. Snug, not tight.
 5. Route the cable round the cup and over the board edge into J1, contacts down, close the lock.
-6. Drop the ball in. Optional: retainer on, claws left and right of the ball, press until it clicks.
+6. Pocket cover on, drop the ball in (case README). Optional: the retainer clip on the cover.
 
 Service: open the lock, pull the cable, undo the two screws, lift the module out. Keycaps and PCB
 stay in place.
@@ -111,14 +102,11 @@ stay in place.
 - Tight value to measure: module 14.76 mm radial against the 15.5 mm notch apothem.
 - With a scrap PCB at the PCB plane, the module goes into the pocket and out again vertically.
 - The FFC reaches J1 without a crease.
-- Retainer (if used): ball still spins, stays in when the half is shaken upside down, ring comes
-  off by pinching the claws.
 - Firmware: at 600 CPI a half turn of the ball moves the cursor about one screen width.
 
 ## Open points
 
 - The 65 degree mount is unprinted; the print decides (`issues/mech-ball-height-23mm.md`).
-- Retainer: snap force and claw feel under a real thumb.
 - Bearing seat size is tuned for FDM; resin prints need `bearing_fit` set to 0.
 
 ## Image prompts
@@ -132,9 +120,3 @@ window, two screws coming up through the case floor into the cup, dimension line
 lens distance, clean CAD line-art style, white background.
 ```
 
-```prompt
-Close-up product render of a small 3D printed clip-on ring around a 19 mm white trackball in a
-keyboard case pocket: an orange ring on the cup rim with two curved claws over the ball's
-shoulders on the left and right, the thumb side open down to the rim, a short collar above the
-rim carrying four snap fingers, soft studio light, matte PETG texture, white background.
-```

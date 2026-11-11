@@ -4,7 +4,7 @@
 The cradle stands in a case pocket beside the right PCB with the 19.05 mm ball (the only size since
 r2.4) and holds a bought PAW3222 module tilted 65 degrees in a sleeve beside the cup. The cup has
 nothing above its rim: the rim stays ``rim_drop`` below the equator. Keeping the ball in when the
-half is turned over is the job of the optional clip-on retainer (``part = "retainer"``, checked by
+half is turned over is the job of the optional clip on the case's pocket cover (checked by
 ``retention.py``) or of the case lid. Two M2 case screws come up through the case floor into the
 cup skirt; there are no screw ears. The OpenSCAD dependent tests are skipped when no OpenSCAD binary is available.
 """
@@ -94,19 +94,13 @@ def test_sources_present():
     assert "lens_z" in params
     assert re.search(r"^ball_d\s*=\s*19\.05", params, re.M), "19.05 mm ball must be the default"
     assert re.search(r"^rim_drop\s*=\s*1\.0", params, re.M)
-    # the retainer is a separate, optional part: the cradle module never grows claws, and the
-    # old peg-in-hole ring (removed 2026-11-06) does not come back
+    # the retainer clip lives on the case's pocket cover since the cover became a bezel
+    # (tests/test_retainer.py); the old peg-in-hole ring (removed 2026-11-06) does not come back
     scad = SCAD.read_text()
-    for name in ("retainer_claw_az", "retainer_claw_h", "retainer_fingers", "retainer_nub"):
-        assert re.search(rf"^{name}\s*=", params, re.M), name
-    for name in ("peg_d", "peg_h", "retainer_claws"):
+    for name in ("peg_d", "peg_h", "retainer_claws", "retainer_claw_az", "retainer_fingers"):
         assert not re.search(rf"^{name}\s*=", params, re.M), name
     assert "peg" not in scad.lower()
-    assert "module retainer()" in scad and 'part == "retainer"' in scad
-    cradle_body = re.search(r"^module cradle\(\) \{\n(.*?)^\}", scad, re.M | re.S).group(1)
-    assert "retainer" not in cradle_body
-    makefile = (CRADLE / "Makefile").read_text()
-    assert "stl/retainer-19mm.stl" in makefile and "retention.json" in makefile
+    assert "module retainer" not in scad
 
 
 def test_no_screw_ears():

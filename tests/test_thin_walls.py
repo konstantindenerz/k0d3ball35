@@ -27,7 +27,7 @@ PARTS = [
     "hardware/case/stl/box-cap-left.stl", "hardware/case/stl/box-cap-right.stl",
     "hardware/case/stl/pocket-cover-right.stl",
     "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
-    "hardware/trackball-cradle/stl/retainer-19mm.stl",
+    "hardware/case/stl/pocket-clip-right.stl",
 ]
 SKIN = 0.25      # mm: thinner than this does not print
 STEP = 0.4       # mm between sections

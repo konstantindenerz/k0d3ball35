@@ -165,3 +165,12 @@ module cover_2d() difference() {
     offset(delta = cover_fit) pcb_cavity_2d();
 }
 cover_z0 = rim_z - cover_t;
+
+// retainer clip (tray.scad pocket_clip), in the ball-centred frame: x outward, z from the PCB top
+function clip_pins() = [for (s = [-1, 1]) [clip_pin_r * cos(s * clip_pin_az), clip_pin_r * sin(s * clip_pin_az)]];
+clip_ri  = cover_hole_d / 2;                    // ring bore = the cover's hole
+clip_ro  = clip_ri + clip_ring_w;               // ring outer edge
+clip_z0  = rim_z;                               // ring underside on the cover top
+clip_z1  = rim_z + clip_ring_t;
+clip_rin = ball_d / 2 + clip_ball_gap;          // claw inner face: the cup's inner sphere
+function clip_top_z() = ball_centre_z() + clip_claw_h;

@@ -95,81 +95,15 @@ post_pilot_d    = 1.6;     // pilot hole for M2 self-tapping screws (use 3.2 for
 // ---------------------------------------------------------------- cup
 // The cup itself has nothing above its rim: the rim stays below the equator all round and
 // the ball rests on the bearings by gravity. Keeping it in when the half is lifted or turned
-// over is the job of the optional clip-on retainer below, or of the case lid in transport.
+// over is the job of the optional clip on the case's pocket cover, or of the case lid in transport.
 wall            = 1.6;     // cup wall thickness
 cup_floor_t     = 2.0;     // material under the ball bottom. Since r2.4 the sensor is tilted, so
                            // the sensor stack no longer sets the ball height - this does.
 rim_drop        = 1.0;     // cup rim this far below the equator (finger clearance, ball lifts out freely)
 
-// ---------------------------------------------------------------- retainer (optional clip)
-// A separate ring that clips onto the cup and carries two claws over the ball's shoulders,
-// one on each side of the thumb's approach (issues/mech-ball-retainer-clip.md). The thumb
-// comes from -x (layout frame: thumb keys at -171 and 180 degrees from the ball), so the
-// claws sit at +-retainer_claw_az measured from +x and nothing of the ring rises above the
-// cup rim on the thumb side. Remove it by pinching the two claws and pulling straight up;
-// the ball then lifts out as before.
-//
-// Retention was checked by a configuration-space flood fill of the ball centre against the
-// cup and the claws (retention.py, retention.json): with these values the ball stays
-// trapped until ball, cup and claws are together about 1 mm looser than nominal. A claw on
-// the far (+x) side adds nothing; two claws close to +-90 degrees are what holds.
-//
-// r2.4 rebuilt the ring around two things the flatter stack took away:
-//
-//  * the ball dropped 3.15 mm, so the cup's outer wall only stands 3.4 mm above the main PCB
-//    top. The old 5.6 mm skirt would have reached 2.2 mm BELOW the board plane, into the
-//    annular gap the FFC climbs in, and a skirt short enough to stay above the board is far
-//    too short to bend a snap finger in. So the ring grew a collar ABOVE the rim and the
-//    fingers are rooted in that instead: the finger is as long as skirt + collar, the tips
-//    still stop clear of the board (retainer_tip_clear).
-//  * the sensor is a sleeve tilted in BESIDE the cup whose flat top is the rim plane, so it
-//    fills the ring's annulus over a sector either side of its azimuth. The skirt is relieved
-//    over that sector and the collar carries the claw on that side across it - which is why
-//    the collar, not the skirt, is what the +retainer_claw_az claw hangs from. The relieved
-//    stretch of the collar is a ~15 mm unsupported ledge, so print the clip with supports
-//    under it (it is an optional part; the cradle and the cup need none).
-//
-// The bearing bosses stopped mattering in the same move: they now top out 1.9 mm below the
-// skirt's bottom edge, so the arches the skirt used to need over them (retainer_boss_clear) are
-// gone. retention.json still reports the clearance under the name boss_clearance, but the thing
-// it measures is the sleeve.
-retainer_claw_az   = 80;     // claws at +- this azimuth (deg from +x); the thumb sector stays open
-retainer_claw_w    = 6.0;    // claw width between its parallel side faces
-retainer_claw_h    = 0.525 * ball_d / 2;  // claw top above the ball centre: 5.0 for the 19.05 mm ball
-                             // (about 1.6 mm above the Choc caps), scales with the ball
-retainer_claw_t    = 1.2;    // claw shell thickness; its inner face is the cup sphere, ball_gap from the ball
-retainer_chamfer   = 0.8;    // 45 degree seat: outer chamfer on the cup rim and the matching cone in the ring
-retainer_fit       = 0.2;    // radial clearance between the ring's skirt and the cup's outer wall
-retainer_skirt_t   = 1.2;    // skirt wall around the cup, below the rim (and the collar above it)
-retainer_tip_clear = 1.0;    // finger tips / skirt bottom this far above the main PCB top (z = 0).
-                             // Below the board plane the ring would sit in the 3.5 mm annular gap
-                             // between the cup and the PCB notch, which is the FFC's way round to J1.
-retainer_collar_h  = 3.0;    // ring wall above the cup rim. Two jobs: it roots the snap fingers high
-                             // enough that bending them over the nub stays under 2.5 % strain (the
-                             // 2.4 mm of skirt left above the board cannot), and it bridges the sensor
-                             // sleeve to carry the +retainer_claw_az claw. Keep it below the claw tops.
-retainer_open_az   = 102;    // nothing of the ring above the rim beyond +- this azimuth, so the open
-                             // sector is 360 - 2 * 102 = 156 deg, centred on the thumb. The lower bound
-                             // is the first snap finger's slits (they need collar on both sides); the
-                             // upper bound is the thumb keys, at 171 and 180 deg from the ball.
-retainer_sleeve_clear = 0.8; // gap from the ring to the tilted sensor sleeve, radially and above its
-                             // top face. Sets both the relieved sector and the collar's ride height
-                             // there (retention.json boss_clearance).
-retainer_fingers   = [[270, 2.0], [300, 3.0], [330, 3.0], [0, 2.0]];  // [azimuth, width]: snap fingers.
-                             // All four live in the arc that has both skirt below the rim and collar
-                             // above it; the sleeve's sector has neither. The two wide ones sit in the
-                             // middle of that arc, the narrow ones at its ends where there is less room
-                             // for their slits. The two widths key the ring, as the positions already do.
-                             // THESE FOLLOW sensor_az: the usable arc is whatever the sleeve's sector
-                             // leaves, so move them if the sensor's azimuth ever moves. Everything
-                             // else about the relief is derived (cradle.scad, ret_sleeve_half).
-retainer_finger_t  = 0.8;    // finger thickness (radial), thinner than the skirt so it flexes
-retainer_slit      = 0.6;    // slit on each side of a finger
-retainer_nub       = 0.45;   // nub height towards the cup; the snap undercut is nub - fit = 0.25
-retainer_nub_flat  = 0.3;    // flat tip of the nub
-retainer_release   = 30;     // nub top face, degrees from vertical: smaller pulls off easier
-retainer_pocket_clear = 0.1; // clearance of the nub in its pocket in the cup wall
-with_retainer      = true;   // show the retainer in the assembly and section views
+// Keeping the ball in when the half is turned over is the job of the optional clip on the case's
+// pocket cover (hardware/case, pocket_clip) or of the lid in transport; the cradle has nothing for it.
+rim_chamfer     = 0.8;     // 45 degree edge break along the top of cup and tab
 housing_wall    = 2.0;     // sleeve wall either side of the 14 mm module: sets the width of the body's
                            // tab, 14 + 2 x 2 = 18 mm (cradle.scad tab_w)
 housing_wall_x  = 1.5;     // sleeve wall across the tilt; only the derived sleeve envelope (drop_housing,
@@ -181,4 +115,4 @@ ffc_exit_w      = 6.0;
 
 // ---------------------------------------------------------------- rendering
 $fn             = 96;
-part            = "assembly";  // cradle | retainer | assembly | section | floor2d | sensor_dummy
+part            = "assembly";  // cradle | assembly | section | floor2d | sensor_dummy | insert_path

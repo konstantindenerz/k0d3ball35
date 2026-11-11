@@ -124,7 +124,7 @@ def test_modules_import_only_pinned_or_local_code():
 def test_layout_names_the_case_stls(tracked):
     layout = json.loads((DATA / "layout.json").read_text())
     for half, h in layout["halves"].items():
-        ball = {"cover", "cradle"} if h["ball"] else set()
+        ball = {"cover", "cradle", "clip"} if h["ball"] else set()
         assert set(h["case_files"]) == {"tray", "cap", "lid", "lid_folded"} | ball
         for k, path in h["case_files"].items():
             assert path in tracked and (k == "cradle" or half in path)
@@ -383,7 +383,7 @@ def test_parts_previews_exist(parts, tracked):
 
 def test_trackball_numbers_equal_stack_json(parts):
     stack = json.loads((ROOT / "hardware/trackball-cradle/stack.json").read_text())["variants"]
-    retention = json.loads((ROOT / "hardware/trackball-cradle/retention.json").read_text())["variants"]
+    retention = json.loads((ROOT / "hardware/case/retention.json").read_text())["variants"]
     tb = parts["trackball"]
     ids = [v["id"] for v in tb["variants"]]
     assert set(ids) == set(stack) and tb["default"] == "19mm-pocket"

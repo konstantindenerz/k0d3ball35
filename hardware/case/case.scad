@@ -1,6 +1,6 @@
 // k0d3ball35 printed case - entry point
 // Usage: openscad --backend manifold -D half=\"right\" -D part=\"tray\" -o tray-right.stl case.scad
-// Parts: tray | box_cap | pocket_cover | lid | lid_outer | lid_inner | lid_folded | pocket_test | assembly | section | floor2d
+// Parts: tray | box_cap | pocket_cover | pocket_clip | lid | lid_outer | lid_inner | lid_folded | pocket_test | assembly | section | floor2d
 // Previews: lid_on | lid_foot (tilted on the desk) | lid_foot_flat
 // Layout facts come from data.scad (scripts/gen_case.py), dimensions from params.scad.
 
@@ -59,6 +59,15 @@ echo(str("STACK case_screw_sp=", has_ball(half) ? norm(case_screws(half)[1] - ca
 echo(str("STACK case_screw_d=", case_screw_d));
 echo(str("STACK cover_z0=", has_ball(half) ? cover_z0 : 0));
 echo(str("STACK cover_hole_d=", cover_hole_d));
+echo(str("STACK cover_t=", cover_t));
+echo(str("STACK clip_top_z=", clip_top_z()));
+echo(str("STACK clip_ro=", clip_ro));
+echo(str("STACK clip_ri=", clip_ri));
+echo(str("STACK clip_pin_r=", clip_pin_r));
+echo(str("STACK clip_pin_az=", clip_pin_az));
+echo(str("STACK clip_open_az=", clip_open_az));
+echo(str("STACK clip_claw_az=", clip_claw_az));
+echo(str("STACK clip_barb_bottom_z=", barb_z_bot()));
 echo(str("STACK case_screw_head_d=", case_screw_head_d));
 echo(str("STACK case_screw_cs_d=", case_screw_cs_d));
 echo(str("STACK case_screw_cs_h=", case_screw_cs_h));
@@ -119,6 +128,13 @@ module dispatch() {
     if (part == "tray") tray();
     else if (part == "box_cap") box_cap();
     else if (part == "pocket_cover") pocket_cover();
+    else if (part == "pocket_clip") pocket_clip();                       // ball-centred, like the cradle STL
+    else if (part == "clip_placed") translate([bc()[0], bc()[1], 0]) pocket_clip();
+    else if (part == "clip_clash") intersection() {                      // must be empty (tests)
+        translate([bc()[0], bc()[1], 0]) pocket_clip();
+        union() { pocket_cover(); tray(); cradle_dummy(); }
+    }
+    else if (part == "assembly_clip") { assembly(); color("darkorange") translate([bc()[0], bc()[1], 0]) pocket_clip(); }
     else if (part == "lid") lid();
     else if (part == "lid_outer") lid_plate("outer");
     else if (part == "lid_inner") lid_plate("inner");

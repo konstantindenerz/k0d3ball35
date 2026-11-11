@@ -21,7 +21,7 @@ module lid_body(top) {
 module lid_cavity(top) {
     translate([0, 0, rim_z - 1]) linear_extrude(top - rim_z + 1) {
         pcb_cavity_2d();
-        if (has_ball(half)) pocket_cavity_2d();
+        if (has_ball(half)) { pocket_cavity_2d(); translate(bc()) circle(r = clip_ro + 0.5, $fn = 128); }  // room for the clip
     }
 }
 

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Does the clip-on retainer keep the ball in, and does it stay off the ball?
+"""Does the retainer clip on the pocket cover keep the ball in, and does it stay off the ball?
 
-Renders the cradle and the retainer with OpenSCAD, samples both meshes densely and asks, in the
-configuration space of the ball centre, whether the ball can find a way out:
+Renders the cradle (hardware/trackball-cradle) and the clip (hardware/case, part pocket_clip, both
+centred on the ball) with OpenSCAD, samples both meshes densely and asks, in the configuration
+space of the ball centre, whether the ball can find a way out:
 
 * every position of the ball centre is "free" when the ball (radius R - margin) touches no
   sampled surface point; the free set is computed for the whole neighbourhood at once by
@@ -14,8 +15,8 @@ configuration space of the ball centre, whether the ball can find a way out:
   print error, a slightly small ball and claws that flex.
 
 The same run measures what the thumb and the sensor see: the gap between the claws and the ball
-at rest, how far the ball can rattle, and whether pulling the ring straight up ever brings a claw
-closer to the ball (it must not, or taking the ring off would drag the ball along).
+at rest, how far the ball can rattle, and whether pulling the clip straight up ever brings a claw
+closer to the ball (it must not, or taking the clip off would drag the ball along).
 
 Usage: ./retention.py [openscad-binary]   (writes retention.json next to this file)
 Only numpy and trimesh are needed (no scipy).
@@ -30,6 +31,8 @@ from pathlib import Path
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
+CRADLE_SCAD = HERE.parent / "trackball-cradle" / "cradle.scad"
+CASE_SCAD = HERE / "case.scad"
 GRID = 0.2                 # mm, configuration-space grid
 SAMPLE = 0.12              # mm, surface sampling pitch
 VARIANTS = {
@@ -48,11 +51,11 @@ def define(key, value):
     return f'{key}="{value}"' if isinstance(value, str) else f"{key}={value}"
 
 
-def render(binary, part, overrides, out):
+def render(binary, part, overrides, out, scad=CRADLE_SCAD):
     cmd = [binary, "--backend", "manifold", "-D", f'part="{part}"']
     for k, v in overrides.items():
         cmd += ["-D", define(k, v)]
-    cmd += ["-o", str(out), str(HERE / "cradle.scad")]
+    cmd += ["-o", str(out), str(scad)]
     res = subprocess.run(cmd, check=True, capture_output=True, text=True)
     return {m.group(1): float(m.group(2)) for m in re.finditer(r"STACK (\w+)=(-?[\d.]+)", res.stderr + res.stdout)}
 
@@ -153,20 +156,20 @@ def analyse(binary, name, overrides, build):
 
     build.mkdir(exist_ok=True)
     stack = render(binary, "cradle", overrides, build / f"cradle-{name}.stl")
-    render(binary, "retainer", overrides, build / f"retainer-{name}.stl")
+    case = render(binary, "pocket_clip", {"half": "right"}, build / f"clip-{name}.stl", CASE_SCAD)
     zc = stack["ball_centre_z"]
     R = stack["ball_d"] / 2
     centre = np.array([0, 0, zc])
     cradle = trimesh.load(build / f"cradle-{name}.stl", force="mesh")
-    ret = trimesh.load(build / f"retainer-{name}.stl", force="mesh")
+    clip = trimesh.load(build / f"clip-{name}.stl", force="mesh")
     cp = sample_surface(cradle) - centre
-    rp = sample_surface(ret) - centre
-    # only the part of the cradle around the ball matters (cup, rim, bosses)
+    rp = sample_surface(clip) - centre
+    # only the part of the cradle around the ball matters (cup and rim)
     cp = cp[(np.hypot(cp[:, 0], cp[:, 1]) < 16) & (cp[:, 2] > -R - 2)]
 
     out = {"ball_d": stack["ball_d"], "ball_centre_z": zc}
     open_cup = Trap(cp, R)
-    out["without_retainer_trapped"] = open_cup.trapped(0.0)[0]
+    out["without_clip_trapped"] = open_cup.trapped(0.0)[0]
     both = Trap(np.concatenate([cp, rp]), R)
     out["trapped"] = both.trapped(0.0)[0]
     # On the grid, points are snapped by up to GRID * sqrt(3) / 2 and a continuous escape path
@@ -184,33 +187,23 @@ def analyse(binary, name, overrides, build):
 
     dist = np.linalg.norm(rp, axis=1) - R
     out["rest_gap"] = float(dist.min())
-    # pulling the ring straight up: the closest claw point to the resting ball, per lift height
+    # pulling the clip straight up: the closest claw point to the resting ball, per lift height
     lifts = np.arange(0, 2 * R + 2, 0.25)
     gaps = [float((np.linalg.norm(rp + [0, 0, d], axis=1) - R).min()) for d in lifts]
     out["pull_off_min_gap"] = min(gaps)
 
-    rim = stack["rim_z"] - zc
-    above = rp[rp[:, 2] > rim + 0.01]
-    az = np.degrees(np.arctan2(above[:, 1], above[:, 0]))
-    out["above_rim_max_abs_az"] = float(np.abs(az).max())
-    out["open_sector_deg"] = 360 - 2 * out["above_rim_max_abs_az"]
-    out["retainer_top_z"] = float(rp[:, 2].max() + zc)
-    out["retainer_bottom_z"] = float(rp[:, 2].min() + zc)
-    out["retainer_outer_r"] = float(np.hypot(rp[:, 0], rp[:, 1]).max())
-    # Clearance to whatever of the cradle stands outside the cup wall above the board plane:
-    # cradle points outside the cup cylinder, against the retainer. Up to r2.3 that was only the
-    # three bearing bosses, which is where the key's name comes from (docs/gen/parts.py publishes
-    # it); since r2.4 the bosses top out below the ring and the number is the gap to the tilted
-    # sensor sleeve, which the ring's skirt is relieved around (cradle.scad, ret_sleeve_half).
-    r_out = stack["cup_outer_d"] / 2
-    boss = cp[(np.hypot(cp[:, 0], cp[:, 1]) > r_out + 0.05) & (cp[:, 2] + zc > 0.0)]
-    near = rp[rp[:, 2] < (boss[:, 2].max() + 3 if len(boss) else -np.inf)]
-    if len(boss) and len(near):
-        d2 = min(float(np.min(((near[i:i + 2000, None, :] - boss[None, :, :]) ** 2).sum(-1)))
-                 for i in range(0, len(near), 2000))
-        out["boss_clearance"] = d2 ** 0.5
-    else:
-        out["boss_clearance"] = None   # nothing of it within 3 mm below the skirt's bottom edge
+    az = np.degrees(np.arctan2(rp[:, 1], rp[:, 0]))
+    out["clip_max_abs_az"] = float(np.abs(az).max())
+    out["open_sector_deg"] = 360 - 2 * out["clip_max_abs_az"]
+    out["clip_top_z"] = float(rp[:, 2].max() + zc)
+    out["clip_bottom_z"] = float(rp[:, 2].min() + zc)
+    out["clip_outer_r"] = float(np.hypot(rp[:, 0], rp[:, 1]).max())
+    # the pins reach down beside the cup: their clearance to the cradle
+    pins = rp[rp[:, 2] + zc < case["cover_z0"]]
+    near = cp[(cp[:, 2] + zc > pins[:, 2].min() + zc - 1)] if len(pins) else cp[:0]
+    d2 = min(float(np.min(((pins[i:i + 2000, None, :] - near[None, :, :]) ** 2).sum(-1)))
+             for i in range(0, len(pins), 2000)) if len(pins) and len(near) else None
+    out["pin_cradle_clearance"] = d2 ** 0.5 if d2 is not None else None
     return out
 
 
@@ -221,11 +214,11 @@ def main():
     for name, ov in VARIANTS.items():
         res = analyse(binary, name, ov, build)
         data["variants"][name] = res
-        print(f"{name:12s} trapped={res['trapped']} (open cup trapped={res['without_retainer_trapped']}), "
+        print(f"{name:12s} trapped={res['trapped']} (open cup trapped={res['without_clip_trapped']}), "
               f"tolerance {res['critical_margin']:.2f} mm, rest gap {res['rest_gap']:.2f}, "
               f"guaranteed {res['guaranteed_margin']:.2f} mm, play up {res['ball_lift_play']:.2f}, "
               f"pull-off gap {res['pull_off_min_gap']:.2f}, open sector {res['open_sector_deg']:.0f} deg, "
-              f"boss clearance {res['boss_clearance']}")
+              f"pin clearance to the cradle {res['pin_cradle_clearance']}")
         sys.stdout.flush()
     (HERE / "retention.json").write_text(json.dumps(data, indent=2) + "\n")
 

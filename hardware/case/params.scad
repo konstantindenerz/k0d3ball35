@@ -151,15 +151,43 @@ pocket_d        = 32.0;        // round pocket wall above the PCB plane (cradle 
 pocket_wall     = 2.0;
 cradle_d        = 28.0;        // cradle clearance circle above the PCB plane
 ball_top_z      = 13.95;        // cradle stack.json ball_top_above_pcb_top (19.05 mm ball)
-// flush cover over the cradle opening (tray.scad pocket_cover): it sits in a rebate on a ledge,
-// flush with rim_z, and its 45 degree funnel leads the thumb down to the ball
-cover_t         = 1.4;         // rim_z - cover_t = 3.6 clears the cradle top (housing_top_z 3.425)
+// Flush cover over the cradle opening (tray.scad pocket_cover): it sits in a rebate on a ledge,
+// flush with rim_z, and reaches over the cup rim as a bezel to cover_ball_gap from the ball, so
+// the cup is out of sight. Until this bezel the hole was 26.5 mm (the old clip had to pass) with
+// a funnel through the whole plate: a 5 mm ring round the ball.
+cover_t         = 1.2;         // rim_z - cover_t = 3.8: 0.375 over the cradle top (cup rim 3.425),
+                               // more than a print layer, so the cover never sits on the cup
 cover_fit       = 0.15;        // all round in the rebate
-cover_hole_d    = 26.5;        // cradle retainer_outer_d 25.85 + 2 x 0.3: the clip passes the cover
+cover_ball_gap  = 0.75;        // hole edge to the ball (radius <= 9.508 under the cover top): the
+                               // cradle (+-0.1 on its screws) and the cover (+-0.15 in the rebate)
+                               // may be off by 0.25 and the bezel still clears the ball by 0.5
+cover_hole_d    = ball_d + 2 * cover_ball_gap;   // 20.55; the ball still lifts out through it
+cover_chamfer   = 0.4;         // top edge of the hole
 cover_screw_pilot_d = 1.6;     // M2 x 6 countersunk, self-tapping into the tray under the ledge
 cover_screw_depth   = 6.0;
 cover_screw_d   = 2.2;
 cover_screw_head_d  = 3.8;     // DIN 7991 M2
+
+// Optional retainer clip on top of the cover (tray.scad pocket_clip), for carrying the half
+// turned over. A flat C-ring on the cover round the hole, open towards the thumb, with two claws
+// over the ball's shoulders, held by two split snap pins in two holes in the cover. The claws
+// keep the shape the old cup-mounted clip proved in retention.py (issues/mech-ball-retainer-clip.md).
+clip_ball_gap   = 0.4;         // claw inner face to the ball: the cradle's ball_gap (cup inner wall)
+clip_claw_az    = 80;          // claws at +- this azimuth from +x (layout frame); the thumb comes from -x
+clip_claw_w     = 6.0;         // claw width between its parallel side faces
+clip_claw_h     = 0.525 * ball_d / 2;   // claw top above the ball centre (5.0)
+clip_claw_t     = 1.2;         // claw shell
+clip_open_az    = 102;         // nothing of the clip beyond +- this azimuth: 156 degrees open to the thumb
+clip_ring_t     = 1.2;         // C-ring on the cover top
+clip_ring_w     = 4.8;         // radial width from the hole edge: carries the pins with 1.2 mm round them
+clip_pin_r      = 13.0;        // pin axis from the ball axis: the pin keeps 0.375 to the cup (r 11.525)
+clip_pin_az     = 25;          // pins at +- this azimuth, clear of the claws and of the sensor tab (+y)
+clip_pin_d      = 2.2;         // in a cover_pin_hole_d hole
+cover_pin_hole_d = 2.4;
+clip_pin_slit   = 0.9;         // radial slit: two 0.65 mm prongs that spring towards each other
+clip_pin_barb   = 0.22;        // barb per side beyond the pin: 0.12 undercut in the 2.4 hole (strain 2.2 %)
+clip_pin_barb_h = 0.6;         // barb height under the cover
+clip_release    = 30;          // barb top face, degrees from horizontal: pulls out straight up
 case_screw_d      = 2.2;       // clearance holes for the M2 x 8 case screws from below
 case_screw_head_d = 4.4;       // widest countersunk M2 head: DIN 7982 ST2.2 is 4.4, DIN 7991/965 M2 is 3.8
 case_screw_cs_d   = case_screw_head_d + 0.4;              // 90 degree countersink mouth in the flat underside

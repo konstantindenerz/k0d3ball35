@@ -13,6 +13,7 @@ what the eye caught:
 - the cover sits flush in its rebate and clears the cradle.
 """
 import json
+import math
 import re
 from pathlib import Path
 
@@ -94,10 +95,13 @@ def test_pocket_is_closed_at_rim_height():
     s = STACK[half]
     rim = s["rim_z"]
     bx, by = DATA["ball_center"][half]
-    funnel = Point(bx, by).buffer(s["cover_hole_d"] / 2 + (rim - s["cover_z0"]) + 0.3)
+    funnel = Point(bx, by).buffer(s["cover_hole_d"] / 2 + 0.4 + 0.3)        # the hole and its top chamfer
     x0, y0, x1, y1 = DATA["cover_rect"][half]
     seam = box(x0, y0, x1, y1).exterior.buffer(0.4)            # the 0.15 fit gap around the cover
     screws = [Point(p).buffer(2.3) for p in DATA["cover_screws"][half]]
+    # the two holes for the optional clip's pins
+    screws += [Point(bx + s["clip_pin_r"] * math.cos(math.radians(a)), by + s["clip_pin_r"] * math.sin(math.radians(a))).buffer(1.6)
+               for a in (s["clip_pin_az"], -s["clip_pin_az"])]
     region = (_outline(half).buffer(-0.8, join_style=2)        # rim chamfer at the outer edge
               .difference(Polygon(DATA["outline"][half]).buffer(0.2 + 0.5, join_style=2))   # key cavity
               .difference(funnel).difference(seam)
@@ -134,10 +138,19 @@ def test_pocket_cover_is_flush_and_clears_the_cradle():
     assert abs(cover.bounds[1][2] - s["rim_z"]) < 0.01, "cover top not flush with the rim"
     assert abs(cover.bounds[0][2] - s["cover_z0"]) < 0.01
     cr = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
-    # the cradle stays under the cover except the cup, and the retainer clip passes the hole
-    assert cr["sleeve_top_z"] < s["cover_z0"] - 0.1
-    assert cr["housing_top_z"] < s["cover_z0"] - 0.1
-    assert cr["retainer_outer_d"] + 0.4 <= s["cover_hole_d"]
+    # the cover is a bezel over the cup rim: more than a print layer above the whole cradle ...
+    assert cr["sleeve_top_z"] < s["cover_z0"] - 0.3
+    assert cr["housing_top_z"] < s["cover_z0"] - 0.3
+    assert cr["rim_z"] < s["cover_z0"] - 0.3
+    # ... its hole hides the cup (smaller than the cup's outer wall) ...
+    assert s["cover_hole_d"] < cr["cup_outer_d"] - 2.0
+    # ... and stays off the ball even with cradle and cover 0.3 mm off each other; the ball radius
+    # under the cover top is what the hole has to clear, and the ball still lifts out through it
+    r_ball, zc = cr["ball_d"] / 2, cr["ball_centre_z"]
+    widest = max(math.sqrt(max(0.0, r_ball ** 2 - (z - zc) ** 2)) for z in (s["cover_z0"], s["rim_z"], zc)
+                 if s["cover_z0"] <= z <= s["rim_z"])
+    assert s["cover_hole_d"] / 2 - widest - 0.3 >= 0.4
+    assert s["cover_hole_d"] > cr["ball_d"]
     # the cover stays out of the key cavity (keycaps and J1 sit there)
     keys = Polygon(DATA["outline"]["right"]).buffer(0.2, join_style=2)
     v = cover.vertices

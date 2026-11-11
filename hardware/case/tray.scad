@@ -161,21 +161,106 @@ module box_cap() {
 }
 
 // ---------------------------------------------------------------- pocket cover
-// Flush plate over the cradle opening: same top as the rim, a 45 degree funnel from the rim down
-// to cover_hole_d so the thumb reaches the ball's equator, two countersunk M2 at the user-side
-// corners. Prints top down (the funnel is then a 45 degree overhang-free cone).
+// Flush plate over the cradle opening: same top as the rim, reaching over the cup rim as a bezel
+// that ends cover_ball_gap from the ball, two countersunk M2 at the user-side corners, two small
+// holes for the optional clip's pins. Prints top down.
 module pocket_cover() {
     c = bc();
     difference() {
         translate([0, 0, cover_z0]) linear_extrude(cover_t) cover_2d();
-        translate([c[0], c[1], cover_z0 - eps])
-            cylinder(d1 = cover_hole_d, d2 = cover_hole_d + 2 * (cover_t + 2 * eps), h = cover_t + 2 * eps, $fn = 128);
+        translate([c[0], c[1], cover_z0 - eps]) {
+            cylinder(d = cover_hole_d, h = cover_t + 2 * eps, $fn = 128);
+            translate([0, 0, cover_t - cover_chamfer + eps])
+                cylinder(d1 = cover_hole_d, d2 = cover_hole_d + 2 * cover_chamfer + 2 * eps, h = cover_chamfer + eps, $fn = 128);
+        }
+        // the two holes the optional clip's snap pins go through
+        for (p = clip_pins()) translate([c[0] + p[0], c[1] + p[1], cover_z0 - 1]) cylinder(d = cover_pin_hole_d, h = cover_t + 2, $fn = 32);
         for (s = cover_screws(half)) {
             translate([s[0], s[1], cover_z0 - 1]) cylinder(d = cover_screw_d, h = cover_t + 2);
             translate([s[0], s[1], rim_z - (cover_screw_head_d - cover_screw_d) / 2 + eps])
                 cylinder(d1 = cover_screw_d, d2 = cover_screw_head_d + 2 * eps, h = (cover_screw_head_d - cover_screw_d) / 2, $fn = 32);
         }
     }
+}
+
+// ---------------------------------------------------------------- retainer clip (optional)
+// Ball-centred frame (the STL is exported like the cradle's, centred on the ball); the assembly
+// places it with translate(bc()). See params.scad clip_* for what each part is for.
+
+// the arc beyond +-clip_open_az, cut off so the thumb's approach stays open (less than 180 degrees
+// wide, so the intersection of two half spaces)
+module clip_open_sector() {
+    intersection() {
+        translate([0, 0, -50]) cylinder(r = clip_ro + 5, h = 100);
+        rotate([0, 0, clip_open_az])  translate([-100, 0, -100])    cube([200, 200, 200]);
+        rotate([0, 0, -clip_open_az]) translate([-100, -200, -100]) cube([200, 200, 200]);
+    }
+}
+
+// A claw over the ball's shoulder: a shell whose inner face is the cup's sphere (clip_ball_gap
+// from the ball), backed by a 45 degree taper from the ring's outer edge so it prints without
+// support. Below the equator the inner face would continue as a cylinder (hull), so lifting the
+// clip straight up only ever moves the claw away from the ball.
+module clip_claw(az) {
+    zc = ball_centre_z();
+    intersection() {
+        difference() {
+            union() {
+                translate([0, 0, zc]) sphere(r = clip_rin + clip_claw_t, $fn = 96);
+                translate([0, 0, clip_z1 - eps])
+                    cylinder(h = clip_ro - 0.3 - clip_rin, r1 = clip_ro - 0.3, r2 = clip_rin, $fn = 96);
+            }
+            hull() {
+                translate([0, 0, zc]) sphere(r = clip_rin, $fn = 96);
+                translate([0, 0, zc - 20]) cylinder(r = clip_rin, h = 20, $fn = 96);
+            }
+        }
+        rotate([0, 0, az]) translate([0, -clip_claw_w / 2, clip_z0]) cube([clip_ro + 1, clip_claw_w, clip_top_z() - clip_z0]);
+    }
+}
+
+// A pin's barb, as a wedge on one prong in the y-z plane (y outward from the slit): 45 degree
+// lead-in at the tip, a short flat, the release face at clip_release degrees from horizontal up to
+// the catch 0.05 mm under the cover. Its inner face runs well inside the pin and its tip starts
+// 0.05 above the pin's, so none of its faces lies in one of the pin's.
+function barb_z_top() = cover_z0 - 0.05;
+function barb_z_bot() = barb_z_top() - clip_pin_barb * tan(clip_release) - 0.1 - clip_pin_barb;
+module barb() {
+    r0 = clip_pin_d / 2; r1 = r0 + clip_pin_barb; zb = barb_z_bot() + 0.05; yi = 0.6;
+    rotate([90, 0, 90]) linear_extrude(height = 1.2, center = true)
+        polygon([[yi, zb], [r0, zb], [r1, zb + clip_pin_barb],
+                 [r1, barb_z_top() - clip_pin_barb * tan(clip_release)],
+                 [r0, barb_z_top()], [yi, barb_z_top()]]);
+}
+
+// A split snap pin at the origin, local x radial: the slit lies in the x-z plane, so the two
+// prongs spring towards each other tangentially and the barbs sit on the faces they move with.
+module clip_pin() {
+    difference() {
+        union() {
+            translate([0, 0, barb_z_bot()]) cylinder(d = clip_pin_d, h = clip_z0 - barb_z_bot() + eps, $fn = 32);
+            barb();
+            mirror([0, 1, 0]) barb();
+        }
+        // the slit runs up into the ring to 0.4 under its top, which is what makes the prongs long
+        translate([-5, -clip_pin_slit / 2, barb_z_bot() - 1]) cube([10, clip_pin_slit, clip_z1 - 0.4 - barb_z_bot() + 1]);
+    }
+}
+
+module pocket_clip() {
+    difference() {
+        union() {
+            translate([0, 0, clip_z0]) difference() {
+                cylinder(r = clip_ro, h = clip_ring_t, $fn = 128);
+                translate([0, 0, -1]) cylinder(r = clip_ri, h = clip_ring_t + 2, $fn = 128);
+            }
+            for (s = [-1, 1]) clip_claw(s * clip_claw_az);
+        }
+        clip_open_sector();
+        for (p = clip_pins()) translate([p[0], p[1], 0]) rotate([0, 0, atan2(p[1], p[0])])
+            translate([-5, -clip_pin_slit / 2, barb_z_bot() - 1]) cube([10, clip_pin_slit, clip_z1 - 0.4 - barb_z_bot() + 1]);
+    }
+    for (p = clip_pins()) translate([p[0], p[1], 0]) rotate([0, 0, atan2(p[1], p[0])]) clip_pin();
 }
 
 // ---------------------------------------------------------------- pocket test print

@@ -22,7 +22,8 @@ Files
 | `lid.scad` | hinged lid: outer and inner plate, inner lip, roof magnets, knuckle hinge with its stop, the folded foot |
 | `Makefile` | `make` builds data, STL, DXF, previews and `stack.json` |
 | `stack.py` | collects the echoed stack values into `stack.json` (left, right) |
-| `stl/` | printable parts per half: `lid-outer-*` and `lid-inner-*` are the two lid plates to print, `lid-*` the closed pair for the exploded view, `pocket-cover-right.stl` the flush cover over the cradle, `pocket-test-right.stl` the test print of the pocket |
+| `retention.py` | does the clip keep the ball in and stay off it: writes `retention.json` (`make retention`) |
+| `stl/` | printable parts per half: `lid-outer-*` and `lid-inner-*` are the two lid plates to print, `lid-*` the closed pair for the exploded view, `pocket-cover-right.stl` the flush cover over the cradle, `pocket-clip-right.stl` the optional retainer clip, `pocket-test-right.stl` the test print of the pocket |
 | `dxf/` | floor plan per half with every hole, for checking against the PCB drawings |
 | `preview/` | assembly, section through the ball, box close-up, lid on, lid folded as foot, hinge close-up, tray from below |
 
@@ -64,10 +65,20 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   x = -45.5 and thumb side at y = 50.6) that stands 0.3 mm above the PCB top; two M2 screws.
 - Pocket (right half): part of the stepped edge and solid up to the rim; only `pocket_opening`
   (the well, the 28.4 mm cradle circle and the cable path to the board edge) stays open above
-  the PCB plane, with a 4 mm ledge at +3.6 for the cover. Cover (`pocket_cover`): 1.4 mm plate
-  flush with the rim, 45 degree funnel to a 26.5 mm hole (the retainer clip passes), two M2 x 6
-  countersunk into 1.6 mm pilots on the user-side ledge, ends at the PCB edge on the thumb
-  side. At floor level the well
+  the PCB plane, with a 4 mm ledge at +3.8 for the cover. Cover (`pocket_cover`): a 1.2 mm
+  plate flush with the rim that reaches over the cup rim (0.375 mm above it) as a bezel round
+  the ball: hole 20.55 mm (`cover_ball_gap` 0.75 to the ball, the cup is out of sight, the ball
+  still lifts out), 0.4 mm chamfer on the top edge, two 2.4 mm holes for the clip's pins, two
+  M2 x 6 countersunk into 1.6 mm pilots on the user-side ledge, ends at the PCB edge on the
+  thumb side.
+- Retainer clip (`pocket_clip`, optional, `stl/pocket-clip-right.stl`, centred on the ball like
+  the cradle STL): a 1.2 mm C-ring on the cover round the hole with two claws over the ball's
+  shoulders at +-80 degrees (0.4 mm off the ball), nothing in the 156 degree sector facing the
+  thumb. Two split snap pins (2.2 mm, 0.9 mm slit, 0.12 mm undercut, prong strain 2.2 percent)
+  go through the cover's pin holes at r 13, +-25 degrees, clear of the cup and the sensor tab.
+  `retention.py` (`make retention`): trapped with 0.67 mm of combined looseness, 0.39 mm off the
+  ball at rest, pulling it off never brings a claw closer, the pins keep 0.82 mm to the cradle.
+  It keeps the shape of the earlier cup-mounted clip, which needed a 26.5 mm cover hole. At floor level the well
   is the 24 x 29 housing box (centred 2.55 mm off the ball towards +y) plus 0.5, which
   contains the cradle footprint (cup skirt plus tilted sleeve, 24.05 x 26.84 with clearance),
   floor at -7.1 (2.5 mm floor), two 2.2 mm holes 20 mm apart on the x axis through the ball with a 4.8 mm, 1.3 mm deep
@@ -145,7 +156,9 @@ Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
   the switch slot (7 mm), the LED window (3 mm) and the four foot magnet pockets from below
   (6 mm); the pocket opening is wider than its well, so it has no overhang.
   The boss undersides are 45 degree chamfers.
-- Pocket cover: top down, no supports; the funnel is a 45 degree cone.
+- Pocket cover: top down, no supports.
+- Retainer clip: PETG, pins down on the bed, supports under the ring only (the claws rise from
+  it on 45 degree backs). If it snaps in too hard or too loose, change `clip_pin_barb` by 0.03.
 - Cap and both lid plates: roof down, no supports. The outer plate's roof magnet pockets open
   towards the roof underside, so they print as plain holes with the 0.6 mm skin on the bed;
   the lip's lead-in chamfer is a stepped taper at the top of the print. On the lid plates the
@@ -189,7 +202,8 @@ Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
    keys), two M2 screws into the bosses.
 6. Right half: stand the cradle module in the pocket, fasten the two M2 x 8 from below, route
    the FFC round the cup into J1. Pocket cover on (two M2 x 6 from the top), drop the ball in
-   through its funnel.
+   through it. Optional clip: claws left and right of the ball, press the pins into the cover
+   until they click; pull it straight up to take it off.
 7. Battery into the well, JST into J3, press the rubber feet into their recesses.
 8. Lid on for transport (press it down until the lip is in). As a foot: fold the inner plate
    down to the stop, lay the outer plate roof-up against the tray underside under the

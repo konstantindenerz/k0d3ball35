@@ -25,14 +25,14 @@ RIGHT     = -D 'half="right"'
 STL = stl/tray-left.stl stl/tray-right.stl stl/box-cap-left.stl stl/box-cap-right.stl \
       stl/lid-left.stl stl/lid-right.stl stl/lid-outer-left.stl stl/lid-outer-right.stl \
       stl/lid-inner-left.stl stl/lid-inner-right.stl stl/lid-folded-left.stl stl/lid-folded-right.stl \
-      stl/pocket-test-right.stl stl/pocket-cover-right.stl
+      stl/pocket-test-right.stl stl/pocket-cover-right.stl stl/pocket-clip-right.stl
 DXF = dxf/floor-left.dxf dxf/floor-right.dxf
 PNG = preview/assembly-left.png preview/assembly-right.png preview/section-right.png \
       preview/lid-on-right.png preview/lid-foot-right.png preview/lid-folded-right.png \
       preview/lid-hinge-right.png preview/box-right.png \
-      preview/tray-bottom-right.png preview/cap-logo-right.png
+      preview/tray-bottom-right.png preview/cap-logo-right.png preview/clip-right.png
 
-.PHONY: all data logo stls dxfs previews stack clean
+.PHONY: all data logo stls dxfs previews stack retention clean
 all: data logo stls dxfs previews stack
 stls: $(STL)
 dxfs: $(DXF)
@@ -75,6 +75,9 @@ stl/lid-folded-left.stl: $(SRC) | stl
 	$(OSC) -D 'part="lid_folded"' $(LEFT) -o $@ case.scad
 stl/lid-folded-right.stl: $(SRC) | stl
 	$(OSC) -D 'part="lid_folded"' $(RIGHT) -o $@ case.scad
+# optional retainer clip, centred on the ball like the cradle STL
+stl/pocket-clip-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="pocket_clip"' $(RIGHT) -o $@ case.scad
 stl/pocket-cover-right.stl: $(SRC) | stl
 	$(OSC) -D 'part="pocket_cover"' $(RIGHT) -o $@ case.scad
 stl/pocket-test-right.stl: $(SRC) | stl
@@ -112,3 +115,12 @@ stack.json: $(SRC) stack.py
 
 clean:
 	rm -rf build stl dxf preview stack.json
+
+# the clip on the cover, close up
+preview/clip-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="assembly_clip"' $(RIGHT) --camera=-13,-66,3,50,0,335,110 --imgsize=1400,1000 --colorscheme=Tomorrow -o $@ case.scad
+
+# does the clip keep the ball in, and stay off it? (about 20 minutes; numpy + trimesh, no scipy)
+retention: retention.json
+retention.json: retention.py $(SRC) ../trackball-cradle/cradle.scad ../trackball-cradle/params.scad
+	$(PYTHON) retention.py $(OPENSCAD)
