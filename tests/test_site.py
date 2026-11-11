@@ -354,8 +354,9 @@ def test_parts_facts_match_the_meshes(parts):
     for p in parts["parts"]:
         m = trimesh.load(ROOT / p["path"], force="mesh")
         lo, hi = m.bounds
-        assert p["bbox_min"] == pytest.approx([round(v, 2) for v in lo], abs=0.006), p["id"]
-        assert p["bbox_max"] == pytest.approx([round(v, 2) for v in hi], abs=0.006), p["id"]
+        # the page rounds to 0.01, so compare with the raw bounds (rounding both sides can differ by 0.01)
+        assert p["bbox_min"] == pytest.approx(list(lo), abs=0.006), p["id"]
+        assert p["bbox_max"] == pytest.approx(list(hi), abs=0.006), p["id"]
         assert p["triangles"] == len(m.faces), p["id"]
         assert p["watertight"] == bool(m.is_watertight), p["id"]
 
@@ -390,10 +391,11 @@ def test_trackball_numbers_equal_stack_json(parts):
         assert v["cradle"] in by_id and by_id[v["cradle"]]["group"] == "cradle"
         assert v["retainer"] in by_id and by_id[v["retainer"]]["group"] == "retainer"
         # the cradle STL is in the stack frame: its rim is at rim_z and the ball centre on the z axis
+        # (symmetric in x only: since r2.4 the tilted sensor sleeve sits on one side in y)
         c = by_id[v["cradle"]]
         assert c["bbox_max"][2] == pytest.approx(s["rim_z"], abs=0.01)
         assert c["bbox_min"][2] == pytest.approx(s["lowest_plastic_z"], abs=0.01)
-        assert abs(c["bbox_min"][0] + c["bbox_max"][0]) < 0.02 and abs(c["bbox_min"][1] + c["bbox_max"][1]) < 0.02
+        assert abs(c["bbox_min"][0] + c["bbox_max"][0]) < 0.02
 
 
 def test_every_sheet_says_the_design_is_untested():
