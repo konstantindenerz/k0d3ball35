@@ -81,13 +81,13 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   the cradle STL): a 1.2 mm C-ring on the cover round the hole with two claws over the ball's
   shoulders at +-80 degrees (0.4 mm off the ball), nothing in the 156 degree sector facing the
   thumb. Two split snap pins (2.2 mm, 0.9 mm slit, 0.12 mm undercut, prong strain 2.2 percent)
-  go through the cover's pin holes at r 13, +-25 degrees, clear of the cup and the sensor tab.
+  go through the cover's pin holes at r 13, +-56 degrees, between the sensor tab (+x) and the claws.
   `retention.py` (`make retention`): trapped with 0.67 mm of combined looseness, 0.39 mm off the
   ball at rest, pulling it off never brings a claw closer, the pins keep 0.82 mm to the cradle.
   It keeps the shape of the earlier cup-mounted clip, which needed a 26.5 mm cover hole. At floor level the well
-  is the 24 x 29 housing box (centred 2.55 mm off the ball towards +y) plus 0.5, which
-  contains the cradle footprint (cup skirt plus tilted sleeve, 24.05 x 26.84 with clearance),
-  floor at -7.1 (2.5 mm floor), two 2.2 mm holes 20 mm apart on the x axis through the ball with a 4.8 mm, 1.3 mm deep
+  is the 29 x 24 housing box (centred 2.55 mm off the ball towards +x) plus 0.5, which
+  contains the cradle footprint (cup skirt plus tilted sleeve, 27.73 x 24.05 (x by y) with clearance),
+  floor at -7.1 (2.5 mm floor), two 2.2 mm holes 20 mm apart on the y axis through the ball with a 4.8 mm, 1.3 mm deep
   90 degree countersink from below (`case_screw_cs_d`, `case_screw_cs_h`): the flat head of
   an M2 countersunk screw ends up 0.2 mm inside the underside, 1.2 mm of floor is left at
   the bore. The tray only keeps the lid lip off J1 and the cable corridor on the key side

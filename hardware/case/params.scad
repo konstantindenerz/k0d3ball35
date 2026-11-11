@@ -181,7 +181,8 @@ clip_open_az    = 102;         // nothing of the clip beyond +- this azimuth: 15
 clip_ring_t     = 1.2;         // C-ring on the cover top
 clip_ring_w     = 4.8;         // radial width from the hole edge: carries the pins with 1.2 mm round them
 clip_pin_r      = 13.0;        // pin axis from the ball axis: the pin keeps 0.375 to the cup (r 11.525)
-clip_pin_az     = 25;          // pins at +- this azimuth, clear of the claws and of the sensor tab (+y)
+clip_pin_az     = 56;          // pins at +- this azimuth, between the sensor tab (+x, 18 mm wide: 0.68 mm
+                               // from the pin to its side face) and the claws at +-80 (0.97 mm)
 clip_pin_d      = 2.2;         // in a cover_pin_hole_d hole
 cover_pin_hole_d = 2.4;
 clip_pin_slit   = 0.9;         // radial slit: two 0.65 mm prongs that spring towards each other

@@ -205,11 +205,22 @@ def feet(layout: Layout, box_r) -> list[tuple[float, float]]:
 
 
 def pocket_opening(layout: Layout) -> Polygon:
-    """The rectangle left open over the cradle: its well, the cradle circle and the cable path
-    over the PCB edge to J1. Nothing else of the old PCB notch has to stay open."""
+    """The rectangle left open over the cradle: its well, the cup and the cable path over the
+    PCB edge to J1. Nothing else of the old PCB notch has to stay open.
+
+    Towards the user (+y) the cup sets the edge: pocket.cup_envelope (cradle stack.json) plus the
+    housing clearance. The wider trackball.cradle_diameter circle (the r1 flange, still the PCB
+    notch) is kept only on the key-side half, where it sets the thumb-side edge as before and
+    the FFC runs round the cup; using it all round (until r2.4b) only added 2.5 mm of case depth
+    at +y, where no cable runs."""
     tb = layout.cfg["trackball"]
-    parts = [layout.housing_box().buffer(0.5, join_style=2),
-             Point(layout.ball_center).buffer(tb["cradle_diameter"] / 2 + 0.2, 64)]
+    pk = tb["pocket"]
+    clear = pk["housing_clearance"]
+    bx, by = layout.ball_center
+    cable_r = tb["cradle_diameter"] / 2 + 0.2
+    parts = [layout.housing_box().buffer(clear, join_style=2),
+             Point(bx, by).buffer(pk["cup_envelope"] / 2 + clear, 64),
+             Point(bx, by).buffer(cable_r, 64).intersection(box(bx - cable_r, by - cable_r, bx + cable_r, by))]
     if layout.cable_corridor() is not None:
         parts.append(layout.cable_corridor())
     return box(*unary_union(parts).bounds)
