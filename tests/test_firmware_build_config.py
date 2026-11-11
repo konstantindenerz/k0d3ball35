@@ -126,8 +126,12 @@ def test_west_manifest_pins_zmk_commit():
     assert re.fullmatch(r"[0-9a-f]{40}", zmk["revision"]), "ZMK must be pinned to a commit, not a branch"
     assert zmk["import"] == "app/west.yml"
     assert manifest["self"]["path"] == "config"
-    # the PMW3610 driver is Zephyr's own (pixart,pmw3610); no extra module must be needed
-    assert [p["name"] for p in manifest["projects"]] == ["zmk"]
+    # the only extra module is the PAW3222 driver, pinned like ZMK
+    assert [p["name"] for p in manifest["projects"]] == ["zmk", "zmk-driver-paw3222"]
+    driver = manifest["projects"][1]
+    assert re.fullmatch(r"[0-9a-f]{40}", driver["revision"]), "the driver must be pinned to a commit, not a branch"
+    remotes = {r["name"]: r["url-base"] for r in manifest["remotes"]}
+    assert remotes[driver["remote"]] == "https://github.com/sekigon-gonnoc"
 
 
 def test_shield_kconfig_symbols_match_shield_names():
@@ -151,22 +155,23 @@ def test_shield_metadata():
         assert (SHIELD / f"{sibling}.overlay").is_file()
 
 
-def test_right_overlay_matches_zephyr_pmw3610_binding():
-    """Properties used on the sensor node exist in Zephyr's pixart,pmw3610 binding."""
+def test_right_overlay_matches_paw3222_binding():
+    """Properties used on the sensor node exist in the driver's pixart,paw3222 binding
+    (dts/bindings/pixart,paw3222.yaml plus spi-device.yaml at the pinned driver commit)."""
     right = _strip((SHIELD / "k0d3ball35_right.overlay").read_text())
     node = re.search(r"trackball: trackball@0 \{(.*?)\n    \};", right, re.S).group(1)
-    assert 'compatible = "pixart,pmw3610"' in node
-    for required in ("reg =", "spi-max-frequency =", "motion-gpios =", "zephyr,axis-x =", "zephyr,axis-y ="):
+    assert 'compatible = "pixart,paw3222"' in node
+    for required in ("reg =", "spi-max-frequency =", "irq-gpios ="):
         assert required in node, f"{required} missing on the trackball node"
     props = set(re.findall(r"^\s*([a-z][a-z0-9,-]*)\s*[;=]", node, re.M))
-    allowed = {"compatible", "status", "reg", "spi-max-frequency", "motion-gpios", "reset-gpios",
-               "zephyr,axis-x", "zephyr,axis-y", "res-cpi", "invert-x", "invert-y", "force-awake", "smart-mode"}
-    assert props <= allowed, f"unknown PMW3610 properties {props - allowed}"
+    allowed = {"compatible", "status", "reg", "spi-max-frequency", "irq-gpios", "power-gpios",
+               "res-cpi", "force-awake"}
+    assert props <= allowed, f"unknown PAW3222 properties {props - allowed}"
     cpi = int(re.search(r"res-cpi = <(\d+)>", node).group(1))
-    assert 200 <= cpi <= 3200 and cpi % 200 == 0
+    assert 16 * 38 <= cpi <= 127 * 38 and cpi % 38 == 0, "driver BUILD_ASSERT: 16..127 steps of 38"
     assert "#include <input/processors.dtsi>" in right
     assert "#include <dt-bindings/input/input-event-codes.h>" in right
-    assert "CONFIG_INPUT_PMW3610=y" in (SHIELD / "k0d3ball35_right.conf").read_text()
+    assert "CONFIG_PAW3222=y" in (SHIELD / "k0d3ball35_right.conf").read_text()
 
 
 def test_input_listener_uses_known_processors():
@@ -200,11 +205,11 @@ def test_keymap_includes_and_behaviors_exist_in_zmk():
 
 
 def test_shared_conf_symbols_exist_in_pinned_zmk():
-    """Symbols set in the .conf files exist in ZMK main / Zephyr (checked against the pinned commit)."""
+    """Symbols set in the .conf files exist in ZMK main / Zephyr / the PAW3222 driver (pinned commits)."""
     conf = "".join((p.read_text() for p in (CONFIG / "k0d3ball35.conf", SHIELD / "k0d3ball35_right.conf", SHIELD / "k0d3ball35_left.conf")))
     symbols = set(re.findall(r"^CONFIG_(\w+)=", conf, re.M))
     known = {"ZMK_POINTING", "ZMK_POINTING_SMOOTH_SCROLLING", "ZMK_STUDIO", "ZMK_BATTERY_REPORTING",
              "ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY", "ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING",
              "ZMK_SLEEP", "ZMK_IDLE_SLEEP_TIMEOUT", "ZMK_EXT_POWER", "BT_CTLR_TX_PWR_PLUS_8",
-             "ZMK_KSCAN_DEBOUNCE_PRESS_MS", "ZMK_KSCAN_DEBOUNCE_RELEASE_MS", "INPUT_PMW3610", "SPI", "INPUT"}
+             "ZMK_KSCAN_DEBOUNCE_PRESS_MS", "ZMK_KSCAN_DEBOUNCE_RELEASE_MS", "PAW3222", "SPI", "INPUT"}
     assert symbols <= known, f"symbols not verified against the pinned ZMK: {symbols - known}"

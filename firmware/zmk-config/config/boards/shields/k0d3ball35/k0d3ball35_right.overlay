@@ -1,7 +1,7 @@
 /*
  * Right half (split central, 15 finger + 2 thumb keys - the inner pair since r2.3,
- * the outer position is the ball pocket - carries the PMW3610
- * trackball sensor for the 19.05 mm ball).
+ * the outer position is the ball pocket - carries the PAW3222
+ * trackball sensor module for the 19.05 mm ball, tilted 65 degrees beside it).
  *
  * Row and column pins are shared with the left half and live in k0d3ball35.dtsi
  * (COL0..COL4 = pro_micro 4..8, ROW0..ROW3 = pro_micro 21, 20, 19, 18). Sensor:
@@ -57,25 +57,24 @@
 
     trackball: trackball@0 {
         status = "okay";
-        compatible = "pixart,pmw3610";
+        compatible = "pixart,paw3222";
         reg = <0>;
         spi-max-frequency = <2000000>;
-        motion-gpios = <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        zephyr,axis-x = <INPUT_REL_X>;
-        zephyr,axis-y = <INPUT_REL_Y>;
+        irq-gpios = <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
         /* 19.05 mm ball. The sensor counts surface travel, and a rigid sphere moves
          * its surface by the same mm at the sensor as under the thumb whatever its
          * size, so counts per mm of thumb travel do not change. What changes is the
          * stroke: the thumb runs off a smaller sphere sooner and the light ball does
          * not coast after a flick, so each stroke moves less surface. To cover the
          * same screen distance per stroke the 19 mm ball needs about 30 percent more
-         * CPI than the 25 mm setup (400). Start at 600 and tune, see
-         * issues/fw-cpi-tuning-19mm.md. */
-        res-cpi = <600>;
-        smart-mode;
-        /* Flip these if the cursor moves the wrong way after assembly. */
-        // invert-x;
-        // invert-y;
+         * CPI than the 25 mm setup (400), so the target is about 600 counts per inch
+         * of thumb travel on both axes.
+         *
+         * The tilt costs the X axis cos(65) of that (see BALL_TILT below), so the
+         * sensor runs at 600 / cos(65) = 1420, rounded to the driver's 38-count step:
+         * 1444 (38 x 38). X then reads 1444 x 0.423 = 610, and BALL_TILT brings Y down
+         * to the same 611. Tune, see issues/fw-cpi-tuning-19mm.md. */
+        res-cpi = <1444>;
     };
 };
 
@@ -89,20 +88,39 @@
     excluded-positions = <6 7 16 17 18 26 27 33 34>;
 };
 
+/* Axis scale for the 65 degree tilt. The sensor sits towards the user (layout +y) and
+ * looks at the ball 25 degrees below the equator instead of at the bottom pole. With the
+ * ball centre at the origin it sees the point p = R (0, sin 65, -cos 65). The thumb on
+ * top turns the ball about a horizontal axis, and a surface point moves at w x p:
+ *   thumb along y (screen up/down): rotation about the x axis. p lies on a great circle
+ *     of that rotation, so it moves at the full thumb speed - Y reads 1:1.
+ *   thumb along x (screen left/right): rotation about the y axis. p is only R cos 65
+ *     from that axis, so it moves at cos 65 = 0.423 of the thumb speed - X is short.
+ * (At the pole both are 1:1; at the equator X would read nothing.) res-cpi is raised by
+ * 1 / cos 65 so X reaches the target, and Y is scaled down by cos 65 = 0.4226 ~ 11/26
+ * (0.4231). This assumes the sensor's X axis runs across the tilt plane, along the
+ * module's 14 mm edge: if the cursor is fast up/down and slow sideways, move the scale
+ * to zip_x_scaler. Layer overrides replace the base processors, so each one repeats it.
+ * Starting value from geometry; tune on hardware, issues/fw-cpi-tuning-19mm.md. */
+#define BALL_TILT <&zip_y_scaler 11 26>
+
 / {
     trackball_listener: trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
-        input-processors = <&zip_temp_layer LAYER_MOUSE 700>;
+        input-processors = BALL_TILT, <&zip_temp_layer LAYER_MOUSE 700>;
+        /* Wrong direction after assembly: put <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT)>
+         * (or _Y_INVERT) right after BALL_TILT in each list below, and
+         * #include <dt-bindings/zmk/input_transform.h>. */
 
         scroll {
             layers = <LAYER_SCROLL>;
-            input-processors = <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 6>;
+            input-processors = BALL_TILT, <&zip_xy_to_scroll_mapper>, <&zip_scroll_scaler 1 6>;
         };
 
         snipe {
             layers = <LAYER_SNIPE>;
-            input-processors = <&zip_xy_scaler 1 3>;
+            input-processors = BALL_TILT, <&zip_xy_scaler 1 3>;
         };
     };
 };

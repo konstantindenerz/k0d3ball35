@@ -1,13 +1,20 @@
-# ZMK main is pinned to a known-good commit. Bump deliberately, then rebuild both halves
-# and settings_reset. The weekly CI run on the pinned commit catches toolchain drift.
+# ZMK main and the PAW3222 driver are pinned to commits. Bump deliberately, then
+# rebuild both halves and settings_reset. The weekly CI run on the pinned commits catches
+# toolchain drift.
 manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
+    - name: sekigon-gonnoc
+      url-base: https://github.com/sekigon-gonnoc
   projects:
     - name: zmk
       remote: zmkfirmware
       revision: 4dd95d7840eb3d5a3f59bb29fbf1ab054715ef85
       import: app/west.yml
+    # PAW3222 trackball sensor (compatible "pixart,paw3222", Kconfig PAW3222)
+    - name: zmk-driver-paw3222
+      remote: sekigon-gonnoc
+      revision: df652881be2520bde4f64ab6ca35e4c5708f4f9b
   self:
     path: config

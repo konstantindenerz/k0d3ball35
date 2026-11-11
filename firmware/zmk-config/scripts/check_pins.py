@@ -99,14 +99,14 @@ def strip_comments(text: str) -> str:
 
 
 def check_sensor(text: str, label: str, errors: list[str]) -> None:
-    """SPI psels, chip select and motion pin of a PMW3610 block must use the agreed pins."""
+    """SPI psels, chip select and motion (irq) pin of a PAW3222 block must use the agreed pins."""
     for func, sig in (("SPIM_SCK", "TB_SCLK"), ("SPIM_MOSI", "TB_SDIO"), ("SPIM_MISO", "TB_SDIO")):
         if psel(text, func) != PRO_MICRO[EXPECTED[sig]]:
             errors.append(f"{label} {func} {psel(text, func)} != {PRO_MICRO[EXPECTED[sig]]} ({sig} = D{EXPECTED[sig]})")
     if gpio_ref(text, "cs-gpios") != PRO_MICRO[EXPECTED["TB_NCS"]]:
         errors.append(f"{label} cs-gpios {gpio_ref(text, 'cs-gpios')} != {PRO_MICRO[EXPECTED['TB_NCS']]}")
-    if gpio_ref(text, "motion-gpios") != PRO_MICRO[EXPECTED["TB_MOT"]]:
-        errors.append(f"{label} motion-gpios {gpio_ref(text, 'motion-gpios')} != {PRO_MICRO[EXPECTED['TB_MOT']]}")
+    if gpio_ref(text, "irq-gpios") != PRO_MICRO[EXPECTED["TB_MOT"]]:
+        errors.append(f"{label} irq-gpios {gpio_ref(text, 'irq-gpios')} != {PRO_MICRO[EXPECTED['TB_MOT']]}")
 
 
 def main() -> int:

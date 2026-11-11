@@ -9,7 +9,7 @@
 #include "k0d3ball35.dtsi"
 
 /*
- * Left-ball build. Populate a sensor board on the left half; it uses the same
+ * Left-ball build. Fit a PAW3222 module on the left half; it uses the same
  * four controller pins as the right half:
  *
  *   TB_SCLK  pro_micro 15 = P1.13
@@ -18,10 +18,10 @@
  *   TB_MOT   pro_micro 14 = P1.11
  *
  * Steps: uncomment the block below, in k0d3ball35_right.overlay disable
- * `trackball_listener` and enable `trackball_split_listener` plus `trackball_split`,
- * and add CONFIG_INPUT_PMW3610=y / CONFIG_SPI=y / CONFIG_INPUT=y to k0d3ball35_left.conf.
- *
- * #include <dt-bindings/input/input-event-codes.h>
+ * `trackball_listener` and enable `trackball_split_listener` plus `trackball_split`
+ * (give the split listener the BALL_TILT axis scale and layer overrides of
+ * `trackball_listener`), and add CONFIG_PAW3222=y / CONFIG_SPI=y / CONFIG_INPUT=y to
+ * k0d3ball35_left.conf.
  *
  * &uicr {
  *     nfct-pins-as-gpios;
@@ -54,14 +54,11 @@
  *     cs-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
  *
  *     trackball: trackball@0 {
- *         compatible = "pixart,pmw3610";
+ *         compatible = "pixart,paw3222";
  *         reg = <0>;
  *         spi-max-frequency = <2000000>;
- *         motion-gpios = <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
- *         zephyr,axis-x = <INPUT_REL_X>;
- *         zephyr,axis-y = <INPUT_REL_Y>;
- *         res-cpi = <600>;
- *         smart-mode;
+ *         irq-gpios = <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+ *         res-cpi = <1444>;
  *     };
  * };
  *

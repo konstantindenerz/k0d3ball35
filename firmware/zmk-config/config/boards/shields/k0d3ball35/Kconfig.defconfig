@@ -16,7 +16,7 @@ config SPI
 config INPUT
     default y
 
-config INPUT_PMW3610
+config PAW3222
     default y
 
 endif
