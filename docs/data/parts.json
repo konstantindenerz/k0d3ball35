@@ -65,8 +65,8 @@
    "doc": "hardware/case/README.md",
    "previews": [],
    "bbox_min": [
-    -74.46,
-    -77.78,
+    -74.63,
+    -77.95,
     0.0
    ],
    "bbox_max": [
@@ -75,11 +75,11 @@
     0.8
    ],
    "size": [
-    120.81,
-    86.53,
+    120.98,
+    86.7,
     0.8
    ],
-   "triangles": 1796,
+   "triangles": 1052,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -99,7 +99,7 @@
    "bbox_min": [
     -73.55,
     -50.6,
-    0.3
+    1.1
    ],
    "bbox_max": [
     -45.5,
@@ -109,7 +109,7 @@
    "size": [
     28.05,
     57.4,
-    8.4
+    7.6
    ],
    "triangles": 922,
    "watertight": true,
@@ -311,20 +311,20 @@
    "previews": [],
    "bbox_min": [
     -46.35,
-    -77.78,
+    -77.95,
     0.0
    ],
    "bbox_max": [
-    74.46,
+    74.63,
     8.75,
     0.8
    ],
    "size": [
-    120.81,
-    86.53,
+    120.98,
+    86.7,
     0.8
    ],
-   "triangles": 1904,
+   "triangles": 1032,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -343,7 +343,7 @@
    "bbox_min": [
     45.5,
     -50.6,
-    0.3
+    1.1
    ],
    "bbox_max": [
     73.55,
@@ -353,7 +353,7 @@
    "size": [
     28.05,
     57.4,
-    8.4
+    7.6
    ],
    "triangles": 924,
    "watertight": true,

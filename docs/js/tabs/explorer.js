@@ -256,7 +256,6 @@ function build(which) {
       const d = keyLocal(k, 0, 6);
       g.add(box(2.8, 1.1, 1.7, M.diode, d.x, -PCB_T - 0.55, d.z, k.rot));
     }
-    if (H.fpc) g.add(box(8.6, 2.0, 4.8, M.metal, H.fpc.x, -PCB_T - 1.0, H.fpc.y + 0.6));
     g.add(box(3.0, 1.5, 7.0, M.black, D.power_switch.x, -PCB_T - 0.75, D.power_switch.y));
     g.add(box(2.0, 1.5, 1.5, M.metal, D.power_switch.x - 2.5, -PCB_T - 0.75, D.power_switch.y));  // actuator at the inner edge
     g.add(box(3.5, 1.7, 2.9, M.metal, D.reset.x, -PCB_T - 0.85, D.reset.y));
@@ -266,7 +265,15 @@ function build(which) {
   {
     const g = layer(which === 'left' ? t('Left PCB (1.6 mm)') : t('Right PCB (1.6 mm)'), 0, '#2E5A3B', { x: B.max_x - 6, y: 0, z: B.min_y + 30 });
     g.add(slab(ol, PCB_T, 0, M.pcb));
-    for (const h of H.holes) g.add(cyl(1.6, PCB_T + 0.2, M.metal, h.x, -PCB_T / 2, h.y));
+    for (const h of H.holes) {
+      g.add(cyl(1.6, PCB_T + 0.2, M.metal, h.x, -PCB_T / 2, h.y));
+      g.add(cyl(1.75, 1.3, M.metal, h.x, 0.65, h.y));      // M2 head on the PCB top (BOM: max 3.5 mm), in the guard's hole
+    }
+    // J1 sits on the KEY side since r2.2 (FH12 body, F.Fab 8.6 x 4.8, 2 mm tall)
+    if (H.fpc) {
+      g.add(box(8.6, 2.0, 4.8, M.black, H.fpc.x, 1.0, H.fpc.y + 0.6));
+      g.add(box(2.8, 0.15, 1.3, M.metal, H.fpc.x, 0.075, H.fpc.y - 1.85));   // the six contact tails in front
+    }
     const tp = H.test_pads;
     for (let i = 0; i < tp.labels.length; i++) g.add(cyl(0.75, 0.1, M.pcbEdge, tp.start.x + i * tp.pitch, 0.05, tp.start.y));
     g.add(box(1.7, 0.1, 4.6, M.pcbEdge, D.battery_pads.x, 0.05, D.battery_pads.y));
