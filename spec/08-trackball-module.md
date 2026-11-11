@@ -53,8 +53,8 @@ assembled, so the module can be unplugged and lifted out without touching the PC
 ## 3. Geometry and heights
 
 The ball rests on three 2.0 mm ceramic balls in an open cup. The module sits in a sleeve beside
-the cup, tilted 65 degrees from vertical (`sensor_angle`) and leaning away from the keys
-(`sensor_az` = 270 in the layout frame); it looks at the ball through a 4 mm window 25 degrees
+the cup, tilted 65 degrees from vertical (`sensor_angle`) and leaning towards +x, under the middle
+column where the PCB already ends (`sensor_az` = 180, window azimuth 0 in the layout frame); it looks at the ball through a 4 mm window 25 degrees
 below the equator. Nominal lens distance 2.4 mm (window 2.2 to 2.6, aim for 2.3 to 2.5).
 
 The cup floor sets the ball height (`drop_cup` 11.53 mm against `drop_board` 10.65 mm for the
@@ -80,10 +80,10 @@ main PCB top:
 r2.3 for comparison: keycaps 25.6, ball 31.7, transport 31.7 mm over the desk.
 
 Floor footprint (`dxf/floor-19mm-pocket.dxf`): the cradle is one body with vertical walls, the
-cup plus a tab as wide as the sleeve, so its plan is the same at every height: 24.05 x 27.73 mm
-including 0.5 mm clearance, extending further on the side away from the keys. The case well
-around it is 25 x 30 mm. Two M2 x 8 countersunk self-tapping screws come up through the case
-floor into the cup skirt, 20 mm apart on the x axis through the ball; the module itself has no holes. Above the
+cup plus a tab as wide as the sleeve, so its plan is the same at every height: 27.73 x 24.05 mm (x by y)
+including 0.5 mm clearance, extending further on the +x side (the sleeve). The case well
+around it is 30 x 25 mm. Two M2 x 8 countersunk self-tapping screws come up through the case
+floor into the cup skirt, 20 mm apart on the y axis through the ball; the module itself has no holes. Above the
 PCB plane the cup is 23.05 mm wide and the tab stays 0.3 mm inside the notch octagon. The notch
 corner towards the keys is square, so the whole module drops into the pocket and lifts out
 with the PCB fitted.

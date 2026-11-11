@@ -343,7 +343,8 @@ the ball in when the half is turned over; otherwise the lid covers the ball in t
 
 5. Lower the cradle into the case pocket and fasten it with two M2 x 8 countersunk
    self-tapping screws from below, through the floor into the cup skirt. Snug, not tight.
-6. Route the cable up the gap between cup and notch, round the cup and over the board edge into
+6. Route the cable up past the sleeve on the outer (+x) side, round the cup on the key side
+   below the cup rim (the clip's pins hang down there), and over the board edge into
    J1 on the **key side**, exposed metal **down**. Close the lock. Fold gently, no crease.
 7. Drop the ball in: it spins freely, a strip of paper passes between ball and rim all round.
    (In the finished case it goes in last, through the pocket cover, chapter 12.)

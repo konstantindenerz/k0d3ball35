@@ -244,7 +244,7 @@ and derives everything from it; the numbers below are the contract between PCB a
 | Floor under the key area | -4.6 mm (3.0 mm for sockets and diodes) |
 | PCB fastening | M2 machine screws from the top into heat-set inserts in 6 mm standoffs on the five mounting holes |
 | Controller box | walls to +8.7 mm, separate cap with its roof underside at +6.7 mm (controller top +5.7 plus 1 mm) |
-| Cradle screws | two M2 x 8 countersunk (90 degree flat head) from below at (-23, 66) and (-3, 66) in a 4.8 mm countersink 1.3 mm deep, head 0.2 mm below the flat underside |
+| Cradle screws | two M2 x 8 countersunk (90 degree flat head) from below at (-13, 56) and (-13, 76) in a 4.8 mm countersink 1.3 mm deep, head 0.2 mm below the flat underside |
 
 ## 6. Firmware contract
 

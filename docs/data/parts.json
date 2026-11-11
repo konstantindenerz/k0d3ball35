@@ -38,7 +38,7 @@
    ],
    "bbox_min": [
     -78.73,
-    -89.55,
+    -84.5,
     -9.6
    ],
    "bbox_max": [
@@ -48,12 +48,12 @@
    ],
    "size": [
     128.28,
-    101.5,
+    96.45,
     18.3
    ],
-   "triangles": 9152,
+   "triangles": 9160,
    "watertight": false,
-   "non_manifold_edges": 2
+   "non_manifold_edges": 4
   },
   {
    "id": "guard-right",
@@ -129,7 +129,7 @@
    ],
    "bbox_min": [
     -33.5,
-    -89.55,
+    -84.5,
     2.0
    ],
    "bbox_max": [
@@ -139,7 +139,7 @@
    ],
    "size": [
     83.05,
-    101.5,
+    96.45,
     15.51
    ],
    "triangles": 4318,
@@ -191,7 +191,7 @@
    ],
    "bbox_min": [
     -78.73,
-    -89.55,
+    -84.5,
     2.0
    ],
    "bbox_max": [
@@ -201,7 +201,7 @@
    ],
    "size": [
     128.28,
-    101.5,
+    96.45,
     15.51
    ],
    "triangles": 6792,
@@ -222,7 +222,7 @@
    ],
    "bbox_min": [
     -58.82,
-    -89.55,
+    -84.5,
     -30.45
    ],
    "bbox_max": [
@@ -232,7 +232,7 @@
    ],
    "size": [
     108.37,
-    101.5,
+    96.45,
     47.96
    ],
    "triangles": 6852,
@@ -253,20 +253,20 @@
    ],
    "bbox_min": [
     -28.15,
-    -87.4,
+    -82.35,
     3.8
    ],
    "bbox_max": [
-    5.05,
+    8.4,
     -46.15,
     5.0
    ],
    "size": [
-    33.2,
-    41.25,
+    36.55,
+    36.2,
     1.2
    ],
-   "triangles": 1704,
+   "triangles": 1712,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -484,7 +484,7 @@
    ],
    "bbox_min": [
     -38.0,
-    -89.55,
+    -84.5,
     -9.6
    ],
    "bbox_max": [
@@ -494,12 +494,12 @@
    ],
    "size": [
     50.0,
-    48.55,
+    43.5,
     14.61
    ],
-   "triangles": 2898,
+   "triangles": 2904,
    "watertight": false,
-   "non_manifold_edges": 2
+   "non_manifold_edges": 4
   },
   {
    "id": "cradle-19mm-pocket",
@@ -515,20 +515,20 @@
    ],
    "bbox_min": [
     -11.52,
-    -15.2,
+    -11.52,
     -7.1
    ],
    "bbox_max": [
-    11.52,
+    15.2,
     11.52,
     3.43
    ],
    "size": [
-    23.05,
     26.73,
+    23.05,
     10.53
    ],
-   "triangles": 6856,
+   "triangles": 7224,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -558,7 +558,7 @@
     30.15,
     6.12
    ],
-   "triangles": 1582,
+   "triangles": 1598,
    "watertight": true,
    "non_manifold_edges": 0
   }

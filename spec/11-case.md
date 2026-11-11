@@ -81,9 +81,9 @@ The ball top sits under the roof underside, so both halves share one lid without
 
 The cradle stands on the case floor in a well beside the right PCB
 (`spec/08-trackball-module.md`, `hardware/trackball-cradle/README.md`). Its floor footprint is
-the cup skirt plus the sensor sleeve's tab, 24.05 x 27.73 mm with clearance, leaning away from
-the keys; the well around it is the 24 x 29 mm housing box from the layout (centred 2.55 mm off
-the ball towards +y) plus 0.5 mm. Floor at -7.1, two 2.2 mm holes 20 mm apart on the x axis through the ball for
+the cup skirt plus the sensor sleeve's tab, 27.73 x 24.05 mm (x by y) with clearance, leaning
+towards +x; the well around it is the 29 x 24 mm housing box from the layout (centred 2.55 mm off
+the ball towards +x) plus 0.5 mm. Floor at -7.1, two 2.2 mm holes 20 mm apart on the y axis through the ball for
 the M2 x 8 case screws from below into the cup skirt. The screws are countersunk flat heads:
 a 4.8 mm, 1.3 mm deep 90 degree cone (`case_screw_cs_d`, `case_screw_cs_h`) puts the head 0.2 mm
 inside the flat underside; 1.2 mm of floor is left at the bore.
