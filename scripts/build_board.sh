@@ -16,6 +16,13 @@ ATTEMPTS="${ATTEMPTS:-3}"
 HALVES=("$@")
 [ ${#HALVES[@]} -eq 0 ] && HALVES=(left right)
 
+# The router must be able to run: without java it used to be skipped silently and the board
+# kept only its hand routes (r2.4).
+if ! "$JAVA" -version >/dev/null 2>&1; then
+  echo "java not found ($JAVA): run with JAVA=/opt/homebrew/opt/openjdk/bin/java" >&2; exit 1
+fi
+[ -f "$FREEROUTING_JAR" ] || { echo "freerouting jar missing: $FREEROUTING_JAR" >&2; exit 1; }
+
 $PY scripts/gen_layout.py >/dev/null
 mkdir -p build
 for half in "${HALVES[@]}"; do
@@ -28,9 +35,11 @@ for half in "${HALVES[@]}"; do
   "$KICAD_CLI" sch erc --exit-code-violations --severity-error --format json -o "build/$NAME.erc.json" "$DIR/$NAME.kicad_sch" >/dev/null 2>&1
   ok=0
   for attempt in $(seq 1 "$ATTEMPTS"); do
-    "$KPY" scripts/route.py all "$BOARD" 2>&1 | grep -E "Auto-routing stage completed|widened" || true
+    "$KPY" scripts/route.py all "$BOARD" > "build/$NAME.route.log" 2>&1 || { cat "build/$NAME.route.log" >&2; exit 1; }
+    grep -E "Auto-routing stage completed|widened" "build/$NAME.route.log" || true
     if "$KICAD_CLI" pcb drc --schematic-parity --severity-error --exit-code-violations --format json -o "build/$NAME.drc.json" "$BOARD" >/dev/null 2>&1; then
       echo "$half: DRC clean after attempt $attempt"
+      $PY scripts/check_routed.py "$BOARD" "build/$NAME.drc.json"
       ok=1
       break
     fi

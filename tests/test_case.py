@@ -315,6 +315,27 @@ def test_logo_grid(logo):
 
 
 # ----------------------------------------------------------------- stack
+def test_copied_cradle_facts_agree(cradle_stack):
+    """hardware/case/params.scad copies a few cradle facts. Every copy is checked against its
+    source here: a stale copy (notch_apothem 15.0 against the board's 15.5) once cut a skin and a
+    wall into the tray that no other test noticed. Add a line here whenever you copy a value."""
+    src = (CASE / "params.scad").read_text()
+
+    def val(name):
+        m = re.search(rf"^{name}\s*=\s*([^;]+);", src, re.M)
+        assert m, f"{name} missing in hardware/case/params.scad"
+        return [float(x) for x in re.findall(r"-?[\d.]+", m[1])]
+
+    c = cradle_stack
+    assert val("ball_d") == [c["ball_d"]]
+    assert val("sensor_angle") == [c["sensor_angle"]]
+    assert val("sensor_az") == [c["window_az"]], "the case's sensor_az is the cradle's window azimuth"
+    assert val("sensor_sleeve") == [c["housing_x"], c["housing_y"]]
+    assert abs(val("sensor_reach")[0] - c["housing_radial_extent_x"]) < 0.01
+    assert val("ball_top_z") == [c["ball_top_above_pcb_top"]]
+    assert not re.search(r"^notch_apothem\s*=", src, re.M), "the notch comes from the layout data, not a copy"
+
+
 def test_stack_json(stack, cradle_stack):
     assert set(stack) == {"left", "right"}, "19.05 mm is the only ball since r2.4"
     for name, v in stack.items():
