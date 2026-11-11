@@ -1,4 +1,4 @@
-# k0d3ball35 layout - single source of truth for the key geometry (revision r2.3).
+# k0d3ball35 layout - single source of truth for the key geometry (revision r2.4).
 # SPDX-License-Identifier: CERN-OHL-P-2.0
 #
 # Coordinates describe a half in millimetres in its own frame: x grows outward
@@ -17,7 +17,7 @@
 # 5.00 mm, thumb keys at 0 / 10 / 20 degrees) scaled to the Choc 18 x 17 mm pitch.
 
 name: k0d3ball35
-revision: r2.3
+revision: r2.4
 units: mm
 
 pitch:
@@ -148,7 +148,7 @@ outline:
 
 silkscreen:
   title: k0d3ball35
-  revision_text: r2.3
+  revision_text: r2.4
   # Owner wordmark (spec/images/logo.svg, see NOTICE) on the back silkscreen, under the thumb
   # bridge. That band is the only place on either face that is clear of pads and of the other
   # silkscreen on both halves; the front is boxed in between the title text and the reset and

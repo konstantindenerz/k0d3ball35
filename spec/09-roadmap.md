@@ -31,7 +31,7 @@ Do these before paying for anything:
    (`tests/test_ffc_pin_order.py`). Ticket `hw-ffc-pin-order-verification`.
 7. Then order: `hw-jlcpcb-order-r1`, shop by shop per `spec/12-order-checklist.md`.
 
-## r2.3 (current revision)
+## r2.4 (current revision)
 
 Scope: two main PCBs (left 18 keys, right 17 keys with the FPC connector and the pocket notch),
 bought PAW3222 sensor module, parametric cradle for a 19.05 mm ball standing in a case pocket, ZMK shield with 35 keys and Studio, documentation, automated checks. Everything a
