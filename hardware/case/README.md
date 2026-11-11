@@ -22,7 +22,7 @@ Files
 | `lid.scad` | hinged lid: outer and inner plate, inner lip, roof magnets, knuckle hinge with its stop, the folded foot |
 | `Makefile` | `make` builds data, STL, DXF, previews and `stack.json` |
 | `stack.py` | collects the echoed stack values into `stack.json` (left, right) |
-| `stl/` | printable parts per half: `lid-outer-*` and `lid-inner-*` are the two lid plates to print, `lid-*` the closed pair for the exploded view, `pocket-test-right.stl` the test print of the pocket |
+| `stl/` | printable parts per half: `lid-outer-*` and `lid-inner-*` are the two lid plates to print, `lid-*` the closed pair for the exploded view, `pocket-cover-right.stl` the flush cover over the cradle, `pocket-test-right.stl` the test print of the pocket |
 | `dxf/` | floor plan per half with every hole, for checking against the PCB drawings |
 | `preview/` | assembly, section through the ball, box close-up, lid on, lid folded as foot, hinge close-up, tray from below |
 
@@ -46,8 +46,8 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
 (issues/mech-case-stl-mirrored.md: before 2026-11-10 every part was exported as its mirror image).
 
 - Walls: 3.0 mm outside the PCB cavity (PCB plus 0.2 mm), mitre joins, no rounding. The rim
-  is at +5.0, flush with the Choc keycap skirts; around the ball the pocket wall is cut to
-  +2.925, 0.5 mm under the cradle cup rim (+3.425).
+  is at +5.0, flush with the Choc keycap skirts. On the right half the edge runs in 90 degree
+  steps around the ball pocket too (`case_outline`), and the pocket cover is flush with the rim.
 - Floor under the keys at -4.6 (3 mm under the PCB underside for hot-swap sockets and
   diodes); the underside is flat everywhere at -9.6.
 - Five M2 standoffs (6.0 mm, 3.0 mm tall) under the PCB holes with heat-set inserts.
@@ -62,8 +62,12 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   with inserts, 45 degree undersides.
 - Cap (`box_cap`): 2 mm plate in the rebate plus an L-shaped 2 mm skirt (key side at
   x = -45.5 and thumb side at y = 50.6) that stands 0.3 mm above the PCB top; two M2 screws.
-- Pocket (right half): above the PCB plane the cavity is the PCB notch octagon (apothem 15.5)
-  plus 0.2 and the 28 mm cradle circle, with a 2 mm wall around it; at floor level the well
+- Pocket (right half): part of the stepped edge and solid up to the rim; only `pocket_opening`
+  (the well, the 28.4 mm cradle circle and the cable path to the board edge) stays open above
+  the PCB plane, with a 4 mm ledge at +3.6 for the cover. Cover (`pocket_cover`): 1.4 mm plate
+  flush with the rim, 45 degree funnel to a 26.5 mm hole (the retainer clip passes), two M2 x 6
+  countersunk into 1.6 mm pilots on the user-side ledge, ends at the PCB edge on the thumb
+  side. At floor level the well
   is the 24 x 29 housing box (centred 2.55 mm off the ball towards +y) plus 0.5, which
   contains the cradle footprint (cup skirt plus tilted sleeve, 24.05 x 26.84 with clearance),
   floor at -7.1 (2.5 mm floor), two 2.2 mm holes 20 mm apart on the y axis with a 4.8 mm, 1.3 mm deep
@@ -121,7 +125,7 @@ From `stack.json` (`make stack`):
 | battery well floor / pocket floor | -7.6 / - | -7.6 / -7.1 |
 | key floor | -4.6 | -4.6 |
 | PCB | -1.6 .. 0 | -1.6 .. 0 |
-| pocket wall top / cradle cup rim | - | +2.925 / +3.425 |
+| cradle cup rim / pocket cover | - | +3.425 / +3.6 .. +5.0 |
 | rim | +5.0 | +5.0 |
 | cap plate under / box top | +6.7 / +8.7 | +6.7 / +8.7 |
 | keycap top | +11.0 | +11.0 |
@@ -139,8 +143,9 @@ Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
   infill, no supports.
 - Tray: flat on the bed, cavities open upwards. The only bridges are the USB opening (11 mm),
   the switch slot (7 mm), the LED window (3 mm) and the four foot magnet pockets from below
-  (6 mm); the shelf over the corners of the pocket well is a short overhang of about 6 mm.
+  (6 mm); the pocket opening is wider than its well, so it has no overhang.
   The boss undersides are 45 degree chamfers.
+- Pocket cover: top down, no supports; the funnel is a 45 degree cone.
 - Cap and both lid plates: roof down, no supports. The outer plate's roof magnet pockets open
   towards the roof underside, so they print as plain holes with the 0.6 mm skin on the bed;
   the lip's lead-in chamfer is a stepped taper at the top of the print. On the lid plates the
@@ -167,6 +172,7 @@ Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
   screws (6 mm deep).
 - Cradle: two M2 x 10 countersunk self-tapping screws from below through the countersunk
   floor holes into the cradle's cup skirt (`hardware/trackball-cradle/README.md`).
+- Pocket cover: two M2 x 6 countersunk screws from the top into 1.6 mm pilots in the ledge.
 
 ## Assembly
 
@@ -182,7 +188,8 @@ Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
 5. Controller box: plug the controller, put the cap on (skirt towards the keys and the thumb
    keys), two M2 screws into the bosses.
 6. Right half: stand the cradle module in the pocket, fasten the two M2 x 10 from below, route
-   the FFC round the cup into J1. Drop the ball in.
+   the FFC round the cup into J1. Pocket cover on (two M2 x 6 from the top), drop the ball in
+   through its funnel.
 7. Battery into the well, JST into J3, press the rubber feet into their recesses.
 8. Lid on for transport (press it down until the lip is in). As a foot: fold the inner plate
    down to the stop, lay the outer plate roof-up against the tray underside under the
@@ -231,7 +238,7 @@ closed pair, `lid_folded` the folded pair; the previews `lid_foot` (tilted on th
 - As a foot the kickstand reaches about 54 mm (right; 57 left) inward beyond the inner wall,
   so the two halves need at least that gap between them; with both kickstands pointing at each
   other the halves cannot stand closer than about 11 cm.
-- The pocket well corners outside the octagon are closed by a 1.6 mm shelf at the PCB
-  underside level; if a printer sags there, cut the shelf back with `pocket_wall`.
+- `cover_fit` = 0.15 in the rebate is a guess like `lid_fit`; the cover should drop in by hand
+  and sit flush without rocking.
 - The supplied wordmark is cropped at the top and `scripts/gen_logo.py` mirrors the frame foot
   in to close it; with the uncropped original that step can go.

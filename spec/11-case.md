@@ -19,6 +19,7 @@ together and how the wordmark is engraved into them. Tickets: [mech-case](../iss
 | Lid, outer plate | `lid-outer-left.stl`, `lid-outer-right.stl` | pinky-side half of the transport cover: the four roof magnets, the even hinge knuckles including both ends; as a foot it lies under the controller half |
 | Lid, inner plate | `lid-inner-left.stl`, `lid-inner-right.stl` | controller-notch and thumb-side half: the odd knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot |
 | Lid, closed pair | `lid-left.stl`, `lid-right.stl` | both plates joined by a 2 mm steel pin, held on top by an inner lip; for the exploded view, not for printing |
+| Pocket cover | `pocket-cover-right.stl` | flush 1.4 mm plate over the cradle opening, 45 degree funnel to a 26.5 mm hole around the cup, two M2 x 6 countersunk screws |
 | Pocket test | `pocket-test-right.stl` | the 50 x 50 mm corner of the right tray around the ball, for the first test print with the cradle |
 
 The tray and the box cap carry the owner wordmark as an engraved relief (section 9).
@@ -82,11 +83,20 @@ the keys; the well around it is the 24 x 29 mm housing box from the layout (cent
 the ball towards +y) plus 0.5 mm. Floor at -7.1, two 2.2 mm holes 20 mm apart on the y axis for
 the M2 x 10 case screws from below into the cup skirt. The screws are countersunk flat heads:
 a 4.8 mm, 1.3 mm deep 90 degree cone (`case_screw_cs_d`, `case_screw_cs_h`) puts the head 0.2 mm
-inside the flat underside; 1.2 mm of floor is left at the bore. Above the PCB plane the cavity is
-the PCB notch (apothem 15.5 mm, square corner towards the keys) plus 0.2 mm with a 2 mm wall,
-cut at +2.9 so the thumb reaches the ball at its equator. The FFC needs nothing from the tray: it
-climbs the gap between the cup and the notch and folds over the board edge into J1 on the key
-side; only the lid's lip keeps clear of J1 and that corridor (`fpc_clear`).
+inside the flat underside; 1.2 mm of floor is left at the bore.
+
+The pocket is part of the case edge, not a box in front of it: the outline
+(`case_outline` in `data.scad`, from `scripts/gen_case.py`) runs in 90 degree steps around it
+like it does around the keys, and the tray is solid up to the rim there. Only a rectangle over
+the cradle stays open (`pocket_opening`: the well, the 28.4 mm cradle circle and the cable path
+to the board edge). A flush cover (`pocket_cover`, 1.4 mm, from +3.6 to the rim at +5.0) sits on
+a 4 mm ledge in that opening; its 45 degree funnel ends in a 26.5 mm hole around the cup, so the
+thumb reaches the ball at its equator and the optional retainer clip passes. Two M2 x 6
+countersunk screws on the user-side ledge into 1.6 mm pilots hold it. On the thumb side the
+cover ends at the PCB edge, so the seam runs straight. The lid follows the same outline and
+covers the ball (ball top +13.95, roof underside +14.5). The FFC needs nothing from the tray: it
+climbs from the module and folds over the board edge into J1 on the key side under the cover;
+only the lid's lip keeps clear of J1 and that corridor (`fpc_clear`).
 
 ## 4. Controller box
 
@@ -121,10 +131,12 @@ This order is the only one the hardware allows, and the build guide
 6. Controller on, box cap on, two M2 screws. Keycaps on.
 7. Right half: fold the FFC over the board edge into J1 on the key side, close the lock. Last
    connection of the build, and the only one you can reach with everything assembled.
-8. Ball in, rubber feet on, lid on.
+8. Right half: pocket cover on, two M2 x 6 countersunk screws from the top. Ball in through
+   the funnel, rubber feet on, lid on.
 
-Service: the trackball module comes out without touching keycaps or PCB. Open J1's lock, pull
-the cable out, undo the two screws from below and lift the module out of the pocket. Everything
+Service: the trackball module comes out without touching keycaps or PCB. Take the pocket cover
+off (two screws from the top), open J1's lock, pull the cable out, undo the two screws from below
+and lift the module out of the pocket. Everything
 else (cell, controller, switches) needs the five PCB screws out, which means the keycaps come off
 first: their skirts overhang the screw heads by 1.5 mm.
 

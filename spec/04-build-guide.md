@@ -79,6 +79,7 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 1 (+1) | 19.05 mm (3/4 inch) POM trackball, or the PandaKB TB19 phenolic ball | right half | 11 |
 | 3 (+3) | 2.0 mm ZrO2 ceramic bearing balls | cradle | 11 |
 | 1 | printed cradle (`hardware/trackball-cradle/stl/cradle-19mm-pocket.stl`) | right half, case pocket | 11 |
+| 1 + 2 | printed pocket cover (`hardware/case/stl/pocket-cover-right.stl`) and two M2 x 6 countersunk screws | right half, flush over the cradle | 12 |
 | 1 (optional) | printed retainer (`hardware/trackball-cradle/stl/retainer-19mm.stl`), PETG | clips onto the cup, keeps the ball in when the half is turned over | 11 |
 | 2 | M2 x 10 self-tapping countersunk screws (or M2 x 10 countersunk machine screws + heat-set inserts) | case screws: from below through the case floor into the cradle's cup skirt | 11 |
 | 35 (+2) | Kailh Choc V1 switch (PG1350) | | 12 |
@@ -346,6 +347,7 @@ transport). Deburr the cup rim. Print settings and the test-fit list are in the
 6. Route the cable up the gap between cup and notch, round the cup and over the board edge into
    J1 on the **key side**, exposed metal **down**. Close the lock. Fold gently, no crease.
 7. Drop the ball in: it spins freely, a strip of paper passes between ball and rim all round.
+   (In the finished case it goes in last, through the pocket cover's funnel, chapter 12.)
 8. Optional retainer: claws left and right of the ball (it fits one way only), press until it
    clicks. To remove: pinch the claws, pull straight up.
 
@@ -384,14 +386,17 @@ hardware allows, so do not improvise.
 8. Right half: fold the FFC over the board edge into J1 on the key side and close the lock
    (chapter 11, step 6). This is the last connection of the build and the only one you can reach
    with everything assembled.
-9. Ball into the cup, four rubber feet onto the underside, lid on. As a stand, fold the inner lid plate down to its stop and
+9. Right half: put the pocket cover into its rebate (funnel up, screw holes towards you) and
+   fasten it with two M2 x 6 countersunk screws from the top, snug: it sits flush with the rim.
+   Ball into the cup through the funnel, four rubber feet onto the underside, lid on. As a stand, fold the inner lid plate down to its stop and
    let the outer plate snap roof-up under the controller half of the board, the folded inner
    plate just beyond the inner edge as a kickstand pointing towards the other half: the half
    stands on its outer edge and the kickstand and tilts by about 18 degrees, inner edge up.
    Leave about 35 mm between the halves for the kickstands (53 mm for the left one).
 
 Service, in the other direction: the trackball module comes out with the keycaps and the PCB in
-place - open J1's lock, pull the cable, undo the two screws from below, lift the module out.
+place - pocket cover off (two screws from the top), open J1's lock, pull the cable, undo the two
+screws from below, lift the module out.
 Anything else (cell, controller, a switch) means keycaps off and the five PCB screws out.
 
 Checkpoint: both halves closed, no part under strain, lid holds on top and under the half, USB-C

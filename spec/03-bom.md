@@ -70,6 +70,7 @@ well to print. The ball half still drains faster because of the sensor.
 | | Ball premium option | PandaKB TB19, 19 mm phenolic resin trackball | https://pandakb.com/shop/parts/pandakb-tb19-19mm-split-keyboard-trackball/ | 11.90 USD | | Sold specifically for split keyboards; phenolic tracks very well on PixArt sensors |
 | 3 (+3) | Bearing ball | 2.0 mm ZrO2 (zirconia) precision ball, G10 | AliExpress "2mm zirconia ceramic ball" | cents each | EU precision ball suppliers | Static seats in the cradle; 2.5 mm also fits the parametric cradle |
 | 2 | Screw | M2 x 10 mm countersunk (90 degree flat head), self-tapping, steel | hardware store, Mouser DE | | | Case screws: from below through the case floor into the cradle's cup skirt, 20 mm apart |
+| 2 | Screw | M2 x 6 mm countersunk (90 degree flat head, DIN 7991 or self-tapping) | hardware store, Amazon DE | | | Pocket cover, right half: from the top into 1.6 mm pilots in the tray ledge |
 | 14 (pack of 50) | Heat-set threaded insert | brass, M2, 3 mm long, about 3.5 mm OD, for a 3.2 mm hole | Amazon DE, AliExpress | 5 to 8 EUR per pack | | Default of the case (`hardware/case/params.scad`): five PCB standoffs and two controller-cap bosses per half, 7 per half |
 | 14 (pack) | Screw | M2 x 5 (or x 6) machine screw, pan or button head, head max 3.5 mm dia | Amazon DE, hardware store | 3 to 5 EUR per pack | | 7 per half into the inserts. Alternative: self-tapping into a 1.6 mm pilot with `-D pcb_screws="pilot"` in `hardware/case/params.scad` |
 
