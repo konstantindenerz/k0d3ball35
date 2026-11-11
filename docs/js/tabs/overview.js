@@ -31,6 +31,7 @@ export async function mount(section, ctx) {
       <div class="ov-intro">
         <p class="eyebrow">${esc(t('Revision {rev}', { rev: site.revision }))}</p>
         <h1 class="display ov-name">${esc(site.name)}</h1>
+        <p class="ov-alias">${esc(t('Read: {alias}', { alias: site.alias }))}</p>
         <p class="ov-what">${esc(t('A wireless split keyboard with {n} low-profile keys and a trackball under the right thumb, designed in the open.', { n: site.facts[0].value }))}</p>
         <p class="ov-status"><span class="ov-dot" aria-hidden="true"></span>${esc(status)} ${ext(site.status.order_ticket, t('Order ticket'))} · ${ext('spec/09-roadmap.md', t('Roadmap'))}</p>
         <div class="actions"><a class="btn primary" href="#explorer">${t('Open the 3D explorer')}</a><a class="btn" href="${repo}" target="_blank" rel="noopener">${t('Repository on GitHub')}</a></div>

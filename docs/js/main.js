@@ -11,6 +11,7 @@
 import { assetBaseLabel, loadCommit, loadData, loadVersions } from './assets.js';
 import { LANGS, LANG_LABELS, lang, loadCatalog, setLang, t, translateStatic } from './i18n.js';
 
+const HOME_TITLE = document.title;
 const chrome = document.getElementById('chrome');
 const sections = new Map([...document.querySelectorAll('main > section.tab')].map((s) => [s.id.slice(4), s]));
 const links = [...document.querySelectorAll('.sheets a[data-tab]')];
@@ -68,7 +69,8 @@ async function route() {
   const n = ids.indexOf(id) + 1;
   const title = t(section.dataset.title);
   document.getElementById('tbSheet').innerHTML = `<b>${n}</b> / ${ids.length} · ${title}`;
-  document.title = n === 1 ? 'k0d3ball35' : `${title} · k0d3ball35`;
+  // the overview keeps the <title> of index.html: it carries the searchable spelling kodeball35
+  document.title = n === 1 ? HOME_TITLE : `${title} · k0d3ball35 (kodeball35)`;
   if (changedTab) {
     links[n - 1].scrollIntoView({ block: 'nearest', inline: 'nearest' });
     window.scrollTo({ top: 0 });

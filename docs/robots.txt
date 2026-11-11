@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://konstantin-denerz.com/k0d3ball35/sitemap.xml

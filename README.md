@@ -1,9 +1,11 @@
 # k0d3ball35
 
+Read: **kodeball35**.
+
 Designed and built by [Konstantin Denerz](https://konstantin-denerz.com) ·
 [project page](https://konstantin-denerz.com/k0d3ball35/)
 
-A wireless, low profile, 35-key split keyboard with an integrated 19 mm trackball.
+k0d3ball35 (kodeball35) is a wireless, low profile, 35-key split keyboard with an integrated 19 mm trackball.
 Keyball-inspired column stagger and thumb arc, Kailh Choc V1 hot-swap switches, a nice!nano v2
 on each half, ZMK firmware, two flat angular PCBs (18 keys left, 17 keys right) and the ball in a
 case pocket right beside the thumb keys.

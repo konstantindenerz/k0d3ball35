@@ -127,6 +127,8 @@ def build() -> dict:
     right = json.loads((REPO / POINTS.format(half="right")).read_text())
     return {
         "name": right["name"],
+        # the plain spelling people type into a search box (0 -> o, 3 -> e)
+        "alias": "kodeball35",
         "revision": right["revision"],
         "github": GITHUB,
         "site": SITE,
