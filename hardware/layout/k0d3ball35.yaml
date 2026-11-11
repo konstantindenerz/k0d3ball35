@@ -64,17 +64,18 @@ trackball:
                                 # and a module whose 8.0 mm width is a nominal figure. 15.5 gives
                                 # 0.54 mm. Changed while the PCBs were still unordered.
     wall: 2.0                   # case wall around the cradle (pocket circle above the PCB plane)
-    housing: { x: 24.0, y: 29.0 }   # cup (23.05) plus the tilted module sleeve. Not centred on the
-    housing_offset: { x: 0.0, y: 2.55 }   # ball any more: the sleeve leans towards +y, so the box
-                                    # spans y 54.05 .. 83.05; x only needs the cup. The upper bound
-                                    # is the tray overhang check in tests/test_case_handedness.py.
+    housing: { x: 29.0, y: 24.0 }   # cup (23.05) plus the tilted module sleeve. Not centred on the
+    housing_offset: { x: 2.55, y: 0.0 }   # ball any more: the sleeve leans towards +x (under the middle
+                                    # column, where the PCB already ends at y 42.8), so the box spans
+                                    # x -24.95 .. 4.05; y only needs the cup. Was +y until r2.4b, which
+                                    # made the case 5 mm deeper (issues/mech-sensor-side-x.md).
     cup_envelope: 23.05         # widest part of the cradle cup above the PCB plane, cradle stack.json
     cable_gap_min: 1.5          # radial room the FFC needs between the cup envelope and the notch edge
     housing_clearance: 0.5      # gap between housing and pocket wall at floor level
-    case_screw_spacing: 20.0    # two M2 x 8 from below through the floor into the cup skirt, on the x axis through the ball (clear of the bearings)
-    sensor_board: { x: 14.0, y: 4.4 }    # PROJECTION of the tilted 14 x 8 mm PAW3222 module: 14 mm
-    sensor_board_offset: { x: 0.0, y: 13.5 }   # across the tilt, 4.4 mm along it, centred 13.5 mm
-                                    # towards +y of the ball axis. Spans 11.3..15.7, which is the
+    case_screw_spacing: 20.0    # two M2 x 8 from below through the floor into the cup skirt, on the y axis through the ball (clear of the bearings and the sleeve)
+    sensor_board: { x: 4.4, y: 14.0 }    # PROJECTION of the tilted 14 x 8 mm PAW3222 module: 4.4 mm
+    sensor_board_offset: { x: 13.5, y: 0.0 }   # along the tilt, 14 mm across it, centred 13.5 mm
+                                    # towards +x of the ball axis. Spans 11.3..15.7, which is the
                                     # module from its near face to its far corner (cradle
                                     # stack.json board_reach / module_reach).
     # r2.2: the module is a cartridge. It is lowered into the pocket and lifted out again with

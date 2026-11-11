@@ -129,7 +129,7 @@ class Layout:
 
         Since r2.4 the sensor module is tilted and sits beside the ball rather than under it, so
         the housing is no longer symmetric: `housing_offset` shifts the box off the ball centre
-        towards the side the module leans to (-x for sensor_az = 0).
+        towards the side the module leans to (+x for sensor_az = 180, the window azimuth is sensor_az + 180).
         """
         if not self.has_ball:
             return None
@@ -151,11 +151,11 @@ class Layout:
     def case_screws(self) -> list[tuple[float, float]]:
         if not self.has_ball:
             return []
-        # On the x axis through the ball: the bearings sit at 30, 150 and 270 degrees, so the
-        # y axis (90/270) would put a screw through the 270 degree bearing seat.
+        # On the y axis through the ball: the sensor sleeve sits on +x and the bearings at 60, 180
+        # and 300 degrees, so 90/270 is the free pair (cradle.scad, tests/test_cradle.py).
         sp = self.cfg["trackball"]["pocket"]["case_screw_spacing"]
         bx, by = self.ball_center
-        return [(round(bx - sp / 2, 3), by), (round(bx + sp / 2, 3), by)]
+        return [(bx, round(by - sp / 2, 3)), (bx, round(by + sp / 2, 3))]
 
     @property
     def fpc_side(self) -> str:
