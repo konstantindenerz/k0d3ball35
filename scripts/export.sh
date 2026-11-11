@@ -6,6 +6,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 KICAD_CLI="${KICAD_CLI:-/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli}"
+# check_routed.py needs only the standard library: the repo venv when there is one, else python3 (CI)
+PY="${PY:-$([ -x .venv/bin/python ] && echo .venv/bin/python || echo python3)}"
 HALVES=("$@")
 [ ${#HALVES[@]} -eq 0 ] && HALVES=(left right)
 mkdir -p build
@@ -19,7 +21,7 @@ for half in "${HALVES[@]}"; do
   REN="$DIR/renders"
   # never export fab files from an unrouted board (r2.4 did once)
   "$KICAD_CLI" pcb drc --schematic-parity --format json -o "build/$NAME.export-drc.json" "$BOARD" >/dev/null 2>&1 || true
-  .venv/bin/python scripts/check_routed.py "$BOARD" "build/$NAME.export-drc.json"
+  "$PY" scripts/check_routed.py "$BOARD" "build/$NAME.export-drc.json"
   rm -rf "$OUT"; mkdir -p "$OUT" "$REN"
   "$KICAD_CLI" pcb export gerbers --layers "F.Cu,B.Cu,F.Paste,B.Paste,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts" \
     --subtract-soldermask --no-protel-ext -o "$OUT/" "$BOARD" >/dev/null
