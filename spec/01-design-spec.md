@@ -19,11 +19,11 @@ board. Ticket `hw-two-pcbs-r2`.
 | R3 | Key pitch | 18.0 mm (x) x 17.0 mm (y) |
 | R4 | Column stagger | Keyball39 proportions scaled to 17 mm row pitch (see section 5) |
 | R5 | Thumb cluster | Keyball39 three-key arc, 0 / 10 / 20 degree rotation; the right half uses the two INNER keys (10 and 20 degrees), the outer position is the ball's |
-| R6 | Pointing | 19.05 mm (3/4 inch) POM trackball on the right half in a case pocket beside the PCB, PMW3610 sensor on a daughterboard on the case floor; 25 mm stays a cradle parameter |
+| R6 | Pointing | 19.05 mm (3/4 inch) POM trackball on the right half in a case pocket beside the PCB, PAW3222 sensor module tilted 65 degrees beside the ball (r2.4) |
 | R7 | Wireless | nRF52840 Pro Micro form factor (nice!nano v2 or SuperMini), BLE split, ZMK |
 | R8 | Power | 1S LiPo per half, on-board charger of the controller, slide power switch |
 | R9 | PCB | two main PCBs (`k0d3ball35-left`, `k0d3ball35-right`) with identical controller wiring; one sensor PCB |
-| R10 | Height | low profile: nothing taller than the Choc switch above the PCB except the ball; ball top about 17 mm above the PCB top |
+| R10 | Height | low profile: nothing taller than the Choc switch above the PCB except the ball; over the desk keycaps 20.8 mm, ball top 23.75 mm, with the lid 27.3 mm |
 | R11 | Indicators | none on the PCB; controller LED visible through a case window |
 | R12 | Assembly | all parts hand-solderable (SOD-123, low-profile controller sockets, 0.5 mm FPC with care) |
 | R13 | Outline | angular: 90 degree steps following the column stagger, no corner rounding, rectangular controller block at the inner edge |
@@ -50,16 +50,16 @@ way on both. The left half simply leaves the four sensor pins unconnected (they 
 | ROW1 (home) | D20 | P0.29 | in, pull-down | |
 | ROW2 (bottom) | D19 | P0.02 | in, pull-down | |
 | ROW3 (thumbs) | D18 | P1.15 | in, pull-down | |
-| TB_SCLK | D15 | P1.13 | out | PMW3610 SPI clock (right half; test pad on the left) |
-| TB_SDIO | D16 | P0.10 | bidir | PMW3610 3-wire SPI data, MOSI and MISO tied (right; test pad on the left) |
-| TB_NCS | D10 | P0.09 | out | PMW3610 chip select, active low (right; test pad on the left) |
-| TB_MOT | D14 | P1.11 | in, pull-up | PMW3610 motion interrupt, active low (right; test pad on the left) |
+| TB_SCLK | D15 | P1.13 | out | sensor SPI clock (right half; test pad on the left) |
+| TB_SDIO | D16 | P0.10 | bidir | sensor 3-wire SPI data, MOSI and MISO tied (right; test pad on the left) |
+| TB_NCS | D10 | P0.09 | out | sensor chip select, active low (right; test pad on the left) |
+| TB_MOT | D14 | P1.11 | in, pull-up | sensor motion interrupt, active low (right; test pad on the left) |
 | spare | D0, D1 | P0.08, P0.06 | | test pads on both halves (I2C capable) |
 | spare | D2, D3, D9 | P0.17, P0.20, P1.06 | | test pads on both halves |
 | B+ | RAW | | | battery positive, through the power switch |
 | GND | GND | | | |
 | RST | RST | | | reset button to GND |
-| VCC | VCC | | | 3.3 V output of the controller, feeds the sensor board (right) |
+| VCC | VCC | | | 3.3 V output of the controller, feeds the sensor module (right) |
 
 P0.09 and P0.10 are the NFC pins; the ZMK nice!nano board definition already configures them as GPIO.
 The same mapping is used by the existing community Keyball39 ZMK configs, so their tuning carries over.
@@ -77,7 +77,7 @@ middle and `(3,4)` inner. Cells `(3,0)` and `(3,1)` do not exist on either half,
 not exist on the right. Firmware keeps one overlay per half for the matrix transform and the
 sensor; the kscan pin set is shared.
 
-## 3. Sensor daughterboard interface (6-pin, 0.5 mm FPC, right half only)
+## 3. Sensor module interface (6-pin, 0.5 mm FPC, right half only)
 
 Right PCB connector J1 pin order (fixed):
 
@@ -96,39 +96,20 @@ pairing is pin for pin, so J1 carries the module's own order. The PCBs were not 
 module was chosen, so this cost nothing but a pad relabelling
 (`issues/hw-ffc-pin-order-verification.md`).
 
-J1 sits on the **key side** of the right PCB at (-20.6, +47.4), below the middle column's bottom
+J1 sits on the **key side** of the right PCB at (-20.6, +47), below the middle column's bottom
 key and 1.05 mm clear of its keycap, with the cable mouth 0.5 mm short of the notch edge. The
 cable climbs the gap between the cradle cup and the notch, folds over the board edge and goes
 into the mouth from +y, so the lock stays reachable with the keyboard assembled and the trackball
 module can be unplugged and lifted out without touching the PCB (`issues/hw-j1-top-side.md`).
 The left PCB has no J1 and no sensor nets.
 
-Connector family: Hirose FH12-6S-0.5SH (0.5 mm pitch, 6 contacts, bottom contact, ZIF slider) or a
-pin-compatible LCSC equivalent; the same pad geometry is used on both boards (the right PCB uses the
-front-face variant of the footprint). Cable: 0.5 mm pitch, 6 conductor, **opposite-side contacts
-(type B)**, 30 to 40 mm long. The two connectors look at the cable from opposite faces, which is
+Connector: Hirose FH12-6S-0.5SH (0.5 mm pitch, 6 contacts, bottom contact, ZIF slider) or a
+pin-compatible LCSC equivalent. Cable: 0.5 mm pitch, 6 conductor, **opposite-side contacts
+(type B)**, 30 to 40 mm long. J1 and the module look at the cable from opposite faces, which is
 what makes type B the right cable and the pin order straight through.
 
-Sensor board (`hardware/sensor-pcb/`): PMW3610DM-SUDU, LM18-LSI lens, VDD 1.8 V generated on the board from
-3.3 V, VDDIO 3.3 V, 100 nF plus 1 uF decoupling, no level shifting. Outline 26 x 25 mm (17 mm sensor body cutout
-plus a routing channel on each side), two M2 holes 20 mm apart on the vertical 25 mm axis with the optical centre
-exactly between them at the board centre; the lens runs along the 26 mm side. Component side is the top (FPC
-connector, passives); the back carries the "BALL SIDE" silkscreen, the sensor body (protrudes 0.7 mm) and the lens.
-In the pocket mount the board lies on the case floor with the component side down and the lens looking up.
-
-Sensor-board connector pin order is the SAME as on the main board: 1 VCC, 2 GND, 3 SCLK, 4 SDIO, 5 NCS,
-6 MOT. Both FH12-6S connectors are bottom contact, but the main board's sits on the key side and the sensor
-board's under its own board, so the type B cable joins pin 1 to pin 1 (`spec/08-trackball-module.md`
-section 2.2). R3 (1 k in series with MOTION) and R2 (NCS pull-up) make a wrong cable non-destructive.
-
-Optical stack (datasheet lens-to-surface 2.2 to 2.6 mm, 2.4 mm typical):
-
-| From the ball surface to | Distance |
-|--------------------------|----------|
-| lens flange | 2.40 mm |
-| PCB face on the lens side | 5.80 mm |
-| PCB face on the component side | 7.40 mm |
-| top of the tallest component (FPC connector) | 9.05 mm |
+Sensor: the bought PAW3222 module, 14 x 8 mm, 3.3 V, tilted 65 degrees beside the ball in the
+cradle (`spec/08-trackball-module.md`). Lens distance 2.4 mm nominal (2.2 to 2.6).
 
 ## 4. Power
 
@@ -146,9 +127,9 @@ rectangle on both boards and is printed on the back silkscreen:
 |------|-------|
 | Bay (back of the PCB, layout frame) | centre (-53.9, +17.5), 21 x 41 mm, i.e. x -64.4 to -43.4, y -3 to +38 (`battery.bay` in the layout yaml); it starts between the two controller hole rows and ends above the reset button |
 | Cell | PKCELL LP552035, 350 mAh, 5.7 x 20 x 37 mm maximum including the protection circuit, JST-PH plug (Eckstein, Germany); lead end towards +y |
-| Well depth | 9.0 mm below the PCB underside (socket tails 1.0 + 0.5 mm foam pad + up to 7.2 mm cell + 0.3 mm), floor at z = -10.6 mm; the case may use -11.6 mm to share the ball pocket's floor level |
+| Well depth | 6.0 mm below the PCB underside (flush controller pins 0.1 + 0.25 mm pad + 5.7 mm cell), floor at z = -7.6 mm; the pins must be flush (conthrough, or trimmed after soldering) |
 | Clearances | bay 1.75 mm from the top PCB edge, 0.37 mm from the left controller hole pads, 1.25 mm from the reset button, 2.6 mm from the inner column's hot-swap sockets; checked by the layout generator against every back-side part |
-| Alternatives | any cell up to 20.5 x 37.5 x 7.2 mm on the right and 6.0 mm on the left (the inner column's hot-swap sockets, 1.8 mm tall, overhang the left bay by 2.8 mm because the socket footprint is chiral; with the case well at -11.6 mm the left limit is 7.0 mm): 702025 / 602025 (20 x 25), 502030 / 602030 (20 x 30), 552035; the old 301230 (12 x 32 mm) would fit too but is not stocked with a plug |
+| Alternatives | any cell up to 20.5 x 37.5 x 5.7 mm with a PH 2.0 plug, e.g. 502030 or 402025; 6 and 7 mm cells no longer fit |
 
 Because nothing lies between the controller and the PCB any more, the controller sits on the
 lowest sockets available (Mill-Max 315 with 3320 pins or conthrough, 2.5 mm design value): the
@@ -164,8 +145,8 @@ the actuator through the inner edge, reset button RB1 on RST at (-66, +41) below
 
 RAW, GND, RST and VCC connect straight to their controller holes on both boards. There are no
 solder jumpers and no sacrificed pins: D0 is a free test pad. Sensor supply on the right half is
-the controller's VCC (3.3 V, up to 500 mA available); the PMW3610 draws 0.6 mA when tracking and
-36 uA in rest.
+the controller's VCC (3.3 V, up to 500 mA available); the PAW3222 module draws
+roughly half of what the PMW3610 did.
 
 ## 5. Geometry (single source: `hardware/layout/k0d3ball35.yaml`)
 
@@ -208,14 +189,14 @@ Ball pocket (right half only): ball centre (-13.0, +66.0), 5 mm outboard of the 
 thumb cluster and under the ring column; every reference design (Keyball 39/44/61, torabo-tsuki
 LP, Charybdis) drops the outermost thumb key on the ball half instead, and a 19 mm ball has to
 sit further in than their 34 mm one because the thumb touches its near surface, not its centre. The ball does not pass through the PCB. The PCB edge has a regular
-octagonal notch with apothem 15.0 mm around the ball centre (cradle clearance radius 14 mm plus
-1.0 mm), with the corner towards the keys and the inner column squared off so the module can be
+octagonal notch with apothem 15.5 mm around the ball centre (cradle clearance radius 14 mm plus
+1.5 mm), with the corner towards the keys and the inner column squared off so the module can be
 lowered into its pocket past the board edge (`issues/mech-cradle-notch-relief.md`). The case
 pocket around the cradle is a 32 mm circle (28 mm cradle clearance plus a 2 mm
-wall), and the 26 x 25 mm sensor board lies centred under the ball on the case floor, 11.6 mm below
-the PCB top. The cradle is screwed to the case floor, not to the PCB; there are no cradle holes on
+wall); the PAW3222 module sits tilted 65 degrees beside the ball in the cradle, leaning away from
+the keys, and the cradle stands on the case floor at -7.1 mm. The cradle is screwed to the case floor, not to the PCB; there are no cradle holes on
 the PCB. Minimum clearance between the 28 mm cradle circle and any keycap: 1.0 mm (checked by the
-generator). Ball top about 17.1 mm above the PCB top (`hardware/trackball-cradle/stack.json`).
+generator). Ball top +13.95 mm above the PCB top (`hardware/trackball-cradle/stack.json`).
 
 Controller block: a rectangle at the inner edge from above the controller down to the thumb
 cluster. Controller hole-pattern centre (-58, +11.7), USB connector towards the top edge, component side up, long
@@ -259,7 +240,7 @@ and derives everything from it; the numbers below are the contract between PCB a
 |------|-------|
 | Wall top (rim) | +5.0 mm, beside the keycap skirts |
 | Pocket cavity above the PCB plane | notch (octagon with the square corner) + 0.2 mm, union with the 28 mm cradle circle; 2 mm wall around it |
-| Case floor under the battery bay, J3, RB1 and under the cradle housing | -11.6 mm (the 9 mm well plus 1 mm) |
+| Case floor | -7.6 mm under the battery bay, J3 and RB1 (6.0 mm well), -7.1 mm under the cradle; underside -9.6 mm |
 | Floor under the key area | -4.6 mm (3.0 mm for sockets and diodes) |
 | PCB fastening | M2 machine screws from the top into heat-set inserts in 6 mm standoffs on the five mounting holes |
 | Controller box | walls to +8.7 mm, separate cap with its roof underside at +6.7 mm (controller top +5.7 plus 1 mm) |
@@ -272,7 +253,7 @@ ZMK `main` (Zephyr 4.1 based), shield name `k0d3ball35`, builds `k0d3ball35_left
 of section 2; the matrix transform is 4 rows x 10 columns with 35 positions, row 3 mapping
 `RC(3,2) RC(3,3) RC(3,4)` on the left and `RC(3,9) RC(3,8)` on the right (right thumb inner is
 matrix column 4, thumb middle column 3). The right half is the split central and carries the sensor
-(`pixart,pmw3610`, `res-cpi` 600 default for the 19 mm ball). `zmk,input-split` is scaffolded so
+(`pixart,paw3222` from `sekigon-gonnoc/zmk-driver-paw3222`, `res-cpi` 1444 with a Y scaler of 11/26 for the 65 degree tilt, about 610 CPI on both axes; tuned on hardware in `issues/fw-cpi-tuning-19mm.md`). `zmk,input-split` is scaffolded so
 that a left-ball or dongle build is a configuration change. ZMK Studio enabled; the physical layout
 is generated from `points-left.json` and `points-right.json`.
 

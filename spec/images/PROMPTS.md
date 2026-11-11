@@ -117,13 +117,12 @@ Aspect 1:1. Trackball cradle cross-section.
 
 ```prompt
 Technical cross-section drawing of a trackball module in a case pocket: a 19 mm ball resting on
-three small 2 mm ceramic balls set in a printed cup, the cup standing on a rectangular housing that
-reaches down to the case floor beside a 1.6 mm PCB (the PCB ends with a small gap next to the cup),
-two long screws coming up through the floor and the sensor board into the housing, a small
-sensor board with a lens inside the housing under the ball
-with a dimension arrow "2.4 mm" between lens and ball surface, a second arrow "17 mm" from the PCB
-top to the ball top, the ball's top a little above the keycap height, white background, thin lines,
-orange accent on the dimensions, sans-serif labels.
+three small 2 mm ceramic balls set in a printed cup whose rim ends just below the equator, beside
+the cup a small 14 x 8 mm sensor board tilted 65 degrees in a printed sleeve, looking at the
+ball's lower flank through a small window, the cup standing on a shallow case floor beside a
+1.6 mm PCB, two screws coming up through the floor into the cup, a dimension arrow "2.4 mm"
+between lens and ball surface, the ball top about 3 mm above the keycaps, white background, thin
+lines, orange accent on the dimensions, sans-serif labels.
 ```
 
 ## img-cradle-exploded
@@ -132,11 +131,11 @@ Aspect 4:3. Exploded view of the trackball module.
 
 ```prompt
 Exploded technical rendering on white, vertically stacked with thin guide lines: a white 19 mm
-ball, a beige printed cup whose rim ends just below the ball's equator on a plain rectangular housing
-and three small ceramic balls shown slightly lifted out of their seats, a small green sensor board
-with a black lens and a flat flex cable sliding into the housing from below, two long M2 screws
-that pass the case floor and the board into the housing, a beige case floor with a rounded
-rectangular pocket and two screw holes, soft studio lighting, clean.
+ball, a beige printed cup whose rim ends just below the ball's equator with a tilted sleeve on one
+side, three small ceramic balls shown slightly lifted out of their seats, a small green 14 x 8 mm
+sensor module with a flat flex cable sliding into the tilted sleeve, two M2 screws that pass the
+case floor into the cup, a beige case floor with a shallow pocket and two screw holes, soft studio
+lighting, clean.
 ```
 
 ## img-exploded-half
@@ -150,17 +149,6 @@ at its lower outer edge, hot-swap sockets and diodes on the underside, a control
 strips, a flat battery, a trackball cradle with a 19 mm ball standing beside the PCB notch, a beige
 boxy printed case bottom with a round pocket, all parts aligned vertically with thin guide lines,
 soft light.
-```
-
-## img-sensor-board
-
-Aspect 4:3. Sensor PCB top and bottom.
-
-```prompt
-Product photo on a white background of a tiny 26 x 25 mm green PCB shown twice side by side: top
-side with a black 16-pin optical sensor chip and a small lens clipped onto it, bottom side with a
-6-pin flat flex connector, a SOT-23 regulator and a few 0603 capacitors, two M2 holes, macro lens,
-soft shadows.
 ```
 
 ## img-ffc-orientation
@@ -227,8 +215,7 @@ Aspect 3:2. Inserting the flex cable.
 ```prompt
 Macro photo of fingers lifting the brown flip lock of a tiny 6-pin flat flex connector on the top
 face of a keyboard PCB, right beside the notch of a trackball pocket, and sliding in a white flat
-flex cable that curves up out of the pocket and folds over the board edge, a second identical
-connector on a small sensor board below, bright even light.
+flex cable that curves up out of the pocket and folds over the board edge, bright even light.
 ```
 
 ## img-build-step-cradle
@@ -282,17 +269,6 @@ Clean bar chart on white comparing estimated battery life in days for three case
 with 350 mAh, trackball half with 350 mAh in normal mode, trackball half with 350 mAh with the
 sensor forced awake; bars in grey with the recommended configuration in orange, axis labels and
 values, sans-serif.
-```
-
-## img-cradle-render-19-25
-
-Aspect 2:1. Two cradle sizes.
-
-```prompt
-Rendering on white of two beige 3D printed trackball cradles side by side, the left one holding a
-19 mm white ball, the right one a 25 mm white ball, both standing on the same plain rectangular
-housing with a cable slot and two screw holes underneath, a small ruler for scale, soft studio
-light.
 ```
 
 ## img-case-concept
@@ -363,24 +339,13 @@ short piece of wire across the two contacts of one hot-swap socket, the laptop s
 editor with a single typed character, oak desk, daylight.
 ```
 
-## img-build-step-sensor-lens
-
-Aspect 3:2. Sensor and lens on the daughterboard.
-
-```prompt
-Macro photo of a small green 26 by 25 millimetre PCB held in a helping-hands clamp, a black
-16-pin optical sensor pushed through a rectangular cutout from the back, its leads freshly soldered
-on the front, a clear plastic LM18 style lens with two guide posts held in tweezers about to be
-clipped onto the sensor body, bright even light.
-```
-
 ## img-build-step-lens-gauge
 
 Aspect 3:2. Checking the lens distance.
 
 ```prompt
 Macro photo looking into a beige 3D printed trackball cup without the ball, a thin steel feeler
-gauge laid flat across the 9 millimetre hole at the bottom of the cup over the lens aperture,
+gauge held against the small window low in the cup wall where a tilted sensor lens looks in,
 three tiny white ceramic bearings visible around the cup wall, a finger holding the gauge, soft
 light.
 ```
@@ -428,12 +393,12 @@ Aspect 4:3. Cross-section through the ball pocket.
 
 ```prompt
 Technical cross-section illustration of a beige-grey printed keyboard case corner holding a
-trackball module beside the PCB: a 19 mm white ball in a thin blue cup, the cup standing on a
-rectangular housing that reaches down into a deep square well in the case floor, two long screws
-coming up through the floor into the housing, a green 1.6 mm PCB ending 1 mm from the cup with an
-angular notch, the case wall around the cup stopping just below the cup rim, a flat ribbon
-cable curving from the PCB underside down into the housing, dimension lines for the 11.6 mm
-floor depth and the 17 mm ball height, clean CAD line-art style, white background.
+trackball module beside the PCB: a 19 mm white ball in a thin blue cup standing on a shallow case
+floor, a small sensor board tilted 65 degrees in a sleeve beside the cup, two screws coming up
+through the floor into the cup, a green 1.6 mm PCB ending just short of the cup with an angular
+notch, the case wall around the cup stopping just below the cup rim, a flat ribbon cable climbing
+from the sleeve past the PCB edge, dimension lines for the 7.1 mm floor depth and the 23.75 mm ball
+height over the desk, clean CAD line-art style, white background.
 ```
 
 ## img-case-logo-cap

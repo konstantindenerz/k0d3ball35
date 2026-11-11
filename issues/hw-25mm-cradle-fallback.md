@@ -2,7 +2,7 @@
 title: 25 mm pocket cradle as fallback (needs a wider notch)
 type: feature
 priority: P3
-status: open
+status: wontfix
 area: hw
 created: 2026-11-05
 ---
@@ -28,3 +28,7 @@ ball top +23.05 mm). Above the PCB plane it is 29.6 mm wide, so it does not fit 
 
 Was hw-34mm-cradle-option (34 mm ball through the r1 cutout board) until 2026-11-06; 34 mm is out of
 scope since the ball moved beside the PCB.
+
+2026-11-11 (r2.4): wontfix. 19.05 mm is the only supported ball; the 25 mm variant and the r1 cutout
+mount were removed from the cradle and the case. A larger ball would mean a new PCB notch and a
+new sensor geometry, not a parameter change.

@@ -26,8 +26,7 @@ Each half gets a removable lid that
   tenting it, held by magnets or a comparable snap system, so the lid is never a loose part.
 
 Heights the lid has to clear, z = 0 is the PCB top (`hardware/trackball-cradle/stack.json`,
-`issues/mech-case.md`): ball top +17.1 mm on the right half (19.05 mm ball; 25 mm fallback
-+23.05 mm), controller top +5.7 mm (lid over the controller block about +7.5 mm), Choc V1 caps about +11 mm. The lid outline follows the case
+`issues/mech-case.md`): ball top +13.95 mm on the right half (19.05 mm ball, r2.4), controller top +5.7 mm (lid over the controller block about +7.5 mm), Choc V1 caps about +11 mm. The lid outline follows the case
 outline from `hardware/layout/output/outline-left.dxf` / `outline-right.dxf` plus the ball pocket
 of the right half.
 
@@ -35,10 +34,10 @@ of the right half.
 
 - [x] Parametric CAD in `hardware/case/` sharing the layout data with `mech-case` (`lid.scad`); one lid model per half, the left one mirrored
 - [x] Lid holds on top by a 1 mm inner lip (3 mm into the tray, `lid_fit` 0.15), no magnets and no visible pads; four 6 x 2 mm magnets in the tray floor and four in the outer lid plate's roof (0.6 mm skin, invisible) hold the foot position
-- [x] Lid clears the caps (roof under +14.0, `lid_clear` 3.0; hinge strip under +12.0, 1 mm over the caps) and the controller box (+8.7, lid skirt notch to +9.0); the 19.05 mm ball looks through a 16 mm roof window with its top flush with the roof top (+17.0) and cannot leave the cup with the lid on (`tests/test_case.py`)
-- [x] Two plates per half joined by a pin hinge along x = -13: 9 knuckles flush with the roof top, axis +14.5, 2 mm steel rod in a 2.2 mm hole inserted from the back edge into a blind end knuckle (1.75 mm filament as fallback)
-- [x] Stop in the cut: below the axis the cut faces lean outward by `hinge_stop_deg` = half the solved fold (28.8 right, 21.9 left), meet flat on flat at the fold (`hinge_fold_deg` 57.6 right, 43.7 left) and carry the load; knuckle and groove never do
-- [x] Works as a foot on both halves in CAD: the folded lid shifted inward by `foot_dx` so the hinge axis sits 3 mm outside the inner tray wall, outer plate roof-up on the floor magnets under the controller half, inner plate folded down beyond the inner edge as the kickstand pointing towards the other half; the half stands on its outer bottom edge and on the hinge above the kickstand, no cantilever. Tilt `tent_deg` = 18 is the input, the fold is solved so the kickstand's lip edge reaches the desk; hinge axis 37.8 mm (right; 37.8 left) above the desk, kickstand reach 34.3 mm (53.2), free end of the outer plate 2.1 mm (7.7) above the desk (`tests/test_case.py` asserts more than 0.5); rubber feet stay usable without it. Rocking is checked on the print
+- [x] Lid clears the caps (roof under +14.5, `lid_clear` 3.5; hinge strip under +12.5, 1.5 mm over the caps), the controller box (+8.7, lid skirt notch to +9.0) and the ball (top +13.95, 0.55 mm under the roof), so both halves get the same lid, top +17.5, without a ball window; the ball cannot leave the cup with the lid on (`tests/test_case.py`)
+- [x] Two plates per half joined by a pin hinge along x = -13: 9 knuckles flush with the roof top, axis +15.0, 2 mm steel rod in a 2.2 mm hole inserted from the back edge into a blind end knuckle (1.75 mm filament as fallback)
+- [x] Stop in the cut: below the axis the cut faces lean outward by `hinge_stop_deg` = half the solved fold (28.5 right, 21.6 left), meet flat on flat at the fold (`hinge_fold_deg` 56.9 right, 43.2 left) and carry the load; knuckle and groove never do
+- [x] Works as a foot on both halves in CAD: the folded lid shifted inward by `foot_dx` so the hinge axis sits 3 mm outside the inner tray wall, outer plate roof-up on the floor magnets under the controller half, inner plate folded down beyond the inner edge as the kickstand pointing towards the other half; the half stands on its outer bottom edge and on the hinge above the kickstand, no cantilever. Tilt `tent_deg` = 18 is the input, the fold is solved so the kickstand's lip edge reaches the desk; hinge axis 37.8 mm (right; 37.8 left) above the desk, kickstand reach 34.5 mm (53.3), free end of the outer plate 1.6 mm (7.2) above the desk (`tests/test_case.py` asserts more than 0.5); rubber feet stay usable without it. Rocking is checked on the print
 - [x] All four lid plates print without supports (roof down; only the pin hole and the knuckle halves past the line overhang); test print open
 - [x] Image prompts in `spec/images/PROMPTS.md` (`img-case-lid-transport`, `img-case-lid-foot`, `img-case-lid-folded`, `img-case-lid-hinge`)
 
@@ -46,8 +45,7 @@ of the right half.
 
 Depends on `mech-case` and `mech-case-ball-pocket`. The cup is open by design, see the cradle
 README; the optional clip-on retainer (`mech-ball-retainer-clip`) clears the closed lid roof by
-1.4 mm and the hinge strip, so lid and retainer can be used together. The 25 mm fallback ball (+23.05 mm) only needs a taller lid over the
-pocket; keep the lid height a parameter.
+5.1 mm and the hinge strip, so lid and retainer can be used together.
 
 2026-11-06: CAD done in `hardware/case/lid.scad`. One height per half at the time: left roof
 under +12.0, top +15.0; right roof under +18.1, top +21.1 (3 mm roof); skirt on the rim at +5.0
@@ -118,3 +116,10 @@ kickstand needs about 34 mm (53 left) of free desk inward of each half. The 25 m
 lid (`lid_mode="flat"`) does not work as a foot at 18 degrees: its thicker outer plate would
 touch down before the kickstand (`foot_free_end_h` -9.4). Open as before: fits on the first
 print, rocking as a foot.
+
+2026-11-11 (r2.4): the ball dropped to +13.95, under the roof underside, so the ball window and
+`lid_mode` are gone and both halves share one lid height: `lid_clear` 3.5, roof under +14.5,
+top +17.5, hinge axis +15.0. Transport height 27.3 mm over the desk (was 31.7). Foot values from
+`hardware/case/stack.json`: fold 56.9 degrees right (43.2 left), kickstand reach 34.5 mm (53.3),
+free end 1.6 mm (7.2) above the desk. A window would not lower the lid: the roof underside is
+bound by the hinge strip over the caps, not by the ball.

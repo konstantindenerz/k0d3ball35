@@ -1,8 +1,9 @@
 # Firmware (ZMK)
 
 k0d3ball35 runs [ZMK](https://zmk.dev) on two nice!nano v2 (or SuperMini nRF52840) controllers.
-The right half is the split central and drives the PMW3610 trackball through the upstream Zephyr
-`pixart,pmw3610` input driver; no third-party driver module is needed. Since r2 the two halves are
+The right half is the split central and drives the PAW3222 trackball module through
+`sekigon-gonnoc/zmk-driver-paw3222` (`pixart,paw3222`, `CONFIG_PAW3222`), pinned as a second west
+project. Since r2 the two halves are
 separate PCBs with identical controller wiring: one shared kscan pin set, 35 keys (18 left, 17 right). ZMK Studio is enabled, so the
 keymap can be edited live from a browser.
 
@@ -139,15 +140,15 @@ All trackball settings live in `k0d3ball35_right.overlay`.
 
 | Setting | Where | Default | Notes |
 |---------|-------|---------|-------|
-| sensor resolution | `res-cpi` on the `trackball` node | 600 | 200 to 3200 in steps of 200. The sensor counts surface travel, so a 19 mm ball needs about 30 percent more CPI than the 25 mm ball of r1 (which started at 400) for the same cursor speed per thumb movement. 800 to 1000 suits fast cursor users. |
+| sensor resolution | `res-cpi` on the `trackball` node | 1444 | 608 to 4826 in steps of 38 |
+| tilt compensation | `&zip_y_scaler 11 26` in `trackball_listener` | 11/26 | the sensor is tilted 65 degrees, so the axis across the tilt reads only cos 65 = 0.423 of the true speed; scaling the other axis by 11/26 brings both to about 610 CPI. Final values are tuned on hardware (`issues/fw-cpi-tuning-19mm.md`) |
 | global scaling | `input-processors` of `trackball_listener` | none | add `&zip_xy_scaler 1 2` before the temp layer processor for a finer global scale without touching the CPI |
-| axis direction | `invert-x`, `invert-y` on the `trackball` node | off | enable if the cursor moves the wrong way; swap axes with `&zip_xy_swap_mapper` if the sensor board is mounted rotated by 90 degrees |
+| axis direction | `invert-x`, `invert-y` on the `trackball` node | off | enable if the cursor moves the wrong way; swap axes with `&zip_xy_swap_mapper` if the module is mounted rotated by 90 degrees |
 | auto mouse layer timeout | `&zip_temp_layer LAYER_MOUSE 700` | 700 ms | layer 4 is active while the ball moves and 700 ms after the last movement |
 | keys that keep the mouse layer | `excluded-positions` of `&zip_temp_layer` | mouse buttons, scroll, snipe | pressing other keys ends the mouse layer immediately |
 | typing guard | `require-prior-idle-ms` | 150 ms | the mouse layer does not open while you are typing |
 | scroll speed | `&zip_scroll_scaler 1 6` in the `scroll` child | 1/6 | smaller divisor = faster scrolling; natural scrolling: add `&zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)` |
 | snipe speed | `&zip_xy_scaler 1 3` in the `snipe` child | 1/3 | |
-| smart mode | `smart-mode` | on | PixArt's surface quality algorithm, keep on for plastic balls |
 | force awake | `force-awake` | off | keeps the sensor out of its rest modes; faster first movement at a high battery cost |
 
 Known behaviour of small balls: the first few millimetres after a pause can feel jumpy because the
@@ -162,8 +163,8 @@ CPI matters more than on a 34 mm Keyball.
 | left (peripheral) | 350 mAh | two to three months |
 | right (central, sensor) | 350 mAh | four to seven weeks of mixed use |
 
-Numbers come from the PMW3610 datasheet (0.6 mA tracking, 36 uA rest) plus typical nRF52840 split
-central consumption; measured values will replace them (see `issues/`). Deep sleep starts after
+Numbers are estimates from the old PMW3610 figures (the PAW3222 draws roughly half) plus typical
+nRF52840 split central consumption; measured values will replace them (see `issues/`). Deep sleep starts after
 30 minutes of inactivity (`CONFIG_ZMK_IDLE_SLEEP_TIMEOUT`) and switches the controller's VCC rail off,
 which also powers down the sensor. Only a key press wakes the keyboard; moving the ball does not.
 
@@ -176,9 +177,9 @@ level) and shown in ZMK Studio.
 |---------|-------|
 | halves do not talk to each other | flash `settings_reset` to both, then the real firmware; power both halves within a minute of each other |
 | right half works over USB but the host sees no Bluetooth keyboard | `&out OUT_BLE` on the System layer; clear the profile and pair again |
-| cursor does not move | sensor board power (3.3 V on pin 1 of the FPC), cable seated with contacts facing the connector, `NCS` and `MOT` continuity to the controller; build log must show `pixart,pmw3610` without warnings |
-| cursor moves only on one axis or diagonally | lens not clipped on the sensor, ball too high (lens-to-ball distance must be 2.2 to 2.6 mm), dirty ball |
-| cursor moves the wrong way | `invert-x` / `invert-y`; 90 degree rotation of the sensor board needs `&zip_xy_swap_mapper` |
+| cursor does not move | module power (3.3 V on pin 1 of J1), cable seated with contacts facing the connector, `NCS` and `MOT` continuity to the controller; build log must show `pixart,paw3222` without warnings |
+| cursor moves only on one axis or diagonally | module not seated in the sleeve, lens-to-ball distance outside 2.2 to 2.6 mm, dirty ball, tilt scaler missing |
+| cursor moves the wrong way | `invert-x` / `invert-y`; 90 degree rotation of the module needs `&zip_xy_swap_mapper` |
 | mouse layer opens while typing | increase `require-prior-idle-ms`; make sure `excluded-positions` does not include letter keys |
 | scroll goes in the wrong direction | add `&zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)` after the scroll mapper |
 | Studio cannot connect | right half must be the USB-connected half and built with the `studio-rpc-usb-uart` snippet; press the unlock key |
@@ -213,7 +214,7 @@ the same on both halves:
 2. In `k0d3ball35_right.overlay`, remove `trackball_listener` and enable the shared
    `trackball_split_listener` and the `trackball_split` node (`status = "okay";` on both). Move the
    input processor settings to that listener.
-3. Add `CONFIG_INPUT_PMW3610=y`, `CONFIG_SPI=y` and `CONFIG_INPUT=y` to `k0d3ball35_left.conf`.
+3. Add `CONFIG_PAW3222=y`, `CONFIG_SPI=y` and `CONFIG_INPUT=y` to `k0d3ball35_left.conf`.
 4. Rebuild and flash both halves.
 
 The peripheral forwards motion events to the central through ZMK's `zmk,input-split`; input

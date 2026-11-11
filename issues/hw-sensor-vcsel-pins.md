@@ -2,7 +2,7 @@
 title: Confirm the PMW3610 VCSEL and laser pins against the datasheet
 type: question
 priority: P0
-status: open
+status: wontfix
 area: hw
 created: 2026-11-07
 ---
@@ -55,3 +55,6 @@ Found during the r2.3 design review (2026-11-07). The rest of the sensor board's
 for the part: C5 100 nF at VDDIO pin 6, C1 1 uF at the LDO input, C2 + C3 + C4 = 4.4 uF on the 1.8 V rail,
 C6 100 nF across the charge pump at CP/CN, C8 + C9 on VCP, R1 and R2 as 10 k pull-ups on NRESET and NCS.
 Only the laser pins are unexplained.
+
+2026-11-11 (r2.4): wontfix. `hardware/sensor-pcb/` is gone: the sensor is the bought PAW3222 module
+(`hw-paw3222-variant`), so there is no PMW3610 wiring of ours left to confirm.

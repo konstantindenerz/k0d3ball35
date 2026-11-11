@@ -2,7 +2,7 @@
 title: Measure the real LM18-LSI lens outline
 type: task
 priority: P1
-status: open
+status: wontfix
 area: mech
 created: 2026-11-05
 ---
@@ -26,3 +26,7 @@ the clip positions; the cradle's `lens_l` / `lens_w` (assembly dummy only) are s
 ## Notes
 
 Order the lens with the first sensor batch; see the order plan in spec/03-bom.md.
+
+2026-11-11 (r2.4): wontfix. The LM18-LSI belonged to the PMW3610 board, which the bought PAW3222
+module replaced. The module's own nominal values are checked on the first print
+(`mech-ball-height-23mm`).

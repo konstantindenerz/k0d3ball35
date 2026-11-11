@@ -91,14 +91,14 @@ half gave up its outer thumb key to the ball pocket in r2.3.
 | Item | Value |
 |------|-------|
 | Ball centre | (-13.0, +66.0), below the index/middle columns, where the outer thumb key used to be |
-| Ball diameter | 19.05 mm (3/4 inch POM); the cradle also exists for 25 mm, which needs a wider notch |
+| Ball diameter | 19.05 mm (3/4 inch POM), the only supported size |
 | Cradle clearance circle | 28 mm diameter (`trackball.cradle_diameter`); the printed cradle is 24.1 mm wide above the PCB plane |
-| PCB notch | octagon, apothem 15.0 mm (cradle radius + 1.0 mm `notch_clearance`), with the corner towards the keys and the inner column squared off so the module can be lowered into the pocket past the board edge; vertices in `points-right.json` under `trackball.notch` |
-| Case pocket | 32 mm circle (`pocket_diameter`, cradle + 2 mm wall) above the PCB plane; below it a 34 x 34 mm rounded rectangle (3 mm corner radius) around the 29 x 29 mm housing footprint, which has no screw ears: the two M2 x 10 case screws come up through the floor and the sensor board into the cradle's sensor posts, 20 mm apart on the y axis |
-| Sensor board | 26 x 25 mm centred under the ball on the case floor, 11.6 mm below the PCB top (`trackball.sensor_board`) |
+| PCB notch | octagon, apothem 15.5 mm (cradle radius + 1.5 mm `notch_clearance`), with the corner towards the keys and the inner column squared off so the module can be lowered into the pocket past the board edge; vertices in `points-right.json` under `trackball.notch` |
+| Case pocket | 32 mm circle (`pocket_diameter`, cradle + 2 mm wall) above the PCB plane; below it a well around the 24 x 29 mm housing box (`trackball.housing`, centred 2.55 mm off the ball towards +y), which contains the cradle's floor footprint (cup plus tilted sensor sleeve); two M2 x 10 case screws come up through the floor into the cup skirt, 20 mm apart on the y axis |
+| Sensor module | PAW3222 module, 14 x 8 mm, tilted 65 degrees beside the ball, leaning away from the keys; its 14 x 4.4 mm projection is centred 13.5 mm towards +y of the ball (`trackball.sensor_board`) |
 | Keycap clearance | at least 1.0 mm between the 28 mm circle and any keycap (checked by the generator) |
-| Mounting | cradle screwed to the case floor through its sensor posts (two M2 x 10 from below, 20 mm apart); no cradle holes on the PCB |
-| Insertion corridor | the housing and the sensor board inside it must not be covered by the board: `Layout.insertion_corridor()` keeps 0.50 mm to the outline all round, which is what makes the module a cartridge (in and out with the PCB fitted) |
+| Mounting | cradle screwed to the case floor (two M2 x 10 from below into the cup skirt, 20 mm apart); no cradle holes on the PCB |
+| Insertion corridor | the housing and the sensor module must not be covered by the board: `Layout.insertion_corridor()` keeps 0.50 mm to the outline all round, which is what makes the module a cartridge (in and out with the PCB fitted) |
 
 The ball centre was moved until the 28 mm circle cleared the middle thumb cap and the index and
 middle bottom keys by 1 mm each and the circle stays at least `notch_clearance` away from the rest
@@ -110,13 +110,13 @@ notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 | Part | Position | Notes | Halves |
 |------|----------|-------|--------|
 | Controller U1 | hole-pattern centre (-58, 11.7), USB-C shell 1.5 mm past the top edge | nice!nano v2 / SuperMini, component side up, on 2.5 mm low-profile sockets, nothing underneath | both |
-| Battery bay | centre (-53.9, 17.5), 21 x 41 mm, on the back | PKCELL LP552035 cell (350 mAh, 20 x 37 x 5.7 mm) under the PCB in a 9 mm deep well of the case floor, lead end towards +y; dashed outline on the back silkscreen; `battery` block in `points-*.json` | both |
+| Battery bay | centre (-53.9, 17.5), 21 x 41 mm, on the back | PKCELL LP552035 cell (350 mAh, 20 x 37 x 5.7 mm) under the PCB in a 6.0 mm deep well of the case floor (flush controller pins), lead end towards +y; dashed outline on the back silkscreen; `battery` block in `points-*.json` | both |
 | Power switch PS1 | (-68.5, 30), rotated 270 | MSK12C02, bottom side, actuator through the inner edge (270 puts the footprint's +y actuator at -x) | both |
 | Reset button RB1 | (-66, 41) | EVQ-P7A, bottom side, below the battery bay | both |
 | JST J3 | (-56, 44) | default battery connection, 6 mm tall, bottom side, below the bay inside the same well | both |
 | Battery pads J2 | (-57, 50.5) | 2.54 mm pitch, B+ is the square pad, solder alternative to J3 | both |
 | Test pads TP1.. | left: row from (-69.5, 54.5) along x; right: from (-66, 45.0) along y, 2.5 mm pitch | right: D0, D1, D2, D3, D9; left: the same plus D10, D14, D15, D16 | both |
-| FPC J1 | (-20.6, 47.4) | FH12-6S, **key side**, below the middle column's bottom key; the cable climbs beside the cup, folds over the notch edge into the mouth (0.5 mm from the edge) and the lock stays reachable when assembled | right only |
+| FPC J1 | (-20.6, +47) | FH12-6S, **key side**, below the middle column's bottom key; the cable climbs beside the cup, folds over the notch edge into the mouth (0.5 mm from the edge) and the lock stays reachable when assembled | right only |
 
 | Owner wordmark | centre (-35, 48.4), 13.9 x 4.7 mm, back silkscreen | the `kode` mark from `spec/images/logo.svg`, turned 90 degrees, under the thumb bridge; 0.26 mm strokes; `silkscreen.logo` in the layout yaml | both |
 
@@ -146,8 +146,8 @@ and outside the bands the hot-swap socket pads occupy:
 | H5 (right) | -31.0 | 49.0 |
 
 The case can add standoffs under the controller block; the cradle has its own two screws into the
-case floor. Under the controller block the case floor drops to a 9 mm deep well for the battery
-(`battery.well_floor_z` in `points-*.json`, -10.6 mm), the same on both halves.
+case floor. Under the controller block the case floor drops to a 6.0 mm deep well for the battery
+(`battery.well_floor_z` in `points-*.json`, -7.6 mm), the same on both halves.
 
 ## Outline
 

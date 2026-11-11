@@ -19,9 +19,9 @@ Files
 | `common.scad` | 2D regions (PCB cavity, outer footprint, wells, pocket, box) |
 | `logo.scad` | the owner wordmark scaled to millimetres and the groove that engraves it |
 | `tray.scad` | tray, standoffs, bosses, controller box cap, pocket test part, dummies |
-| `lid.scad` | hinged lid: outer and inner plate, inner lip, roof magnets, ball window, knuckle hinge with its stop, the folded foot and the dome variant |
+| `lid.scad` | hinged lid: outer and inner plate, inner lip, roof magnets, knuckle hinge with its stop, the folded foot |
 | `Makefile` | `make` builds data, STL, DXF, previews and `stack.json` |
-| `stack.py` | collects the echoed stack values into `stack.json` (left, right, right-25mm) |
+| `stack.py` | collects the echoed stack values into `stack.json` (left, right) |
 | `stl/` | printable parts per half: `lid-outer-*` and `lid-inner-*` are the two lid plates to print, `lid-*` the closed pair for the exploded view, `pocket-test-right.stl` the test print of the pocket |
 | `dxf/` | floor plan per half with every hole, for checking against the PCB drawings |
 | `preview/` | assembly, section through the ball, box close-up, lid on, lid folded as foot, hinge close-up, tray from below |
@@ -46,12 +46,14 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
 (issues/mech-case-stl-mirrored.md: before 2026-11-10 every part was exported as its mirror image).
 
 - Walls: 3.0 mm outside the PCB cavity (PCB plus 0.2 mm), mitre joins, no rounding. The rim
-  is at +5.0, flush with the Choc keycap skirts and below the cradle cup rim (+6.575).
+  is at +5.0, flush with the Choc keycap skirts; around the ball the pocket wall is cut to
+  +2.925, 0.5 mm under the cradle cup rim (+3.425).
 - Floor under the keys at -4.6 (3 mm under the PCB underside for hot-swap sockets and
-  diodes); the underside is flat everywhere at -14.1.
+  diodes); the underside is flat everywhere at -9.6.
 - Five M2 standoffs (6.0 mm, 3.0 mm tall) under the PCB holes with heat-set inserts.
 - Battery well under the controller block: bay plus the J3 and RB1 courtyards, each grown by
-  1 mm, floor at -11.6 (shared with the pocket), 10 mm under the PCB underside. The reset
+  1 mm, floor at -7.6, 6.0 mm under the PCB underside (5.7 mm cell, 0.25 mm pad, flush
+  controller pins). The reset
   button is reached through a 3 mm pin hole in the floor, the slide switch lever through a
   7 x 3 mm slot in the outer wall directly under the PCB.
 - Controller box: walls to +8.7 on the outer and USB side (the other two sides are inside
@@ -60,18 +62,18 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   with inserts, 45 degree undersides.
 - Cap (`box_cap`): 2 mm plate in the rebate plus an L-shaped 2 mm skirt (key side at
   x = -45.5 and thumb side at y = 50.6) that stands 0.3 mm above the PCB top; two M2 screws.
-- Pocket (right half): above the PCB plane the cavity is the PCB notch octagon (apothem 15)
-  plus 0.2 and the 28 mm cradle circle, with a 2 mm wall around it; at floor level the
-  housing well is 30 x 30 (housing 29 x 29 plus 0.5) in a 34 x 34 block with 3 mm corners,
-  floor at -11.6, two 2.2 mm holes 20 mm apart on the y axis with a 4.8 mm, 1.3 mm deep
+- Pocket (right half): above the PCB plane the cavity is the PCB notch octagon (apothem 15.5)
+  plus 0.2 and the 28 mm cradle circle, with a 2 mm wall around it; at floor level the well
+  is the 24 x 29 housing box (centred 2.55 mm off the ball towards +y) plus 0.5, which
+  contains the cradle footprint (cup skirt plus tilted sleeve, 24.05 x 26.84 with clearance),
+  floor at -7.1 (2.5 mm floor), two 2.2 mm holes 20 mm apart on the y axis with a 4.8 mm, 1.3 mm deep
   90 degree countersink from below (`case_screw_cs_d`, `case_screw_cs_h`): the flat head of
   an M2 countersunk screw ends up 0.2 mm inside the underside, 1.2 mm of floor is left at
-  the bore. A 12 mm wide channel from J1 to the
-  housing wall is where the cradle's own cable channel brings the FFC up; the tray only keeps the
-  lid lip off J1 and the cable corridor on the key side (`fpc_clear`).
-- Foot magnets: four 6.2 mm pockets from below in the 9.5 mm floor under the key area next
+  the bore. The tray only keeps the lid lip off J1 and the cable corridor on the key side
+  (`fpc_clear`).
+- Foot magnets: four 6.2 mm pockets from below in the 5.0 mm floor under the key area next
   to the battery well. `gen_case.py` places them in the intersection of the outer lid plate's
-  roof region (8 mm inside the outline, clear of the hinge strip and the ball window) and the
+  roof region (8 mm inside the outline, clear of the hinge strip) and the
   tray floor region shifted by `foot_dx`, clear of the wells, the FFC channel, J1 and the cable
   corridor, the standoffs and the feet: right (-36.94, 9.69), (-26.35, 17.69),
   (-26.35, 45.19), (-37.0, 38.94); left (-37.25, 9.69), (-29.478, 17.19), (-29.478, 45.19),
@@ -83,20 +85,15 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   controller box walls and the pocket cup. The keycaps end 1.6 mm inside the PCB edge, the
   lip 0.95 mm inside it, so 0.65 mm remain between lip and caps.
 - Lid plates: the lid is split along the hinge line x = -13 (`hinge_x` in `data.scad`, the
-  left half mirrored like everything else). The outer plate (pinky side) carries the ball
-  window on the right and all four roof magnets; the inner plate carries the controller box
-  notch (to +9.0) and the thumb cluster and is the kickstand of the foot. Roof underside +14.0
-  (`lid_clear` 3.0 over the caps), roof top +17.0 on both halves. Within 6 mm of the line
-  (`hinge_strip_w`) the roof is thickened downward to 5 mm (`hinge_knuckle_d`), underside
-  +12.0, 1 mm over the Choc caps.
-- Ball window (`lid_mode = "window"`, right half): a 16 mm hole (`ball_window_d`) through the
-  roof at the ball centre. The 19.05 mm ball looks through, its top (+17.1) is flush with the
-  roof top, the chord at the roof underside is 14.1 mm, and the ball cannot leave the cup
-  because the window is smaller than the ball. `"flat"` puts a roof over the ball as before
-  (used for the 25 mm fallback), `"dome"` a turret.
+  left half mirrored like everything else). The outer plate (pinky side) carries all four
+  roof magnets; the inner plate carries the controller box notch (to +9.0) and the thumb
+  cluster and is the kickstand of the foot. Roof underside +14.5 (`lid_clear` 3.5 over the
+  caps), roof top +17.5 on both halves; the ball top (+13.95) stays under the roof, so there is
+  no ball window. Within 6 mm of the line (`hinge_strip_w`) the roof is thickened downward to
+  5 mm (`hinge_knuckle_d`), underside +12.5, 1.5 mm over the Choc caps.
 - Hinge: 9 knuckles of 8.77 mm (`hinge_seg_len` target 10, odd count, 0.3 mm gaps) along y
   from -9.72 to +71.6 (span 81.3 mm); the outer plate owns the even knuckles including both
-  ends. Axis at z = +14.5, knuckles flush with the roof top, radius 2.5; the groove in the
+  ends. Axis at z = +15.0, knuckles flush with the roof top, radius 2.5; the groove in the
   other plate has radius 2.8 (`hinge_clear` 0.3) and the strip next to a groove is cleared
   so no thin lips remain. Pin: 2.0 mm steel rod (`hinge_pin_d`) in a 2.2 mm hole
   (`hinge_pin_fit` 0.2), about 80 mm long (span minus the 1.5 mm blind end, `hinge_blind`),
@@ -104,32 +101,37 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   cannot walk out. `-D hinge_pin_d=1.75` fits a piece of filament. Above the axis the two
   plates' vertical cut faces are 0.2 mm apart (`hinge_gap`).
 - Stop: below the axis each plate's cut face is a plane through the axis leaning outward by
-  `hinge_stop_deg`, half the solved fold (28.8 degrees right, 21.9 left), so closed there is a
+  `hinge_stop_deg`, half the solved fold (28.5 degrees right, 21.6 left), so closed there is a
   V slit at the skirt bottom (about 7.5 mm wide at the front and back skirt, 1.5 mm under the
-  strip) and when folded by `hinge_fold_deg` (57.6 right, 43.7 left) the two faces meet flat
+  strip) and when folded by `hinge_fold_deg` (56.9 right, 43.2 left) the two faces meet flat
   on flat along the whole cut (skirt ends and strip underside) and carry the load. Knuckle and
   groove are round and never take the stop load. The fold is derived from `tent_deg` = 18 (the
   input): it is the angle at which the kickstand's lip edge reaches the desk.
-- Feet: seven 10.5 mm recesses 0.5 deep (the five hole positions and two under the
-  controller block).
+- Feet: seven 10.5 mm recesses 0.8 mm deep for 1 mm rubber feet, which stand 0.2 mm proud
+  (the five hole positions and two under the controller block).
 
 ## z stack
 
 From `stack.json` (`make stack`):
 
-| Value | left | right | right, 25 mm ball |
-|-------|------|-------|-------------------|
-| base (underside) | -14.1 | -14.1 | -14.1 |
-| well / pocket floor | -11.6 | -11.6 | -11.6 |
-| key floor | -4.6 | -4.6 | -4.6 |
-| PCB | -1.6 .. 0 | -1.6 .. 0 | -1.6 .. 0 |
-| rim | +5.0 | +5.0 | +5.0 |
-| cap plate under / box top | +6.7 / +8.7 | +6.7 / +8.7 | +6.7 / +8.7 |
-| ball top | - | +17.1 | +23.05 |
-| lid roof under / lid top | +14.0 / +17.0 | +14.0 / +17.0 | +26.1 / +29.1 (`lid_mode` flat) |
-| hinge strip under / hinge axis | +12.0 / +14.5 | +12.0 / +14.5 | +24.1 / +26.55 |
-| lid lip bottom | +2.0 | +2.0 | +2.0 |
-| foot: tilt / fold / hinge axis above the desk / kickstand reach / free-end clearance | 18 deg / 43.7 deg / 37.8 / 53.2 / 7.7 | 18 deg / 57.6 deg / 37.8 / 34.3 / 2.1 | 18 deg / 37.9 deg / 37.8 / 35.7 / -9.4 (not usable, see below) |
+| Value | left | right |
+|-------|------|-------|
+| desk (1 mm feet in 0.8 mm recesses) | -9.8 | -9.8 |
+| base (underside) | -9.6 | -9.6 |
+| battery well floor / pocket floor | -7.6 / - | -7.6 / -7.1 |
+| key floor | -4.6 | -4.6 |
+| PCB | -1.6 .. 0 | -1.6 .. 0 |
+| pocket wall top / cradle cup rim | - | +2.925 / +3.425 |
+| rim | +5.0 | +5.0 |
+| cap plate under / box top | +6.7 / +8.7 | +6.7 / +8.7 |
+| keycap top | +11.0 | +11.0 |
+| ball top | - | +13.95 |
+| lid roof under / lid top | +14.5 / +17.5 | +14.5 / +17.5 |
+| hinge strip under / hinge axis | +12.5 / +15.0 | +12.5 / +15.0 |
+| lid lip bottom | +2.0 | +2.0 |
+| foot: tilt / fold / hinge axis above the desk / kickstand reach / free-end clearance | 18 deg / 43.2 deg / 37.8 / 53.3 / 7.2 | 18 deg / 56.9 deg / 37.8 / 34.5 / 1.6 |
+
+Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
 
 ## Printing
 
@@ -164,7 +166,7 @@ From `stack.json` (`make stack`):
 - Alternative: `-D pcb_screws="pilot"` turns the holes into 1.6 mm pilots for M2 self-tapping
   screws (6 mm deep).
 - Cradle: two M2 x 10 countersunk self-tapping screws from below through the countersunk
-  floor holes into the cradle's sensor posts (`hardware/trackball-cradle/README.md`).
+  floor holes into the cradle's cup skirt (`hardware/trackball-cradle/README.md`).
 
 ## Assembly
 
@@ -179,9 +181,9 @@ From `stack.json` (`make stack`):
 4. Drop the PCB in (keycaps off), screw it to the standoffs, put the keycaps on.
 5. Controller box: plug the controller, put the cap on (skirt towards the keys and the thumb
    keys), two M2 screws into the bosses.
-6. Right half: stand the cradle module in the pocket with its slot towards J1, route the
-   FFC through the channel into J1, fasten the two M2 x 10 from below. Drop the ball in.
-7. Battery into the well, JST into J3, stick the rubber feet on.
+6. Right half: stand the cradle module in the pocket, fasten the two M2 x 10 from below, route
+   the FFC round the cup into J1. Drop the ball in.
+7. Battery into the well, JST into J3, press the rubber feet into their recesses.
 8. Lid on for transport (press it down until the lip is in). As a foot: fold the inner plate
    down to the stop, lay the outer plate roof-up against the tray underside under the
    controller half so the magnets snap it on, and stand the half on the desk on its outer
@@ -203,26 +205,16 @@ cantilevered, so a thumb press or a resting palm cannot pivot the board against 
 which only keep the plate aligned. The four rubber feet at (-58, 1), (-58, 34), (-27, 8) and
 (-32, 61) rest on the lid roof. Result (`stack.json`, right; left in brackets): `tent_deg` = 18
 is the input, the fold `hinge_fold_deg` is solved so that the kickstand's lip edge reaches the
-desk: 57.6 degrees (43.7), stop faces at `hinge_stop_deg` = half of that. The kickstand hangs
-`foot_beta_deg` 39.6 degrees (25.7) below the tray, the hinge axis is 37.8 mm (37.8) above the
-desk (`foot_hinge_h`), the kickstand's foot stands 34.3 mm (53.2) beyond the inner wall
-(`foot_reach`) and the outer plate's free end floats 2.1 mm (7.7) above the desk
+desk: 56.9 degrees (43.2), stop faces at `hinge_stop_deg` = half of that. The kickstand hangs
+`foot_beta_deg` 38.9 degrees (25.2) below the tray, the hinge axis is 37.8 mm (37.8) above the
+desk (`foot_hinge_h`), the kickstand's foot stands 34.5 mm (53.3) beyond the inner wall
+(`foot_reach`) and the outer plate's free end floats 1.6 mm (7.2) above the desk
 (`foot_free_end_h`; below about 13 degrees of tilt the lid thickness alone would hold the
 board up, `tests/test_case.py` asserts more than 0.5 mm). `hinge_fold_override` (`params.scad`,
 -1) shows another fold in `lid_folded` for the collision test only. The rubber feet stay
 usable without the lid. Parts: `lid_outer` and `lid_inner` are the plates to print, `lid` the
 closed pair, `lid_folded` the folded pair; the previews `lid_foot` (tilted on the desk) and
 `lid_foot_flat` show the half on its lid.
-
-## 25 mm fallback
-
-`-D ball_d=25 -D notch_apothem=16.5 -D pocket_d=35 -D ball_top_z=23.05` (a different PCB
-notch): the pocket cavity follows the octagon, and with `-D lid_mode="flat"` the right lid roof
-rises over the ball to +26.1 (top +29.1, hinge axis +26.55). Documented as a parameter, not
-printed. The foot does not work with that lid: the solver gives a 37.9 degree fold for 18
-degrees of tilt, but the thicker outer plate's free end would be 8.4 mm below the desk
-(`foot_free_end_h`), so the plate touches down before the kickstand and the half would need a
-steeper tilt.
 
 ## Open points
 
