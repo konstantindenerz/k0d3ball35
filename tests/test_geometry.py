@@ -162,7 +162,7 @@ def test_housing_footprint_and_case_screws():
     assert fp.bounds[2] - fp.bounds[0] == pytest.approx(pk["housing"]["x"] + grow, abs=0.1)
     assert fp.bounds[3] - fp.bounds[1] == pytest.approx(pk["housing"]["y"] + grow, abs=0.1)
     s = right.case_screws()
-    assert len(s) == 2 and s[0][1] == s[1][1] == right.ball_center[1]   # x axis: clear of the bearings
+    assert len(s) == 2 and s[0][0] == s[1][0] == right.ball_center[0]   # y axis: clear of the bearings and the +x sleeve
     assert math.dist(s[0], s[1]) == pytest.approx(pk["case_screw_spacing"])
     assert hb.distance(right.fpc_box()) >= 0.5
     for k in right.keys:

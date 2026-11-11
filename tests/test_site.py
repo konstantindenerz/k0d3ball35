@@ -413,11 +413,12 @@ def test_trackball_numbers_equal_stack_json(parts):
         assert v["cradle"] in by_id and by_id[v["cradle"]]["group"] == "cradle"
         assert v["retainer"] in by_id and by_id[v["retainer"]]["group"] == "retainer"
         # the cradle STL is in the stack frame: its rim is at rim_z and the ball centre on the z axis
-        # (symmetric in x only: since r2.4 the tilted sensor sleeve sits on one side in y)
+        # (symmetric across the lean only: the tilted sensor sleeve sits on one side, +x since r2.4b)
         c = by_id[v["cradle"]]
         assert c["bbox_max"][2] == pytest.approx(s["rim_z"], abs=0.01)
         assert c["bbox_min"][2] == pytest.approx(s["lowest_plastic_z"], abs=0.01)
-        assert abs(c["bbox_min"][0] + c["bbox_max"][0]) < 0.02
+        assert s["window_az"] == 0
+        assert abs(c["bbox_min"][1] + c["bbox_max"][1]) < 0.02
 
 
 def test_every_sheet_says_the_design_is_untested():

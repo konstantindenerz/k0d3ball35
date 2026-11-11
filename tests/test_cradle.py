@@ -115,7 +115,7 @@ def test_no_screw_ears():
     # r2.4: one mount, one ball size, and the sensor tilted beside the ball
     assert not re.search(r"^mount\s*=", params, re.M), "the r1 cutout mount is gone"
     assert re.search(r"^sensor_angle\s*=\s*65", params, re.M), "the solved tilt"
-    assert re.search(r"^sensor_az\s*=\s*270", params, re.M), "tilt towards +y, away from the keys"
+    assert re.search(r"^sensor_az\s*=\s*180", params, re.M), "module leans to +x, under the middle column"
     readme = (CRADLE / "README.md").read_text()
     for text, name in ((params, "params.scad"), (scad, "cradle.scad"), (readme, "README.md")):
         assert not EAR_RE.search(text), name
@@ -195,27 +195,37 @@ def test_render_19mm_pocket_stl(tmp_path):
     # footprint is deliberately NOT symmetric about the ball axis.
     on_floor = v[v[:, 2] < values["floor_z"] + 0.5]
     cup_r = values["cup_outer_d"] / 2
-    assert abs(on_floor[:, 0].max() - cup_r) < 0.6, "the cup skirt sets the +x edge"
-    lean = max(-on_floor[:, 1].min(), on_floor[:, 1].max())
-    assert lean > cup_r + 1.0, "the sleeve does not reach past the cup skirt on the floor"
+    # measured in the lean frame (along / across window_az), so the checks hold for any azimuth
+    # and catch a sleeve that points somewhere else than the window
+    along, across = _lean_frame(on_floor[:, 0], on_floor[:, 1], values["window_az"])
+    assert abs(-along.min() - cup_r) < 0.6, "the cup skirt sets the edge away from the sleeve"
+    lean = along.max()
+    assert lean > cup_r + 1.0, "the sleeve does not reach past the cup skirt towards the window"
     assert lean <= values["board_reach"] + 2.0 + 1e-3, "the sleeve reaches further than the module"
     # The old bound was the sleeve rectangle. Since r2.4 the cup skirt is the widest thing on the
     # floor across the lean, and the sleeve only sticks out along it.
-    assert abs(on_floor[:, 0]).max() <= cup_r + 0.05
-    # footprint_x / footprint_y are the body's plan, the same at every height (the slot only opens
-    # the floor under the module), which the site publishes as the floor footprint
+    assert abs(across).max() <= cup_r + 0.05
+    # footprint_x / footprint_y are the body's plan (across / along the lean), the same at every
+    # height (the slot only opens the floor under the module); the site publishes them
+    along_all, _ = _lean_frame(v[:, 0], v[:, 1], values["window_az"])
     assert abs(values["footprint_x"] - 2 * cup_r) < 1e-6
-    assert abs(values["footprint_y"] - (cup_r + max(-v[:, 1].min(), v[:, 1].max()))) < 0.05
+    assert abs(values["footprint_y"] - (cup_r + along_all.max())) < 0.05
     # The case screws changed in r2.4: with the module beside the ball the floor under the ball is
     # solid plastic, so the two M2 x 8 go straight up into the cup skirt instead of through
     # sensor posts. Check the 1.6 mm pilot is there, well above the floor so a short bore fails.
-    for sx in (-1, 1):
-        axis_y = sx * CASE_SCREW_SP / 2     # (named axis_y for the messages; the screws sit on x)
-        r = np.hypot(v[:, 0] - axis_y, v[:, 1])
+    for sy in (-1, 1):
+        axis_y = sy * CASE_SCREW_SP / 2     # on the y axis, clear of the +x sleeve
+        r = np.hypot(v[:, 0], v[:, 1] - axis_y)
         pilot = v[(np.abs(r - 0.8) < 0.05) & (v[:, 2] >= values["floor_z"] - 1e-6)]
         assert len(pilot) > 0, f"no 1.6 mm screw pilot at y = {axis_y}"
         thread = pilot[:, 2].max() - values["floor_z"]
         assert thread >= 4.0, f"only {thread:.2f} mm of thread in the skirt at y = {axis_y}"
+
+
+def _lean_frame(x, y, az_deg):
+    """(along, across) the sensor lean: along points at the window azimuth (layout frame)."""
+    a = math.radians(az_deg)
+    return x * math.cos(a) + y * math.sin(a), -x * math.sin(a) + y * math.cos(a)
 
 
 def _dxf_loops(path):
@@ -237,27 +247,27 @@ def test_floor_dxf_is_housing_with_two_screw_holes():
 
     Until r2.4 this was a plain 30 x 30 square because the module was a box under the ball. It is
     now the cup skirt unioned with the TILTED sleeve where the floor clips it, so it is wider than
-    the cup on one side only and symmetric about x. Getting this wrong makes the case cut a pocket
+    the cup on one side only (the window side) and symmetric about the lean axis. Getting this wrong makes the case cut a pocket
     well of the wrong size, which is how an oversized well slipped through once in r2.4: a formula
     placed the unclipped sleeve 21.4 mm from the axis instead of the real 14.3.
     """
     loops = _dxf_loops(CRADLE / "dxf" / "floor-19mm-pocket.dxf")
     assert len(loops) == 3, len(loops)
-    boxes = []
-    for pts in loops:
-        xs, ys = [p[0] for p in pts], [p[1] for p in pts]
-        boxes.append((min(xs), max(xs), min(ys), max(ys)))
-    boxes.sort(key=lambda b: (b[1] - b[0]) * (b[3] - b[2]), reverse=True)
-    outer, *holes = boxes
+    loops.sort(key=lambda pts: (max(p[0] for p in pts) - min(p[0] for p in pts))
+               * (max(p[1] for p in pts) - min(p[1] for p in pts)), reverse=True)
+    outer, *holes = (np.array(pts) for pts in loops)
     stack = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
     cup_r = stack["cup_outer_d"] / 2
+    az = stack["window_az"]
+    # The module leans towards layout +x (window_az 0), under the middle column where the PCB
+    # already ends; until r2.4b it leaned towards +y and made the case 5 mm deeper.
+    assert az == 0
+    along, across = _lean_frame(outer[:, 0], outer[:, 1], az)
     # across the lean the cup sets the width, and it is centred on the ball axis
-    assert abs(outer[1] - outer[0] - 2 * (cup_r + 0.5)) < 0.05
-    assert abs(outer[0] + outer[1]) < 0.05, "the footprint is symmetric about x"
-    # along the lean it is not: the sleeve adds to one side, the cup bounds the other. The sleeve
-    # leans towards layout +y (window_az 90, the back edge), never towards the keys.
-    assert stack["window_az"] == 90
-    lean, back = outer[3], -outer[2]
+    assert abs(across.max() - across.min() - 2 * (cup_r + 0.5)) < 0.05
+    assert abs(across.max() + across.min()) < 0.05, "the footprint is symmetric about the lean axis"
+    # along the lean it is not: the sleeve adds to the window side, the cup bounds the other
+    lean, back = along.max(), -along.min()
     assert abs(back - (cup_r + 0.5)) < 0.05, "the cup bounds the side away from the sleeve"
     assert cup_r + 1.0 < lean <= stack["board_reach"] + 2.0, f"sleeve reach {lean:.2f} mm"
     # and the DXF agrees with the STL: both files are in the print frame, so the floor section of
@@ -266,14 +276,17 @@ def test_floor_dxf_is_housing_with_two_screw_holes():
     mesh = load_layout_frame(CRADLE / "stl" / "cradle-19mm-pocket.stl")
     v = mesh.vertices
     foot = v[v[:, 2] < v[:, 2].min() + 0.5]
-    assert foot[:, 1].max() > -foot[:, 1].min() + 1.0, "STL leans the other way than the DXF"
-    assert abs(foot[:, 1].max() + 0.5 - lean) < 0.6, (foot[:, 1].max(), lean)
-    centres = sorted(((b[0] + b[1]) / 2, (b[2] + b[3]) / 2) for b in holes)
-    for (cx, cy), b in zip(centres, sorted(holes, key=lambda b: (b[0] + b[1]) / 2)):
-        assert abs(cy) < 0.05, "case screws sit on the x axis through the ball"
-        assert abs(b[1] - b[0] - 2.2) < 0.1, "M2 clearance hole"
-    assert abs(centres[0][0] + CASE_SCREW_SP / 2) < 0.05
-    assert abs(centres[1][0] - CASE_SCREW_SP / 2) < 0.05
+    f_along, _ = _lean_frame(foot[:, 0], foot[:, 1], az)
+    assert f_along.max() > -f_along.min() + 1.0, "STL leans the other way than the DXF"
+    assert abs(f_along.max() + 0.5 - lean) < 0.6, (f_along.max(), lean)
+    # case screws on the axis ACROSS the lean, clear of the sleeve
+    centres = sorted(_lean_frame(h[:, 0].mean(), h[:, 1].mean(), az)[1] for h in holes)
+    for h in holes:
+        a, _ = _lean_frame(h[:, 0].mean(), h[:, 1].mean(), az)
+        assert abs(a) < 0.05, "case screws sit on the axis across the lean, through the ball"
+        assert abs(h[:, 0].max() - h[:, 0].min() - 2.2) < 0.1, "M2 clearance hole"
+    assert abs(centres[0] + CASE_SCREW_SP / 2) < 0.05
+    assert abs(centres[1] - CASE_SCREW_SP / 2) < 0.05
 
 
 # --------------------------------------------------------------------- r2.4: the tilted module
@@ -338,11 +351,11 @@ def test_sensor_window_clears_the_rim_and_every_bearing():
 
     The window sits (90 - sensor_angle) degrees below the equator and is as wide as the lens body.
     Its upper edge has to stay below the rim line, and in azimuth it has to clear every bearing
-    boss - which is the reason bearing_az was rotated 30 degrees in r2.4. Without this check the
+    boss - which is the reason bearing_az leaves 60 degrees either side of the window. Without this check the
     rotation looks like an arbitrary edit and the next person undoes it.
     """
     tilt = _param("sensor_angle")
-    # NOT _param("sensor_az"): the window sits at -sensor_az (see STACK window_az). Reading the
+    # NOT _param("sensor_az"): the window sits at sensor_az + 180 (see STACK window_az). Reading the
     # parameter directly is exactly how a bearing seat ended up inside the window in r2.4 while
     # this test stayed green.
     az = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]["window_az"]
@@ -385,20 +398,25 @@ def test_layout_pocket_offsets_follow_the_real_tilt(stack, trackball_cfg):
     """
     v = stack["19mm-pocket"]
     pk = trackball_cfg["pocket"]
-    az = v["sensor_angle"] and v.get("sensor_az", 270)
-    # the module leans along +y of the layout frame for sensor_az = 270
-    assert az == 270, "this check assumes the r2.4 azimuth; re-derive the signs if it changes"
+    az = v["window_az"]
     for key in ("housing_offset", "sensor_board_offset"):
         off = pk.get(key)
         assert off is not None, f"{key} missing from the layout"
-        assert off["x"] == 0, f"{key} must not lean in x while the tilt is along y"
-        assert off["y"] > 0, f"{key} leans the wrong way for sensor_az = {az}"
-    # the corridor has to cover where the module really is
-    far = pk["sensor_board_offset"]["y"] + pk["sensor_board"]["y"] / 2
-    near = pk["sensor_board_offset"]["y"] - pk["sensor_board"]["y"] / 2
+        along, across = _lean_frame(off["x"], off["y"], az)
+        assert abs(across) < 1e-9, f"{key} must not lean across the tilt"
+        assert along > 0, f"{key} leans the wrong way for window_az = {az}"
+    # the corridor has to cover where the module really is: sensor_board is (x, y) in the layout,
+    # its extent along the lean is the projection, across it the 14 mm module length
+    a = math.radians(az)
+    sb_along = abs(pk["sensor_board"]["x"] * math.cos(a)) + abs(pk["sensor_board"]["y"] * math.sin(a))
+    sb_across = abs(pk["sensor_board"]["x"] * math.sin(a)) + abs(pk["sensor_board"]["y"] * math.cos(a))
+    off_along, _ = _lean_frame(pk["sensor_board_offset"]["x"], pk["sensor_board_offset"]["y"], az)
+    far = off_along + sb_along / 2
+    near = off_along - sb_along / 2
     assert abs(far - v["module_reach"]) <= 0.5, f"corridor ends at {far:.2f}, module at {v['module_reach']:.2f}"
     assert near > 0, "the corridor must start off the ball axis, on the side the module leans to"
     assert near <= v["board_reach"], f"corridor starts at {near:.2f}, past the module's near face"
+    assert sb_across >= _param("sensor_pcb_l"), "the corridor is narrower than the module"
 
 
 def _seg_line_dist(p0, p1, q, steps=400):
@@ -445,3 +463,45 @@ def test_case_screws_miss_the_bearing_seats():
     for sx, sy in screws:
         r_cup = math.sqrt(max(0.0, r_in ** 2 - (zc - screw_top) ** 2))
         assert math.hypot(sx, sy) - 1.0 - r_cup >= 0.5, f"screw tip breaks into the cup ({math.hypot(sx, sy) - 1.0 - r_cup:.2f} mm)"
+
+
+def test_optical_window_is_open_along_the_axis():
+    """The sensor must see the ball: a bundle of rays from the ball centre along the optical axis
+    (window_az, sensor_angle) has to leave the committed cradle without touching plastic until it
+    reaches the module. Until r2.4b the window cylinder was cut along local +z, away from the
+    sensor, and the whole 1.6 mm cup wall stayed solid in front of the lens; the trigonometric
+    window checks above stayed green because they never looked at the mesh."""
+    trimesh = pytest.importorskip("trimesh")
+    s = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
+    mesh = load_layout_frame(CRADLE / "stl" / "cradle-19mm-pocket.stl")
+    th, a = math.radians(s["sensor_angle"]), math.radians(s["window_az"])
+    u = np.array([math.sin(th) * math.cos(a), math.sin(th) * math.sin(a), -math.cos(th)])
+    side = np.array([-math.sin(a), math.cos(a), 0.0])
+    up = np.cross(u, side)
+    c = np.array([0.0, 0.0, s["ball_centre_z"]])
+    ts = np.arange(s["ball_d"] / 2, s["sensor_pcb_plane_dist"] - _param("lens_h"), 0.1)
+    r = 0.8 * _param("optical_d") / 2
+    for off in (np.zeros(3), r * side, -r * side, r * up, -r * up):
+        pts = c + off + np.outer(ts, u)
+        hit = mesh.contains(pts)
+        assert not hit.any(), f"plastic on the optical path at t = {ts[hit][0]:.2f} mm (offset {off.round(2)})"
+
+
+def test_module_sits_at_the_window_azimuth():
+    """The sleeve's slot (and so the module) must point where the window and the tab point.
+    tab_2d and STACK window_az share one formula, so checking them against each other proves
+    nothing; the module dummy is placed through sensor_frame() and is the independent witness."""
+    if openscad() is None:
+        pytest.skip("openscad not installed")
+    trimesh = pytest.importorskip("trimesh")
+    import tempfile
+    s = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
+    with tempfile.TemporaryDirectory() as d:
+        out = Path(d) / "dummy.stl"
+        res = subprocess.run([openscad(), "--backend", "manifold", "-D", 'part="sensor_dummy"', "-o", str(out), str(SCAD)],
+                             capture_output=True, text=True, timeout=600)
+        assert res.returncode == 0, res.stderr
+        v = load_layout_frame(out).vertices
+    cx, cy = v[:, 0].mean(), v[:, 1].mean()
+    az = math.degrees(math.atan2(cy, cx)) % 360
+    assert abs((az - s["window_az"] + 180) % 360 - 180) < 2.0, f"module at {az:.1f} deg, window at {s['window_az']}"

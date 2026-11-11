@@ -111,14 +111,14 @@ def test_ball_pocket_sits_in_the_board_notch():
 
 
 def test_tilted_sensor_leans_away_from_the_keys():
-    """The tilted module must sit away from the keys, and its FFC notch must face them.
+    """The tilted module must sit where the board is not: outboard (+x), never on the keys.
 
     Until r2.4 the sensor sat straight under the ball in an axis-aligned housing, so this test
     looked for a slot at a fixed coordinate in that wall. The module is tilted now (sensor_az), so
-    there is no such wall; what still has to hold is the DIRECTION. The sleeve has to lean away
-    from the keys - towards the sleeve the PCB carries the thumb bridge and J1, and a sleeve on
-    that side does not fit - and the cable has to leave towards the keys to reach J1 through the
-    2.95 mm annular gap between the cup envelope and the PCB notch.
+    there is no such wall; what still has to hold is the DIRECTION. Towards the keys (-y in the
+    layout) the PCB carries the index keys and J1, towards the thumb (-x) the thumb bridge; only
+    +x (under the middle column, PCB edge at y 42.8) and +y are free, and +x keeps the case
+    shallower (issues/mech-sensor-side-x.md).
 
     Two frames meet here and both bit the author of r2.4: the STACK values and sensor_az are in
     the LAYOUT frame, while cradle.scad flips y once for the export, so the printed part has the
@@ -138,8 +138,10 @@ def test_tilted_sensor_leans_away_from_the_keys():
     # everything beyond the cup's own radius is the tilted sleeve
     sleeve = v[np.hypot(v[:, 0], v[:, 1]) > cup_r + 0.2]
     assert len(sleeve) > 0, "no sleeve outside the cup radius - is the sensor still tilted?"
-    reach_keys, reach_away = sleeve[:, 1].max(), -sleeve[:, 1].min()
-    assert reach_away > reach_keys, (
-        f"the sleeve reaches {reach_keys:.2f} mm towards the keys but only {reach_away:.2f} mm "
-        "away from them: the tilt azimuth or the export's y flip is wrong")
-    assert reach_away > cup_r, "the sleeve does not reach past the cup at all"
+    reach_out, reach_thumb = sleeve[:, 0].max(), -sleeve[:, 0].min()
+    reach_keys = sleeve[:, 1].max()
+    assert reach_out > cup_r, "the sleeve does not reach past the cup towards +x"
+    assert reach_thumb < cup_r, f"the sleeve reaches {reach_thumb:.2f} mm towards the thumb bridge"
+    assert reach_keys < cup_r, (
+        f"the sleeve reaches {reach_keys:.2f} mm towards the keys: the tilt azimuth or the "
+        "export's y flip is wrong")
