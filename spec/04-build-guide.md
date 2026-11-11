@@ -418,8 +418,8 @@ Checkpoint: 35 keys register, no switch sits high or tilted.
 2. Cursor direction: roll the ball away from you, the cursor must move up. If an axis is reversed,
    set `invert-x` / `invert-y` in `k0d3ball35_right.overlay`; if the axes are swapped, add
    `&zip_xy_swap_mapper` (sensor rotated 90 degrees). Rebuild and reflash the right half.
-3. Speed: the default is 600 CPI. A half turn of the 19 mm ball should move the cursor about one
-   screen width. Adjust `res-cpi` in steps of 200, or add a scaler in the input processors (see
+3. Speed: both axes start at about 610 CPI (`res-cpi` 1444 plus the tilt scaler). A half turn of
+   the 19 mm ball should move the cursor about one screen width. Adjust `res-cpi` in steps of 38, or add a scaler in the input processors (see
    [firmware, section 6](05-firmware.md)).
 4. Mouse layer: moving the ball activates layer 4 for 700 ms; the right-hand thumb and home-row
    keys become mouse buttons. Hold the scroll key to scroll, the snipe key for slow precision moves.

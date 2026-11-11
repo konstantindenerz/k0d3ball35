@@ -25,7 +25,8 @@ accepted (`spec/03-bom.md`, `spec/12-order-checklist.md`).
 - [x] J1 on the right PCB re-ordered to the module's pinout: 1 3.3V, 2 CS, 3 MOTION, 4 SDIO, 5 SCLK, 6 GND (`hw-ffc-pin-order-verification`)
 - [x] `hardware/sensor-pcb/` and its tests removed; spec, BOM and build guide describe the module
 - [ ] Module ordered and its pinout checked on arrival
-- [ ] ZMK: `sekigon-gonnoc/zmk-driver-paw3222` as a second west project, `CONFIG_INPUT_PAW32XX`, the sensor node's `compatible`, and axis scaling for the 65 degree tilt in the `trackball_listener` (`fw-cpi-tuning-19mm`)
+- [x] ZMK: `sekigon-gonnoc/zmk-driver-paw3222` as a pinned west project, `CONFIG_PAW3222`, `pixart,paw3222`, `res-cpi` 1444 and `&zip_y_scaler 11 26` for the 65 degree tilt
+- [ ] CPI and tilt scaling tuned on hardware (`fw-cpi-tuning-19mm`)
 - [ ] Measured current comparison in `spec/08-trackball-module.md`
 
 ## Notes

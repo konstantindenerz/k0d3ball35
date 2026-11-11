@@ -14,7 +14,7 @@ beside the right PCB and is connected to the PCB only by a 6-pin flat cable.
 | Supply | 3.3 V from the controller's VCC on the right PCB |
 | Interface | 3-wire SPI plus motion interrupt, 6-pin 0.5 mm FPC connector on the back of the module |
 | Pinout | 1 3.3V, 2 CS, 3 MOTION, 4 SDIO, 5 SCLK, 6 GND |
-| Driver | `sekigon-gonnoc/zmk-driver-paw3222` (firmware port open, `issues/hw-paw3222-variant.md`) |
+| Driver | `sekigon-gonnoc/zmk-driver-paw3222` (`pixart,paw3222`); `res-cpi` 1444 with a Y scaler of 11/26 for the tilt, about 610 CPI on both axes (`spec/05-firmware.md`) |
 
 The PAW3222 draws roughly half the tracking current of the PMW3610 the project used before. The
 module's mechanical values (lens distance, lens body, board thickness) are nominal: PixArt
@@ -95,7 +95,7 @@ otherwise the case lid covers it in transport.
 19.05 mm (3/4 inch) is the smallest ball with a working keyboard precedent: torabo-tsuki LP ships
 it, LiNEA40 tracks it, and 3/4 inch POM bearing balls cost a few euros per pack. Details in
 `spec/00-feasibility.md`, section 4a. It is the only supported size; the 25 mm variant was dropped
-in r2.4. The fingertip covers more of a small ball, so the same CPI feels faster: start at 600 CPI.
+in r2.4. The fingertip covers more of a small ball, so the same CPI feels faster: the firmware starts at about 610 CPI.
 
 ## 5. Assembly
 
@@ -119,7 +119,7 @@ PCB stay where they are.
 * First print of the 65 degree mount, lens distance with a feeler gauge, and the two tight
   values: sleeve top 0.11 mm under the cup rim, module 14.76 mm radial against the 15.5 mm notch
   (`issues/mech-ball-height-23mm.md`).
-* Firmware: PAW3222 driver and the axis scaling for the tilt (`issues/hw-paw3222-variant.md`).
+* Firmware: CPI and tilt scaling tuned on hardware (`issues/fw-cpi-tuning-19mm.md`).
 * FFC pin order on the first physical cable (`issues/hw-ffc-pin-order-verification.md`).
 * Ball surface: test two or three balls before choosing one (`issues/hw-ball-colour-tracking-test.md`).
 * Case pocket (`issues/mech-case-ball-pocket.md`).
