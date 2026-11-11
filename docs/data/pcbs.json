@@ -17,13 +17,13 @@
     "gerbers": "hardware/left-pcb/k0d3ball35-left-gerbers.zip"
    },
    "sizes": {
-    "kicad_pcb": 304322,
+    "kicad_pcb": 1183427,
     "glb": 2974116,
     "outline": 738,
-    "render_top": 375522,
-    "render_bottom": 356725,
+    "render_top": 480252,
+    "render_bottom": 450647,
     "step": 350723,
-    "gerbers": 64029
+    "gerbers": 251645
    },
    "layers": [
     {
@@ -94,7 +94,7 @@
     86.7
    ],
    "thickness_mm": 1.6,
-   "copper_layers": 0,
+   "copper_layers": 2,
    "finish": "ENIG",
    "keys": 18,
    "notes": "18 keys, no sensor connector",
@@ -109,7 +109,7 @@
     ],
     [
      "Copper layers",
-     "0"
+     "2"
     ],
     [
      "Copper weight",
@@ -125,18 +125,54 @@
     ],
     [
      "Footprints",
-     "0"
+     "55"
     ],
     [
      "Track segments",
-     "0"
+     "717"
     ],
     [
      "Vias",
-     "0"
+     "91"
     ]
    ],
-   "parts": []
+   "parts": [
+    {
+     "ref": "U1",
+     "role": "Controller",
+     "value": "nice!nano v2",
+     "footprint": "nice_nano_v2_THT",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "J3",
+     "role": "Battery connector",
+     "value": "S2B-PH-SM4-TB",
+     "footprint": "JST_PH_S2B-PH-SM4-TB_reversible",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "J2",
+     "role": "Battery pads",
+     "value": "BAT",
+     "footprint": "BatteryPads_2x1.8mm_P2.54mm",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "PS1",
+     "role": "Power switch",
+     "value": "MSK12C02",
+     "footprint": "SW_SPDT_MSK12C02_reversible",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "RB1",
+     "role": "Reset button",
+     "value": "EVQ-P7A01P",
+     "footprint": "SW_SPST_EVQP7A_reversible",
+     "side": "front (key side)"
+    }
+   ]
   },
   {
    "id": "right",
@@ -153,13 +189,13 @@
     "gerbers": "hardware/right-pcb/k0d3ball35-right-gerbers.zip"
    },
    "sizes": {
-    "kicad_pcb": 293607,
+    "kicad_pcb": 1082125,
     "glb": 2881448,
     "outline": 753,
-    "render_top": 357794,
-    "render_bottom": 346936,
+    "render_top": 460827,
+    "render_bottom": 439797,
     "step": 337178,
-    "gerbers": 62478
+    "gerbers": 233312
    },
    "layers": [
     {
@@ -230,10 +266,10 @@
     86.7
    ],
    "thickness_mm": 1.6,
-   "copper_layers": 0,
+   "copper_layers": 2,
    "finish": "ENIG",
    "keys": 17,
-   "notes": "",
+   "notes": "17 keys, FPC connector on the key side, notch for the ball pocket",
    "facts": [
     [
      "Outline",
@@ -245,7 +281,7 @@
     ],
     [
      "Copper layers",
-     "0"
+     "2"
     ],
     [
      "Copper weight",
@@ -265,18 +301,61 @@
     ],
     [
      "Footprints",
-     "0"
+     "50"
     ],
     [
      "Track segments",
-     "0"
+     "764"
     ],
     [
      "Vias",
-     "0"
+     "94"
     ]
    ],
-   "parts": []
+   "parts": [
+    {
+     "ref": "U1",
+     "role": "Controller",
+     "value": "nice!nano v2",
+     "footprint": "nice_nano_v2_THT",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "J1",
+     "role": "Sensor cable connector",
+     "value": "FH12-6S-0.5SH",
+     "footprint": "FPC_0.5mm_6P_FH12-6S_top",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "J3",
+     "role": "Battery connector",
+     "value": "S2B-PH-SM4-TB",
+     "footprint": "JST_PH_S2B-PH-SM4-TB_reversible",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "J2",
+     "role": "Battery pads",
+     "value": "BAT",
+     "footprint": "BatteryPads_2x1.8mm_P2.54mm",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "PS1",
+     "role": "Power switch",
+     "value": "MSK12C02",
+     "footprint": "SW_SPDT_MSK12C02_reversible",
+     "side": "front (key side)"
+    },
+    {
+     "ref": "RB1",
+     "role": "Reset button",
+     "value": "EVQ-P7A01P",
+     "footprint": "SW_SPST_EVQP7A_reversible",
+     "side": "front (key side)"
+    }
+   ]
   }
  ]
 }
