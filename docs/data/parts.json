@@ -220,12 +220,13 @@
    "printed": true,
    "doc": "hardware/case/README.md",
    "previews": [
-    "hardware/case/preview/assembly-right.png"
+    "hardware/case/preview/assembly-right.png",
+    "hardware/case/preview/clip-right.png"
    ],
    "bbox_min": [
     -28.15,
     -87.4,
-    3.6
+    3.8
    ],
    "bbox_max": [
     5.05,
@@ -235,9 +236,9 @@
    "size": [
     33.2,
     41.25,
-    1.4
+    1.2
    ],
-   "triangles": 1184,
+   "triangles": 1704,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -471,37 +472,37 @@
     26.73,
     10.53
    ],
-   "triangles": 7088,
+   "triangles": 6856,
    "watertight": true,
    "non_manifold_edges": 0
   },
   {
-   "id": "retainer-19mm",
-   "path": "hardware/trackball-cradle/stl/retainer-19mm.stl",
+   "id": "pocket-clip-right",
+   "path": "hardware/case/stl/pocket-clip-right.stl",
    "group": "retainer",
-   "name": "Retainer, 19.05 mm ball",
-   "role": "Optional clip-on ring that keeps the ball in when the half is turned over.",
+   "name": "Retainer clip, right",
+   "role": "Optional clip on the pocket cover that keeps the ball in when the half is turned over.",
    "printed": true,
-   "doc": "hardware/trackball-cradle/README.md",
+   "doc": "hardware/case/README.md",
    "previews": [
-    "hardware/trackball-cradle/preview/assembly-19mm-pocket.png"
+    "hardware/case/preview/clip-right.png"
    ],
    "bbox_min": [
-    -12.92,
-    -12.92,
-    1.0
+    -3.13,
+    -15.07,
+    3.3
    ],
    "bbox_max": [
-    12.92,
-    12.92,
+    15.07,
+    15.07,
     9.43
    ],
    "size": [
-    25.85,
-    25.85,
-    8.43
+    18.21,
+    30.15,
+    6.12
    ],
-   "triangles": 2254,
+   "triangles": 1582,
    "watertight": true,
    "non_manifold_edges": 0
   }
@@ -539,6 +540,14 @@
    "parts": [
     "box-cap-left",
     "box-cap-right"
+   ]
+  },
+  {
+   "path": "hardware/case/preview/clip-right.png",
+   "caption": "Retainer clip on the pocket cover",
+   "parts": [
+    "pocket-clip-right",
+    "pocket-cover-right"
    ]
   },
   {
@@ -592,8 +601,7 @@
    "path": "hardware/trackball-cradle/preview/assembly-19mm-pocket.png",
    "caption": "Cradle assembled, 19.05 mm ball",
    "parts": [
-    "cradle-19mm-pocket",
-    "retainer-19mm"
+    "cradle-19mm-pocket"
    ]
   },
   {
@@ -611,7 +619,7 @@
     "id": "19mm-pocket",
     "label": "19 mm pocket",
     "cradle": "cradle-19mm-pocket",
-    "retainer": "retainer-19mm",
+    "retainer": "pocket-clip-right",
     "mount": "cutout",
     "stack": {
      "ball_d": 19.05,
@@ -631,19 +639,19 @@
      "housing_x": 11.0,
      "housing_y": 18.0,
      "footprint_x": 23.05,
-     "footprint_y": 26.725,
-     "retainer_top_z": 9.426,
-     "retainer_outer_d": 25.85
+     "footprint_y": 26.725
     },
     "retention": {
      "trapped": true,
-     "without_retainer_trapped": false,
+     "without_clip_trapped": false,
      "guaranteed_margin": 0.669,
      "ball_lift_play": 0.82,
      "rest_gap": 0.389,
      "pull_off_min_gap": 0.389,
      "open_sector_deg": 156.0,
-     "boss_clearance": 0.8
+     "pin_cradle_clearance": 0.823,
+     "clip_top_z": 9.426,
+     "clip_outer_r": 15.075
     },
     "previews": [
      "hardware/trackball-cradle/preview/assembly-19mm-pocket.png",

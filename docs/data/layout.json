@@ -636,7 +636,7 @@
     "case_screw_cs_h": 1.3,
     "case_screw_head_z": -9.4,
     "cover_z0": 0.0,
-    "cover_hole_d": 26.5
+    "cover_hole_d": 20.55
    },
    "case_files": {
     "tray": "hardware/case/stl/tray-left.stl",
@@ -1479,8 +1479,8 @@
     "case_screw_cs_d": 4.8,
     "case_screw_cs_h": 1.3,
     "case_screw_head_z": -9.4,
-    "cover_z0": 3.6,
-    "cover_hole_d": 26.5
+    "cover_z0": 3.8,
+    "cover_hole_d": 20.55
    },
    "case_files": {
     "tray": "hardware/case/stl/tray-right.stl",
@@ -1488,7 +1488,8 @@
     "lid": "hardware/case/stl/lid-right.stl",
     "lid_folded": "hardware/case/stl/lid-folded-right.stl",
     "cover": "hardware/case/stl/pocket-cover-right.stl",
-    "cradle": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl"
+    "cradle": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
+    "clip": "hardware/case/stl/pocket-clip-right.stl"
    }
   }
  }

@@ -18,7 +18,7 @@ const col = (hex) => new THREE.Color(hex);
 const reducedMq = matchMedia('(prefers-reduced-motion: reduce)');
 const reduced = () => reducedMq.matches;
 const HALVES = ['right', 'left'];
-const CASE_KEYS = ['tray', 'cap', 'lid', 'lid_folded', 'cover', 'cradle'];   // cover and cradle: ball half only
+const CASE_KEYS = ['tray', 'cap', 'lid', 'lid_folded', 'cover', 'cradle', 'clip'];   // cover, cradle, clip: ball half only
 
 // ---------- geometry helpers ----------
 function outlineShape(points, holes = []) {
@@ -69,8 +69,8 @@ const UNMIRROR = new THREE.Matrix4().makeScale(-1, 1, 1);
 const caseMatrix = (half) => (half === 'left'
   ? SWAP.clone().multiply(UNMIRROR).multiply(TO_LAYOUT)
   : SWAP.clone().multiply(TO_LAYOUT));
-// The cradle STL is in the same print frame but centred on the ball: move it to the ball after the turn.
-const partMatrix = (half, key, ball) => (key === 'cradle'
+// The cradle and clip STLs are in the same print frame but centred on the ball: move them to the ball after the turn.
+const partMatrix = (half, key, ball) => (key === 'cradle' || key === 'clip'
   ? new THREE.Matrix4().makeTranslation(ball.x, 0, ball.y).multiply(caseMatrix(half))
   : caseMatrix(half));
 
@@ -79,6 +79,7 @@ const M = {
   tray: new THREE.MeshStandardMaterial({ color: col('#CFC3AE'), roughness: .85 }),
   boxCap: new THREE.MeshStandardMaterial({ color: col('#B9A98E'), roughness: .85, transparent: true, opacity: .8 }),
   lid: new THREE.MeshStandardMaterial({ color: col('#E8762E'), roughness: .8, transparent: true, opacity: .3 }),
+  clip: new THREE.MeshStandardMaterial({ color: col('#E8762E'), roughness: .7 }),
   pcb: new THREE.MeshStandardMaterial({ color: col('#2E5A3B'), roughness: .6 }),
   pcbEdge: new THREE.MeshStandardMaterial({ color: col('#C9A24A'), roughness: .5, metalness: .4 }),
   black: new THREE.MeshStandardMaterial({ color: col('#2A2A2C'), roughness: .7 }),
@@ -241,6 +242,8 @@ function build(which) {
   }
   // --- pocket cover: flush plate over the cradle opening, funnel down to the ball ---
   if (ball) layer(t('Pocket cover'), 40, '#B9A98E', { x: bx + 16, y: H.case_stack.rim_z + 2, z: bz + 18 }).add(caseMesh('cover', M.boxCap));
+  // --- optional retainer clip on the cover: keeps the ball in when the half is turned over (off by default) ---
+  if (ball) layer(t('Retainer clip'), 50, '#E8762E', { x: bx - 16, y: H.case_stack.rim_z + 6, z: bz - 10 }, true).add(caseMesh('clip', M.clip));
   // --- bottom-side parts ---
   {
     const g = layer(t('Bottom-side parts'), -5, '#3B3B3F', { x: 20, y: -3, z: 28 });

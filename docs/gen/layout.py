@@ -27,7 +27,8 @@ STACK_KEYS = ("ball_centre_z", "ball_top_above_pcb_top", "cup_outer_d", "lowest_
 CASE_PARTS = {"tray": "hardware/case/stl/tray-{half}.stl", "cap": "hardware/case/stl/box-cap-{half}.stl",
               "lid": "hardware/case/stl/lid-{half}.stl", "lid_folded": "hardware/case/stl/lid-folded-{half}.stl"}
 BALL_PARTS = {"cover": "hardware/case/stl/pocket-cover-{half}.stl",
-              "cradle": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl"}
+              "cradle": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
+              "clip": "hardware/case/stl/pocket-clip-{half}.stl"}
 
 
 def _ring(poly) -> list[list[float]]:

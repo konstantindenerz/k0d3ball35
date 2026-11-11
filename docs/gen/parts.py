@@ -32,7 +32,7 @@ GROUPS = (
 
 # where the details live: the page names a part, the README says how to print and fit it
 DOCS = {"right": "hardware/case/README.md", "left": "hardware/case/README.md", "test": "hardware/case/README.md",
-        "cradle": "hardware/trackball-cradle/README.md", "retainer": "hardware/trackball-cradle/README.md"}
+        "cradle": "hardware/trackball-cradle/README.md", "retainer": "hardware/case/README.md"}
 
 # stem -> group, name, one line on what it is, printed (True = a part to print, False = display only)
 PARTS: dict[str, tuple[str, str, str, bool]] = {}
@@ -54,7 +54,7 @@ for _h in ("right", "left"):
 PARTS["pocket-cover-right"] = ("right", "Pocket cover, right", "Flush plate over the cradle opening, with the funnel down to the ball. Two M2 x 6 countersunk screws.", True)
 PARTS["pocket-test-right"] = ("test", "Pocket test, right", "The corner of the right tray around the ball pocket, to test the cradle fit.", True)
 PARTS["cradle-19mm-pocket"] = ("cradle", "Cradle, 19.05 mm ball", "Cup on three ceramic bearings, with the tilted sensor module sleeve beside it. The only variant since r2.4.", True)
-PARTS["retainer-19mm"] = ("retainer", "Retainer, 19.05 mm ball", "Optional clip-on ring that keeps the ball in when the half is turned over.", True)
+PARTS["pocket-clip-right"] = ("retainer", "Retainer clip, right", "Optional clip on the pocket cover that keeps the ball in when the half is turned over.", True)
 
 # STLs in the two folders that the page does not list, with the reason
 EXCLUDED: dict[str, str] = {}
@@ -67,23 +67,24 @@ PREVIEWS = {
     f"{CASE_PREVIEW}/tray-bottom-right.png": ("Tray from below, right", ("tray-right",)),
     f"{CASE_PREVIEW}/box-right.png": ("Controller box close-up, right", ("box-cap-right", "tray-right")),
     f"{CASE_PREVIEW}/cap-logo-right.png": ("Cap with the engraved wordmark", ("box-cap-right", "box-cap-left")),
+    f"{CASE_PREVIEW}/clip-right.png": ("Retainer clip on the pocket cover", ("pocket-clip-right", "pocket-cover-right")),
     f"{CASE_PREVIEW}/lid-on-right.png": ("Lid on for transport, right", ("lid-right", "lid-outer-right", "lid-inner-right")),
     f"{CASE_PREVIEW}/lid-hinge-right.png": ("Lid hinge close-up, right", ("lid-right", "lid-outer-right", "lid-inner-right")),
     f"{CASE_PREVIEW}/lid-folded-right.png": ("Lid folded, right", ("lid-folded-right",)),
     f"{CASE_PREVIEW}/lid-foot-right.png": ("Lid as tenting foot, right", ("lid-folded-right",)),
-    f"{CRADLE_PREVIEW}/assembly-19mm-pocket.png": ("Cradle assembled, 19.05 mm ball", ("cradle-19mm-pocket", "retainer-19mm")),
+    f"{CRADLE_PREVIEW}/assembly-19mm-pocket.png": ("Cradle assembled, 19.05 mm ball", ("cradle-19mm-pocket",)),
     f"{CRADLE_PREVIEW}/section-19mm-pocket.png": ("Section, 19.05 mm ball, pocket", ("cradle-19mm-pocket",)),
 }
 
 VARIANTS = (
-    ("19mm-pocket", "19 mm pocket", "retainer-19mm"),
+    ("19mm-pocket", "19 mm pocket", "pocket-clip-right"),
 )
 STACK_KEYS = ("ball_d", "ball_centre_z", "ball_top_above_pcb_top", "ball_bottom_z", "bearing_contact_z", "rim_z",
               "rim_below_equator", "lens_reference_plane_dist", "sensor_pcb_plane_z", "lowest_plastic_z", "floor_z",
               "cup_outer_d", "envelope_d_above_pcb", "notch_apothem", "housing_x", "housing_y", "footprint_x",
-              "footprint_y", "retainer_top_z", "retainer_outer_d")
-RETENTION_KEYS = ("trapped", "without_retainer_trapped", "guaranteed_margin", "ball_lift_play", "rest_gap",
-                  "pull_off_min_gap", "open_sector_deg", "boss_clearance")
+              "footprint_y")
+RETENTION_KEYS = ("trapped", "without_clip_trapped", "guaranteed_margin", "ball_lift_play", "rest_gap",
+                  "pull_off_min_gap", "open_sector_deg", "pin_cradle_clearance", "clip_top_z", "clip_outer_r")
 
 
 def _r(v, n=2):
@@ -132,7 +133,7 @@ def build() -> dict:
             **measure(REPO / stems[stem]),
         })
     stack = json.loads((REPO / "hardware/trackball-cradle/stack.json").read_text())["variants"]
-    retention = json.loads((REPO / "hardware/trackball-cradle/retention.json").read_text())["variants"]
+    retention = json.loads((REPO / "hardware/case/retention.json").read_text())["variants"]
     variants = []
     for vid, label, retainer in VARIANTS:
         s, r = stack[vid], retention.get(vid, {})

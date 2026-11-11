@@ -203,7 +203,7 @@ function renderPanel() {
   root.querySelector('.tb-retention').innerHTML = retainer ? `
     <h2>${t('Ball retention')}</h2>
     ${dims([
-      [t('Without the retainer'), r.without_retainer_trapped ? t('ball stays in') : t('ball falls out upside down')],
+      [t('Without the retainer'), r.without_clip_trapped ? t('ball stays in') : t('ball falls out upside down')],
       [t('With the retainer clipped on'), r.trapped ? t('ball stays in') : t('ball falls out')],
       [t('Print error it tolerates'), `${fmt(r.guaranteed_margin, 2)} mm`],
     ])}` : `<h2>${t('Ball retention')}</h2><p class="tb-text">${t('No retainer for this variant.')}</p>`;

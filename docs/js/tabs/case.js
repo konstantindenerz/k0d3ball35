@@ -130,7 +130,7 @@ function renderPanel(p) {
       <span>${esc(pv?.caption ? t(pv.caption) : path.split('/').pop())}</span></a></li>`;
   }).join('');
   const crossLink = p.group === 'cradle' || p.group === 'retainer'
-    ? `<p class="note">${t('The {link} shows the cradle with the ball, the retainer and the sensor board in place.', { link: `<a href="#trackball/${esc(p.group === 'cradle' ? p.id.replace(/^cradle-/, '') : p.id.replace(/^retainer-(\d+mm)$/, '$1-pocket'))}">${t('Trackball sheet')}</a>` })}</p>` : '';
+    ? `<p class="note">${t('The {link} shows the cradle with the ball, the retainer and the sensor board in place.', { link: `<a href="#trackball/${esc(p.group === 'cradle' ? p.id.replace(/^cradle-/, '') : '19mm-pocket')}">${t('Trackball sheet')}</a>` })}</p>` : '';
   const docLink = `<a href="${esc(githubUrl(p.doc))}" target="_blank" rel="noopener">${esc(p.doc)}</a>`;
   root.querySelector('.case-detail').innerHTML = `
     <h2>${t('Selected part')}</h2>
