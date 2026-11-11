@@ -43,13 +43,11 @@ stays in the layout frame.
 - **Sensor.** The 14 x 8 mm module sits in a sleeve beside the cup, tilted 65 degrees from
   vertical (`sensor_angle`) and leaning away from the keys (`sensor_az` = 270). It looks at the
   ball through a 4 mm window 25 degrees below the equator; lens distance 2.4 mm nominal.
-- **Why 65 degrees works.** Tilted, one board edge swings up and must stay under the cup rim, so
-  the board's width in the tilt plane decides. The old PMW3610 board stayed at least 13 mm wide
-  there (its sensor sits in a 16.96 x 8.60 mm cutout), which allowed 38 degrees at best and
-  gained 0.06 mm. The 8 mm module allows 65 degrees.
-- **What sets the ball height.** The cup floor (`cup_floor_t` 2.0 mm under the ball): `drop_cup`
-  11.53 mm binds against `drop_board` 10.65 mm for the module. The module's lens values are
-  nominal (no PixArt drawing), but they cannot raise the ball. `tests/test_cradle.py` asserts it.
+- **Why 65 degrees works.** Tilted, the upper board edge must stay under the cup rim, so the
+  board's width in the tilt plane decides: the old PMW3610 board (at least 13 mm there) allowed
+  38 degrees for a 0.06 mm gain, the 8 mm module allows 65 (`spec/08-trackball-module.md`).
+- **What sets the ball height.** The cup floor (`cup_floor_t` 2.0 mm), not the module, so the
+  module's nominal lens values cannot raise the ball. `tests/test_cradle.py` asserts it.
 - **Floor footprint.** Cup skirt plus the tilted sleeve where the floor clips it: 24.05 x
   26.84 mm with 0.5 mm clearance (`dxf/floor-19mm-pocket.dxf`), extending further on the side
   away from the keys. The case well (the 24 x 29 mm housing box, offset 2.55 mm in y, plus
