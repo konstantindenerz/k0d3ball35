@@ -447,11 +447,11 @@ module floor2d() {
             // floor, not from a formula. Writing it out by hand got it wrong twice in r2.4: once
             // by ignoring sensor_az, and once by using the UNCLIPPED sleeve, which reached 21.4 mm
             // from the axis instead of the real 14.3 and so blew up the case's pocket well.
-            // The mirror is NOT redundant with the print-frame mirror at the bottom of this
-            // file: a projection() result does not inherit it, which was verified by rendering
-            // both ways - without it the DXF leaned +y while the STL leaned -y.
-            mirror([0, 1, 0])
-                projection(cut = true) translate([0, 0, -floor_z - 0.05]) housing_outer();
+            // No mirror of its own: the print-frame mirror at the bottom of this file applies to
+            // the projection like to everything else. A second mirror here cancelled it once in
+            // r2.4 and put the sleeve on the KEY side of the DXF while the STL had it on the
+            // back edge (tests/test_cradle.py compares the two).
+            projection(cut = true) translate([0, 0, -floor_z - 0.05]) housing_outer();
         }
         for (sy = [-1, 1]) translate([0, sy * case_screw_sp / 2]) circle(d = case_screw_d + 0.2);
     }

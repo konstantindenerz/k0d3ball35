@@ -246,10 +246,20 @@ def test_floor_dxf_is_housing_with_two_screw_holes():
     # across the lean the cup sets the width, and it is centred on the ball axis
     assert abs(outer[1] - outer[0] - 2 * (cup_r + 0.5)) < 0.05
     assert abs(outer[0] + outer[1]) < 0.05, "the footprint is symmetric about x"
-    # along the lean it is not: the sleeve adds to one side, the cup bounds the other
-    lean, back = -outer[2], outer[3]
+    # along the lean it is not: the sleeve adds to one side, the cup bounds the other. The sleeve
+    # leans towards layout +y (window_az 90, the back edge), never towards the keys.
+    assert stack["window_az"] == 90
+    lean, back = outer[3], -outer[2]
     assert abs(back - (cup_r + 0.5)) < 0.05, "the cup bounds the side away from the sleeve"
     assert cup_r + 1.0 < lean <= stack["board_reach"] + 2.0, f"sleeve reach {lean:.2f} mm"
+    # and the DXF agrees with the STL: both files are in the print frame, so the floor section of
+    # the printed part must lean the same way as its footprint. A doubled mirror in floor2d()
+    # once flipped only the DXF, and the line above, written against that DXF, agreed with it.
+    mesh = load_layout_frame(CRADLE / "stl" / "cradle-19mm-pocket.stl")
+    v = mesh.vertices
+    foot = v[v[:, 2] < v[:, 2].min() + 0.5]
+    assert foot[:, 1].max() > -foot[:, 1].min() + 1.0, "STL leans the other way than the DXF"
+    assert abs(foot[:, 1].max() + 0.5 - lean) < 0.6, (foot[:, 1].max(), lean)
     centres = sorted(((b[0] + b[1]) / 2, (b[2] + b[3]) / 2) for b in holes)
     for (cx, cy), b in zip(centres, sorted(holes, key=lambda b: (b[2] + b[3]) / 2)):
         assert abs(cx) < 0.05

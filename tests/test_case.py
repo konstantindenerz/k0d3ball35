@@ -359,20 +359,17 @@ def test_stack_json(stack, cradle_stack):
         assert v["foot_dx"] < -45, name
     for name in ("left", "right"):
         assert stack[name]["foot_free_end_h"] > 0.5, "the outer plate's free end clears the desk"
-    # the 25 mm fallback lid is 12 mm taller, so at 15 degrees its free end would hit the desk:
-    # that variant needs a steeper tent_deg for the foot (documented), the echo says so
-    assert stack["right-25mm"]["foot_free_end_h"] < 0
     assert stack["left"]["has_ball"] == 0 and stack["right"]["has_ball"] == 1
     r = stack["right"]
-    # the ball looks through a window smaller than itself: it cannot leave the cup, its chord at
-    # the roof underside clears the hole and its top is flush with the roof
-    assert r["lid_window"] == 1 and stack["left"]["lid_window"] == 0
-    assert r["ball_window_d"] <= BALL_D - 2.0
-    centre_z = r["ball_top_z"] - BALL_D / 2
-    chord = 2 * ((BALL_D / 2) ** 2 - (r["lid_roof_under_z"] - centre_z) ** 2) ** 0.5
-    assert chord <= r["ball_window_d"] - 1.0
-    assert r["ball_top_z"] <= r["lid_top_z"] + 0.2
-    assert r["housing_x"] == cradle_stack["housing_x"] and r["housing_y"] == cradle_stack["housing_y"]
+    # Since r2.4 there is no ball window: the ball sits under a closed roof, so both halves get
+    # the same lid height (spec: transport 27.3 mm; a window brings no height, see the plan).
+    assert r["ball_top_z"] < r["lid_roof_under_z"] - 0.4, "the ball would touch the roof"
+    for k in ("lid_top_z", "lid_roof_under_z"):
+        assert r[k] == stack["left"][k], k
+    # Same name, different things since r2.4: the cradle's housing_x/y is the tilted module's
+    # sleeve (11 x 18), the case's is the pocket well box around cup AND sleeve. The well only has
+    # to hold the cradle; the exact containment, sleeve included, is test_floor_dxf_right.
+    assert r["housing_x"] >= cradle_stack["cup_outer_d"] and r["housing_y"] >= cradle_stack["cup_outer_d"]
     assert r["case_screw_sp"] == cradle_stack["case_screw_sp"]
     # cradle screws: 90 degree countersink, the flat head sinks until the cone is as wide as the
     # head, so it ends up below the flat underside and never touches the desk or the folded lid
@@ -384,7 +381,6 @@ def test_stack_json(stack, cradle_stack):
     assert r["case_screw_floor_left"] >= 1.0, "floor left between the cone and the cradle"
     assert r["ball_top_z"] == cradle_stack["ball_top_above_pcb_top"]
     assert abs(r["cradle_rim_z"] - cradle_stack["rim_z"]) < 1e-6
-    assert stack["right-25mm"]["lid_roof_under_z"] >= 23.05 + 1.0
 
 
 # ----------------------------------------------------------------- renders
@@ -615,7 +611,6 @@ def test_render_lid(tmp_path, half, data):
         assert len(rr[rr < 9.0]) == 0, "the roof is not closed over the ball"
         centre = np.array([BALL[0], BALL[1], values["ball_top_z"] - BALL_D / 2])
         assert np.linalg.norm(v - centre, axis=1).min() >= BALL_D / 2 + 0.4
-        assert values["ball_window_d"] < BALL_D
     # printed roof-down: no upward face below the roof top except the knuckle grooves in the skirt
     n, a, fz = mesh.face_normals, mesh.area_faces, mesh.triangles_center[:, 2]
     # The roof top is the first print layer and its outer edge is broken, which puts a ring of
@@ -773,18 +768,23 @@ def test_floor_dxf_right():
     holes = _holes(loops)
     for hx, hy in HOLES + [HOLE5["right"]] + CASE_SCREWS:
         assert any(abs(x - hx) < 0.05 and abs(y - hy) < 0.05 for x, y in holes), (hx, hy)
-    # The pocket outline is no longer a square: since r2.4 it is the cup skirt unioned with the
-    # tilted sleeve where the floor clips it, taken straight from the cradle's own floor DXF.
-    cradle_floor = _dxf_loops(CRADLE / "dxf" / "floor-19mm-pocket.dxf")
-    want = max(cradle_floor, key=lambda b: (b[1] - b[0]) * (b[3] - b[2]))
-    pocket = [b for b in loops
-              if abs((b[1] - b[0]) - (want[1] - want[0])) < 0.3
-              and abs((b[3] - b[2]) - (want[3] - want[2])) < 0.3]
-    assert len(pocket) == 1, f"pocket outline {want[1]-want[0]:.2f} x {want[3]-want[2]:.2f} mm"
+    # The pocket well is the layout's housing box (pocket.housing + housing_offset), not a copy
+    # of the cradle outline. What has to hold is that it CONTAINS the cradle's floor footprint
+    # (cup skirt plus the tilted sleeve, already with 0.5 mm clearance) placed at the ball.
+    # Both DXFs are in the print frame; _dxf_loops brings them into the layout frame alike.
     cradle = _dxf_loops(CRADLE / "dxf" / "floor-19mm-pocket.dxf")
-    outer = max(cradle, key=lambda b: b[1] - b[0])
-    for i, off in enumerate((BALL[0], BALL[0], BALL[1], BALL[1])):
-        assert abs(pocket[0][i] - (outer[i] + off)) < 0.05, i
+    foot = max(cradle, key=lambda b: (b[1] - b[0]) * (b[3] - b[2]))
+    foot = (foot[0] + BALL[0], foot[1] + BALL[0], foot[2] + BALL[1], foot[3] + BALL[1])
+    assert foot[3] - BALL[1] > BALL[1] - foot[2], "the sleeve leans towards +y, away from the keys"
+    wells = [b for b in loops if 20 < b[1] - b[0] < 35 and 20 < b[3] - b[2] < 40
+             and b[0] < BALL[0] < b[1] and b[2] < BALL[1] < b[3]]
+    assert wells, "no pocket well around the ball"
+    for w in wells:     # the wall and its inner step: the tighter one decides
+        assert w[0] <= foot[0] and foot[1] <= w[1], (w, foot)
+        assert w[2] <= foot[2] and foot[3] <= w[3], (w, foot)
+    # and not grossly larger: a well that blew up to the unclipped sleeve slipped through once
+    tight = min(wells, key=lambda b: (b[1] - b[0]) * (b[3] - b[2]))
+    assert max(foot[0] - tight[0], tight[1] - foot[1], foot[2] - tight[2], tight[3] - foot[3]) < 3.0
 
 
 def test_floor_dxf_left_is_mirrored():
