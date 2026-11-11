@@ -194,6 +194,22 @@ case_screw_cs_d   = case_screw_head_d + 0.4;              // 90 degree countersi
 case_screw_cs_h   = (case_screw_cs_d - case_screw_d) / 2; // 1.3 mm deep, 1.2 mm of floor left at the bore
 fpc_clear       = 0.5;         // clearance around J1 and the FFC corridor on the key side
 
+// ---------------------------------------------------------------- PCB guard
+// A thin plate lying on the PCB top between the switches (like the Keyball39 cover plate). It
+// adds no height: it fills the air under the keycaps, which bottom out at cap_skirt_z -
+// switch_travel. The lower switch housings pass through square cut-outs, and the upper housing
+// flanges hold it down, so it needs no screws. It stays clear of the PCB screw heads (they keep
+// sitting on the PCB), the controller box, J1 and the FFC, and the cradle opening.
+guard           = true;
+cap_skirt_z     = 5.0;         // keycap skirt bottom at rest (the keycap dummy and rim_z)
+switch_travel   = 3.0;         // Choc V1 total travel: the skirt bottoms out at +2.0
+switch_lower    = 13.8;        // Choc V1 lower housing, the square under the flange
+guard_t         = 0.8;         // 4 layers at 0.2
+guard_min_air   = 0.8;         // at least this much air between the guard and a pressed keycap
+guard_fit       = 0.2;         // around every switch housing, to the cavity wall and the box
+guard_min_web   = 1.2;         // narrower strips are dropped from the outline (they would not print)
+guard_screw_d   = 4.4;         // clear of every M2 head the PCB screws use (pan / cheese head max 4.0)
+
 // ---------------------------------------------------------------- rendering
 $fn             = 64;
 eps             = 0.01;

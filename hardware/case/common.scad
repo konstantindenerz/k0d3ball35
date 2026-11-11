@@ -174,3 +174,19 @@ clip_z0  = rim_z;                               // ring underside on the cover t
 clip_z1  = rim_z + clip_ring_t;
 clip_rin = ball_d / 2 + clip_ball_gap;          // claw inner face: the cup's inner sphere
 function clip_top_z() = ball_centre_z() + clip_claw_h;
+
+// ---------------------------------------------------------------- PCB guard
+guard_top_z = guard_t;
+guard_air   = cap_skirt_z - switch_travel - guard_top_z;           // under a pressed keycap
+assert(guard_air >= guard_min_air - 1e-6,
+       str("PCB guard too thick: ", guard_air, " mm left under a pressed keycap"));
+// The outline comes from data.scad (scripts/gen_case.py guard_polygon): the PCB minus a square
+// per switch housing, the screw heads, the box, J1/FFC and the cradle opening, kept as one piece
+// without webs narrower than guard_min_web. Outer ring first, then the holes.
+module guard_2d() {
+    g = guard(half);
+    difference() {
+        polygon(g[0]);
+        for (i = [1 : len(g) - 1]) polygon(g[i]);
+    }
+}

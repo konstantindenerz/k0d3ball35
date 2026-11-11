@@ -25,8 +25,8 @@ RIGHT     = -D 'half="right"'
 STL = stl/tray-left.stl stl/tray-right.stl stl/box-cap-left.stl stl/box-cap-right.stl \
       stl/lid-left.stl stl/lid-right.stl stl/lid-outer-left.stl stl/lid-outer-right.stl \
       stl/lid-inner-left.stl stl/lid-inner-right.stl stl/lid-folded-left.stl stl/lid-folded-right.stl \
-      stl/pocket-test-right.stl stl/pocket-cover-right.stl stl/pocket-clip-right.stl
-DXF = dxf/floor-left.dxf dxf/floor-right.dxf
+      stl/pocket-test-right.stl stl/pocket-cover-right.stl stl/pocket-clip-right.stl stl/guard-left.stl stl/guard-right.stl
+DXF = dxf/floor-left.dxf dxf/floor-right.dxf dxf/guard-left.dxf dxf/guard-right.dxf
 PNG = preview/assembly-left.png preview/assembly-right.png preview/section-right.png \
       preview/lid-on-right.png preview/lid-foot-right.png preview/lid-folded-right.png \
       preview/lid-hinge-right.png preview/box-right.png \
@@ -39,7 +39,7 @@ dxfs: $(DXF)
 previews: $(PNG)
 
 data: data.scad
-data.scad: ../../scripts/gen_case.py ../../scripts/k0d3/geometry.py ../layout/k0d3ball35.yaml
+data.scad: ../../scripts/gen_case.py ../../scripts/k0d3/geometry.py ../layout/k0d3ball35.yaml params.scad
 	cd ../.. && PYTHONPATH=scripts $(subst ../../,,$(PYTHON)) scripts/gen_case.py
 
 # one run writes logo_data.scad and the vector master spec/images/logo.svg; only the first is
@@ -82,6 +82,16 @@ stl/pocket-cover-right.stl: $(SRC) | stl
 	$(OSC) -D 'part="pocket_cover"' $(RIGHT) -o $@ case.scad
 stl/pocket-test-right.stl: $(SRC) | stl
 	$(OSC) -D 'part="pocket_test"' $(RIGHT) -o $@ case.scad
+
+stl/guard-left.stl: $(SRC) | stl
+	$(OSC) -D 'part="guard"' $(LEFT) -o $@ case.scad
+stl/guard-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="guard"' $(RIGHT) -o $@ case.scad
+
+dxf/guard-left.dxf: $(SRC) | dxf
+	$(OSC) -D 'part="guard2d"' $(LEFT) -o $@ case.scad
+dxf/guard-right.dxf: $(SRC) | dxf
+	$(OSC) -D 'part="guard2d"' $(RIGHT) -o $@ case.scad
 
 dxf/floor-left.dxf: $(SRC) | dxf
 	$(OSC) -D 'part="floor2d"' $(LEFT) -o $@ case.scad

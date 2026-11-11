@@ -14,6 +14,7 @@ Usage: scripts/gen_case.py [output]      (default hardware/case/data.scad)
 from __future__ import annotations
 
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -25,6 +26,16 @@ from k0d3.geometry import HALVES, Layout, load_layout
 
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_OUT = REPO / "hardware" / "case" / "data.scad"
+PARAMS = REPO / "hardware" / "case" / "params.scad"
+
+
+def scad_param(name: str) -> float:
+    """A numeric literal from params.scad, so the guard outline below uses the same fits as the
+    SCAD sources instead of a copy (changing one of these needs `make data`)."""
+    m = re.search(rf"^{name}\s*=\s*(-?[\d.]+);", PARAMS.read_text(), flags=re.M)
+    if m is None:
+        raise SystemExit(f"params.scad: no numeric {name}")
+    return float(m[1])
 
 BOX_INNER_X = -45.5      # key-side wall of the controller box (params.scad box_inner_x)
 BOX_CAP_CLEAR = 1.0      # controller box keeps this to every keycap
@@ -237,6 +248,48 @@ def cover_screws(layout: Layout) -> list[tuple[float, float]]:
     return [(round(cx0 + COVER_SCREW_EDGE, 3), round(y1 + k, 3)), (round(x1 + k, 3), round(y1 + k, 3))]
 
 
+def guard_polygon(layout: Layout, box_r) -> Polygon:
+    """The PCB guard (params.scad, PCB guard): a plate on the PCB top between the switches. The
+    PCB area minus a square per switch housing, the PCB screw heads, the controller box, J1 and
+    the FFC path and the cradle opening. It is built here and not in OpenSCAD because it has to
+    come out as ONE piece without thin necks: the screw head holes sit in the webs between the
+    keys and cut some strips off; such a strip would lie loose in the case. So every web
+    narrower than guard_min_web is cut through, only the largest piece is kept, and it grows
+    back to its full outline."""
+    fit, web = scad_param("guard_fit"), scad_param("guard_min_web")
+    side = scad_param("switch_lower") + 2 * fit
+    pcb_clear, fpc_clear = scad_param("pcb_clear"), scad_param("fpc_clear")
+    plate = layout.outline.buffer(pcb_clear - fit, join_style=2) if pcb_clear != fit else layout.outline
+    cuts = []
+    for k in layout.keys:
+        sq = box(-side / 2, -side / 2, side / 2, side / 2)
+        a = math.radians(-k.rotation)          # tray.scad: rotate(-k[2])
+        c, s_ = math.cos(a), math.sin(a)
+        cuts.append(Polygon([(k.x + x * c - y * s_, k.y + x * s_ + y * c) for x, y in sq.exterior.coords]))
+    cuts += [Point(h["x"], h["y"]).buffer(scad_param("guard_screw_d") / 2, 64) for h in layout.cfg["mounting_holes"]]
+    x0, y0, _, y1 = box_r
+    cuts.append(box(x0, y0, BOX_INNER_X, y1).buffer(fit, join_style=2))
+    if layout.has_ball:
+        cuts.append(layout.fpc_box().buffer(fpc_clear + fit, join_style=2))
+        if layout.cable_corridor() is not None:
+            cuts.append(layout.cable_corridor().buffer(fpc_clear + fit, join_style=2))
+        cuts.append(Point(layout.ball_center).buffer(scad_param("cradle_d") / 2 + fit, 64))
+        cuts.append(layout.notch_polygon().buffer(pcb_clear + fit, join_style=2))
+        cuts.append(pocket_opening(layout).buffer(fit, join_style=2))
+    raw = plate.difference(unary_union(cuts))
+    core = raw.buffer(-web / 2, 32)
+    core = max(getattr(core, "geoms", [core]), key=lambda g: g.area)
+    out = core.buffer(web / 2, 32).intersection(raw).simplify(0.01)
+    if out.geom_type != "Polygon":       # slivers of the intersection along the cuts
+        out = max(out.geoms, key=lambda g: g.area)
+    return out
+
+
+def guard_rings(poly: Polygon) -> list[list[tuple[float, float]]]:
+    """Outer ring first, then the holes (each counter-clockwise, see ring())."""
+    return [ring(poly)] + [ring(Polygon(i)) for i in poly.interiors]
+
+
 def half_data(layout: Layout) -> dict:
     d: dict = {}
     d["outline"] = ring(layout.outline)
@@ -301,6 +354,7 @@ def half_data(layout: Layout) -> dict:
     d["foot_dx"] = foot_dx(layout)
     d["foot_magnets"] = foot_magnets(layout, br, keep, d["foot_dx"])
     d["feet"] = feet(layout, br)
+    d["guard"] = guard_rings(guard_polygon(layout, br))
     sanity(layout, d, well)
     return d
 
@@ -374,7 +428,7 @@ def render(data: dict[str, dict]) -> str:
     names = ["outline", "holes", "bay", "well", "j3", "rb1", "ps1", "reset", "switch", "ctrl_rect", "box_rect",
              "test_pads", "keys", "has_ball", "ball_center", "housing_footprint", "housing_box", "case_screws",
              "case_outline", "pocket_opening", "cover_rect", "cover_screws",
-             "notch", "fpc_box", "cable_corridor", "hinge_x", "lip_min_x", "skirt_min_x", "foot_dx", "foot_magnets", "feet"]
+             "notch", "fpc_box", "cable_corridor", "hinge_x", "lip_min_x", "skirt_min_x", "foot_dx", "foot_magnets", "feet", "guard"]
     for name in names:
         for half in HALVES:
             v = data[half][name]
@@ -386,6 +440,8 @@ def render(data: dict[str, dict]) -> str:
                 s = f"[{fmt(v[0])}, {fmt(v[1])}]"
             elif name in ("ctrl_rect", "box_rect", "pocket_opening", "cover_rect"):
                 s = "[" + ", ".join(fmt(c) for c in v) + "]"
+            elif name == "guard":
+                s = "[" + ", ".join(pts(r) for r in v) + "]"
             elif name == "keys":
                 s = "[" + ", ".join(f"[{fmt(x)}, {fmt(y)}, {fmt(r)}]" for x, y, r in v) + "]"
             else:

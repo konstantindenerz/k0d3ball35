@@ -263,6 +263,11 @@ module pocket_clip() {
     for (p = clip_pins()) translate([p[0], p[1], 0]) rotate([0, 0, atan2(p[1], p[0])]) clip_pin();
 }
 
+// ---------------------------------------------------------------- PCB guard
+// Lies on the PCB top between the switches, held down by the switch flanges (common.scad
+// guard_2d). Prints flat; the DXF (part guard2d) is the same outline for a laser-cut sheet.
+module guard() linear_extrude(guard_t) guard_2d();
+
 // ---------------------------------------------------------------- pocket test print
 module pocket_test() {
     c = bc();

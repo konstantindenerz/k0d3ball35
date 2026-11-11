@@ -1,6 +1,6 @@
 // k0d3ball35 printed case - entry point
 // Usage: openscad --backend manifold -D half=\"right\" -D part=\"tray\" -o tray-right.stl case.scad
-// Parts: tray | box_cap | pocket_cover | pocket_clip | lid | lid_outer | lid_inner | lid_folded | pocket_test | assembly | section | floor2d
+// Parts: tray | box_cap | pocket_cover | pocket_clip | guard | guard2d | lid | lid_outer | lid_inner | lid_folded | pocket_test | assembly | section | floor2d
 // Previews: lid_on | lid_foot (tilted on the desk) | lid_foot_flat
 // Layout facts come from data.scad (scripts/gen_case.py), dimensions from params.scad.
 
@@ -73,6 +73,11 @@ echo(str("STACK case_screw_cs_d=", case_screw_cs_d));
 echo(str("STACK case_screw_cs_h=", case_screw_cs_h));
 echo(str("STACK case_screw_head_z=", base_z + (case_screw_cs_d - case_screw_head_d) / 2));
 echo(str("STACK case_screw_floor_left=", (pocket_floor_z - base_z) - case_screw_cs_h));
+echo(str("STACK guard_t=", guard_t));
+echo(str("STACK guard_top_z=", guard_top_z));
+echo(str("STACK guard_air=", guard_air));
+echo(str("STACK cap_skirt_z=", cap_skirt_z));
+echo(str("STACK switch_travel=", switch_travel));
 echo(str("STACK bbox_min_x=", minx(ob)));
 echo(str("STACK bbox_min_y=", miny(ob)));
 echo(str("STACK bbox_max_x=", maxx(ob)));
@@ -97,6 +102,7 @@ module assembly() {
     keys_dummy();
     controller_dummy();
     battery_dummy();
+    if (guard) color("dimgray") guard();
     if (controller_box) color("tan") box_cap();
     if (has_ball(half)) { ball_dummy(); cradle_dummy(); color("tan") pocket_cover(); }
 }
@@ -135,6 +141,9 @@ module dispatch() {
         union() { pocket_cover(); tray(); cradle_dummy(); }
     }
     else if (part == "assembly_clip") { assembly(); color("darkorange") translate([bc()[0], bc()[1], 0]) pocket_clip(); }
+
+    else if (part == "guard") guard();
+    else if (part == "guard2d") guard_2d();
     else if (part == "lid") lid();
     else if (part == "lid_outer") lid_plate("outer");
     else if (part == "lid_inner") lid_plate("inner");
