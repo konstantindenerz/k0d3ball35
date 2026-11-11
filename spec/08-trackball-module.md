@@ -100,8 +100,9 @@ in r2.4. The fingertip covers more of a small ball, so the same CPI feels faster
 ## 5. Assembly
 
 The steps are in `spec/04-build-guide.md`, chapter 10, and `hardware/trackball-cradle/README.md`.
-In short: bearings into the cup, module into the sleeve with the cable plugged in, cradle into the
-pocket, two screws from below, cable into J1, ball in. For service reverse the order; keycaps and
+In short: bearings into the cup, module into the sleeve from its open back with the cable plugged
+in (a strip of Kapton tape holds it), cradle into the pocket, two screws from below, cable into J1,
+ball in. For service reverse the order; keycaps and
 PCB stay where they are.
 
 ## 6. Test

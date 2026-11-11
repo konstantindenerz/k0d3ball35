@@ -14,8 +14,8 @@ Quantities marked "+n" include recommended spares.
 | Qty | Part | Spec | Source | Price | Notes |
 |-----|------|------|--------|-------|-------|
 | 1 (min. order 5) | Left PCB `k0d3ball35-left` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 121 x 87 mm | JLCPCB, gerbers in `hardware/left-pcb/` | 15 to 25 EUR per 5 | 18 keys, no sensor connector |
-| 1 (min. order 5) | Right PCB `k0d3ball35-right` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 121 x 87 mm | JLCPCB, gerbers in `hardware/right-pcb/` | 15 to 25 EUR per 5 | 17 keys, FPC connector on the key side, notch for the ball pocket. Order both boards in the same cart to share shipping |
-| | Shipping and import VAT | | | 20 to 40 EUR | |
+| 1 (min. order 5) | Right PCB `k0d3ball35-right` | 2 layer, 1.6 mm FR4, 1 oz, ENIG, 121 x 87 mm | JLCPCB, gerbers in `hardware/right-pcb/` | 15 to 25 EUR per 5 | 17 keys, FPC connector on the key side, notch for the ball pocket |
+| | Shipping and import VAT | | | 20 to 40 EUR | Order both boards in the same cart to share shipping |
 
 ## 2. Controllers and sockets
 
@@ -82,6 +82,7 @@ well to print. The ball half still drains faster because of the sensor.
 | 16 (pack of 20) | Magnet | 6 x 2 mm neodymium disc, N35 or better | Amazon DE | 5 to 8 EUR per pack | 8 per half for the lid as a foot (`issues/mech-case-lid.md`): 4 in the tray floor, 4 in the roof of the outer lid plate |
 | 2 | Hinge pin | 2 mm steel rod, about 80 mm long: 2 mm round bar ("Rundstahl 2 mm") or a 2 x 80 mm dowel pin, cut to length | hardware store, Amazon DE | 1 to 3 EUR | One per lid hinge (`hardware/case/README.md`); a piece of 1.75 mm filament works as a fallback with `-D hinge_pin_d=1.75` |
 | 1 | Flux pen, solder wick, 0.5 mm solder | | | | Needed for the FPC connectors |
+| 1 | Kapton tape | 10 mm wide | Amazon DE | 3 to 6 EUR | A strip over the back of the sensor sleeve holds the module (`spec/04-build-guide.md`, chapter 10) |
 
 ## 9. Totals
 

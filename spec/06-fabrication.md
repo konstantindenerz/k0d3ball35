@@ -26,9 +26,7 @@ so there is no third board (`issues/hw-paw3222-variant.md`).
 | Confirm production file | no |
 
 On the two main boards the Edge.Cuts layer carries only the outer outline; there is no internal
-cutout. The **sensor** board does have one: a 16.96 x 8.60 mm slot for the PMW3610 body, drawn on
-Edge.Cuts by the U1 footprint itself. JLCPCB mills it without a note, but do not be surprised by it
-in the preview.
+cutout. The sensor is a bought module, so there is no third board to order.
 
 The outline is angular with 90 degree inside corners (`corner_radius: 0` in the layout). There are
 13 concave corners per half, and a router cannot cut into a concave corner: a 2 mm end mill leaves

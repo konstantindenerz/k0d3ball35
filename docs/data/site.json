@@ -70,14 +70,14 @@
    "id": "ball",
    "label": "Trackball",
    "value": 19.05,
-   "sensor": "PMW3610",
-   "cpi": 600,
+   "sensor": "PAW3222",
+   "cpi": 1444,
    "source": "hardware/layout/output/points-right.json",
-   "text": "19.05 mm ball on the right half, PMW3610 sensor",
+   "text": "19.05 mm ball on the right half, PAW3222 sensor",
    "tpl": "{d} mm ball on the right half, {sensor} sensor",
    "params": {
     "d": "19.05",
-    "sensor": "PMW3610"
+    "sensor": "PAW3222"
    }
   },
   {
@@ -105,23 +105,23 @@
    "label": "Size per half",
    "x": 121.0,
    "y": 86.7,
-   "z": 23.55,
-   "lid": 27.1,
+   "z": 23.75,
+   "lid": 27.3,
    "source": "hardware/layout/output/points-right.json",
-   "text": "121 x 87 mm, 23.55 mm high, 27.1 mm with the lid on",
+   "text": "121 x 87 mm, 23.75 mm high, 27.3 mm with the lid on",
    "tpl": "{x} x {y} mm, {z} mm high, {lid} mm with the lid on",
    "params": {
     "x": 121,
     "y": 87,
-    "z": "23.55",
-    "lid": "27.1"
+    "z": "23.75",
+    "lid": "27.3"
    }
   }
  ],
  "status": {
   "pcbs_ordered": false,
   "order_ticket": "issues/hw-jlcpcb-order-r1.md",
-  "cost": "about 240 EUR"
+  "cost": "about 225 EUR plus the sensor module"
  },
  "docs": [
   {

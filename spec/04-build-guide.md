@@ -332,8 +332,9 @@ transport). Deburr the cup rim. Print settings and the test-fit list are in the
    seat from inside the cup until it bottoms out. A dot of cyanoacrylate at each seat rim, never
    under the ball. Let it cure 10 minutes.
 2. Roll the trackball in the cup: no click, no scrape. A scrape means a bearing is not seated.
-3. Seat the module in the tilted sleeve beside the cup, lens towards the ball, cable out through
-   the notch in the sleeve wall.
+3. Slide the module into the tilted sleeve from its open back, lens first, cable out through the
+   notch in the sleeve wall, until the board rests on the shoulder round the lens window.
+   Tape the open back shut with a strip of Kapton so the module cannot slide back.
 4. Lens distance (ball out): a 2.0 mm feeler gauge on the lens through
    the 4 mm window must sit flush with the cup's inner surface (2.0 + 0.4 mm ball gap = 2.4 mm).
    Outside 2.3 to 2.5 mm: set `lens_shim` and reprint (cradle README).

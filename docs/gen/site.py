@@ -80,9 +80,9 @@ def facts() -> list[dict]:
     bat = pts["right"]["battery"]
     b = pts["right"]["bounds"]
     rc = case["right"]
-    # highest point over the case underside: the keycaps or the ball, whichever is taller
-    case_h = max(case_param("cap_top_z"), rc["ball_top_z"]) - rc["base_z"]
-    lid_h = rc["lid_top_z"] - rc["base_z"]
+    # highest point over the desk (the feet stand proud of the underside): caps or ball, whichever is taller
+    case_h = max(case_param("cap_top_z"), rc["ball_top_z"]) - rc["desk_z"]
+    lid_h = rc["lid_top_z"] - rc["desk_z"]
     switch = req["Switches"]
 
     def fact(id_: str, label: str, tpl: str, params: dict | None = None, **extra) -> dict:
