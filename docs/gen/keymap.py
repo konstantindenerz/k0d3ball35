@@ -196,7 +196,8 @@ def pointer() -> dict:
                 effect.append(proc + (" " + " ".join(a) if a else ""))
         modes.append({"node": name, "layer_index": int(d[layer_macro]), "processors": [f"&{p}{a}".strip() for p, a in procs],
                       "effect": effect})
-    return {"sensor": "PMW3610", "cpi": cpi,
+    sensor = re.search(r'compatible\s*=\s*"pixart,(\w+)"', text)[1].upper()
+    return {"sensor": sensor, "cpi": cpi,
             "auto_layer_index": int(d[temp[1]]), "auto_timeout_ms": int(temp[2]),
             "require_prior_idle_ms": idle, "keep_positions": keep, "modes": modes,
             "_macros": layer_of}

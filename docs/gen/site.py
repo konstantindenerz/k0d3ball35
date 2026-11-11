@@ -16,7 +16,7 @@ import re
 
 import yaml
 
-from . import REPO
+from . import REPO, case_param
 
 GITHUB = "konstantindenerz/k0d3ball35"
 # Where the page is published. The head's canonical, og:url and og:image are absolute - a link
@@ -80,7 +80,9 @@ def facts() -> list[dict]:
     bat = pts["right"]["battery"]
     b = pts["right"]["bounds"]
     rc = case["right"]
-    case_h = rc["box_top_z"] - rc["base_z"]
+    # highest point over the case underside: the keycaps or the ball, whichever is taller
+    case_h = max(case_param("cap_top_z"), rc["ball_top_z"]) - rc["base_z"]
+    lid_h = rc["lid_top_z"] - rc["base_z"]
     switch = req["Switches"]
 
     def fact(id_: str, label: str, tpl: str, params: dict | None = None, **extra) -> dict:
@@ -102,9 +104,10 @@ def facts() -> list[dict]:
         fact("controller", "Controller", f"{req['Wireless'].split(',')[0]}, Bluetooth split, ZMK", source=DESIGN),
         fact("battery", "Battery", "{mah} mAh LiPo per half", {"mah": bat["capacity_mah"]},
              cell=bat["cell"], value=bat["capacity_mah"], source=POINTS.format(half="right")),
-        fact("half", "Size per half", "{x} x {y} mm, {z} mm high with the case",
-             {"x": round(b["width"]), "y": round(b["height"]), "z": _num(case_h)},
-             x=round(b["width"], 1), y=round(b["height"], 1), z=round(case_h, 1), source=POINTS.format(half="right")),
+        fact("half", "Size per half", "{x} x {y} mm, {z} mm high, {lid} mm with the lid on",
+             {"x": round(b["width"]), "y": round(b["height"]), "z": _num(case_h), "lid": _num(lid_h)},
+             x=round(b["width"], 1), y=round(b["height"], 1), z=round(case_h, 2), lid=round(lid_h, 2),
+             source=POINTS.format(half="right")),
     ]
 
 

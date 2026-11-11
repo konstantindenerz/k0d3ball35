@@ -1,5 +1,5 @@
 {
- "source": "make pcb-3d (scripts/export_site_pcbs.py), make gerbers, hardware/sensor-pcb/export.sh",
+ "source": "make pcb-3d (scripts/export_site_pcbs.py), make gerbers",
  "glb_frame": "glTF as KiCad writes it: Y up, metres, KiCad board coordinates (x right, -y up)",
  "boards": [
   {
@@ -17,13 +17,13 @@
     "gerbers": "hardware/left-pcb/k0d3ball35-left-gerbers.zip"
    },
    "sizes": {
-    "kicad_pcb": 1183433,
+    "kicad_pcb": 304322,
     "glb": 2974116,
     "outline": 738,
-    "render_top": 479283,
-    "render_bottom": 450907,
+    "render_top": 375522,
+    "render_bottom": 356725,
     "step": 350723,
-    "gerbers": 251683
+    "gerbers": 64029
    },
    "layers": [
     {
@@ -94,7 +94,7 @@
     86.7
    ],
    "thickness_mm": 1.6,
-   "copper_layers": 2,
+   "copper_layers": 0,
    "finish": "ENIG",
    "keys": 18,
    "notes": "18 keys, no sensor connector",
@@ -109,7 +109,7 @@
     ],
     [
      "Copper layers",
-     "2"
+     "0"
     ],
     [
      "Copper weight",
@@ -125,54 +125,18 @@
     ],
     [
      "Footprints",
-     "55"
+     "0"
     ],
     [
      "Track segments",
-     "717"
+     "0"
     ],
     [
      "Vias",
-     "91"
+     "0"
     ]
    ],
-   "parts": [
-    {
-     "ref": "U1",
-     "role": "Controller",
-     "value": "nice!nano v2",
-     "footprint": "nice_nano_v2_THT",
-     "side": "front (key side)"
-    },
-    {
-     "ref": "J3",
-     "role": "Battery connector",
-     "value": "S2B-PH-SM4-TB",
-     "footprint": "JST_PH_S2B-PH-SM4-TB_reversible",
-     "side": "front (key side)"
-    },
-    {
-     "ref": "J2",
-     "role": "Battery pads",
-     "value": "BAT",
-     "footprint": "BatteryPads_2x1.8mm_P2.54mm",
-     "side": "front (key side)"
-    },
-    {
-     "ref": "PS1",
-     "role": "Power switch",
-     "value": "MSK12C02",
-     "footprint": "SW_SPDT_MSK12C02_reversible",
-     "side": "front (key side)"
-    },
-    {
-     "ref": "RB1",
-     "role": "Reset button",
-     "value": "EVQ-P7A01P",
-     "footprint": "SW_SPST_EVQP7A_reversible",
-     "side": "front (key side)"
-    }
-   ]
+   "parts": []
   },
   {
    "id": "right",
@@ -189,13 +153,13 @@
     "gerbers": "hardware/right-pcb/k0d3ball35-right-gerbers.zip"
    },
    "sizes": {
-    "kicad_pcb": 1110956,
+    "kicad_pcb": 293607,
     "glb": 2881448,
     "outline": 753,
-    "render_top": 456099,
-    "render_bottom": 441376,
-    "step": 337154,
-    "gerbers": 240001
+    "render_top": 357794,
+    "render_bottom": 346936,
+    "step": 337178,
+    "gerbers": 62478
    },
    "layers": [
     {
@@ -266,7 +230,7 @@
     86.7
    ],
    "thickness_mm": 1.6,
-   "copper_layers": 2,
+   "copper_layers": 0,
    "finish": "ENIG",
    "keys": 17,
    "notes": "17 keys, FPC connector on the key side, notch for the ball pocket",
@@ -281,7 +245,7 @@
     ],
     [
      "Copper layers",
-     "2"
+     "0"
     ],
     [
      "Copper weight",
@@ -297,219 +261,22 @@
     ],
     [
      "Ball pocket notch",
-     "octagon, apothem 15 mm"
+     "octagon, apothem 15.5 mm"
     ],
     [
      "Footprints",
-     "50"
+     "0"
     ],
     [
      "Track segments",
-     "768"
+     "0"
     ],
     [
      "Vias",
-     "93"
+     "0"
     ]
    ],
-   "parts": [
-    {
-     "ref": "U1",
-     "role": "Controller",
-     "value": "nice!nano v2",
-     "footprint": "nice_nano_v2_THT",
-     "side": "front (key side)"
-    },
-    {
-     "ref": "J1",
-     "role": "Sensor cable connector",
-     "value": "FH12-6S-0.5SH",
-     "footprint": "FPC_0.5mm_6P_FH12-6S_top",
-     "side": "front (key side)"
-    },
-    {
-     "ref": "J3",
-     "role": "Battery connector",
-     "value": "S2B-PH-SM4-TB",
-     "footprint": "JST_PH_S2B-PH-SM4-TB_reversible",
-     "side": "front (key side)"
-    },
-    {
-     "ref": "J2",
-     "role": "Battery pads",
-     "value": "BAT",
-     "footprint": "BatteryPads_2x1.8mm_P2.54mm",
-     "side": "front (key side)"
-    },
-    {
-     "ref": "PS1",
-     "role": "Power switch",
-     "value": "MSK12C02",
-     "footprint": "SW_SPDT_MSK12C02_reversible",
-     "side": "front (key side)"
-    },
-    {
-     "ref": "RB1",
-     "role": "Reset button",
-     "value": "EVQ-P7A01P",
-     "footprint": "SW_SPST_EVQP7A_reversible",
-     "side": "front (key side)"
-    }
-   ]
-  },
-  {
-   "id": "sensor",
-   "name": "Sensor PCB",
-   "stem": "k0d3ball35-sensor",
-   "folder": "hardware/sensor-pcb",
-   "files": {
-    "kicad_pcb": "hardware/sensor-pcb/k0d3ball35-sensor.kicad_pcb",
-    "glb": "hardware/sensor-pcb/renders/k0d3ball35-sensor.glb",
-    "outline": "hardware/sensor-pcb/renders/layers/outline.svg",
-    "render_top": "hardware/sensor-pcb/renders/k0d3ball35-sensor-top.png",
-    "render_bottom": "hardware/sensor-pcb/renders/k0d3ball35-sensor-bottom.png",
-    "step": "hardware/sensor-pcb/renders/k0d3ball35-sensor.step",
-    "gerbers": "hardware/sensor-pcb/fab/k0d3ball35-sensor-r1-gerbers.zip"
-   },
-   "sizes": {
-    "kicad_pcb": 199255,
-    "glb": 737524,
-    "outline": 1140,
-    "render_top": 433097,
-    "render_bottom": 286577,
-    "step": 3047016,
-    "gerbers": 61575
-   },
-   "layers": [
-    {
-     "id": "B.Silkscreen",
-     "label": "Back silkscreen",
-     "side": "back",
-     "kind": "silk",
-     "color": "#ECE8DA",
-     "path": "hardware/sensor-pcb/renders/layers/B.Silkscreen.svg"
-    },
-    {
-     "id": "B.Mask",
-     "label": "Back solder mask",
-     "side": "back",
-     "kind": "mask",
-     "color": "#1E5A3E",
-     "path": "hardware/sensor-pcb/renders/layers/B.Mask.svg"
-    },
-    {
-     "id": "B.Cu",
-     "label": "Back copper",
-     "side": "back",
-     "kind": "copper",
-     "color": "#C27C45",
-     "path": "hardware/sensor-pcb/renders/layers/B.Cu.svg"
-    },
-    {
-     "id": "F.Cu",
-     "label": "Front copper",
-     "side": "front",
-     "kind": "copper",
-     "color": "#D9A843",
-     "path": "hardware/sensor-pcb/renders/layers/F.Cu.svg"
-    },
-    {
-     "id": "F.Mask",
-     "label": "Front solder mask",
-     "side": "front",
-     "kind": "mask",
-     "color": "#1E5A3E",
-     "path": "hardware/sensor-pcb/renders/layers/F.Mask.svg"
-    },
-    {
-     "id": "F.Silkscreen",
-     "label": "Front silkscreen",
-     "side": "front",
-     "kind": "silk",
-     "color": "#F6F3E8",
-     "path": "hardware/sensor-pcb/renders/layers/F.Silkscreen.svg"
-    },
-    {
-     "id": "Edge.Cuts",
-     "label": "Board edge",
-     "side": "both",
-     "kind": "edge",
-     "color": null,
-     "path": "hardware/sensor-pcb/renders/layers/Edge.Cuts.svg"
-    }
-   ],
-   "viewbox": [
-    -1.0,
-    -1.0,
-    28.0,
-    27.0
-   ],
-   "size_mm": [
-    26.0,
-    25.0
-   ],
-   "thickness_mm": 1.6,
-   "copper_layers": 2,
-   "finish": "ENIG",
-   "keys": null,
-   "notes": "",
-   "facts": [
-    [
-     "Outline",
-     "26.0 x 25.0 mm"
-    ],
-    [
-     "Thickness",
-     "1.6 mm"
-    ],
-    [
-     "Copper layers",
-     "2"
-    ],
-    [
-     "Surface finish",
-     "ENIG"
-    ],
-    [
-     "Sensor slot",
-     "16.96 x 8.60 mm"
-    ],
-    [
-     "Footprints",
-     "24"
-    ],
-    [
-     "Track segments",
-     "215"
-    ],
-    [
-     "Vias",
-     "21"
-    ]
-   ],
-   "parts": [
-    {
-     "ref": "U1",
-     "role": "Optical sensor",
-     "value": "PMW3610DM-SUDU",
-     "footprint": "PMW3610DM-SUDU",
-     "side": "back (ball side)"
-    },
-    {
-     "ref": "U2",
-     "role": "1.8 V regulator",
-     "value": "XC6206P182MR",
-     "footprint": "SOT-23",
-     "side": "front"
-    },
-    {
-     "ref": "J1",
-     "role": "Cable connector",
-     "value": "FPC 6P 0.5mm",
-     "footprint": "FPC_0.5mm_6P_FH12-6S",
-     "side": "front"
-    }
-   ]
+   "parts": []
   }
  ]
 }

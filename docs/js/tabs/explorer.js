@@ -90,8 +90,6 @@ const M = {
   capThumb: new THREE.MeshStandardMaterial({ color: col('#EF7F3A'), roughness: .7 }),
   cradle: new THREE.MeshStandardMaterial({ color: col('#CFC5B3'), roughness: .85 }),
   ball: new THREE.MeshStandardMaterial({ color: col('#FFFFFF'), roughness: .25 }),
-  sensor: new THREE.MeshStandardMaterial({ color: col('#1E4A6B'), roughness: .5 }),
-  lens: new THREE.MeshStandardMaterial({ color: col('#9FB9C9'), roughness: .2, transparent: true, opacity: .8 }),
   bumper: new THREE.MeshStandardMaterial({ color: col('#2A2A2C'), roughness: 1 }),
   bearing: new THREE.MeshStandardMaterial({ color: col('#F2F2F2'), roughness: .2 }),
 };
@@ -223,14 +221,6 @@ function build(which) {
     g.add(box(cell.x, 0.5, cell.y, M.bumper, bay.center.x, -PCB_T - 1.0 - 0.25, bay.center.y));   // 0.5 mm foam pad
     g.add(box(cell.x, cell.z, cell.y, M.battery, bay.center.x, -PCB_T - 1.5 - cell.z / 2, bay.center.y));
     g.add(box(cell.x - 2, 1.0, 2.0, M.black, bay.center.x, -PCB_T - 1.5 - cell.z / 2, bay.center.y + cell.y / 2 - 1.0));   // PCM / lead end
-  }
-  // --- sensor board + lens (on the case floor in the pocket) ---
-  if (ball) {
-    const g = layer(t('Sensor board PMW3610'), -16, '#1E4A6B', { x: bx + 16, y: -11, z: bz });
-    const sb = ball.sensor_board;
-    g.add(box(sb.width, 1.6, sb.height, M.sensor, bx, S.sensor_pcb_plane_z - 0.8, bz));       // board, lens side up at the housing face
-    g.add(box(21.5, 3.4, 11.4, M.lens, bx, S.sensor_pcb_plane_z + 1.7, bz));                  // LM18-LSI lens block above the board
-    g.add(box(8.6, 2.0, 4.8, M.metal, bx + 6, S.sensor_pcb_plane_z - 1.6 - 1.0, bz - 9));     // FPC connector on the floor side
   }
   // --- cradle (pocket mount) ---
   if (ball) {
@@ -427,7 +417,7 @@ function buildDims() {
     [t('Lid over the controller block (concept)'), `+${D.controller_lid_z.toFixed(1)} mm`],
     [t('Battery'), t('{cell}, {mah} mAh, bay {x} x {y} mm under the controller', { cell: H.battery.cell, mah: H.battery.capacity_mah, x: H.battery.bay.size.x, y: H.battery.bay.size.y })],
     [t('Battery well floor'), `${H.battery.well_floor_z.toFixed(1)} mm`],
-    [t('Keycap top'), '+8.9 mm'],
+    [t('Keycap top'), `+${D.cap_top_z.toFixed(1)} mm`],
     [t('Mounting holes'), `${H.holes.length} x M2`],
     [t('Test pads'), H.test_pads.labels.join(' ')],
   ];
@@ -449,8 +439,8 @@ function buildDims() {
     el.dims.append(dt, dd);
   }
   el.note.innerHTML = H.ball
-    ? `<b>${t('Reading the stack.')}</b> ${t('PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets and the LP552035 cell lies under the PCB in the bay below it, in the 10 mm deep well of the printed tray, like on the left half. The trackball module stands on the tray floor in the pocket beside the PCB: its housing holds the sensor board, the cup rises through the octagonal notch and nothing touches the PCB. The tray, the controller box cap and the lid are the printed parts from hardware/case.')}`
-    : `<b>${t('Reading the stack.')}</b> ${t('PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets and the LP552035 cell lies under the PCB in the bay below it, in the 10 mm deep well of the printed tray, identical to the right half. The left half has three thumb keys and no ball, no FPC connector and nine test pads.')}`;
+    ? `<b>${t('Reading the stack.')}</b> ${t('PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets, the LP552035 cell under the PCB below it in a well of the printed tray, as on the left half. The trackball cradle stands on the tray floor beside the PCB; its cup rises through the octagonal notch without touching the PCB. Tray, controller box cap and lid are the printed parts from hardware/case.')}`
+    : `<b>${t('Reading the stack.')}</b> ${t('PCB top is the zero plane. Hot-swap sockets, diodes and connectors hang below the PCB; the controller sits on 2.5 mm low-profile sockets, the LP552035 cell under the PCB below it in a well of the printed tray, as on the right half. The left half has three thumb keys and no ball, no FPC connector and nine test pads.')}`;
 }
 
 // ---------- camera: a small spherical orbit around the half ----------

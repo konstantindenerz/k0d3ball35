@@ -15,7 +15,7 @@ from pathlib import Path
 
 import yaml
 
-from . import REPO
+from . import REPO, case_param
 
 HALVES = ("left", "right")
 TEST_PADS = {"left": ["D0", "D1", "D2", "D3", "D9", "D10", "D14", "D15", "D16"], "right": ["D0", "D1", "D2", "D3", "D9"]}
@@ -125,5 +125,6 @@ def build() -> dict:
         "battery_pads": cfg["battery_pads"]["center"],
         "jst": cfg["battery_jst"]["center"],
         "pcb_thickness": 1.6,
+        "cap_top_z": case_param("cap_top_z"),   # Choc keycap top over the PCB top
         "halves": {half: half_data(half, cfg, stack) for half in HALVES},
     }
