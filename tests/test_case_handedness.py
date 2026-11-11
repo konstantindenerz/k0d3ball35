@@ -55,8 +55,10 @@ def test_tray_lies_on_the_board_not_on_its_mirror_image(half):
     v = trimesh.load(CASE / "stl" / f"tray-{half}.stl", force="mesh").vertices
     lo, hi = b["outline"].min(axis=0), b["outline"].max(axis=0)
     # the tray encloses the board outline with its wall (a few mm), on both axes
+    # on the ball half the pocket block steps 11.6 mm past the board towards the user (print -y)
     for axis in (0, 1):
-        assert 0 < lo[axis] - v[:, axis].min() < 8, (half, axis, lo[axis], v[:, axis].min())
+        reach = 12 if (half == "right" and axis == 1) else 8
+        assert 0 < lo[axis] - v[:, axis].min() < reach, (half, axis, lo[axis], v[:, axis].min())
         assert 0 < v[:, axis].max() - hi[axis] < 8, (half, axis, hi[axis], v[:, axis].max())
     # the controller box (the highest walls) stands over the controller U1
     top = v[v[:, 2] > stack(half)["box_top_z"] - 0.3][:, :2].mean(axis=0)

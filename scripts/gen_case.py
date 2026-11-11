@@ -42,6 +42,15 @@ WALL_LID = 3.2           # pcb_clear + wall: the lid skirt outer face beyond the
 FOOT_OVERHANG = 3.0      # as a foot the hinge axis sits this far outside the inner tray wall
 WINDOW_D = 16.0          # ball window in the lid roof (params.scad ball_window_d)
 CTRL_CLEAR = 1.0         # boss protrusions keep this to the controller board
+# Ball pocket "in one piece" (r2.4 fix): the case edge runs square around the pocket like it does
+# around the keys, the tray is solid up to the rim there, and only a rectangular opening for the
+# cradle stays open. A flush cover plate sits on a ledge in that opening.
+POCKET_LEDGE = 4.0       # cover overlap on the tray beyond the opening (params.scad pocket_ledge)
+POCKET_WALL = 2.0        # tray wall outside the ledge
+COVER_SCREW_IN = 1.8     # cover screws: this far outside the opening (pilot 1.6 keeps 1.0 to it)
+COVER_SCREW_EDGE = 2.2   # ... and on the thumb side this far inside the cover edge
+COVER_PCB_CLEAR = 0.2    # rebate edge = PCB cavity edge (pcb_clear): no skin between the two cuts
+CLOSE_R = 9.0            # orthogonal closing radius that merges the pocket block into the edge
 
 
 def fmt(v: float) -> str:
@@ -183,6 +192,51 @@ def feet(layout: Layout, box_r) -> list[tuple[float, float]]:
     return holes + extra
 
 
+def pocket_opening(layout: Layout) -> Polygon:
+    """The rectangle left open over the cradle: its well, the cradle circle and the cable path
+    over the PCB edge to J1. Nothing else of the old PCB notch has to stay open."""
+    tb = layout.cfg["trackball"]
+    parts = [layout.housing_box().buffer(0.5, join_style=2),
+             Point(layout.ball_center).buffer(tb["cradle_diameter"] / 2 + 0.2, 64)]
+    if layout.cable_corridor() is not None:
+        parts.append(layout.cable_corridor())
+    return box(*unary_union(parts).bounds)
+
+
+def cover_rect(layout: Layout) -> tuple[float, float, float, float]:
+    """The rebate the cover sits in: the opening plus the ledge, but on the thumb side only up to
+    the PCB edge at the notch, so the seam runs straight instead of around the PCB corner."""
+    x0, y0, x1, y1 = pocket_opening(layout).bounds
+    nx0 = layout.notch_polygon().bounds[0]
+    return (round(max(x0 - POCKET_LEDGE, nx0 + COVER_PCB_CLEAR), 3), round(y0 - POCKET_LEDGE, 3),
+            round(x1 + POCKET_LEDGE, 3), round(y1 + POCKET_LEDGE, 3))
+
+
+def case_outline(layout: Layout) -> Polygon:
+    """Outer edge of the tray on the ball half: the wall around the PCB plus the pocket block
+    (cover rebate + wall; on the thumb side it stays right of the lid hinge line), closed square so the edge steps at 90 degrees into the thumb edge
+    and the inner column instead of standing out as a separate box. Only the fill pieces that
+    touch the pocket block are taken, so the steps along the keys stay exactly as they are."""
+    body = layout.outline.buffer(WALL_LID, join_style=2)
+    block = box(*cover_rect(layout)).buffer(POCKET_WALL, join_style=2)
+    both = body.union(block)
+    closed = both.buffer(CLOSE_R, join_style=2, cap_style=3).buffer(-CLOSE_R, join_style=2, cap_style=3)
+    # keep only the fill pieces that touch the pocket block: the steps along the keys stay as they are
+    gaps = closed.difference(both)
+    pieces = [g for g in getattr(gaps, "geoms", [gaps]) if g.area > 0.01 and g.distance(block) < 0.01]
+    out = unary_union([both, *pieces]).simplify(0.001)
+    assert out.geom_type == "Polygon" and not out.interiors, out.geom_type
+    return out
+
+
+def cover_screws(layout: Layout) -> list[tuple[float, float]]:
+    """Two screws on the user-side ledge (the other side of the cover ends at the PCB)."""
+    x0, y0, x1, y1 = pocket_opening(layout).bounds
+    cx0 = cover_rect(layout)[0]
+    k = COVER_SCREW_IN
+    return [(round(cx0 + COVER_SCREW_EDGE, 3), round(y1 + k, 3)), (round(x1 + k, 3), round(y1 + k, 3))]
+
+
 def half_data(layout: Layout) -> dict:
     d: dict = {}
     d["outline"] = ring(layout.outline)
@@ -210,6 +264,10 @@ def half_data(layout: Layout) -> dict:
         d["ball_center"] = layout.ball_center
         d["housing_footprint"] = ring(layout.housing_footprint())
         d["housing_box"] = ring(layout.housing_box())
+        d["case_outline"] = ring(case_outline(layout))
+        d["pocket_opening"] = tuple(round(c, 3) for c in pocket_opening(layout).bounds)
+        d["cover_rect"] = cover_rect(layout)
+        d["cover_screws"] = cover_screws(layout)
         d["case_screws"] = layout.case_screws()
         d["notch"] = ring(layout.notch_polygon())
         d["fpc_box"] = ring(layout.fpc_box())
@@ -223,6 +281,10 @@ def half_data(layout: Layout) -> dict:
         d["ball_center"] = (0.0, 0.0)
         d["housing_footprint"] = []
         d["housing_box"] = []
+        d["case_outline"] = []
+        d["pocket_opening"] = (0.0, 0.0, 0.0, 0.0)
+        d["cover_rect"] = (0.0, 0.0, 0.0, 0.0)
+        d["cover_screws"] = []
         d["case_screws"] = []
         d["notch"] = []
         d["fpc_box"] = []
@@ -311,6 +373,7 @@ def render(data: dict[str, dict]) -> str:
              "// Selector functions take the half name: outline(\"left\"), holes(\"right\"), ...", ""]
     names = ["outline", "holes", "bay", "well", "j3", "rb1", "ps1", "reset", "switch", "ctrl_rect", "box_rect",
              "test_pads", "keys", "has_ball", "ball_center", "housing_footprint", "housing_box", "case_screws",
+             "case_outline", "pocket_opening", "cover_rect", "cover_screws",
              "notch", "fpc_box", "cable_corridor", "hinge_x", "lip_min_x", "skirt_min_x", "foot_dx", "foot_magnets", "feet"]
     for name in names:
         for half in HALVES:
@@ -321,7 +384,7 @@ def render(data: dict[str, dict]) -> str:
                 s = fmt(v)
             elif name in ("reset", "switch", "ball_center"):
                 s = f"[{fmt(v[0])}, {fmt(v[1])}]"
-            elif name in ("ctrl_rect", "box_rect"):
+            elif name in ("ctrl_rect", "box_rect", "pocket_opening", "cover_rect"):
                 s = "[" + ", ".join(fmt(c) for c in v) + "]"
             elif name == "keys":
                 s = "[" + ", ".join(f"[{fmt(x)}, {fmt(y)}, {fmt(r)}]" for x, y, r in v) + "]"

@@ -75,6 +75,22 @@ case_screws_left = [];
 case_screws_right = [[-13, 56], [-13, 76]];
 function case_screws(h) = h == "left" ? case_screws_left : case_screws_right;
 
+case_outline_left = [];
+case_outline_right = [[-70.556, 82.054], [-78.73, 59.595], [-74.7, 58.128], [-74.7, -7.95], [-32.8, -7.95], [-32.8, -7.49], [-31.55, -7.49], [-31.55, -9.72], [-13.55, -9.72], [-13.55, -11.95], [13.55, -11.95], [13.55, -7.76], [31.55, -7.76], [31.55, -1.51], [49.55, -1.51], [49.55, 56.39], [7.2, 56.39], [7.2, 89.55], [-30.3, 89.55], [-30.3, 71.307], [-51.11, 74.976]];
+function case_outline(h) = h == "left" ? case_outline_left : case_outline_right;
+
+pocket_opening_left = [0, 0, 0, 0];
+pocket_opening_right = [-27.2, 50, 1.2, 83.55];
+function pocket_opening(h) = h == "left" ? pocket_opening_left : pocket_opening_right;
+
+cover_rect_left = [0, 0, 0, 0];
+cover_rect_right = [-28.3, 46, 5.2, 87.55];
+function cover_rect(h) = h == "left" ? cover_rect_left : cover_rect_right;
+
+cover_screws_left = [];
+cover_screws_right = [[-26.1, 85.35], [3, 85.35]];
+function cover_screws(h) = h == "left" ? cover_screws_left : cover_screws_right;
+
 notch_left = [];
 notch_right = [[-6.58, 50.5], [2.5, 59.58], [2.5, 72.42], [-6.58, 81.5], [-19.42, 81.5], [-28.5, 72.42], [-28.5, 50.5]];
 function notch(h) = h == "left" ? notch_left : notch_right;

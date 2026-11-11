@@ -445,7 +445,8 @@ def test_render_tray(tmp_path, half, data):
     layout = load_layout(half)
     hull = layout.outline.buffer(3.2 + 0.3, join_style=2)
     if half == "right":
-        hull = hull.union(Point(BALL).buffer(16.0 + 0.3)).union(layout.housing_footprint().buffer(0.3))
+        # the pocket block is part of the stepped edge since the r2.4 fix (gen_case.case_outline)
+        hull = hull.union(Polygon(data["case_outline"][half]).buffer(0.3, join_style=2))
     band = v[np.abs(v[:, 2] - (values["rim_z"] - 0.5)) < 0.6]
     assert len(band) > 0
     assert all(hull.contains(Point(x * sx, y)) for x, y, _ in band), half

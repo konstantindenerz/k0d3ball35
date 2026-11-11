@@ -142,17 +142,26 @@ module box_walls_2d() intersection() {
     difference() { outer_2d(); pcb_cavity_2d(); }
 }
 
-// outer footprint below the PCB plane: wall around the cavity, pocket block
+// Outer footprint of the half, the same from the floor to the rim and for the lid. On the ball
+// half it is case_outline (scripts/gen_case.py): the pocket block is part of the stepped edge,
+// solid up to the rim, and only pocket_opening_2d() stays open over the cradle under a flush
+// cover. Until r2.4 the pocket was a separate rounded block that stopped at the PCB plane, open
+// from above and outside the lid.
 module outer_2d() {
     offset(delta = wall) pcb_cavity_2d();
-    if (has_ball(half)) housing_footprint_2d();
+    if (has_ball(half)) polygon(case_outline(half));
 }
-// outer footprint from the PCB plane up: plus the round pocket wall
-// Footprint from the PCB plane up to the rim. Deliberately WITHOUT the pocket: the housing
-// footprint belongs to the body below the PCB plane only, and above the plane the pocket is
-// bounded by pocket_ring_2d() extruded to pocket_rim_z instead (tray_body). Returning outer_2d()
-// here, as this did until r2.4, carried the pocket block all the way to the rim and silently
-// undid the lowered pocket wall - the ring measured 5.01 instead of 2.925.
-module outer_top_2d() {
-    offset(delta = wall) pcb_cavity_2d();
+module outer_top_2d() outer_2d();
+
+// the rectangle left open over the cradle (well, cradle circle, cable path) and the rebate the
+// cover plate sits in (gen_case.py: opening + ledge, on the thumb side only up to the PCB edge)
+function po() = pocket_opening(half);
+module pocket_opening_2d() translate([po()[0], po()[1]]) square([po()[2] - po()[0], po()[3] - po()[1]]);
+function cr() = cover_rect(half);
+module cover_rebate_2d() translate([cr()[0], cr()[1]]) square([cr()[2] - cr()[0], cr()[3] - cr()[1]]);
+// the cover plate: the rebate minus the fit, never over the PCB cavity (keys, J1)
+module cover_2d() difference() {
+    offset(delta = -cover_fit) cover_rebate_2d();
+    offset(delta = cover_fit) pcb_cavity_2d();
 }
+cover_z0 = rim_z - cover_t;

@@ -49,12 +49,11 @@ module tray_cuts() {
     translate([0, 0, well_floor_z]) linear_extrude(-pcb_t - well_floor_z + eps) well_2d();
     if (has_ball(half)) {
         translate([0, 0, pocket_floor_z]) linear_extrude(-pcb_t - pocket_floor_z + eps) pocket_well_2d();
-        translate([0, 0, -pcb_t]) linear_extrude(box_top_z + 20) pocket_cavity_2d();
-        // the pocket wall above the cup rim: with the ball this low the general rim would stand
-        // over the cup and block the thumb's path to the equator
-        if (has_ball(half))
-            translate([0, 0, pocket_rim_z()]) linear_extrude(rim_z - pocket_rim_z() + 20)
-                pocket_ring_2d();
+        // open over the cradle up to the cover, then the rebate the cover sits in
+        translate([0, 0, -pcb_t - eps]) linear_extrude(cover_z0 + pcb_t + 2 * eps) pocket_opening_2d();
+        translate([0, 0, cover_z0]) linear_extrude(rim_z - cover_z0 + 1) cover_rebate_2d();
+        for (s = cover_screws(half))
+            translate([s[0], s[1], cover_z0 - cover_screw_depth]) cylinder(d = cover_screw_pilot_d, h = cover_screw_depth + 1);
         // through hole plus a 90 degree countersink, so the flat-head screws sit below the underside
         for (s = case_screws(half)) {
             translate([s[0], s[1], base_z - 1]) cylinder(d = case_screw_d, h = (pocket_floor_z - base_z) + 2);
@@ -158,6 +157,24 @@ module box_cap() {
         for (a = boss_axes())
             translate([a[0], a[1], box_roof_under_z - 1]) cylinder(d = 2.4, h = box_roof_t + 2);
         if (logo_on_cap) logo_cut(logo_cap_pos, 0, logo_cell, box_top_z, logo_depth);
+    }
+}
+
+// ---------------------------------------------------------------- pocket cover
+// Flush plate over the cradle opening: same top as the rim, a 45 degree funnel from the rim down
+// to cover_hole_d so the thumb reaches the ball's equator, two countersunk M2 at the user-side
+// corners. Prints top down (the funnel is then a 45 degree overhang-free cone).
+module pocket_cover() {
+    c = bc();
+    difference() {
+        translate([0, 0, cover_z0]) linear_extrude(cover_t) cover_2d();
+        translate([c[0], c[1], cover_z0 - eps])
+            cylinder(d1 = cover_hole_d, d2 = cover_hole_d + 2 * (cover_t + 2 * eps), h = cover_t + 2 * eps, $fn = 128);
+        for (s = cover_screws(half)) {
+            translate([s[0], s[1], cover_z0 - 1]) cylinder(d = cover_screw_d, h = cover_t + 2);
+            translate([s[0], s[1], rim_z - (cover_screw_head_d - cover_screw_d) / 2 + eps])
+                cylinder(d1 = cover_screw_d, d2 = cover_screw_head_d + 2 * eps, h = (cover_screw_head_d - cover_screw_d) / 2, $fn = 32);
+        }
     }
 }
 

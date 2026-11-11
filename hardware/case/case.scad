@@ -1,6 +1,6 @@
 // k0d3ball35 printed case - entry point
 // Usage: openscad --backend manifold -D half=\"right\" -D part=\"tray\" -o tray-right.stl case.scad
-// Parts: tray | box_cap | lid | lid_outer | lid_inner | lid_folded | pocket_test | assembly | section | floor2d
+// Parts: tray | box_cap | pocket_cover | lid | lid_outer | lid_inner | lid_folded | pocket_test | assembly | section | floor2d
 // Previews: lid_on | lid_foot (tilted on the desk) | lid_foot_flat
 // Layout facts come from data.scad (scripts/gen_case.py), dimensions from params.scad.
 
@@ -57,6 +57,8 @@ echo(str("STACK housing_x=", has_ball(half) ? maxx(housing_box(half)) - minx(hou
 echo(str("STACK housing_y=", has_ball(half) ? maxy(housing_box(half)) - miny(housing_box(half)) : 0));
 echo(str("STACK case_screw_sp=", has_ball(half) ? case_screws(half)[1][1] - case_screws(half)[0][1] : 0));
 echo(str("STACK case_screw_d=", case_screw_d));
+echo(str("STACK cover_z0=", has_ball(half) ? cover_z0 : 0));
+echo(str("STACK cover_hole_d=", cover_hole_d));
 echo(str("STACK case_screw_head_d=", case_screw_head_d));
 echo(str("STACK case_screw_cs_d=", case_screw_cs_d));
 echo(str("STACK case_screw_cs_h=", case_screw_cs_h));
@@ -87,7 +89,7 @@ module assembly() {
     controller_dummy();
     battery_dummy();
     if (controller_box) color("tan") box_cap();
-    if (has_ball(half)) { ball_dummy(); cradle_dummy(); }
+    if (has_ball(half)) { ball_dummy(); cradle_dummy(); color("tan") pocket_cover(); }
 }
 
 module section() {
@@ -116,6 +118,7 @@ module floor2d() {
 module dispatch() {
     if (part == "tray") tray();
     else if (part == "box_cap") box_cap();
+    else if (part == "pocket_cover") pocket_cover();
     else if (part == "lid") lid();
     else if (part == "lid_outer") lid_plate("outer");
     else if (part == "lid_inner") lid_plate("inner");
@@ -124,8 +127,8 @@ module dispatch() {
     else if (part == "assembly") assembly();
     else if (part == "section") section();
     else if (part == "floor2d") floor2d();
-    else if (part == "lid_on") { tray(); if (controller_box) box_cap(); color("tan", 0.6) lid(); }
-    else if (part == "lid_foot") on_desk() { tray(); if (controller_box) box_cap(); color("tan") lid_under_tray(); }
+    else if (part == "lid_on") { tray(); if (controller_box) box_cap(); if (has_ball(half)) pocket_cover(); color("tan", 0.6) lid(); }
+    else if (part == "lid_foot") on_desk() { tray(); if (controller_box) box_cap(); if (has_ball(half)) pocket_cover(); color("tan") lid_under_tray(); }
     else if (part == "lid_foot_flat") { tray(); if (controller_box) box_cap(); color("tan") lid_under_tray(); }
     else assert(false, str("unknown part ", part));
 }

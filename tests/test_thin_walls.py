@@ -25,6 +25,7 @@ PARTS = [
     "hardware/case/stl/tray-left.stl", "hardware/case/stl/tray-right.stl",
     "hardware/case/stl/lid-left.stl", "hardware/case/stl/lid-right.stl",
     "hardware/case/stl/box-cap-left.stl", "hardware/case/stl/box-cap-right.stl",
+    "hardware/case/stl/pocket-cover-right.stl",
     "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
     "hardware/trackball-cradle/stl/retainer-19mm.stl",
 ]

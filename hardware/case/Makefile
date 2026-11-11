@@ -25,7 +25,7 @@ RIGHT     = -D 'half="right"'
 STL = stl/tray-left.stl stl/tray-right.stl stl/box-cap-left.stl stl/box-cap-right.stl \
       stl/lid-left.stl stl/lid-right.stl stl/lid-outer-left.stl stl/lid-outer-right.stl \
       stl/lid-inner-left.stl stl/lid-inner-right.stl stl/lid-folded-left.stl stl/lid-folded-right.stl \
-      stl/pocket-test-right.stl
+      stl/pocket-test-right.stl stl/pocket-cover-right.stl
 DXF = dxf/floor-left.dxf dxf/floor-right.dxf
 PNG = preview/assembly-left.png preview/assembly-right.png preview/section-right.png \
       preview/lid-on-right.png preview/lid-foot-right.png preview/lid-folded-right.png \
@@ -75,6 +75,8 @@ stl/lid-folded-left.stl: $(SRC) | stl
 	$(OSC) -D 'part="lid_folded"' $(LEFT) -o $@ case.scad
 stl/lid-folded-right.stl: $(SRC) | stl
 	$(OSC) -D 'part="lid_folded"' $(RIGHT) -o $@ case.scad
+stl/pocket-cover-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="pocket_cover"' $(RIGHT) -o $@ case.scad
 stl/pocket-test-right.stl: $(SRC) | stl
 	$(OSC) -D 'part="pocket_test"' $(RIGHT) -o $@ case.scad
 

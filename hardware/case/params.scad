@@ -157,6 +157,15 @@ pocket_d        = 32.0;        // round pocket wall above the PCB plane (cradle 
 pocket_wall     = 2.0;
 cradle_d        = 28.0;        // cradle clearance circle above the PCB plane
 ball_top_z      = 13.95;        // cradle stack.json ball_top_above_pcb_top (19.05 mm ball)
+// flush cover over the cradle opening (tray.scad pocket_cover): it sits in a rebate on a ledge,
+// flush with rim_z, and its 45 degree funnel leads the thumb down to the ball
+cover_t         = 1.4;         // rim_z - cover_t = 3.6 clears the cradle top (housing_top_z 3.425)
+cover_fit       = 0.15;        // all round in the rebate
+cover_hole_d    = 26.5;        // cradle retainer_outer_d 25.85 + 2 x 0.3: the clip passes the cover
+cover_screw_pilot_d = 1.6;     // M2 x 6 countersunk, self-tapping into the tray under the ledge
+cover_screw_depth   = 6.0;
+cover_screw_d   = 2.2;
+cover_screw_head_d  = 3.8;     // DIN 7991 M2
 case_screw_d      = 2.2;       // clearance holes for the M2 x 10 case screws from below
 case_screw_head_d = 4.4;       // widest countersunk M2 head: DIN 7982 ST2.2 is 4.4, DIN 7991/965 M2 is 3.8
 case_screw_cs_d   = case_screw_head_d + 0.4;              // 90 degree countersink mouth in the flat underside
