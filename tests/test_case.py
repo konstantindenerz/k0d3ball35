@@ -254,7 +254,16 @@ def test_data_is_fresh(tmp_path):
 
     out = tmp_path / "data.scad"
     gen_case.write_data(out)
-    assert out.read_bytes() == DATA.read_bytes(), "run `make case-data` and commit hardware/case/data.scad"
+    fresh, committed = out.read_text(), DATA.read_text()
+    # The PCB guard outline comes out of several shapely overlays; another GEOS version (CI) moves
+    # points on its arcs in the third decimal. Compare it as geometry, everything else byte for byte.
+    guard = re.compile(r"^guard_(left|right) = .*;$", re.M)
+    assert guard.sub("", fresh) == guard.sub("", committed), "run `make case-data` and commit hardware/case/data.scad"
+    a, b = parse_data(fresh)["guard"], parse_data(committed)["guard"]
+    for half in ("left", "right"):
+        assert len(a[half]) == len(b[half]), f"guard_{half}: ring count changed, run `make case-data`"
+        pa, pb = Polygon(a[half][0], a[half][1:]), Polygon(b[half][0], b[half][1:])
+        assert pa.symmetric_difference(pb).area < 0.01, f"guard_{half} changed, run `make case-data`"
 
 
 def test_logo_data_is_fresh(tmp_path):

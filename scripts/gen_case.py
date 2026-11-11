@@ -18,6 +18,7 @@ import re
 import sys
 from pathlib import Path
 
+import shapely
 from shapely.geometry import LineString, Point, Polygon, box
 from shapely.affinity import translate
 from shapely.ops import unary_union
@@ -291,7 +292,10 @@ def guard_polygon(layout: Layout, box_r) -> Polygon:
     core = raw.buffer(-web / 2, 32)
     core = max(getattr(core, "geoms", [core]), key=lambda g: g.area)
     # grow back mitred, not round: the outer corners stay square up to the PCB corners
-    out = core.buffer(web / 2, join_style=2, mitre_limit=10).intersection(raw).simplify(0.01)
+    # No simplify(): which points Douglas-Peucker keeps on an arc flips with the last float digit,
+    # so the file differed between GEOS versions (CI). Snapping to the 0.001 grid the file is
+    # written in is stable; tests/test_case.py compares the guard geometrically anyway.
+    out = shapely.set_precision(core.buffer(web / 2, join_style=2, mitre_limit=10).intersection(raw), 0.001)
     if out.geom_type != "Polygon":       # slivers of the intersection along the cuts
         out = max(out.geoms, key=lambda g: g.area)
     return out
