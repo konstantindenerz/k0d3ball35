@@ -22,7 +22,7 @@ from shapely.geometry import LineString, Point, Polygon, box
 from shapely.affinity import translate
 from shapely.ops import unary_union
 
-from k0d3.geometry import HALVES, Layout, load_layout
+from k0d3.geometry import HALVES, Layout, load_layout, rotated_box
 
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_OUT = REPO / "hardware" / "case" / "data.scad"
@@ -267,22 +267,46 @@ def guard_polygon(layout: Layout, box_r) -> Polygon:
         c, s_ = math.cos(a), math.sin(a)
         cuts.append(Polygon([(k.x + x * c - y * s_, k.y + x * s_ + y * c) for x, y in sq.exterior.coords]))
     cuts += [Point(h["x"], h["y"]).buffer(scad_param("guard_screw_d") / 2, 64) for h in layout.cfg["mounting_holes"]]
-    x0, y0, _, y1 = box_r
-    cuts.append(box(x0, y0, BOX_INNER_X, y1).buffer(fit, join_style=2))
+    # Controller box: open inside, but the guard runs on under the cap's L-shaped skirt (tray.scad
+    # box_cap: key side from ys, thumb side from xs to the box's inner edge), so the skirt stands
+    # on it and the 0.75 mm between the box and the inner column shows the guard, not the PCB.
+    x0, y0, x1, y1 = box_r[0], box_r[1], BOX_INNER_X, box_r[3]
+    skirt_t, box_fit = scad_param("box_skirt_t"), scad_param("box_fit")
+    xs = x0 - pcb_clear + scad_param("boss_in") + scad_param("insert_hole_d") / 2 + scad_param("boss_skin") + box_fit
+    ys = y0 - pcb_clear + box_fit
+    under_skirt = unary_union([box(x1 - skirt_t + fit, ys + fit, x1, y1), box(xs + fit, y1 - skirt_t + fit, x1, y1)])
+    cuts.append(box(x0, y0, x1, y1).difference(under_skirt))
     if layout.has_ball:
-        cuts.append(layout.fpc_box().buffer(fpc_clear + fit, join_style=2))
+        # J1 itself, not its courtyard (which would leave a rim of bare PCB round the connector):
+        # the body (F.Fab 8.6 x 4.8, k0d3.footprints) plus the contact tails in front of it, with
+        # the fit. The FFC path stays open, the cable lies in it.
+        j1 = [fpc_body(layout), fpc_tails(layout)]
+        cuts.append(unary_union(j1).buffer(fit, join_style=2))
         if layout.cable_corridor() is not None:
-            cuts.append(layout.cable_corridor().buffer(fpc_clear + fit, join_style=2))
+            cuts.append(layout.cable_corridor().buffer(fit, join_style=2))
         cuts.append(Point(layout.ball_center).buffer(scad_param("cradle_d") / 2 + fit, 64))
-        cuts.append(layout.notch_polygon().buffer(pcb_clear + fit, join_style=2))
-        cuts.append(pocket_opening(layout).buffer(fit, join_style=2))
+        # the notch itself is not part of the PCB outline: nothing to cut, and growing it would
+        # leave a strip of bare PCB beside the pocket cover
     raw = plate.difference(unary_union(cuts))
     core = raw.buffer(-web / 2, 32)
     core = max(getattr(core, "geoms", [core]), key=lambda g: g.area)
-    out = core.buffer(web / 2, 32).intersection(raw).simplify(0.01)
+    # grow back mitred, not round: the outer corners stay square up to the PCB corners
+    out = core.buffer(web / 2, join_style=2, mitre_limit=10).intersection(raw).simplify(0.01)
     if out.geom_type != "Polygon":       # slivers of the intersection along the cuts
         out = max(out.geoms, key=lambda g: g.area)
     return out
+
+
+def fpc_body(layout: Layout) -> Polygon:
+    """J1's body (FH12, F.Fab 8.6 x 4.8 in k0d3.footprints, centre 0.6 towards the cable mouth)."""
+    f = layout.cfg["fpc"]
+    return rotated_box(f["center"]["x"], f["center"]["y"], 8.6, 4.8, f["rotation"], offset=(0.0, 0.6))
+
+
+def fpc_tails(layout: Layout) -> Polygon:
+    """J1's six contact tails in front of the body (pads 1-6 of the FH12 footprint, 2.8 x 1.3)."""
+    f = layout.cfg["fpc"]
+    return rotated_box(f["center"]["x"], f["center"]["y"], 2.8, 1.3, f["rotation"], offset=(0.0, -1.85))
 
 
 def guard_rings(poly: Polygon) -> list[list[tuple[float, float]]]:
@@ -324,6 +348,8 @@ def half_data(layout: Layout) -> dict:
         d["case_screws"] = layout.case_screws()
         d["notch"] = ring(layout.notch_polygon())
         d["fpc_box"] = ring(layout.fpc_box())
+        d["fpc_body"] = ring(fpc_body(layout))
+        d["fpc_tails"] = ring(fpc_tails(layout))
         d["cable_corridor"] = ring(layout.cable_corridor()) if layout.cable_corridor() is not None else []
         keep = [layout.housing_box().buffer(0.5, join_style=2).buffer(2.0, join_style=2),
                 layout.notch_polygon().buffer(2.0, join_style=2),
@@ -341,6 +367,8 @@ def half_data(layout: Layout) -> dict:
         d["case_screws"] = []
         d["notch"] = []
         d["fpc_box"] = []
+        d["fpc_body"] = []
+        d["fpc_tails"] = []
         d["cable_corridor"] = []
         keep = []
     keep.append(well.buffer(2.0, join_style=2))
@@ -428,7 +456,7 @@ def render(data: dict[str, dict]) -> str:
     names = ["outline", "holes", "bay", "well", "j3", "rb1", "ps1", "reset", "switch", "ctrl_rect", "box_rect",
              "test_pads", "keys", "has_ball", "ball_center", "housing_footprint", "housing_box", "case_screws",
              "case_outline", "pocket_opening", "cover_rect", "cover_screws",
-             "notch", "fpc_box", "cable_corridor", "hinge_x", "lip_min_x", "skirt_min_x", "foot_dx", "foot_magnets", "feet", "guard"]
+             "notch", "fpc_box", "fpc_body", "fpc_tails", "cable_corridor", "hinge_x", "lip_min_x", "skirt_min_x", "foot_dx", "foot_magnets", "feet", "guard"]
     for name in names:
         for half in HALVES:
             v = data[half][name]

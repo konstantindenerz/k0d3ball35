@@ -147,12 +147,12 @@ module box_cap() {
     y1 = r[3];
     ys = box_y_in() + box_fit;
     xs = boss_x_end() + box_fit;
-    h = box_roof_under_z - box_skirt_gap + eps;
+    h = box_roof_under_z - box_skirt_z + eps;
     difference() {
         union() {
             translate([x0, y0, box_roof_under_z]) cube([x1 - x0, y1 - y0, box_roof_t]);
-            translate([x1 - box_skirt_t, ys, box_skirt_gap]) cube([box_skirt_t, y1 - ys, h]);
-            translate([xs, y1 - box_skirt_t, box_skirt_gap]) cube([x1 - xs, box_skirt_t, h]);
+            translate([x1 - box_skirt_t, ys, box_skirt_z]) cube([box_skirt_t, y1 - ys, h]);
+            translate([xs, y1 - box_skirt_t, box_skirt_z]) cube([x1 - xs, box_skirt_t, h]);
         }
         for (a = boss_axes())
             translate([a[0], a[1], box_roof_under_z - 1]) cylinder(d = 2.4, h = box_roof_t + 2);
@@ -278,7 +278,16 @@ module pocket_test() {
 }
 
 // ---------------------------------------------------------------- dummies for views
-module pcb_dummy() color("darkgreen") translate([0, 0, -pcb_t]) linear_extrude(pcb_t) pcb_2d();
+module pcb_dummy() {
+    color("darkgreen") translate([0, 0, -pcb_t]) linear_extrude(pcb_t) pcb_2d();
+    // what sits on the PCB top besides the switches: the five M2 heads (BOM max 3.5 mm) and J1
+    color("silver") for (hp = holes(half)) translate([hp[0], hp[1], 0]) cylinder(d = 3.5, h = 1.3);
+    if (has_ball(half)) {
+        color("black") polygon_box(fpc_body(half), 2.0);
+        color("gold") polygon_box(fpc_tails(half), 0.15);
+    }
+}
+module polygon_box(p, h) linear_extrude(h) polygon(p);
 
 module keys_dummy() {
     for (k = keys(half)) translate([k[0], k[1], 0]) rotate(-k[2]) {

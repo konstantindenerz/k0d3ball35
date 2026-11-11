@@ -50,9 +50,11 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   is at +5.0, flush with the Choc keycap skirts. On the right half the edge runs in 90 degree
   steps around the ball pocket too (`case_outline`), and the pocket cover is flush with the rim.
 - PCB guard (`guard`): 0.8 mm plate on the PCB top between the switches, 14.2 mm square cut-outs,
-  4.4 mm holes over the screw heads, open over the box, J1/FFC and the cradle; 1.2 mm under a
-  pressed keycap, so no extra height. Outline from `gen_case.py` (`guard_polygon`), one piece,
-  no web under 1.2 mm. Details in `spec/11-case.md` section 5a.
+  3.7 mm holes over the screw heads, open over J1 (body and tails), the FFC path, the cradle
+  and the inside of the box; it runs on under the box cap skirt, which stands on it. 1.2 mm
+  under a pressed keycap, so no extra height, and no bare PCB visible from above. Outline from
+  `gen_case.py` (`guard_polygon`), one piece, no web under 1.0 mm. Details in
+  `spec/11-case.md` section 5a.
 - Floor under the keys at -4.6 (3 mm under the PCB underside for hot-swap sockets and
   diodes); the underside is flat everywhere at -9.6.
 - Five M2 standoffs (6.0 mm, 3.0 mm tall) under the PCB holes with heat-set inserts.

@@ -23,7 +23,7 @@ from test_case import CASE, DATA, parse_data
 
 PARAMS = (CASE / "params.scad").read_text()
 HALVES = ("left", "right")
-M2_HEAD_D = 4.0          # widest M2 pan / cheese head the PCB screws may have
+M2_HEAD_D = 3.5          # PCB screw heads, max diameter (spec/03-bom.md)
 
 
 def param(name: str) -> float:
@@ -112,16 +112,74 @@ def test_covers_the_webs_between_the_keys(data, half):
 @pytest.mark.parametrize("half", HALVES)
 def test_keeps_off_screws_box_j1_and_cradle(data, half):
     g = guard_of(data, half)
+    assert param("guard_screw_d") >= M2_HEAD_D + 0.15, "screw head holes too tight for the BOM heads"
     for h in data["holes"][half]:
-        assert not g.intersects(Point(h).buffer(M2_HEAD_D / 2 + 0.1)), f"{half}: guard under the screw head at {h}"
-    x0, y0, _, y1 = data["box_rect"][half]
-    assert not g.intersects(box(x0, y0, param("box_inner_x"), y1)), f"{half}: guard in the controller box"
+        assert not g.intersects(Point(h).buffer(M2_HEAD_D / 2 + 0.05)), f"{half}: guard under the screw head at {h}"
+    # inside the controller box only under the cap skirt (2 mm wide bands along the key side and
+    # the thumb side), never on the controller
+    x0, y0, x1, y1 = data["box_rect"][half]
+    t = param("box_skirt_t")
+    inner = box(x0, y0, x1 - t, y1 - t)
+    assert not g.intersects(inner), f"{half}: guard inside the controller box"
+    assert not g.intersects(box(*data["ctrl_rect"][half])), f"{half}: guard on the controller"
+    assert g.intersects(box(x1 - t, y0, x1, y1)), f"{half}: guard does not run on under the cap skirt"
     if data["has_ball"][half]:
-        fpc = unary_union([Polygon(data["fpc_box"][half]), Polygon(data["cable_corridor"][half])])
-        assert not g.intersects(fpc.buffer(param("fpc_clear"), join_style=2)), "guard over J1 / the FFC"
+        assert not g.intersects(j1_parts(half)), "guard on J1 or its contacts"
+        assert not g.intersects(Polygon(data["cable_corridor"][half])), "guard on the FFC path"
         assert not g.intersects(Point(data["ball_center"][half]).buffer(param("cradle_d") / 2)), "guard over the cradle"
-        x0, y0, x1, y1 = data["pocket_opening"][half]
-        assert not g.intersects(box(x0, y0, x1, y1)), "guard over the pocket opening"
+
+
+def j1_parts(half):
+    """J1 body (F.Fab 8.6 x 4.8) and the contact tails in front of it, checked against the KiCad
+    footprint's own pads and fab outline in test_j1_outline_matches_the_footprint."""
+    d = parse_data(DATA.read_text())
+    return unary_union([Polygon(d["fpc_body"][half]), Polygon(d["fpc_tails"][half])])
+
+
+def test_j1_outline_matches_the_footprint():
+    """fpc_body / fpc_tails in data.scad against J1 on the routed right board: the fab rectangle
+    contains no pad of the signal row, the tails rectangle contains all six signal pads."""
+    import re as _re
+    pcb = (CASE.parents[1] / "hardware" / "right-pcb" / "k0d3ball35-right.kicad_pcb").read_text()
+    m = _re.search(r'\(footprint "[^"]*FH12-6S_top"(.*?)\n\t\)', pcb, _re.S)
+    assert m, "J1 not on the right board"
+    at = _re.search(r"\(at (-?[\d.]+) (-?[\d.]+)(?: (-?[\d.]+))?\)", m.group(1))
+    jx, jy, jr = float(at[1]), float(at[2]), float(at[3] or 0)
+    pads = [(float(p[1]), float(p[2])) for p in _re.finditer(r'\(pad "[1-6]" smd rect\s*\(at (-?[\d.]+) (-?[\d.]+)', m.group(1))]
+    assert len(pads) == 6
+    d = parse_data(DATA.read_text())
+    body, tails = Polygon(d["fpc_body"]["right"]), Polygon(d["fpc_tails"]["right"])
+    lay = load_layout("right").cfg["fpc"]["center"]
+    a = math.radians(jr)
+    for px, py in pads:
+        # KiCad pad offset (y down, rotation counter-clockwise on screen) -> layout frame
+        dx, dy = px * math.cos(a) + py * math.sin(a), -px * math.sin(a) + py * math.cos(a)
+        p = Point(lay["x"] + dx, lay["y"] + dy)
+        assert tails.contains(p) and not body.contains(p), (px, py)
+
+
+@pytest.mark.parametrize("half", HALVES)
+def test_no_bare_pcb_from_above(data, half):
+    """Seen from above, the PCB is covered by keycaps, guard, controller box, J1, the screw heads
+    and the pocket cover. What may still show is a fit gap (guard_fit at most), never a strip:
+    the first guard left 43 mm2 of green beside J1, the thumb screw and the box."""
+    pcb = load_layout(half).outline
+    caps = unary_union([rot_cap(k) for k in data["keys"][half]])      # 17.5 x 16.5 MBK caps
+    x0, y0, x1, y1 = data["box_rect"][half]
+    cover = [box(x0, y0, x1, y1), guard_of(data, half)]
+    cover += [Point(h).buffer(M2_HEAD_D / 2) for h in data["holes"][half]]
+    if data["has_ball"][half]:
+        cover += [j1_parts(half), box(*data["cover_rect"][half]), Polygon(data["cable_corridor"][half])]
+    bare = pcb.difference(unary_union([caps, *cover]))
+    wide = bare.buffer(-(param("guard_fit") / 2 + 0.03))
+    assert wide.is_empty, f"{half}: bare PCB visible at {[tuple(round(b, 1) for b in p.bounds) for p in getattr(wide, 'geoms', [wide])]}"
+
+
+def rot_cap(k) -> Polygon:
+    x, y, rot = k
+    a = math.radians(-rot)
+    c, s = math.cos(a), math.sin(a)
+    return Polygon([(x + px * c - py * s, y + px * s + py * c) for px, py in ((-8.75, -8.25), (8.75, -8.25), (8.75, 8.25), (-8.75, 8.25))])
 
 
 def _need_stl(path):

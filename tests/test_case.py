@@ -523,7 +523,8 @@ def test_render_box_cap(tmp_path, half, data):
     v = mesh.vertices
     sx = -1 if half == "left" else 1
     assert abs(v[:, 2].max() - values["box_top_z"]) < 0.05
-    assert abs(v[:, 2].min() - 0.3) < 0.05, "skirt stands just above the PCB top"
+    # the skirt stands 0.3 above the PCB guard (0.8 mm), which runs on under it (test_case_guard)
+    assert abs(v[:, 2].min() - (0.8 + 0.3)) < 0.05, "skirt stands just above the PCB guard"
     x0, y0, x1, y1 = data["box_rect"][half]
     # plate covers the box rectangle (and the rebate on the wall sides)
     assert v[:, 0].min() * sx <= x0 - 1.5 if sx == 1 else v[:, 0].max() * sx <= x0 - 1.5

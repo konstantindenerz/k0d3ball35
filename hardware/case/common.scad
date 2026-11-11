@@ -89,6 +89,8 @@ function boss_half() = insert_hole_d / 2 + boss_skin;          // 3.0: half of t
 function boss_axes() = [[box_x_in() + boss_in, box_y_in() + boss_in],
                         [box_x_in() + boss_in, box_r()[3] - boss_half()]];
 function boss_x_end() = box_x_in() + boss_in + boss_half();    // how far the bosses reach into the box
+// the cap skirt stands on the PCB guard when there is one (it runs on under the skirt)
+box_skirt_z = (guard ? guard_t : 0) + box_skirt_gap;
 function usb_x() = (ctrl_rect(half)[0] + ctrl_rect(half)[2]) / 2;
 
 // ---------------------------------------------------------------- 2D regions

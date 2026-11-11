@@ -68,7 +68,7 @@ box_roof_under_z = ctrl_top_z + box_clear;           // 6.7
 box_top_z       = box_roof_under_z + box_roof_t;     // 8.7
 box_inner_x     = -45.5;       // key-side wall of the box (the inner column caps end at -44.75)
 box_skirt_t     = 2.0;         // cap skirt walls (key side and thumb side), inside the box rectangle
-box_skirt_gap   = 0.3;         // skirt stops this above the PCB top
+box_skirt_gap   = 0.3;         // skirt stops this above the PCB top, or above the PCB guard (common.scad box_skirt_z)
 box_rebate      = 2.0;         // inner part of the tall walls lowered to box_roof_under_z for the cap plate
 box_fit         = 0.15;        // clearance between the cap plate and the rebate
 boss_in         = 0.5;         // boss screw axis this far inside the wall's inner face
@@ -199,7 +199,8 @@ fpc_clear       = 0.5;         // clearance around J1 and the FFC corridor on th
 // adds no height: it fills the air under the keycaps, which bottom out at cap_skirt_z -
 // switch_travel. The lower switch housings pass through square cut-outs, and the upper housing
 // flanges hold it down, so it needs no screws. It stays clear of the PCB screw heads (they keep
-// sitting on the PCB), the controller box, J1 and the FFC, and the cradle opening.
+// sitting on the PCB), the inside of the controller box, J1 and the FFC, and the cradle. It runs
+// on under the box cap's skirt, which then stands on the guard: no PCB shows anywhere from above.
 guard           = true;
 cap_skirt_z     = 5.0;         // keycap skirt bottom at rest (the keycap dummy and rim_z)
 switch_travel   = 3.0;         // Choc V1 total travel: the skirt bottoms out at +2.0
@@ -207,8 +208,8 @@ switch_lower    = 13.8;        // Choc V1 lower housing, the square under the fl
 guard_t         = 0.8;         // 4 layers at 0.2
 guard_min_air   = 0.8;         // at least this much air between the guard and a pressed keycap
 guard_fit       = 0.2;         // around every switch housing, to the cavity wall and the box
-guard_min_web   = 1.2;         // narrower strips are dropped from the outline (they would not print)
-guard_screw_d   = 4.4;         // clear of every M2 head the PCB screws use (pan / cheese head max 4.0)
+guard_min_web   = 1.0;         // narrower strips are dropped from the outline; 1.0 = 2 perimeters of a 0.4 nozzle
+guard_screw_d   = 3.7;         // PCB screw heads are max 3.5 (BOM): 0.1 all round, so no PCB shows round a head
 
 // ---------------------------------------------------------------- rendering
 $fn             = 64;
