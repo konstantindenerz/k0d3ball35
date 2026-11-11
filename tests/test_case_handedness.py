@@ -65,6 +65,28 @@ def test_tray_lies_on_the_board_not_on_its_mirror_image(half):
     assert np.hypot(*(top - u1 * [1, -1])) > 20, "the box would also fit the mirrored board"
 
 
+def _covered_above(mesh, xy, zmin):
+    """True if a vertical line through xy meets the mesh anywhere above zmin."""
+    t = mesh.triangles
+    a, b, c = t[:, 0, :2], t[:, 1, :2], t[:, 2, :2]
+    p = np.asarray(xy, dtype=float)
+
+    def cross(u, v, w):
+        return (v[:, 0] - u[:, 0]) * (w[1] - u[:, 1]) - (v[:, 1] - u[:, 1]) * (w[0] - u[:, 0])
+
+    d1, d2, d3 = cross(a, b, p), cross(b, c, p), cross(c, a, p)
+    inside = ((d1 >= 0) & (d2 >= 0) & (d3 >= 0)) | ((d1 <= 0) & (d2 <= 0) & (d3 <= 0))
+    hits = t[inside]
+    if not len(hits):
+        return False
+    # z of each hit triangle at xy, from its plane
+    v0, v1, v2 = hits[:, 0], hits[:, 1], hits[:, 2]
+    n = np.cross(v1 - v0, v2 - v0)
+    ok = np.abs(n[:, 2]) > 1e-12
+    z = v0[ok, 2] - (n[ok, 0] * (p[0] - v0[ok, 0]) + n[ok, 1] * (p[1] - v0[ok, 1])) / n[ok, 2]
+    return bool((z > zmin).any())
+
+
 def test_ball_pocket_sits_in_the_board_notch():
     b = board("right")
     right = json.loads((ROOT / "hardware/layout/output/points-right.json").read_text())
@@ -77,7 +99,13 @@ def test_ball_pocket_sits_in_the_board_notch():
     above = v[v[:, 2] > -PCB_T + 0.05]
     r = np.hypot(above[:, 0] - ball[0], above[:, 1] - ball[1])
     assert r.min() >= 14.0, "nothing of the tray in the cradle circle"
-    assert ((r > 14.0) & (r < 20.0)).sum() > 50, "the pocket wall rings the ball"
+    assert ((r > 14.0) & (r < 20.0)).sum() > 0, "the pocket wall stands where the board is not"
+    # The notch corner towards the keys is SQUARE so the FFC can fold over the board edge there
+    # into J1 (r2.2). Nothing of the tray may stand in that corner above the PCB. A stale regular
+    # octagon in the case once put the pocket wall right into it (r2.4).
+    mesh = trimesh.load(CASE / "stl" / "tray-right.stl", force="mesh")
+    corner = ball + 0.89 * np.array([-15.5, 15.5])        # 2.4 mm inside the square corner (print frame)
+    assert not _covered_above(mesh, corner, -PCB_T + 0.05), "tray material in the FFC corner"
 
 
 def test_tilted_sensor_leans_away_from_the_keys():

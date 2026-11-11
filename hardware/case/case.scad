@@ -17,6 +17,7 @@ echo(str("STACK floor_z_key=", floor_z_key));
 echo(str("STACK well_floor_z=", well_floor_z));
 echo(str("STACK pocket_floor_z=", pocket_floor_z));
 echo(str("STACK base_z=", base_z));
+echo(str("STACK desk_z=", base_z - (foot_h - foot_recess)));   // the table under the feet
 echo(str("STACK rim_z=", rim_z));
 echo(str("STACK standoff_h=", standoff_h));
 echo(str("STACK standoff_d=", standoff_d));

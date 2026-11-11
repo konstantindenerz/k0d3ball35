@@ -95,8 +95,8 @@ function usb_x() = (ctrl_rect(half)[0] + ctrl_rect(half)[2]) / 2;
 module pcb_2d() polygon(outline(half));
 module pcb_cavity_2d() offset(delta = pcb_clear) pcb_2d();
 
-module octagon_2d(c, apothem) translate(c) rotate(22.5) circle(r = apothem / cos(22.5), $fn = 8);
-module notch_2d() octagon_2d(bc(), notch_apothem);
+// the PCB notch exactly as the board has it (layout data, incl. the square corner on the key side)
+module notch_2d() polygon(notch(half));
 module housing_footprint_2d() polygon(housing_footprint(half));
 module housing_box_2d() polygon(housing_box(half));
 module pocket_well_2d() offset(delta = 0.5) housing_box_2d();

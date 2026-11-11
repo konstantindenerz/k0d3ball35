@@ -106,6 +106,7 @@ magnet_h        = 2.2;
 magnet_skin     = 0.6;         // roof left above the lid magnets (lid_roof_t - magnet_h - magnet_pocket_extra)
 magnet_pocket_extra = 0.2;     // pocket depth = magnet_h + this (glue film)
 foot_d          = 10.5;        // rubber feet recess
+foot_h          = 1.0;         // rubber foot thickness (spec/03-bom.md)
 foot_recess     = 0.8;         // 1 mm feet stand 0.2 mm proud: flush would not grip (r2.4)
 
 // ---------------------------------------------------------------- lid
@@ -152,7 +153,6 @@ sensor_angle    = 65;          // cradle sensor_angle
 sensor_az       = 90;          // cradle sensor_az: the module leans towards +y
 sensor_sleeve   = [11, 18];    // cradle hous_x, hous_y
 sensor_reach    = 15.4;        // cradle STACK housing_radial_extent_x
-notch_apothem   = 15.0;        // PCB notch octagon (layout cradle_diameter / 2 + 1)
 pocket_d        = 32.0;        // round pocket wall above the PCB plane (cradle 28 + 2 x 2 wall)
 pocket_wall     = 2.0;
 cradle_d        = 28.0;        // cradle clearance circle above the PCB plane
