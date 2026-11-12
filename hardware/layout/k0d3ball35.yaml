@@ -73,10 +73,10 @@ trackball:
     cable_gap_min: 1.5          # radial room the FFC needs between the cup envelope and the notch edge
     housing_clearance: 0.5      # gap between housing and pocket wall at floor level
     case_screw_spacing: 20.0    # two M2 x 8 from below through the floor into the cup skirt, on the y axis through the ball (clear of the bearings and the sleeve)
-    sensor_board: { x: 4.4, y: 14.0 }    # PROJECTION of the tilted 14 x 8 mm PAW3222 module: 4.4 mm
-    sensor_board_offset: { x: 13.5, y: 0.0 }   # along the tilt, 14 mm across it, centred 13.5 mm
-                                    # towards +x of the ball axis. Spans 11.3..15.7, which is the
-                                    # module from its near face to its far corner (cradle
+    sensor_board: { x: 4.4, y: 13.4 }    # PROJECTION of the tilted 13.4 x 7.4 mm PAW3222 module (maker
+    sensor_board_offset: { x: 13.4, y: 0.0 }   # drawing): 13.4 mm across the tilt, 4.4 mm along it,
+                                    # centred 13.4 mm towards +x of the ball axis. Spans 11.2..15.6,
+                                    # the module from its near face to its far corner (cradle
                                     # stack.json board_reach / module_reach).
     # r2.2: the module is a cartridge. It is lowered into the pocket and lifted out again with
     # the PCB fitted, so nothing of it may be covered by the board. The notch's 45 degree facet
@@ -220,6 +220,9 @@ halves:
                                       # J1 but 3 mm above it, so the lock stays reachable
       rotation: 0
       side: top
+      cable_length: 40              # 6-way 0.5 mm FFC, type B. The route from the module's FH19C through
+                                    # the sleeve's end wall, round the cup into J1 is 33.6 mm including
+                                    # both insertions (scripts/k0d3/ffc_route.py); 40 leaves 6.4 mm
     silkscreen:                   # the thumb bridge is shorter here, so the wordmark is smaller.
       logo:                       # The merge is shallow, so the whole block is repeated.
         layer: B.SilkS
