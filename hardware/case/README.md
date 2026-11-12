@@ -188,9 +188,10 @@ Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
   of the five standoffs (4.8 mm deep) and the two cap bosses (4 mm deep). Press them with a
   soldering iron at about 200 C before the PCB goes in, flush with the top; 3.2 mm of floor
   stays under a standoff hole, the boss hole ends 0.4 mm above the chamfer and nothing can
-  reach through. Screws: M2 x 5 machine screws from the top (M2 x 6 bottoms out in the cap
-  bosses), head at most 3.5 mm (under the keycaps); the keycaps come off
-  for assembly.
+  reach through. PCB screws: M2 x 5 machine screws from the top, head at most 3.5 mm (under
+  the keycaps); the keycaps come off for assembly. Cap screws: M2 x 5 countersunk machine
+  screws, flush in the cap top (M2 x 6 bottoms out in the cap bosses; a pan head would stand
+  inside the closed lid).
 - Alternative: `-D pcb_screws="pilot"` turns the holes into 1.6 mm pilots for M2 self-tapping
   screws (6 mm deep).
 - Cradle: two M2 x 8 countersunk self-tapping screws from below through the countersunk
@@ -209,7 +210,7 @@ Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
    optionally a drop of glue at the entry. The lid should fold to the stop without force.
 4. Drop the PCB in (keycaps off), screw it to the standoffs, put the keycaps on.
 5. Controller box: plug the controller, put the cap on (skirt towards the keys and the thumb
-   keys), two M2 screws into the bosses.
+   keys), two M2 x 5 countersunk screws into the bosses.
 6. Right half: stand the cradle module in the pocket, fasten the two M2 x 8 from below, route
    the FFC round the cup into J1. Pocket cover on (two M2 x 6 from the top), drop the ball in
    through it. Optional clip: claws left and right of the ball, press the pins into the cover

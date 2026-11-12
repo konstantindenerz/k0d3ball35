@@ -73,7 +73,8 @@ well to print. The ball half still drains faster because of the sensor.
 | 2 | Screw | M2 x 8 mm countersunk (90 degree flat head), self-tapping, steel | hardware store, Mouser DE | | | Case screws: from below through the case floor into the cradle's cup skirt, 20 mm apart |
 | 2 | Screw | M2 x 6 mm countersunk (90 degree flat head, DIN 7991 or self-tapping) | hardware store, Amazon DE | | | Pocket cover, right half: from the top into 1.6 mm pilots in the tray ledge |
 | 14 (pack of 50) | Heat-set threaded insert | brass, M2, 3 mm long, about 3.5 mm OD, for a 3.2 mm hole | Amazon DE, AliExpress | 5 to 8 EUR per pack | | Default of the case (`hardware/case/params.scad`): five PCB standoffs and two controller-cap bosses per half, 7 per half |
-| 14 (pack) | Screw | M2 x 5 machine screw, pan or button head, head max 3.5 mm dia | Amazon DE, hardware store | 3 to 5 EUR per pack | | 7 per half into the inserts. Alternative: self-tapping into a 1.6 mm pilot with `-D pcb_screws="pilot"` in `hardware/case/params.scad` |
+| 4 | Screw | M2 x 5 mm countersunk machine screw (90 degree flat head, DIN 965 or DIN 7991), head max 3.8 mm dia | Amazon DE, hardware store | | | Controller box cap, 2 per half into the boss inserts: the heads sit flush in the cap. M2 x 6 bottoms out |
+| 10 (pack) | Screw | M2 x 5 machine screw, pan or button head, head max 3.5 mm dia | Amazon DE, hardware store | 3 to 5 EUR per pack | | PCB, 5 per half into the standoff inserts. Alternative: self-tapping into a 1.6 mm pilot with `-D pcb_screws="pilot"` in `hardware/case/params.scad` |
 
 ## 8. Finishing
 

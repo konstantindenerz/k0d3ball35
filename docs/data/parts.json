@@ -111,7 +111,7 @@
     58.55,
     7.6
    ],
-   "triangles": 960,
+   "triangles": 1088,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -173,7 +173,7 @@
     90.0,
     15.51
    ],
-   "triangles": 2396,
+   "triangles": 2162,
    "watertight": false,
    "non_manifold_edges": 21
   },
@@ -204,7 +204,7 @@
     96.45,
     15.51
    ],
-   "triangles": 7242,
+   "triangles": 7008,
    "watertight": false,
    "non_manifold_edges": 21
   },
@@ -235,7 +235,7 @@
     96.45,
     47.96
    ],
-   "triangles": 7242,
+   "triangles": 7008,
    "watertight": false,
    "non_manifold_edges": 10
   },
@@ -355,7 +355,7 @@
     58.55,
     7.6
    ],
-   "triangles": 962,
+   "triangles": 1090,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -411,7 +411,7 @@
     91.77,
     15.51
    ],
-   "triangles": 3440,
+   "triangles": 3206,
    "watertight": false,
    "non_manifold_edges": 25
   },
@@ -439,7 +439,7 @@
     94.0,
     15.51
    ],
-   "triangles": 8376,
+   "triangles": 8142,
    "watertight": false,
    "non_manifold_edges": 25
   },
@@ -467,7 +467,7 @@
     94.0,
     54.79
    ],
-   "triangles": 8376,
+   "triangles": 8142,
    "watertight": false,
    "non_manifold_edges": 19
   },

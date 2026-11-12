@@ -49,7 +49,8 @@ One cart; everything ships from the same warehouse.
 | [ ] | 3 (+3) | Bearing ball | 2.0 mm ZrO2 (zirconia) precision balls | open | AliExpress is the usual source, Amazon if in stock |
 | [ ] | 2 | Cradle screw | M2 x 8 self-tapping countersunk (90 degree flat head) | open | up through the case floor into the cup skirt; since r2.4 the module has no screw holes of its own (`hardware/trackball-cradle/params.scad`) |
 | [ ] | 1 pack (50) | Heat-set threaded insert | brass, M2, 3 mm long, about 3.5 mm OD, for a 3.2 mm hole | open | 14 used: 5 PCB standoffs + 2 controller-cap bosses per half; Amazon DE or AliExpress |
-| [ ] | 1 pack (14 used) | PCB and cap screw | M2 x 5 machine screw, pan or button head, head max 3.5 mm dia | open | 7 per half; the alternative is self-tapping into a 1.6 mm pilot (`-D pcb_screws="pilot"` in `hardware/case/params.scad`) |
+| [ ] | 4 | Box cap screw | M2 x 5 countersunk machine screw (90 degree flat head), head max 3.8 mm dia | open | 2 per half, flush in the controller box cap; M2 x 6 bottoms out in the boss |
+| [ ] | 1 pack (10 used) | PCB screw | M2 x 5 machine screw, pan or button head, head max 3.5 mm dia | open | 5 per half; the alternative is self-tapping into a 1.6 mm pilot (`-D pcb_screws="pilot"` in `hardware/case/params.scad`) |
 | [ ] | 14 | Bumper | 10 mm round rubber feet, 1 mm thick | open | seven 10.5 mm recesses per half, 0.8 mm deep; taller dome bumpers do not fit them |
 | [ ] | 2 | Pocket cover screw | M2 x 6 countersunk (90 degree flat head), self-tapping | open | right half, from the top into the tray |
 | [ ] | 1 roll | Kapton tape, 10 mm | | open | over the back of the sensor sleeve and over the controller socket joints in the battery bay |

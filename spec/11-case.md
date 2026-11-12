@@ -15,7 +15,7 @@ together and how the wordmark is engraved into them. Tickets: [mech-case](../iss
 | Part | STL | What it is |
 |------|-----|------------|
 | Tray | `tray-left.stl`, `tray-right.stl` | the case body: angular walls on the stepped PCB outline, key floor 2.1 mm under the PCB (it supports the hot-swap sockets when the switches go in), battery well, controller box walls, pocket for the cradle (right), five standoffs with M2 heat-set inserts, four foot magnet pockets from below, feet recesses |
-| Box cap | `box-cap-left.stl`, `box-cap-right.stl` | roof of the controller box: a plate in a rebate plus an L-shaped skirt towards the keys and the thumb keys, two M2 screws into corner bosses |
+| Box cap | `box-cap-left.stl`, `box-cap-right.stl` | roof of the controller box: a plate in a rebate plus an L-shaped skirt towards the keys and the thumb keys, two M2 x 5 countersunk screws into corner bosses, heads flush |
 | Lid, outer plate | `lid-outer-left.stl`, `lid-outer-right.stl` | pinky-side half of the transport cover: the four roof magnets, the even hinge knuckles including both ends; as a foot it lies under the controller half |
 | Lid, inner plate | `lid-inner-left.stl`, `lid-inner-right.stl` | controller-notch and thumb-side half: the odd knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot |
 | Lid, closed pair | `lid-left.stl`, `lid-right.stl` | both plates joined by a 2 mm steel pin, held on top by an inner lip; for the exploded view, not for printing |
@@ -134,7 +134,7 @@ This order is the only one the hardware allows, and the build guide
 4. Cell onto the back of the PCB in the dashed bay, plug into J3. The battery well is fully
    covered by the board, so the cell travels with the PCB and cannot go in afterwards.
 5. PCB into the tray over the cup, keycaps off, five M2 x 5 machine screws from the top.
-6. Controller on, box cap on, two M2 screws.
+6. Controller on, box cap on, two M2 x 5 countersunk screws.
 7. PCB guard onto the PCB top (holes over the screw heads), then the switches through it into
    the sockets: their flanges hold it down. Keycaps on.
 8. Right half: fold the FFC over the board edge into J1 on the key side, close the lock. Last

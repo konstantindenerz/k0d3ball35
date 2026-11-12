@@ -102,15 +102,13 @@ def bought_parts(half: str, v: dict) -> list[tuple[str, object, float, float]]:
         x = c["center"]["x"] + sx * c["row_spacing"] / 2
         parts.append(("controller socket strip", box(x - 1.3, ctrl.bounds[1] + 1.5, x + 1.3, ctrl.bounds[3] - 1.5), 0.0, 2.5))
     parts.append(("controller components", ctrl, 4.1, v["ctrl_top_z"]))
-    # screws: the documented M2 x 5 with a pan head, in the PCB holes and in the cap bosses
+    # screws: the documented M2 x 5, pan head in the PCB holes, countersunk in the cap bosses
     for h in cfg["mounting_holes"]:
         p = Point(h["x"], h["y"])
         parts.append(("PCB screw thread", p.buffer(1.0, 24), -5.0, 0.0))
         parts.append(("PCB screw head", p.buffer(1.75, 24), 0.0, 1.5))
-    for y in (v["boss_y0"], v["boss_y1"]):
-        p = Point(v["boss_x"], y)
-        parts.append(("cap screw thread", p.buffer(1.0, 24), v["box_top_z"] - 5.0, v["box_top_z"]))
-        parts.append(("cap screw head", p.buffer(1.75, 24), v["box_top_z"], v["box_top_z"] + 1.5))
+    for y in (v["boss_y0"], v["boss_y1"]):               # M2 x 5 countersunk, flush in the cap, into the insert
+        parts += countersunk("cap screw", Point(v["boss_x"], y), v["box_top_z"], -1, 3.8, 5.0)
     data = gen_case.half_data(layout)
     # the two self-tapping countersunk screws of the ball half. Their length counts from the flat
     # head face. The thread cuts into its pilot, so thread against the part it holds is allowed;

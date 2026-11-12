@@ -147,10 +147,9 @@ lid_fit         = 0.15;        // clearance between the lip and the inner wall f
 lid_lip_chamfer = 0.5;         // lead-in on the lower outer edge of the lip
 lid_lip_steps   = 5;
 lid_box_clear   = 0.3;         // lid skirt around the controller box walls
-cap_screw_head_d = 3.5;        // the box cap's two M2 x 5: pan or button head, BOM maximum
-cap_screw_head_h = 1.5;        // tallest such head. The axes are boss_in inside the box wall, so each
-lid_screw_clear = 0.4;         // head stands 1.25 mm over the wall, under the lid skirt: the skirt
-                               // gets a relief over each head (1.35 mm of its 3 mm stay)
+cap_screw_d     = 2.4;         // the box cap's two M2 x 5 countersunk machine screws: flush in the cap
+cap_screw_head_d = 3.8;        // top (DIN 965 / 7991 M2). A pan head stood 1.5 mm proud and inside
+                               // the closed lid's skirt (issues/mech-cap-screw-heads-under-lid.md)
 cap_size        = [17.5, 16.5]; // Choc 1u keycap footprint (layout yaml `keycap`)
 lid_cap_clear   = 0.5;         // the lip keeps this far from every keycap. Along the rows the caps
                                // end only 0.5 mm inside the PCB edge (0.7 from the wall face), so

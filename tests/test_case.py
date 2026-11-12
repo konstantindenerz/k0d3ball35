@@ -606,15 +606,23 @@ def test_render_box_cap(tmp_path, half, data):
     # plate covers the box rectangle (and the rebate on the wall sides)
     assert v[:, 0].min() * sx <= x0 - 1.5 if sx == 1 else v[:, 0].max() * sx <= x0 - 1.5
     assert abs(v[:, 1].max() - y1) < 0.05 and v[:, 1].min() <= y0 - 1.5
-    # two screw holes at the boss axes
+    # two screw holes at the boss axes: a 2.4 mm bore through the roof, countersunk from the top
+    # to 3.8 mm for an M2 flat head that sits flush (a pan head stood inside the closed lid)
     for ay in (y0 - 0.2 + 0.5, y1 - 3.0):
         ax = (x0 - 0.2 + 0.5) * sx
-        near = v[(np.hypot(v[:, 0] - ax, v[:, 1] - ay) < 2.0) & (np.abs(v[:, 2] - values["box_top_z"]) < 0.05)]
-        assert len(near) > 10, (ax, ay)
-        assert abs(np.hypot(near[:, 0] - ax, near[:, 1] - ay).min() - 1.2) < 0.05
-    # printed roof-down: the only upward face below the plate top is the engraved wordmark
+        for z, r in ((values["box_top_z"], 1.9), (values["box_roof_under_z"], 1.2)):
+            near = v[(np.hypot(v[:, 0] - ax, v[:, 1] - ay) < 2.2) & (np.abs(v[:, 2] - z) < 0.05)]
+            assert len(near) > 10, (ax, ay, z)
+            assert abs(np.hypot(near[:, 0] - ax, near[:, 1] - ay).min() - r) < 0.05, (z, r)
+    # printed roof-down: the only upward faces below the plate top are the engraved wordmark and
+    # the two countersinks, which are 45 degree cones standing on the bed
     n, a, fz = mesh.face_normals, mesh.area_faces, mesh.triangles_center[:, 2]
-    up = a[(n[:, 2] > 0.7) & (fz < values["box_top_z"] - 0.1)].sum()
+    c = mesh.triangles_center
+    sinks = np.zeros(len(c), bool)
+    for ay in (y0 - 0.2 + 0.5, y1 - 3.0):
+        sinks |= np.hypot(c[:, 0] - (x0 - 0.2 + 0.5) * sx, c[:, 1] - ay) < 2.0
+    assert n[sinks & (fz > values["box_top_z"] - 0.7) & (n[:, 2] > 0.5), 2].max() < 0.72, "countersink flatter than 45 degrees"
+    up = a[(n[:, 2] > 0.7) & (fz < values["box_top_z"] - 0.1) & ~sinks].sum()
     assert up < OVERHANG_BUDGET_CAP + values["logo_cap_area"], up
     floor = a[(n[:, 2] > 0.7) & (np.abs(fz - (values["box_top_z"] - values["logo_depth"])) < 0.01)].sum()
     assert abs(floor - values["logo_cap_area"]) < 1.0, (floor, values["logo_cap_area"])
@@ -626,7 +634,8 @@ def test_render_box_cap(tmp_path, half, data):
     assert min(eng[:, 1].min() - v[:, 1].min(), v[:, 1].max() - eng[:, 1].max()) >= 2.0
     for ay in (y0 - 0.2 + 0.5, y1 - 3.0):
         ax = (x0 - 0.2 + 0.5) * sx
-        assert np.hypot(eng[:, 0] - ax, eng[:, 1] - ay).min() >= 1.2 + 1.0, (ax, ay)
+        # the countersink's mouth (r 1.9) and the nearest groove keep 0.78 mm of plate top between them
+        assert np.hypot(eng[:, 0] - ax, eng[:, 1] - ay).min() >= 1.9 + 0.7, (ax, ay)
 
 
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")

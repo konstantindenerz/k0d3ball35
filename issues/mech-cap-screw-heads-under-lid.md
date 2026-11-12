@@ -18,17 +18,20 @@ above that is inside the lid skirt. Found by `tests/test_assembly_interference.p
 screws were in it: `lid_inner / cap screw head`, 5.24 mm2 at z 9.03, on both halves. The lid
 would rest on the two heads instead of the rim.
 
-## Options
+## Decision
 
-1. Two reliefs in the lid over the heads (4.5 mm wide, up to +10.5). Lid only, no change to the
-   BOM or the cap.
-2. Countersunk screws flush in the cap. The cap roof is 2.0 mm: a 0.9 mm countersink leaves
-   1.1 mm, and the BOM gets another screw type.
+Countersunk screws, flush in the cap: M2 x 5 machine screws with a 90 degree flat head into the
+same boss inserts, in 0.7 mm countersinks (`cap_screw_d`, `cap_screw_head_d` in `params.scad`).
+1.3 mm of the 2.0 mm roof stay at the bore. The BOM gets a line of four.
+
+Tried first and dropped: two reliefs in the lid skirt over pan heads. It cleared the lid, but
+the heads still stood 1.5 mm proud on the cap, beside the flush pocket cover screws.
 
 ## Acceptance criteria
 
-- [x] Option 1: `lid_box_notch` cuts a 4.3 mm relief over each head up to +10.5 (`cap_screw_head_d`, `cap_screw_head_h`, `lid_screw_clear` in `params.scad`); 1.35 mm of the 3 mm skirt stay
-- [x] `test_nothing_overlaps_in_the_closed_half` passes on both halves
+- [x] Countersinks in `box_cap()`, lid reliefs removed again
+- [x] `test_nothing_overlaps_in_the_closed_half` passes on both halves with countersunk cap screws
+- [x] BOM, order checklist, build guide, `spec/11-case.md` and the case README name the screw
 
 ## Notes
 

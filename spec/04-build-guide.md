@@ -399,7 +399,8 @@ hardware allows, so do not improvise.
 5. Lower the PCB into the tray, cup through the notch, onto the five standoffs. Keycaps off:
    their skirts overhang the screw heads by 1.5 mm. Five M2 x 5 machine screws from the
    top, snug.
-6. Controller onto its sockets, box cap on, two M2 screws into the bosses - the engraved
+6. Controller onto its sockets, box cap on, two M2 x 5 countersunk screws into the bosses,
+   flush with the cap - the engraved
    wordmark faces up. USB-C in its opening, the slide switch lever in its slot, the reset button's
    plunger behind its pin hole in the inner wall.
 

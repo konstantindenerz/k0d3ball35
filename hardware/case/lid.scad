@@ -27,14 +27,9 @@ module lid_cavity(top) {
 
 // the tall controller box walls poke into the lid
 module lid_box_notch() {
-    if (controller_box) {
+    if (controller_box)
         translate([0, 0, rim_z - 1]) linear_extrude(box_top_z + lid_box_clear - rim_z + 1)
             offset(delta = pcb_clear + wall + lid_box_clear) box_2d();
-        // the cap's screw heads stand on the box top and reach over its wall, into the skirt
-        // (tests/test_assembly_interference.py found the lid resting on them)
-        for (a = boss_axes()) translate([a[0], a[1], rim_z - 1])
-            cylinder(d = cap_screw_head_d + 2 * lid_screw_clear, h = box_top_z + cap_screw_head_h + lid_box_clear - rim_z + 1, $fn = 48);
-    }
 }
 
 // magnets in the roof of the outer plate, inserted from the roof underside; magnet_skin stays

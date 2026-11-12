@@ -352,8 +352,8 @@ function build(which) {
     const CS = H.case_stack;
     const g = layer(t('Controller box cap'), 44, '#B9A98E', { x: c.x, y: CS.box_top_z + 2, z: B.min_y + 4 });
     g.add(caseMesh('cap', M.boxCap));
-    // its two M2 x 5 pan heads (BOM: max 3.5 mm) over the bosses
-    for (const sz of [CS.boss_y0, CS.boss_y1]) g.add(cyl(1.75, 1.3, M.metal, CS.boss_x, CS.box_top_z + 0.65, sz));
+    // its two M2 x 5 flat heads over the bosses, flush with the cap top
+    for (const sz of [CS.boss_y0, CS.boss_y1]) g.add(cyl(1.0, 0.9, M.metal, CS.boss_x, CS.box_top_z - 0.45, sz, 1.9));
   }
   // --- lid: cover on top (inner lip, no magnets) or foot under the tray (magnets in floor and roof) ---
   {

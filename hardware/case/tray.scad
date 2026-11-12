@@ -154,7 +154,7 @@ module tray() {
 
 // ---------------------------------------------------------------- controller box cap
 // Roof plate in the rebate plus an L-shaped skirt (key side and thumb side) that stands on the
-// PCB. Two M2 machine screws into the bosses. Prints roof-down.
+// PCB. Two countersunk M2 machine screws into the bosses, flush. Prints roof-down.
 module box_cap() {
     r = box_r();
     x0 = box_x_in() - box_rebate + box_fit;
@@ -173,8 +173,12 @@ module box_cap() {
             translate([usb_x() - usb_cut[0] / 2 + box_fit, box_y_in() - wall, usb_z1])
                 cube([usb_cut[0] - 2 * box_fit, y0 - (box_y_in() - wall) + eps, box_top_z - usb_z1]);
         }
-        for (a = boss_axes())
-            translate([a[0], a[1], box_roof_under_z - 1]) cylinder(d = 2.4, h = box_roof_t + 2);
+        // two countersunk M2: 90 degree sinks from the top, heads flush like the pocket cover's
+        for (a = boss_axes()) {
+            translate([a[0], a[1], box_roof_under_z - 1]) cylinder(d = cap_screw_d, h = box_roof_t + 2);
+            translate([a[0], a[1], box_top_z - (cap_screw_head_d - cap_screw_d) / 2 + eps])
+                cylinder(d1 = cap_screw_d, d2 = cap_screw_head_d + 2 * eps, h = (cap_screw_head_d - cap_screw_d) / 2, $fn = 32);
+        }
         // room for the plug's overmold under the plate edge, back to the receptacle face
         translate([usb_x() - usb_cut[0] / 2, y0 - 1, box_roof_under_z - eps])
             cube([usb_cut[0], ctrl_rect(half)[1] - usb_face_in + 0.3 - y0 + 1, usb_z1 - box_roof_under_z + eps]);
@@ -367,13 +371,11 @@ module flat_head_screw(len, head_d, d = 2.0) {
     cylinder(d = d, h = len, $fn = 24);
 }
 
-// Every screw the PCB dummy does not carry: the two M2 x 5 of the box cap (pan head, BOM max
-// 3.5 mm), and on the ball half the M2 x 8 from below into the cradle and the M2 x 6 of the cover.
+// Every screw the PCB dummy does not carry: the two countersunk M2 x 5 of the box cap, and on
+// the ball half the M2 x 8 from below into the cradle and the M2 x 6 of the cover.
 module cap_screws_dummy()
-    color("silver") if (controller_box) for (a = boss_axes()) translate([a[0], a[1], box_top_z]) {
-        cylinder(d = cap_screw_head_d, h = cap_screw_head_h, $fn = 32);
-        translate([0, 0, -5]) cylinder(d = 2.0, h = 5, $fn = 24);
-    }
+    color("silver") if (controller_box) for (a = boss_axes()) translate([a[0], a[1], box_top_z]) mirror([0, 0, 1])
+        flat_head_screw(5, cap_screw_head_d);
 module cradle_screws_dummy()
     color("silver") for (s = case_screws(half)) translate([s[0], s[1], base_z + (case_screw_cs_d - case_screw_head_d) / 2])
         flat_head_screw(8, case_screw_head_d);
