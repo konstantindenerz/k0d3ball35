@@ -55,9 +55,9 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   under a pressed keycap, so no extra height, and no bare PCB visible from above. Outline from
   `gen_case.py` (`guard_polygon`), one piece, no web under 1.0 mm. Details in
   `spec/11-case.md` section 5a.
-- Floor under the keys at -4.6 (3 mm under the PCB underside for hot-swap sockets and
+- Floor under the keys at -3.7 (2.1 mm under the PCB underside: 0.25 mm under the hot-swap sockets, which it backs when a switch is pressed in; room for
   diodes); the underside is flat everywhere at -9.6.
-- Five M2 standoffs (5.6 mm, 3.0 mm tall; they clear the sockets and switch pegs by 0.44 mm) under the PCB holes with heat-set inserts.
+- Five M2 standoffs (5.6 mm, 2.1 mm tall; they clear the sockets and switch pegs by 0.44 mm) under the PCB holes with heat-set inserts.
 - Battery well under the controller block: bay plus the J3 courtyard, each grown by
   1 mm, floor at -8.1, 6.5 mm under the PCB underside (5.7 mm cell, 0.4 mm solder joints, Kapton, 0.3 mm air, flush
   controller pins). The reset
@@ -140,7 +140,7 @@ From `stack.json` (`make stack`):
 | desk (1 mm feet in 0.8 mm recesses) | -9.8 | -9.8 |
 | base (underside) | -9.6 | -9.6 |
 | battery well floor / pocket floor | -8.1 / - | -8.1 / -7.1 |
-| key floor | -4.6 | -4.6 |
+| key floor | -3.7 | -3.7 |
 | PCB | -1.6 .. 0 | -1.6 .. 0 |
 | cradle cup rim / pocket cover | - | +3.425 / +3.6 .. +5.0 |
 | rim | +5.0 | +5.0 |

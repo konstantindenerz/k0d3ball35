@@ -84,7 +84,7 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 2 | M2 x 8 self-tapping countersunk screws (or M2 x 8 countersunk machine screws + heat-set inserts) | case screws: from below through the case floor into the cradle's cup skirt | 11 |
 | 35 (+2) | Kailh Choc V1 switch (PG1350) | | 12 |
 | 35 | Choc 1u keycaps (MBK), 5 in an accent colour for the thumbs | | 12 |
-| 8 | bumpers (GLIPLUS pads or 3M SJ5302) | underside | 15 |
+| 14 | bumpers: 10 mm round rubber feet, 1 mm thick | underside, seven recesses per half | 15 |
 
 Tools:
 
@@ -400,8 +400,8 @@ hardware allows, so do not improvise.
    and fasten it with two M2 x 6 countersunk screws from the top, snug: it sits flush with the rim.
    Ball into the cup through the cover. Optional retainer clip (`pocket-clip-right.stl`, PETG,
    pins down on the bed, supports under the ring): claws left and right of the ball, press its
-   two pins into the cover until they click; pull it straight up to take it off. Four rubber feet
-   onto the underside, lid on. As a stand, fold the inner lid plate down to its stop and
+   two pins into the cover until they click; pull it straight up to take it off. Seven rubber feet
+   into the recesses of the underside, lid on. As a stand, fold the inner lid plate down to its stop and
    let the outer plate snap roof-up under the controller half of the board, the folded inner
    plate just beyond the inner edge as a kickstand pointing towards the other half: the half
    stands on its outer edge and the kickstand and tilts by about 18 degrees, inner edge up.
@@ -422,8 +422,9 @@ and the switch reachable, ball spins freely.
 
 1. Check the two pins of each Choc V1 switch are straight. Bent pins will fold inside the socket
    and not contact.
-2. Press each switch straight down into its socket from the top face, supporting the PCB from
-   below with a finger right under the socket so the solder joints do not take the load. The
+2. Press each switch straight down into its socket from the top face. In the case the tray
+   floor lies 0.25 mm under every socket and takes the load; on a bare PCB (bench test, chapter
+   9) support the socket from below with a finger so the solder joints do not take it. The
    centre post and the two side posts locate the switch; the pins engage with a soft click.
 3. Thumb keys: the rotated positions take the switch in the same orientation as the silkscreen
    outline shows; the stem's flat side follows the rotation.
@@ -491,7 +492,7 @@ forward 0.5 to 0.7 V.
 * **Battery.** Charge through USB; the controller's LED goes out when full. Do not store the
   keyboard fully discharged for months; the protection circuit cuts at about 3.0 V and the cell
   then needs a USB charge before the half switches on again. Replace a cell that swells.
-* **Bumpers.** Stick the anti-slip pads on the case underside at the four corners of each half.
+* **Bumpers.** Stick the seven rubber feet into the recesses on the underside of each half.
 * **Firmware.** Before updating to a newer ZMK revision, read the release notes; if the split
   protocol changed, flash `settings_reset` on both halves and pair again.
 

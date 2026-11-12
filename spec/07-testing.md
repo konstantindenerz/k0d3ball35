@@ -86,8 +86,8 @@ misbehave.
 
 | Step | How | Expected |
 |------|-----|----------|
-| 4.1 Product ID | Build the right half with `CONFIG_LOG=y`, `CONFIG_INPUT_LOG_LEVEL_DBG=y` and `CONFIG_ZMK_USB_LOGGING=y`, open the serial console | the pmw3610 driver logs a successful init (product id 0x3e) and no SPI errors |
-| 4.2 Motion | Move the ball by hand | cursor moves, direction matches finger movement; if an axis is inverted set `invert-x` / `invert-y` |
+| 4.1 Product ID | Build the right half with `CONFIG_LOG=y`, `CONFIG_INPUT_LOG_LEVEL_DBG=y` and `CONFIG_ZMK_USB_LOGGING=y`, open the serial console | the paw3222 driver logs a successful init and no SPI errors or product id mismatch |
+| 4.2 Motion | Move the ball by hand | cursor moves, direction matches finger movement; if an axis is inverted toggle `INPUT_TRANSFORM_X_INVERT` / `INPUT_TRANSFORM_Y_INVERT` in `BALL_TILT`, if left/right and up/down are exchanged toggle `INPUT_TRANSFORM_XY_SWAP` (spec/05-firmware.md) |
 | 4.3 Idle current | Leave the ball still for 10 s, then move it | first movement wakes the sensor within a few milliseconds, no visible lag |
 | 4.4 CPI sanity | Roll the ball by one full turn along x (circumference 59.8 mm at 19.05 mm) | cursor travel in pixels roughly equals CPI x 2.36; adjust `res-cpi` to taste |
 

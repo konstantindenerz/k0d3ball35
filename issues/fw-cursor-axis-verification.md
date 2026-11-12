@@ -11,8 +11,11 @@ created: 2026-11-05
 
 ## Context
 
-`invert-x`, `invert-y` and the axis mapping of the PMW3610 node are untested guesses. Sensor orientation inside
-the cradle decides the real directions.
+The axis mapping of the PAW3222 module (`BALL_TILT` in `k0d3ball35_right.overlay`: scale, swap, Y invert) is
+derived from the cradle geometry and has never been seen on hardware. The sensor sits beside the ball towards
++x since r2.4b, so its fast axis is screen X and the axes are swapped (the overlay still had the +y maths
+without a swap until the 2026-11-12 review). Which way the sensor's X and Y run on the module is an assumption:
+the signs, and whether the scale belongs on Y or X, are decided on the first board.
 
 ## Acceptance criteria
 

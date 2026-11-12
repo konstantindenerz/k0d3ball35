@@ -351,7 +351,13 @@ def test_stack_json(stack, cradle_stack):
     for name, v in stack.items():
         assert v["pocket_floor_z"] == cradle_stack["floor_z"], name
         assert abs(v["standoff_h"] - (-PCB_T - v["floor_z_key"])) < 1e-6, name
-        assert v["floor_z_key"] <= -PCB_T - 3.0, "3 mm under the PCB for sockets and diodes"
+        # The floor under the keys backs the hot-swap sockets: the switches are pressed in with
+        # the PCB screwed into the tray, where nothing else can support a socket (review
+        # 2026-11-12). So it must be close under them, and still clear everything else there.
+        from k0d3.geometry import SOCKET_H
+        under = -PCB_T - v["floor_z_key"]
+        assert 0.15 <= under - SOCKET_H <= 0.35, f"{name}: {under - SOCKET_H:.2f} mm between the sockets and the floor"
+        assert under >= 1.4 + 0.5, "power switch (1.4 mm) and reset button under the PCB need their room"
         assert v["base_z"] <= v["well_floor_z"] - 1.5 and v["base_z"] <= v["pocket_floor_z"] - 2.0, name
         # The cell must lie loose: solder joints 0.4 + Kapton 0.1 + cell + 0.3 mm to breathe. The
         # well was 6.0 mm for a 6.15 mm stack once (review 2026-11-12).

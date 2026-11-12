@@ -178,7 +178,7 @@ def pointer() -> dict:
             text = re.sub(rf"(?<!#define ){name}\b", value, text)
     layer_of = {v: k for k, v in d.items() if k.startswith("LAYER_")}
     cpi = int(re.search(r"res-cpi\s*=\s*<(\d+)>", text)[1])
-    temp = re.search(r"trackball_listener\s*\{.*?input-processors\s*=\s*(?:<&zip_[xy]_scaler[^>]*>,\s*)?<&zip_temp_layer\s+(\w+)\s+(\d+)>", text, flags=re.S)
+    temp = re.search(r"trackball_listener\s*\{.*?input-processors\s*=\s*(?:<&zip_(?:[xy]_scaler|xy_transform)[^>]*>,\s*)*<&zip_temp_layer\s+(\w+)\s+(\d+)>", text, flags=re.S)
     zip_tl = re.search(r"&zip_temp_layer\s*\{(.*?)\};", text, flags=re.S)[1]
     idle = int(re.search(r"require-prior-idle-ms\s*=\s*<(\d+)>", zip_tl)[1])
     keep = [int(x) for x in re.search(r"excluded-positions\s*=\s*<([^>]*)>", zip_tl)[1].split()]
@@ -195,8 +195,8 @@ def pointer() -> dict:
                 effect.append(f"scroll speed {a[0]}/{a[1]}")
             elif proc == "zip_xy_scaler":
                 effect.append(f"cursor speed {a[0]}/{a[1]}")
-            elif proc in ("zip_x_scaler", "zip_y_scaler"):
-                continue                    # the sensor tilt correction, the same in every mode
+            elif proc in ("zip_x_scaler", "zip_y_scaler", "zip_xy_transform"):
+                continue                    # the sensor tilt and axis correction (BALL_TILT), the same in every mode
             else:
                 effect.append(proc + (" " + " ".join(a) if a else ""))
         modes.append({"node": name, "layer_index": int(d[layer_macro]), "processors": [f"&{p}{a}".strip() for p, a in procs],

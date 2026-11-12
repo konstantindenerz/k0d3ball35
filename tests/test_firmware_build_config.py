@@ -192,6 +192,36 @@ def test_input_listener_uses_known_processors():
     assert set(re.findall(r"^\s*([a-z-]+) =", overrides, re.M)) <= {"require-prior-idle-ms", "excluded-positions"}
 
 
+def test_ball_axes_follow_the_sensor_position():
+    """The sensor looks at the ball from the side, so which of its axes reads screen X depends on
+    where it sits. The cradle moved it from +y to +x in r2.4b and the overlay kept the +y maths:
+    left/right and up/down would have been exchanged (review 2026-11-12). With the sensor on the
+    layout x axis the fast axis (in the tilt plane) is screen X and the axes must be swapped; on
+    the y axis they must not. The scale must act before the swap, in the sensor's frame."""
+    import json
+    import math
+
+    stack = json.loads((ROOT / "hardware" / "trackball-cradle" / "stack.json").read_text())["variants"]["19mm-pocket"]
+    params = (ROOT / "hardware" / "trackball-cradle" / "params.scad").read_text()
+    angle = float(re.search(r"^sensor_angle\s*=\s*([\d.]+)", params, re.M).group(1))
+    right = _strip((SHIELD / "k0d3ball35_right.overlay").read_text())
+    tilt = re.search(r"#define BALL_TILT (.*)", right).group(1)
+    on_x_axis = stack["window_az"] % 180 == 0
+    assert stack["window_az"] % 90 == 0
+    assert ("INPUT_TRANSFORM_XY_SWAP" in tilt) == on_x_axis, "axis swap does not match the sensor azimuth"
+    scale = re.search(r"<&zip_y_scaler (\d+) (\d+)>", tilt)
+    assert scale, "the fast sensor axis (Y, in the tilt plane) must be scaled down"
+    assert abs(int(scale.group(1)) / int(scale.group(2)) - math.cos(math.radians(angle))) < 0.005
+    assert tilt.index("zip_y_scaler") < tilt.index("zip_xy_transform") if on_x_axis else True, "scale first, then swap"
+    assert "#include <dt-bindings/zmk/input_transform.h>" in right
+    # every processor list of the listener starts with the tilt correction
+    listener = re.search(r"trackball_listener: trackball_listener \{(.*)\n    \};", right, re.S).group(1)
+    lists = re.findall(r"input-processors = ([^;]+);", listener)
+    assert len(lists) == 3 and all(l.strip().startswith("BALL_TILT") for l in lists), lists
+    cpi = int(re.search(r"res-cpi = <(\d+)>", right).group(1))
+    assert abs(cpi * math.cos(math.radians(angle)) - 600) < 25, "the short axis should land near 600 cpi"
+
+
 def test_keymap_includes_and_behaviors_exist_in_zmk():
     keymap = (CONFIG / "k0d3ball35.keymap").read_text()
     includes = set(re.findall(r"#include <([^>]+)>", keymap))

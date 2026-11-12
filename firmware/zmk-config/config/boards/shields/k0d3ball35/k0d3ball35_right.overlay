@@ -14,6 +14,7 @@
 #include "k0d3ball35.dtsi"
 #include <dt-bindings/input/input-event-codes.h>
 #include <input/processors.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
 
 #define LAYER_MOUSE  4
 #define LAYER_SCROLL 5
@@ -70,10 +71,10 @@
          * CPI than the 25 mm setup (400), so the target is about 600 counts per inch
          * of thumb travel on both axes.
          *
-         * The tilt costs the X axis cos(65) of that (see BALL_TILT below), so the
-         * sensor runs at 600 / cos(65) = 1420, rounded to the driver's 38-count step:
-         * 1444 (38 x 38). X then reads 1444 x 0.423 = 610, and BALL_TILT brings Y down
-         * to the same 611. Tune, see issues/fw-cpi-tuning-19mm.md. */
+         * The tilt costs the sensor's short axis cos(65) of that (see BALL_TILT below), so
+         * the sensor runs at 600 / cos(65) = 1420, rounded to the driver's 38-count step:
+         * 1444 (38 x 38). The short axis then reads 1444 x 0.423 = 610, and BALL_TILT brings
+         * the fast one down to the same 611. Tune, see issues/fw-cpi-tuning-19mm.md. */
         res-cpi = <1444>;
     };
 };
@@ -88,30 +89,40 @@
     excluded-positions = <6 7 16 17 18 26 27 33 34>;
 };
 
-/* Axis scale for the 65 degree tilt. The sensor sits towards the user (layout +y) and
- * looks at the ball 25 degrees below the equator instead of at the bottom pole. With the
- * ball centre at the origin it sees the point p = R (0, sin 65, -cos 65). The thumb on
- * top turns the ball about a horizontal axis, and a surface point moves at w x p:
- *   thumb along y (screen up/down): rotation about the x axis. p lies on a great circle
- *     of that rotation, so it moves at the full thumb speed - Y reads 1:1.
- *   thumb along x (screen left/right): rotation about the y axis. p is only R cos 65
- *     from that axis, so it moves at cos 65 = 0.423 of the thumb speed - X is short.
- * (At the pole both are 1:1; at the equator X would read nothing.) res-cpi is raised by
- * 1 / cos 65 so X reaches the target, and Y is scaled down by cos 65 = 0.4226 ~ 11/26
- * (0.4231). This assumes the sensor's X axis runs across the tilt plane, along the
- * module's 13.4 mm edge: if the cursor is fast up/down and slow sideways, move the scale
- * to zip_x_scaler. Layer overrides replace the base processors, so each one repeats it.
- * Starting value from geometry; tune on hardware, issues/fw-cpi-tuning-19mm.md. */
-#define BALL_TILT <&zip_y_scaler 11 26>
+/* Axes and scale for the 65 degree tilt. The sensor sits beside the ball towards layout +x
+ * (under the middle-finger column, hardware/trackball-cradle sensor_az 180) and looks at it
+ * 25 degrees below the equator instead of at the bottom pole. With the ball centre at the origin
+ * it sees the point p = R (sin 65, 0, -cos 65). The thumb on top turns the ball about a
+ * horizontal axis, and a surface point moves at w x p:
+ *   thumb along x (screen left/right): rotation about the y axis. p lies on a great circle of
+ *     that rotation, so it moves at the full thumb speed, in the tilt plane: that is the
+ *     module's 7.4 mm edge, the sensor's Y axis.
+ *   thumb along y (screen up/down): rotation about the x axis. p is only R cos 65 from that
+ *     axis, so it moves at cos 65 = 0.423 of the thumb speed, along the module's 13.4 mm edge:
+ *     the sensor's X axis.
+ * So the sensor's Y axis is the fast one and carries the SCREEN X, and its X axis is short and
+ * carries the SCREEN Y. Three steps, in this order:
+ *   1. res-cpi is raised by 1 / cos 65 so the short axis reaches the target,
+ *   2. the fast sensor axis is scaled down by cos 65 = 0.4226 ~ 11/26 (0.4231), still in the
+ *      sensor's own frame (zip_y_scaler),
+ *   3. the axes are swapped into screen axes (XY_SWAP; the transform swaps first and inverts
+ *      the swapped axis afterwards).
+ * Until the 2026-11-12 review this block still described the sensor at +y (r2.4, before it
+ * moved to +x) and had no swap: left/right and up/down would have come out exchanged.
+ * The Y sign follows from turning the module a quarter turn from its r2.4 position; neither
+ * sign has been seen on hardware yet. Wrong direction after assembly: toggle
+ * INPUT_TRANSFORM_X_INVERT / INPUT_TRANSFORM_Y_INVERT here (they act on the SCREEN axes).
+ * Cursor fast up/down and slow sideways: the module's axes are the other way round, move the
+ * scale to zip_x_scaler. Layer overrides replace the base processors, so each one repeats
+ * BALL_TILT. Starting values from geometry; tune on hardware, issues/fw-cpi-tuning-19mm.md and
+ * issues/fw-cursor-axis-verification.md. */
+#define BALL_TILT <&zip_y_scaler 11 26>, <&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP | INPUT_TRANSFORM_Y_INVERT)>
 
 / {
     trackball_listener: trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
         input-processors = BALL_TILT, <&zip_temp_layer LAYER_MOUSE 700>;
-        /* Wrong direction after assembly: put <&zip_xy_transform (INPUT_TRANSFORM_X_INVERT)>
-         * (or _Y_INVERT) right after BALL_TILT in each list below, and
-         * #include <dt-bindings/zmk/input_transform.h>. */
 
         scroll {
             layers = <LAYER_SCROLL>;

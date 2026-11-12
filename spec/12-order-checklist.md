@@ -31,7 +31,7 @@ One cart; everything ships from the same warehouse.
 | [ ] | 1 (+1) | FPC connector, 6 pin 0.5 mm, bottom contact | 798-FH12-6S-0.5SH55 | open | for the right PCB (J1, key side); since r2.4 the sensor module brings its own connector |
 | [ ] | 2 | Battery connector JST PH 2.0 side entry | 306-S2B-PH-SM4-TB | open | |
 | [ ] | 2 | Reset button, side actuated | 667-EVQ-P7A01P | open | |
-| [ ] | 1 (+1), optional | FFC cable 6 pos 0.5 mm, **type B** (opposite-side contacts), 50 mm | GCT 05-06-D-0050-A-4-06-4-G (Digi-Key DE, about 1.80 EUR), or JUSHUO JS05B-06P-050-3-4 (LCSC C5151973); Molex 15020-0054 (50.8 mm, "Type D") also fits | open | type B is mandatory: a type A cable can make contact and then reverses the pin order, 3.3 V onto GND |
+| [ ] | 1 (+1) | FFC cable 6 pos 0.5 mm, **type B** (opposite-side contacts), 50 mm | GCT 05-06-D-0050-A-4-06-4-G (Digi-Key DE, about 1.80 EUR), or JUSHUO JS05B-06P-050-3-4 (LCSC C5151973); Molex 15020-0054 (50.8 mm, "Type D") also fits | open | type B is mandatory: a type A cable can make contact and then reverses the pin order, 3.3 V onto GND |
 
 ## 3. EU shops (open)
 
@@ -50,7 +50,9 @@ One cart; everything ships from the same warehouse.
 | [ ] | 2 | Cradle screw | M2 x 8 self-tapping countersunk (90 degree flat head) | open | up through the case floor into the cup skirt; since r2.4 the module has no screw holes of its own (`hardware/trackball-cradle/params.scad`) |
 | [ ] | 1 pack (50) | Heat-set threaded insert | brass, M2, 3 mm long, about 3.5 mm OD, for a 3.2 mm hole | open | 14 used: 5 PCB standoffs + 2 controller-cap bosses per half; Amazon DE or AliExpress |
 | [ ] | 1 pack (14 used) | PCB and cap screw | M2 x 5 machine screw, pan or button head, head max 3.5 mm dia | open | 7 per half; the alternative is self-tapping into a 1.6 mm pilot (`-D pcb_screws="pilot"` in `hardware/case/params.scad`) |
-| [ ] | 8 | Bumper | GLIPLUS pads or 3M SJ5302 | open | |
+| [ ] | 14 | Bumper | 10 mm round rubber feet, 1 mm thick | open | seven 10.5 mm recesses per half, 0.8 mm deep; taller dome bumpers do not fit them |
+| [ ] | 2 | Pocket cover screw | M2 x 6 countersunk (90 degree flat head), self-tapping | open | right half, from the top into the tray |
+| [ ] | 1 roll | Kapton tape, 10 mm | | open | over the back of the sensor sleeve and over the controller socket joints in the battery bay |
 | [ ] | 1 pack (20) | Magnet | 6 x 2 mm neodymium disc | open | 16 used: 4 in the tray floor and 4 in the outer lid plate's roof per half (`issues/mech-case-lid.md`) |
 | [ ] | 2 | Hinge pin | 2 mm steel rod, about 80 mm (2 mm round bar or a 2 x 80 mm dowel pin, cut to length) | open | one per lid hinge; a piece of 1.75 mm filament is the fallback (`hardware/case/README.md`) |
 

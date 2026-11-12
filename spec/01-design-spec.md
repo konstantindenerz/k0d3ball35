@@ -22,7 +22,7 @@ board. Ticket `hw-two-pcbs-r2`.
 | R6 | Pointing | 19.05 mm (3/4 inch) POM trackball on the right half in a case pocket beside the PCB, PAW3222 sensor module tilted 65 degrees beside the ball (r2.4) |
 | R7 | Wireless | nRF52840 Pro Micro form factor (nice!nano v2 or SuperMini), BLE split, ZMK |
 | R8 | Power | 1S LiPo per half, on-board charger of the controller, slide power switch |
-| R9 | PCB | two main PCBs (`k0d3ball35-left`, `k0d3ball35-right`) with identical controller wiring; one sensor PCB |
+| R9 | PCB | two main PCBs (`k0d3ball35-left`, `k0d3ball35-right`) with identical controller wiring; the sensor is a bought PAW3222 module on a 6-way FFC (no sensor PCB of our own since r2.4) |
 | R10 | Height | low profile: nothing taller than the Choc switch above the PCB except the ball; over the desk keycaps 20.8 mm, ball top 23.75 mm, with the lid 27.3 mm |
 | R11 | Indicators | none on the PCB; controller LED visible through a case window |
 | R12 | Assembly | all parts hand-solderable (SOD-123, low-profile controller sockets, 0.5 mm FPC with care) |
@@ -242,7 +242,7 @@ and derives everything from it; the numbers below are the contract between PCB a
 | Wall top (rim) | +5.0 mm, beside the keycap skirts |
 | Pocket cavity above the PCB plane | notch (octagon with the square corner) + 0.2 mm, union with the 28 mm cradle circle; 2 mm wall around it |
 | Case floor | -8.1 mm under the battery bay, J3 and RB1 (6.5 mm well), -7.1 mm under the cradle; underside -9.6 mm |
-| Floor under the key area | -4.6 mm (3.0 mm for sockets and diodes) |
+| Floor under the key area | -3.7 mm (2.1 mm: 0.25 mm under the 1.85 mm hot-swap sockets, which the floor backs) |
 | PCB fastening | M2 machine screws from the top into heat-set inserts in 5.6 mm standoffs on the five mounting holes |
 | Controller box | walls to +8.7 mm, separate cap with its roof underside at +6.7 mm (controller top +5.7 plus 1 mm) |
 | Cradle screws | two M2 x 8 countersunk (90 degree flat head) from below at (-13, 56) and (-13, 76) in a 4.8 mm countersink 1.3 mm deep, head 0.2 mm below the flat underside |

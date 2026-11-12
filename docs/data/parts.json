@@ -51,7 +51,7 @@
     96.45,
     18.3
    ],
-   "triangles": 9168,
+   "triangles": 9200,
    "watertight": false,
    "non_manifold_edges": 7
   },
@@ -296,7 +296,7 @@
     94.0,
     18.3
    ],
-   "triangles": 7944,
+   "triangles": 7970,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -497,7 +497,7 @@
     43.5,
     14.61
    ],
-   "triangles": 2980,
+   "triangles": 2954,
    "watertight": false,
    "non_manifold_edges": 7
   },

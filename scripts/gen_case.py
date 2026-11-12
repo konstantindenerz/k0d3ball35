@@ -118,7 +118,7 @@ def box_rect(layout: Layout) -> tuple[float, float, float, float]:
 
 def well_polygon(layout: Layout) -> Polygon:
     parts = layout.back_parts()
-    # RB1 (1.35 mm tall) needs no well: it fits the 3 mm under the PCB like the power switch
+    # RB1 (1.35 mm tall) needs no well: it fits the 2.1 mm under the PCB like the power switch
     well = unary_union([layout.battery_bay().buffer(WELL_GROW, join_style=2),
                         parts["J3"].buffer(WELL_GROW, join_style=2)])
     well = well.buffer(0.5, join_style=2).buffer(-0.5, join_style=2)

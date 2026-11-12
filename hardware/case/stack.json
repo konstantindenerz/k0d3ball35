@@ -2,7 +2,7 @@
   "openscad": "OpenSCAD version 2026.10.11",
   "variants": {
     "left": {
-      "floor_z_key": -4.6,
+      "floor_z_key": -3.7,
       "well_floor_z": -8.1,
       "pocket_floor_z": -7.1,
       "base_z": -9.6,
@@ -11,7 +11,7 @@
       "cap_w": 17.5,
       "cap_h": 16.5,
       "cap_top_z": 11.0,
-      "standoff_h": 3.0,
+      "standoff_h": 2.1,
       "standoff_d": 5.6,
       "insert_hole_d": 3.2,
       "insert_depth": 4.0,
@@ -101,7 +101,7 @@
       "logo_floor_area": 0.0
     },
     "right": {
-      "floor_z_key": -4.6,
+      "floor_z_key": -3.7,
       "well_floor_z": -8.1,
       "pocket_floor_z": -7.1,
       "base_z": -9.6,
@@ -110,7 +110,7 @@
       "cap_w": 17.5,
       "cap_h": 16.5,
       "cap_top_z": 11.0,
-      "standoff_h": 3.0,
+      "standoff_h": 2.1,
       "standoff_d": 5.6,
       "insert_hole_d": 3.2,
       "insert_depth": 4.0,

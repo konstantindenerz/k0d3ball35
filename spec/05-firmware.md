@@ -143,7 +143,7 @@ All trackball settings live in `k0d3ball35_right.overlay`.
 | sensor resolution | `res-cpi` on the `trackball` node | 1444 | 608 to 4826 in steps of 38 |
 | tilt compensation | `&zip_y_scaler 11 26` in `trackball_listener` | 11/26 | the sensor is tilted 65 degrees, so the axis across the tilt reads only cos 65 = 0.423 of the true speed; scaling the other axis by 11/26 brings both to about 610 CPI. Final values are tuned on hardware (`issues/fw-cpi-tuning-19mm.md`) |
 | global scaling | `input-processors` of `trackball_listener` | none | add `&zip_xy_scaler 1 2` before the temp layer processor for a finer global scale without touching the CPI |
-| axis direction | `invert-x`, `invert-y` on the `trackball` node | off | enable if the cursor moves the wrong way; swap axes with `&zip_xy_swap_mapper` if the module is mounted rotated by 90 degrees |
+| axis mapping | `BALL_TILT` in `k0d3ball35_right.overlay`: `&zip_y_scaler 11 26`, then `&zip_xy_transform (INPUT_TRANSFORM_XY_SWAP \| INPUT_TRANSFORM_Y_INVERT)` | swap on | the sensor sits beside the ball towards +x, so its fast axis is screen X: scale first, then swap. Cursor moves the wrong way: toggle `INPUT_TRANSFORM_X_INVERT` / `INPUT_TRANSFORM_Y_INVERT` there (the PAW3222 binding has no `invert-x` / `invert-y`) |
 | auto mouse layer timeout | `&zip_temp_layer LAYER_MOUSE 700` | 700 ms | layer 4 is active while the ball moves and 700 ms after the last movement |
 | keys that keep the mouse layer | `excluded-positions` of `&zip_temp_layer` | mouse buttons, scroll, snipe | pressing other keys ends the mouse layer immediately |
 | typing guard | `require-prior-idle-ms` | 150 ms | the mouse layer does not open while you are typing |
@@ -179,7 +179,7 @@ level) and shown in ZMK Studio.
 | right half works over USB but the host sees no Bluetooth keyboard | `&out OUT_BLE` on the System layer; clear the profile and pair again |
 | cursor does not move | module power (3.3 V on pin 1 of J1), cable seated with contacts facing the connector, `NCS` and `MOT` continuity to the controller; build log must show `pixart,paw3222` without warnings |
 | cursor moves only on one axis or diagonally | module not seated in the sleeve, lens-to-ball distance outside 2.2 to 2.6 mm, dirty ball, tilt scaler missing |
-| cursor moves the wrong way | `invert-x` / `invert-y`; 90 degree rotation of the module needs `&zip_xy_swap_mapper` |
+| cursor moves the wrong way | toggle `INPUT_TRANSFORM_X_INVERT` / `INPUT_TRANSFORM_Y_INVERT` in `BALL_TILT`; left/right and up/down exchanged: remove or add `INPUT_TRANSFORM_XY_SWAP` |
 | mouse layer opens while typing | increase `require-prior-idle-ms`; make sure `excluded-positions` does not include letter keys |
 | scroll goes in the wrong direction | add `&zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)` after the scroll mapper |
 | Studio cannot connect | right half must be the USB-connected half and built with the `studio-rpc-usb-uart` snippet; press the unlock key |

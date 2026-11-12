@@ -14,7 +14,7 @@ together and how the wordmark is engraved into them. Tickets: [mech-case](../iss
 
 | Part | STL | What it is |
 |------|-----|------------|
-| Tray | `tray-left.stl`, `tray-right.stl` | the case body: angular walls on the stepped PCB outline, key floor 3 mm under the PCB, battery well, controller box walls, pocket for the cradle (right), five standoffs with M2 heat-set inserts, four foot magnet pockets from below, feet recesses |
+| Tray | `tray-left.stl`, `tray-right.stl` | the case body: angular walls on the stepped PCB outline, key floor 2.1 mm under the PCB (it supports the hot-swap sockets when the switches go in), battery well, controller box walls, pocket for the cradle (right), five standoffs with M2 heat-set inserts, four foot magnet pockets from below, feet recesses |
 | Box cap | `box-cap-left.stl`, `box-cap-right.stl` | roof of the controller box: a plate in a rebate plus an L-shaped skirt towards the keys and the thumb keys, two M2 screws into corner bosses |
 | Lid, outer plate | `lid-outer-left.stl`, `lid-outer-right.stl` | pinky-side half of the transport cover: the four roof magnets, the even hinge knuckles including both ends; as a foot it lies under the controller half |
 | Lid, inner plate | `lid-inner-left.stl`, `lid-inner-right.stl` | controller-notch and thumb-side half: the odd knuckles; folded down beyond the inner edge it is the kickstand of the tenting foot |
@@ -60,8 +60,8 @@ z = 0 is the PCB top, from `hardware/case/stack.json`:
 | Underside | -9.6 | -9.6 | flat, 2.0 mm under the battery well |
 | Battery well floor | -8.1 | -8.1 | 6.5 mm under the PCB underside: 5.7 mm cell, 0.4 mm solder joints, 0.1 mm Kapton, 0.3 mm air; 1.5 mm floor |
 | Pocket floor | - | -7.1 | the cradle's `floor_z`; 2.5 mm of floor under it for the countersunk screws |
-| Key floor | -4.6 | -4.6 | hot-swap sockets 1.8 mm, diodes 1.1 mm, air |
-| PCB | -1.6 to 0 | -1.6 to 0 | on 3.0 mm standoffs |
+| Key floor | -3.7 | -3.7 | hot-swap sockets 1.85 mm plus 0.25 mm: the floor backs the sockets when a switch is pressed in |
+| PCB | -1.6 to 0 | -1.6 to 0 | on 2.1 mm standoffs |
 | PCB guard | 0 to +0.8 | 0 to +0.8 | 1.2 mm under a pressed keycap skirt (+2.0) |
 | Pocket wall top | - | +2.9 | 0.5 mm under the cup rim (+3.4), so the thumb reaches the ball's equator |
 | Rim | +5.0 | +5.0 | flush with the keycap skirts |

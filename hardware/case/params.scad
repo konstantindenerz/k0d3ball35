@@ -26,7 +26,11 @@ edge_chamfer    = 0.5;         // tray bottom and lid roof, the two first layers
 rim_chamfer     = 0.3;         // top outer edge of the tray rim
 chamfer_step    = 0.1;         // a taper is stepped this finely, well under one print layer
 wall            = 3.0;         // case wall outside the PCB cavity
-under_pcb_clear = 3.0;         // cavity under the key area: hot-swap sockets 1.8 + diodes 1.1 + air
+under_pcb_clear = 2.1;         // cavity under the key area: hot-swap sockets 1.85 + 0.25 air. The floor
+                               // is the anvil under the sockets: the switches go in with the PCB
+                               // already screwed down (the guard lies under their flanges), so no
+                               // finger can support a socket from below. With 3.0 mm the solder
+                               // joints took the whole insertion force.
 rim_z           = 5.0;         // top of the tray walls (flush with the Choc keycap skirts)
 pocket_rim_drop = 0.5;         // the pocket wall stops this far below the cup rim, so the thumb
                                // reaches the ball at its equator instead of over a lip. Since r2.4
@@ -42,7 +46,7 @@ pocket_floor_z  = -7.1;        // cradle floor, cradle stack.json floor_z. Since
 floor_t         = 2.0;         // floor under the pocket; the underside is flat everywhere
 well_floor_t    = 1.5;         // floor under the battery well. Thinner than floor_t so the deeper well
                                // adds no height; the two foot recesses under it keep 0.7 mm of skin.
-floor_z_key     = -pcb_t - under_pcb_clear;          // -4.6
+floor_z_key     = -pcb_t - under_pcb_clear;          // -3.7
 // One flat underside for the whole half: the deepest well sets it. The battery well reaches
 // -8.1 over a 1.5 mm floor and the pocket -7.1 over 2.5 mm, which is what the countersunk
 // cradle screws need (case_screw_floor_left in case.scad).
@@ -59,7 +63,7 @@ insert_depth    = 4.0;         // cap bosses: deeper would break through the bos
 standoff_hole_depth = 4.8;     // PCB standoffs: M2 x 5 ends at -5.0, the hole at -6.4 (it runs on into the floor)
 standoff_d      = 5.6;         // 1.2 mm around the insert hole; 6.0 touched the switch pegs and sockets (geometry.py STANDOFF_D)
 standoff_pilot_d = 1.6;        // only used for pcb_screws == "pilot"
-standoff_h      = -pcb_t - floor_z_key;              // 3.0
+standoff_h      = -pcb_t - floor_z_key;              // 2.1: most of the insert sits in the solid floor
 screw_hole_d    = (pcb_screws == "insert") ? insert_hole_d : standoff_pilot_d;
 screw_hole_depth = (pcb_screws == "insert") ? insert_depth : 6.0;          // cap bosses
 pcb_hole_depth   = (pcb_screws == "insert") ? standoff_hole_depth : 6.0;   // PCB standoffs
