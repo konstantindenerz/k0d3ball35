@@ -61,9 +61,8 @@ the wrong part.
   the cavity floor.
 - The skin between the lens cavity's upper edge and the cradle top is 0.51 mm at its thinnest.
   It is a wedge that thickens quickly, and it prints with 0.12 mm layers (build guide).
-- Open before ordering: a 6-way 0.5 mm type B ("reverse", Molex "Type D") cable of 40 mm. Molex
-  stocks 30 mm (shorter than the 33.6 mm route) and 51 mm (17 mm of slack has nowhere to go
-  without a fold). Find a 40 mm listing (AliExpress / LCSC) before the order.
+- The 40 mm cable is not stocked anywhere; solved in `mech-lens-height-ffc-slack` (50 mm cable,
+  S-fold beside J1), which also corrects lens_h to the datasheet value.
 - Reviewed by a fresh agent against the maker's drawing and case STEP: the window was moved over
   both apertures and the skin test was made to really measure (both found there). A suspected clash
   of the cable exit with the PCB notch facet is not real: there is no PCB within 9 mm of the exit.

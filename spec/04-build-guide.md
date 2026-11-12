@@ -71,7 +71,7 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 2 | MSK-12C02 slide switch | bottom face, inner edge | 6 |
 | 2 | EVQ-P7A01P tact switch | bottom face, below the controller | 6 |
 | 2 | Hirose FH12-6S-0.5SH (or LCSC clone) 6-pin 0.5 mm FPC connector | one on the right PCB (key side), one spare | 6 |
-| 1 (+1) | 6-conductor 0.5 mm FFC, **type B** (contacts on OPPOSITE faces at the two ends), 40 mm | right half | 11 |
+| 1 (+1) | 6-conductor 0.5 mm FFC, **type B** (contacts on OPPOSITE faces at the two ends), 50 mm | right half | 11 |
 | 2 | JST S2B-PH-SM4-TB battery connector | bottom face, below the controller, inside the battery well | 7 |
 | 2 | LiPo PKCELL LP552035, 350 mAh, protected, JST-PH plug | one per half, battery bay on the bottom face under the controller | 7 |
 | 2 | Kapton or foam pad, about 20 x 27 x 0.25 mm, plus thin double-sided tape | between PCB underside and cell | 7 |
@@ -346,7 +346,9 @@ the ball in when the half is turned over; otherwise the lid covers the ball in t
 5. Lower the cradle into the case pocket and fasten it with two M2 x 8 countersunk
    self-tapping screws from below, through the floor into the cup skirt. Snug, not tight.
 6. Lay the cable round the cup on the key side as an upright band, below the cup rim (the
-   clip's pins hang down there), twist it flat and lay it over the board edge into
+   clip's pins hang down there). The cable is longer than the way (50 mm against 34 mm): fold
+   the extra into an upright S in the free corner of the pocket beside J1, towards the thumb,
+   with gentle folds, no crease. Then twist it flat and lay it over the board edge into
    J1 on the **key side**, exposed metal **down**. Close the lock. Fold gently, no crease.
 7. Drop the ball in: it spins freely, a strip of paper passes between ball and rim all round.
    (In the finished case it goes in last, through the pocket cover, chapter 12.)
@@ -465,7 +467,7 @@ reconnect after a power cycle.
 | thumb catches a retainer claw | clip on the wrong way round, or a hand that sweeps wide | the pins fit one way only, claws left and right of the ball; otherwise run without the clip (the lid still covers transport) |
 | ball rubs on the PCB notch | cradle not centred in the pocket | loosen the two floor screws, centre the cup in the notch, retighten |
 | module will not go into the pocket | wrong print or a scrap board with the old octagonal notch; the corner towards the keys must be square | reprint the tray and check the notch against `hardware/layout/output/outline-right.dxf` |
-| FFC creases at the board edge | too little radius in the fold, or the cable is too long and bows in the pocket | 40 mm cable, let it arc above the board before pressing it down, deburr the board edge |
+| FFC creases at the board edge | too little radius in the fold, or the cable is too long and bows in the pocket | 50 mm cable with its slack in the S-fold beside J1, let it arc above the board before pressing it down, deburr the board edge |
 | switch will not go in | socket tilted, bent switch pin | reflow the socket flat, straighten the pin |
 
 Measurements that settle most arguments: cell 3.6 to 4.2 V; RAW equals cell voltage with the

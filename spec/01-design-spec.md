@@ -105,7 +105,7 @@ The left PCB has no J1 and no sensor nets.
 
 Connector: Hirose FH12-6S-0.5SH (0.5 mm pitch, 6 contacts, bottom contact, ZIF slider) or a
 pin-compatible LCSC equivalent. Cable: 0.5 mm pitch, 6 conductor, **opposite-side contacts
-(type B)**, 40 mm long, pin order straight through. A type A cable can be twisted into contact
+(type B)**, 50 mm long (the slack goes into an S-fold beside J1), pin order straight through. A type A cable can be twisted into contact
 and then reverses the pin order (3.3 V onto GND), so it must never be fitted
 (`spec/08-trackball-module.md` section 2).
 

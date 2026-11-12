@@ -39,18 +39,22 @@ pin:
 | Right PCB (J1) | VCC 3.3 V | TB_NCS | TB_MOT | TB_SDIO | TB_SCLK | GND |
 | Module | 3.3V | CS | MOTION | SDIO | SCLK | GND |
 
-Cable: 6 conductors, 0.5 mm pitch, 40 mm, **opposite-side contacts (type B)**, twisted so its
+Cable: 6 conductors, 0.5 mm pitch, 50 mm, **opposite-side contacts (type B)**, twisted so its
 exposed metal faces DOWN at J1. Both connectors take the cable on the face towards their own
 board, and on its way the cable twists 90 degrees, which can go either way. A type B cable then
 joins pin 1 to pin 1. **Type B is mandatory.** A type A cable can be twisted so that it makes contact too, and then it reverses the pin order: J1's 3.3 V lands on the module's GND. Never fit type A. `tests/test_ffc_pin_order.py` derives this; the first physical cable
 gets a continuity check before power (`issues/hw-ffc-pin-order-verification.md`).
 
 Cable route: the FFC leaves the module's connector in the board plane, out of the module's short
-end on the key side, straight through a slot in the sleeve's end wall (2.1 mm). It runs about 81
+end on the key side, straight through a slot in the sleeve's end wall (2.1 mm). It runs about 83
 degrees round the cup as an upright band, under the retainer clip's pins and the pocket cover,
-twists flat and lies down over the board edge into J1. Mouth to mouth that is 23.8 mm, 33.6 mm
+twists flat and lies down over the board edge into J1. Mouth to mouth that is 24.6 mm, 34.4 mm
 with both insertions
-(`scripts/k0d3/ffc_route.py`, held against the 40 mm cable by `tests/test_ffc_route.py`). The lock
+(`scripts/k0d3/ffc_route.py`, held against the cable by `tests/test_ffc_route.py`). No stocked
+type B cable lies between 30 mm (too short) and 50 mm, so the cable is 50 mm, for example
+GCT 05-06-D-0050-A-4-06-4-G (Digi-Key DE, about 1.80 EUR), or JUSHUO JS05B-06P-050-3-4 (LCSC C5151973). The 15.6 mm of slack goes into an upright S-fold in the free corner of the pocket
+beside J1, towards the thumb (`ffc_route.SLACK_ZONE`, checked free of the cradle, the PCB and the
+cover; it holds up to 34 mm). The lock
 stays reachable with the keyboard assembled, so the module can be unplugged and lifted out
 without touching the PCB.
 
