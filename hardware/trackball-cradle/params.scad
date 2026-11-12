@@ -26,41 +26,66 @@ bearing_az      = [60, 180, 300];  // azimuths (deg, layout frame). The sensor w
                                    // real azimuth so nothing has to re-derive it from sensor_az.
 
 // ---------------------------------------------------------------- sensor stack (PAW3222 module)
-// Since r2.4 the sensor is the ready-made 14 x 8 mm PAW3222 module (sekigon-gonnoc /
-// nogikes-ya, as used in torabo-tsuki LP), tilted beside the ball instead of straight under it.
+// Since r2.4 the sensor is the ready-made PAW3222 module (sekigon-gonnoc / nogikes-ya, the one
+// torabo-tsuki LP uses), tilted beside the ball instead of straight under it.
 // Why the tilt needs this module and not our old PMW3610 board: the module's extent in the TILT
 // PLANE is what decides. Tilted, one edge of the board swings down and the other swings UP; the
 // upper edge has to stay under the cup rim. The PMW3610 is a 16-pin moulded package through a
 // 16.96 x 8.60 mm board cutout, so it cannot get narrower than about 13 mm in that plane, and at
 // 13 mm the largest legal tilt is 38 deg - which buys 0.06 mm of ball height over no tilt at all.
-// The module's 8 mm clear it at 65 deg. See spec/08-trackball-module.md.
+// The module's 7.4 mm clear it at 65 deg. See spec/08-trackball-module.md.
+//
+// Module outline from the maker's drawing (github.com/sekigon-gonnoc/small-mouse-sensor-module,
+// img/size.png, and the photo img/image.png). Until r2.4b this file carried an unsourced
+// "14 x 8 mm with the connector on the back"; the real part differs in every point that matters
+// (issues/mech-cradle-real-module.md):
+//   - board 13.4 x 7.4 mm; the 7.4 lies in the tilt plane (local x), the 13.4 is tangential
+//     (local y, horizontal in the world)
+//   - lens body 9.06 x 7.4 mm on the LENS side, the full board width, flush with one short end;
+//     the optical centre is 6.79 mm from that end
+//   - Hirose FH19C 6-pin 0.5 mm connector on the LENS side too, in the 4.34 mm at the other end;
+//     the cable enters it in the board plane through that short end (2.3 mm insertion)
 //
 // MEASURE THESE. PixArt publishes no assembly drawing for the PAW3222 + PNSR-015-RB3 pair, so
-// lens_z, lens_h and the module thickness below are nominal values to be confirmed on the real
+// lens_z, lens_h and the board thickness below are nominal values to be confirmed on the real
 // part with the feeler gauge (README, "Test-fit checklist"). The ball height does NOT depend on
 // them: at 65 deg the cup floor is the binding term, not the module (STACK drop_cup vs
 // drop_board), which tests/test_cradle.py asserts. They only decide whether the module fits.
-lens_z          = 2.4;     // ball surface to lens reference plane (nominal, PixArt family)
-// Correction for the printed stack, in mm. Every term that sets the lens distance is printed: the
-// housing face the lens seats on, and the three bearing seats that hold the ball. The seats are
-// the sensitive ones, because they sit 35 degrees below the equator: a radial seat error d moves
-// the ball centre by d * cot(35) = 1.43 d. Measure, then reprint with lens_shim set: POSITIVE
-// moves the module away from the ball and increases the distance, NEGATIVE decreases it.
-// With the tilted module a shim moves it along the optical axis and does NOT raise the ball
-// (with the old vertical sensor it did, because the module stood under the ball on the floor).
+lens_z          = 2.4;     // ball surface to lens reference plane (the lens face; nominal, PixArt family)
+// Correction for the printed stack, in mm. The lens face rests on the floor of its cavity, so the
+// printed terms that set the lens distance are that floor and the three bearing seats that hold
+// the ball. The seats are the sensitive ones, because they sit 35 degrees below the equator: a
+// radial seat error d moves the ball centre by d * cot(35) = 1.43 d. Measure, then reprint with
+// lens_shim set: POSITIVE moves the module away from the ball and increases the distance,
+// NEGATIVE decreases it. With the tilted module a shim moves it along the optical axis and does
+// NOT raise the ball.
 lens_shim       = 0;       // measured correction to lens_z; 0 = nominal
-lens_h          = 2.5;     // lens reference plane to module board (lens side), nominal
-lens_l          = 6.0;     // PNSR-015-RB3 body length (cavity gets +1.0 clearance), nominal
-optical_d       = 4.0;     // the hole through the CUP WALL, sized on the optical aperture and not
-                           // on the lens body: the window subtends asin(optical_d/2 / R_in) either
-                           // side of the axis, and at 65 deg the lens-body width would reach above
-                           // the cup rim. tests/test_cradle.py checks it against rim and bearings.
-lens_w          = 5.0;     // PNSR-015-RB3 body width, nominal
-sensor_pcb_l    = 14;      // module length, tangential to the tilt (the 14 of 14 x 8)
-sensor_pcb_w    = 8;       // module width, IN the tilt plane - the dimension the tilt is limited by
+lens_h          = 2.5;     // lens face to module board (lens side), nominal
+lens_l          = 7.4;     // lens body across the board, local x (maker drawing: the full board width)
+lens_w          = 9.06;    // lens body along the board, local y (maker drawing)
+lens_far        = 6.79;    // optical centre to the board end the lens body is flush with (maker drawing)
+optical_d       = 4.0;     // the window through the CUP WALL, local x (the tilt plane). Sized on the
+                           // aperture, not on the lens body: it subtends asin(optical_d/2 / R_in)
+                           // either side of the axis, and at 65 deg a wider one reaches the rim.
+optical_l       = 8.0;     // and along local y: the lens has two apertures (domes) 0.64 and 3.12 mm from
+optical_shift   = 2.0;     // the optical centre towards the lens end (photo img/image.png), so the
+                           // window is a slot of optical_d circles optical_l long, its middle shifted
+                           // optical_shift towards the lens end: +2 .. -6 mm, the window of the maker's
+                           // own case (trackball-module-case/case-12mm-1-Body.step). A centred 6 mm
+                           // slot blocked a third of the outer aperture. tests/test_cradle.py traces
+                           // rays from both apertures to the ball and checks rim and bearings.
+lens_apertures  = [0.64, 3.12];   // aperture centres from the optical centre towards the lens end
+aperture_d      = 2.2;     // aperture (dome) diameter, photo
+sensor_pcb_l    = 13.4;    // module board along y, tangential (maker drawing)
+sensor_pcb_w    = 7.4;     // module board in the tilt plane - the dimension the tilt is limited by
 sensor_pcb_t    = 1.0;     // module board thickness, nominal
 sensor_pcb_gap  = 0.2;     // clearance per side between the module and the sleeve walls
-sensor_pins_h   = 1.2;     // tallest part on the back: the 6-pin 0.5 mm FPC connector, nominal
+sensor_pins_h   = 1.2;     // allowance for parts on the back of the board (none known), nominal
+conn_zone       = 4.34;    // board end beside the lens body that carries the connector (13.4 - 9.06)
+conn_h          = 0.9;     // Hirose FH19C height over the board, nominal
+conn_end        = 1;       // +1: connector at local +y, which is layout -y (the key side) for
+                           // sensor_az 180, so the cable leaves straight towards J1
+ffc_w           = 3.5;     // 6-way 0.5 mm FFC width; the exit in the sleeve wall gets +0.5
 sensor_angle    = 65;      // tilt from vertical, towards +x. Largest angle whose optical window
                            // clears the cup rim (6 deg below the equator) and whose upper board
                            // edge stays under the rim. 0 = straight below the ball.
@@ -102,14 +127,14 @@ rim_drop        = 1.0;     // cup rim this far below the equator (finger clearan
 // Keeping the ball in when the half is turned over is the job of the optional clip on the case's
 // pocket cover (hardware/case, pocket_clip) or of the lid in transport; the cradle has nothing for it.
 rim_chamfer     = 0.8;     // 45 degree edge break along the top of cup and tab
-housing_wall    = 2.0;     // sleeve wall either side of the 14 mm module: sets the width of the body's
-                           // tab, 14 + 2 x 2 = 18 mm (cradle.scad tab_w)
+housing_wall    = 2.0;     // sleeve wall either side of the 13.4 mm module: sets the width of the body's
+                           // tab, 13.4 + 2 x 2 = 17.4 mm (cradle.scad tab_w)
 housing_wall_x  = 1.5;     // sleeve wall across the tilt; only the derived sleeve envelope (drop_housing,
                            // sleeve_top_z, housing_radial_extent_x) uses it, the body is cut at the rim
-// FFC exit: a notch in the sleeve wall under the module's connector. From there the cable
-// climbs past the PCB plane in the gap between the cup and the notch, runs round the cup and
-// folds over the board edge into J1 on the key side of the main PCB.
-ffc_exit_w      = 6.0;
+// FFC exit: the cable leaves the module's connector in the board plane, out of the board's
+// short end, so the exit is a slot in the sleeve's end wall on the key side (conn_end), open
+// towards the rear like the module slot, so the module slides in with the cable plugged. From
+// there the cable runs round the cup as a band and lies down on the PCB into J1.
 
 // ---------------------------------------------------------------- rendering
 $fn             = 96;

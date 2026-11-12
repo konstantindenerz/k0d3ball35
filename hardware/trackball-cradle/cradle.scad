@@ -28,7 +28,17 @@ R_out  = R_in + wall;                  // cup outer radius
 lens_zz = lens_z + lens_shim;          // effective ball surface -> lens reference plane
 L_pcb  = R + lens_zz + lens_h;         // ball centre -> sensor PCB (lens side) along the axis
 L_low  = L_pcb + sensor_pcb_t + sensor_pins_h;   // ball centre -> lowest point of the sensor board
-cav_h  = lens_h + 0.4;                 // lens cavity height (lens + 0.4 clearance)
+// Module layout along local y (maker drawing): the optical centre is on the axis (y = 0), the lens
+// body is flush with the board end on the -conn_end side, the connector zone fills the other end.
+gap    = sensor_pcb_gap;
+y_lens_end = -conn_end * lens_far;                         // board end the lens body is flush with
+y_conn_end = y_lens_end + conn_end * sensor_pcb_l;          // board end with the connector (cable mouth)
+y_split    = y_lens_end + conn_end * lens_w;                // lens body / connector zone boundary
+function span(a, b) = [min(a, b), max(a, b)];
+board_y = span(y_lens_end, y_conn_end);
+lens_y  = span(y_lens_end, y_split);
+conn_y  = span(y_split, y_conn_end);
+lens_face = L_pcb - lens_h;                                // = R + lens_zz: where the lens face seats
 hw     = housing_wall;
 hwx    = housing_wall_x;
 hous_x = sensor_pcb_w + 2 * hwx;       // sleeve, local x (tilt plane)
@@ -180,28 +190,33 @@ module body() {
 // Everything the module needs, in the sensor frame: the slot it slides into, the cavity for
 // the lens and the chip, the optical path to the ball, and the exit for the FFC.
 module sensor_pocket_cuts() {
-    bw = sensor_pcb_w + 2 * sensor_pcb_gap;
-    bl = sensor_pcb_l + 2 * sensor_pcb_gap;
-    // Optical path through the cup wall: sized on the aperture (optical_d), not on the lens body.
-    // The window it opens in the cup subtends asin(optical_d/2 / R_in) around the axis, and with
-    // the lens-body width it would reach above the cup rim at this tilt.
-    // It runs along local -z, from the ball centre down to the module. Until r2.4b it ran along
-    // +z, away from the sensor, and left the whole cup wall between ball and lens solid
-    // (tests/test_cradle.py now casts a ray along the axis through the mesh).
-    translate([0, 0, -L_pcb - 0.01]) cylinder(d = optical_d, h = L_pcb + 0.02);
-    // lens + chip cavity between the module and the cup
-    translate([-(lens_l + 1.0) / 2, -(lens_w + 1.0) / 2, -L_pcb - 0.01])
-        cube([lens_l + 1.0, lens_w + 1.0, cav_h + 0.01]);
-    // the module slot and the room its back-side parts need, open at the back (-z): the module
-    // slides in along its axis until its board rests on the shoulder round the lens cavity, which
-    // sets the lens distance. A strip of tape over the opening keeps it there (build guide).
-    translate([-bw / 2, -bl / 2, -L_low - 20]) cube([bw, bl, L_low + 20 - L_pcb + 0.01]);
-    // FFC exit: a notch in the slot's lower wall (local +x: towards the ball and down) under the
-    // module's connector, room for the connector and the cable where it leaves it. It runs out
-    // through the underside of the body. The cable itself leaves through the open back and climbs
-    // past the PCB plane in the gap between the cup and the PCB notch (spec/08-trackball-module.md).
-    translate([bw / 2 - 0.01, -ffc_exit_w / 2, -L_low - 0.01])
-        cube([hwx + 1.01, ffc_exit_w, L_low - L_pcb - sensor_pcb_t + 0.02]);
+    bw = sensor_pcb_w + 2 * gap;
+    // Optical window through the cup wall, along local -z from the ball centre to the lens face:
+    // a slot of optical_d circles, optical_l long along y, so both lens apertures see the ball.
+    // Sized on the apertures, not on the lens body: wider in x it would reach the cup rim.
+    // (Until r2.4b it was a round hole cut along +z, away from the sensor; tests/test_cradle.py
+    // casts rays through the mesh.)
+    translate([0, -conn_end * optical_shift, -lens_face - 0.01]) hull()
+        for (sy = [-1, 1]) translate([0, sy * (optical_l - optical_d) / 2, 0])
+            cylinder(d = optical_d, h = lens_face + 0.02);
+    // Lens body cavity, exactly lens_h deep: the lens face rests on its floor, which sets the lens
+    // distance directly (the lens is as wide as the board, so there is no shoulder to seat the
+    // board on).
+    translate([-bw / 2, lens_y[0] - gap, -L_pcb - 0.01])
+        cube([bw, lens_y[1] - lens_y[0] + 2 * gap, lens_h + 0.01]);
+    // Connector zone: the FH19C stands conn_h on the lens side, 0.3 mm clear of the floor.
+    translate([-bw / 2, conn_y[0] - gap, -L_pcb - 0.01])
+        cube([bw, conn_y[1] - conn_y[0] + 2 * gap, conn_h + 0.3 + 0.01]);
+    // The module slot, open at the back (-z): the module slides in along its axis until the lens
+    // face meets the cavity floor. A strip of tape over the opening keeps it there (build guide).
+    translate([-bw / 2, board_y[0] - gap, -L_low - 20])
+        cube([bw, board_y[1] - board_y[0] + 2 * gap, L_low + 20 - L_pcb + 0.01]);
+    // FFC exit: the cable leaves the connector in the board plane out of the board's short end,
+    // so the exit is a slot through the sleeve's end wall on the conn_end side, as high as the
+    // connector and open to the back, so the module slides in with its cable already plugged.
+    ew = ffc_w + 0.5;
+    translate([-ew / 2, conn_end > 0 ? y_conn_end - 0.01 : y_conn_end - 20, -L_low - 20])
+        cube([ew, 20.01, L_low + 20 - L_pcb + conn_h + 0.3]);
 }
 
 module cradle_cuts() {
@@ -230,10 +245,12 @@ module ball() { at_ball() color("ivory") sphere(r = R); }
 
 module sensor_dummy() {
     sensor_frame() {
-        color("gray", 0.6) translate([-lens_l / 2, -lens_w / 2, -L_pcb]) cube([lens_l, lens_w, lens_h]);   // lens body
-        color("green", 0.7) translate([-sensor_pcb_w / 2, -sensor_pcb_l / 2, -L_pcb - sensor_pcb_t])
-            cube([sensor_pcb_w, sensor_pcb_l, sensor_pcb_t]);                                             // sensor PCB
-        color("black", 0.7) translate([-5.05, -8.1, -L_low]) cube([10.1, 16.2, sensor_pins_h]);           // package + solder
+        color("gray", 0.6) translate([-lens_l / 2, lens_y[0], -L_pcb]) cube([lens_l, lens_y[1] - lens_y[0], lens_h]);     // lens body
+        color("green", 0.7) translate([-sensor_pcb_w / 2, board_y[0], -L_pcb - sensor_pcb_t])
+            cube([sensor_pcb_w, board_y[1] - board_y[0], sensor_pcb_t]);                                            // module board
+        color("black", 0.7) translate([-3.0, conn_y[0] + 0.2, -L_pcb]) cube([6.0, conn_y[1] - conn_y[0] - 0.2, conn_h]);  // FH19C
+        color("white", 0.8) translate([-ffc_w / 2, conn_end > 0 ? y_conn_end - 2.3 : y_conn_end - 3.7, -L_pcb + 0.35])
+            cube([ffc_w, 6.0, 0.15]);                                                                               // FFC stub
     }
 }
 
@@ -275,8 +292,15 @@ module dispatch() {
     else if (part == "insert_path") {     // must be empty (tests): the module's way in along -z
         intersection() {
             cradle();
-            sensor_frame() hull() for (t = [0, 40]) translate([0, 0, -t])
-                translate([-sensor_pcb_w / 2, -sensor_pcb_l / 2, -L_low]) cube([sensor_pcb_w, sensor_pcb_l, L_low - L_pcb]);
+            // one hull per box, so the step between lens body and connector is not filled in
+            sensor_frame() {
+                hull() for (tt = [0, 40]) translate([-sensor_pcb_w / 2, lens_y[0], -L_pcb - sensor_pcb_t - tt])
+                    cube([sensor_pcb_w, lens_y[1] - lens_y[0], lens_h + sensor_pcb_t]);
+                hull() for (tt = [0, 40]) translate([-sensor_pcb_w / 2, conn_y[0], -L_pcb - sensor_pcb_t - tt])
+                    cube([sensor_pcb_w, conn_y[1] - conn_y[0], conn_h + sensor_pcb_t]);
+                hull() for (tt = [0, 40]) translate([-ffc_w / 2, conn_end > 0 ? y_conn_end - 2.3 : y_conn_end - 3.7, -L_pcb + 0.35 - tt])
+                    cube([ffc_w, 6, 0.15]);
+            }
         }
     }
     else if (part == "section") {           // half model for section previews: the y = 0 plane cuts

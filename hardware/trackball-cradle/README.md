@@ -39,16 +39,17 @@ stays in the layout frame.
 | ball centre | +4.425 |
 | ball top | +13.95 (23.75 mm over the desk) |
 
-- **Sensor.** The 14 x 8 mm module sits in a sleeve beside the cup, tilted 65 degrees from
+- **Sensor.** The 13.4 x 7.4 mm module (maker drawing, github.com/sekigon-gonnoc/small-mouse-sensor-module) sits in a sleeve beside the cup, tilted 65 degrees from
   vertical (`sensor_angle`) and leaning towards +x, under the middle column (`sensor_az` = 180, window azimuth 0). It looks at the
-  ball through a 4 mm window 25 degrees below the equator; lens distance 2.4 mm nominal.
+  ball through a 4 x 8 mm window slot 25 degrees below the equator; lens distance 2.4 mm nominal.
+  Its lens face rests on the floor of the lens cavity, which sets that distance.
 - **Why 65 degrees works.** Tilted, the upper board edge must stay under the cup rim, so the
   board's width in the tilt plane decides: the old PMW3610 board (at least 13 mm there) allowed
-  38 degrees for a 0.06 mm gain, the 8 mm module allows 65 (`spec/08-trackball-module.md`).
+  38 degrees for a 0.06 mm gain, the 7.4 mm module allows 65 (`spec/08-trackball-module.md`).
 - **What sets the ball height.** The cup floor (`cup_floor_t` 2.0 mm), not the module, so the
   module's nominal lens values cannot raise the ball. `tests/test_cradle.py` asserts it.
 - **Body.** One piece with vertical walls from the floor to the rim: the cup and, towards the
-  sensor, a tab as wide as the sleeve (18 mm) that ends 0.3 mm inside the PCB notch octagon,
+  sensor, a tab as wide as the sleeve (17.4 mm) that ends 0.3 mm inside the PCB notch octagon,
   with its 45 degree corners. One 0.8 mm 45 degree chamfer runs along the whole top edge. The tilted module slot is cut into the tab and open at the back.
 - **Floor footprint.** The body's plan: 27.73 x 24.05 mm (x by y) with 0.5 mm clearance
   (`dxf/floor-19mm-pocket.dxf`), extending further on the +x side (the sleeve). The case well (the 29 x 24 mm housing box, offset 2.55 mm in x, plus
@@ -58,9 +59,10 @@ stays in the layout frame.
 - **Above the PCB** the cup is 23.05 mm wide and the tab stays 0.3 mm inside the PCB notch
   (apothem 15.5 mm); nothing of the cradle rises above the cup rim. The notch corner towards the keys is square, so the module drops into the
   pocket and lifts out with the PCB fitted (`issues/mech-cradle-notch-relief.md`).
-- **Cable.** The FFC leaves the sleeve below the PCB, climbs past the PCB plane in the gap
-  between cup and notch, runs round the cup above the PCB and folds over the board edge into J1
-  on the key side.
+- **Cable.** The FFC leaves the module's FH19C (lens side) out of the module's short end, through a
+  slot in the sleeve's end wall on the key side that is open to the back, so the module slides in
+  with its cable plugged. It runs round the cup as an upright band and lies down over the board
+  edge into J1: 32.3 mm with both insertions, a 40 mm type B cable (`spec/08-trackball-module.md`).
 - **Bearings.** Three 2.0 mm ZrO2 balls at 60, 180 and 300 degrees, 35 degrees below the equator,
   clear of the sensor window. Seats are 1.9 mm holes drilled radially into the solid cup skirt; printed holes come out
   undersize, ream with a 1.9 to 2.0 mm bit.
@@ -99,7 +101,9 @@ stay in place.
   window 2.2 to 2.6). Otherwise set `lens_shim` to the difference (positive moves the module
   away from the ball) and reprint; the shim does not move the ball. Suspect the bearing seats
   first: a radial seat error d moves the ball centre by 1.43 d.
-- Tight value to measure: module 14.76 mm radial against the 15.5 mm notch apothem.
+- Tight values to measure: module 14.96 mm radial (inside the PCB slab) against the 15.5 mm notch
+  apothem; the module (13.4 x 7.4 mm, lens body 9.06 x 7.4 mm) goes into its slot by hand, lens
+  face on the cavity floor, and the cable passes the end-wall slot without kinking.
 - With a scrap PCB at the PCB plane, the module goes into the pocket and out again vertically.
 - The FFC reaches J1 without a crease.
 - Firmware: at 600 CPI a half turn of the ball moves the cursor about one screen width.
