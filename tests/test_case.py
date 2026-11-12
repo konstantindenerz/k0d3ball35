@@ -648,6 +648,41 @@ def test_render_lid(tmp_path, half, data):
     assert a[(n[:, 2] > 0.7) & (fz < values["lid_top_z"] - values["edge_chamfer"] - 0.05)].sum() < OVERHANG_BUDGET_LID
 
 
+def keycaps_2d(half):
+    """Union of the keycap footprints at rest, in the frame of the meshes (left mirrored in x)."""
+    from shapely import affinity
+    from shapely.ops import unary_union
+
+    layout = load_layout(half)
+    sx = -1 if half == "left" else 1
+    return unary_union([affinity.scale(layout.keycap_polygon(k), xfact=sx, origin=(0, 0)) for k in layout.keys])
+
+
+@pytest.mark.skipif(openscad() is None, reason="openscad not installed")
+@pytest.mark.parametrize("half", ["left", "right"])
+@pytest.mark.parametrize("part", ["lid_outer", "lid_inner"])
+def test_lid_stays_clear_of_the_keycaps(tmp_path, half, part):
+    """The lid goes on over the keycaps: nothing of it may stand inside a cap in plan, neither the
+    lip below the rim (it passes the cap skirts on the way down) nor the skirt above it. The lip
+    used to run 0.45 mm into every cap along the rows, where the caps end 0.5 mm inside the PCB
+    edge (review 2026-11-12)."""
+    from mesh_tools import bodies, section
+
+    out = tmp_path / f"{part}-{half}.stl"
+    values, _ = run_scad(part, half, out)
+    mesh = mesh_of(out)
+    assert len(bodies(mesh)) == 1, f"loose pieces in the plate: {bodies(mesh)}"
+    caps = keycaps_2d(half)
+    assert caps.area > 15 * 17.5 * 16.5
+    assert (values["cap_w"], values["cap_h"]) == load_layout(half).keycap, "cap_size in params.scad differs from the layout"
+    lip_z = values["rim_z"] - values["lid_lip_depth"] / 2
+    for z, min_area in ((lip_z, 15.0), (values["rim_z"] + 1.0, 100.0), (values["cap_top_z"] - 0.5, 100.0)):
+        cut = section(mesh, z)
+        assert cut.area > min_area, f"the section at z {z} hit no material ({cut.area:.1f} mm2)"
+        assert cut.intersection(caps).area < 0.01, f"lid inside a keycap at z {z}"
+        assert cut.distance(caps) >= 0.3, f"lid {cut.distance(caps):.2f} mm from a keycap at z {z}"
+
+
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")
 @pytest.mark.parametrize("half", ["left", "right"])
 def test_render_lid_plates(tmp_path, half, data):
@@ -704,7 +739,7 @@ def test_render_lid_plates(tmp_path, half, data):
         t = values["hinge_stop_deg"]
         want = np.array([-np.cos(np.radians(t)) * side * sx, 0, -np.sin(np.radians(t))])
         stop = m.area_faces[np.linalg.norm(m.face_normals - want, axis=1) < 0.01]
-        assert stop.sum() > 60.0, (part, stop.sum())
+        assert stop.sum() > 40.0, (part, stop.sum())   # skirt cut faces; the lip keeps clear of the caps and no longer crosses the hinge line
 
 
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")

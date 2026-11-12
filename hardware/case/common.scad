@@ -96,6 +96,8 @@ function usb_x() = (ctrl_rect(half)[0] + ctrl_rect(half)[2]) / 2;
 // ---------------------------------------------------------------- 2D regions
 module pcb_2d() polygon(outline(half));
 module pcb_cavity_2d() offset(delta = pcb_clear) pcb_2d();
+// keycap footprints at rest
+module caps_2d() for (k = keys(half)) translate([k[0], k[1]]) rotate(-k[2]) square(cap_size, center = true);
 
 // the PCB notch exactly as the board has it (layout data, incl. the square corner on the key side)
 module notch_2d() polygon(notch(half));

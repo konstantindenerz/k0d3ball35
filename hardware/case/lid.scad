@@ -50,13 +50,22 @@ module lip_clear_2d() {
         fpc_keepout_2d();
     }
 }
+// Where a lip may stand: the full-width ring minus the keycaps and their clearance. The lip
+// goes down past the cap skirts when the lid is put on, so it must stay out of the caps in plan
+// at every height. What is left thinner than lid_lip_min is dropped (it would not print).
+module lip_zone_2d() offset(delta = lid_lip_min / 2) offset(delta = -lid_lip_min / 2) difference() {
+    pcb_cavity_2d();
+    offset(delta = -lid_fit - lid_lip_t) pcb_cavity_2d();
+    lip_clear_2d();
+    offset(delta = lid_cap_clear) caps_2d();
+}
 // ring between the inner wall face minus `inset` and the lip's inner face
-module lip_2d(inset) difference() {
+module lip_2d(inset) intersection() {
     difference() {
         offset(delta = -inset) pcb_cavity_2d();
         offset(delta = -lid_fit - lid_lip_t) pcb_cavity_2d();
     }
-    lip_clear_2d();
+    lip_zone_2d();
 }
 
 module lid_lip(under) {
@@ -145,11 +154,28 @@ module hinge_pin_hole() {
 hinge_end_ext = 0.5;
 function other(side) = side == "outer" ? "inner" : "outer";
 
+// A plate's footprint without tabs thinner than 0.6 mm. Where a stagger step of the outline
+// lies within a knuckle radius of the hinge line, the other plate's end groove would cut such a
+// tab loose and leave a stray sliver in the STL.
+module plate_footprint_2d(side) offset(delta = 0.3) offset(delta = -0.3) intersection() {
+    outer_top_2d();
+    g = hinge_gap / 2;
+    if (side == "outer") translate([hx + g, -500]) square([500, 1000]);
+    else translate([hx - g - 500, -500]) square([500, 1000]);
+}
+
 module lid_plate(side) {
     difference() {
         union() {
             difference() {
-                intersection() { lid_full(); if (side == "outer") keep_outer(); else keep_inner(); }
+                intersection() {
+                    lid_full();
+                    if (side == "outer") keep_outer(); else keep_inner();
+                    translate([0, 0, lip_bottom_z - 1]) linear_extrude(lid_top_z - lip_bottom_z + 2) union() {
+                        plate_footprint_2d(side);
+                        offset(delta = -wall) outer_top_2d();     // everything inside the skirt (lip, roof)
+                    }
+                }
                 hinge_grooves(other(side));
             }
             intersection() {

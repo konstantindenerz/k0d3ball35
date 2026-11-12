@@ -126,6 +126,12 @@ lid_fit         = 0.15;        // clearance between the lip and the inner wall f
 lid_lip_chamfer = 0.5;         // lead-in on the lower outer edge of the lip
 lid_lip_steps   = 5;
 lid_box_clear   = 0.3;         // lid skirt around the controller box walls
+cap_size        = [17.5, 16.5]; // Choc 1u keycap footprint (layout yaml `keycap`)
+lid_cap_clear   = 0.5;         // the lip keeps this far from every keycap. Along the rows the caps
+                               // end only 0.5 mm inside the PCB edge (0.7 from the wall face), so
+                               // no lip fits there: it stands on the column sides, the step faces
+                               // and the outer edge, where the caps are 1.6 mm inside.
+lid_lip_min     = 0.4;         // lip slivers thinner than this are dropped
 
 // ---------------------------------------------------------------- lid hinge and tenting foot
 tent_deg        = 18;          // tilt of the half on the folded lid. 15 no longer solves on the
