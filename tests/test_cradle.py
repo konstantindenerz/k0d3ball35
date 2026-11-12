@@ -337,16 +337,24 @@ def test_tilted_module_stays_under_the_cup_rim(stack):
     assert v["sleeve_top_z"] <= v["rim_z"], "the sleeve's upper edge rises above the cup rim"
 
 
-def test_tilted_module_stays_inside_the_pcb_notch(stack):
-    """Where the module passes the main PCB plane it has to fit the notch."""
+def test_tilted_module_stays_clear_of_the_pcb(stack, trackball_cfg):
+    """Where the module passes the main PCB plane it must not meet the board.
+
+    The bound is the real PCB outline, not the notch octagon. With the datasheet lens height
+    (3.45 mm, r2.4b) the module reaches 16.0 mm from the axis inside the PCB slab, past the 15.5 mm
+    notch apothem; that is fine only because it leans towards +x, where the board already ended at
+    y 42.8 under the middle column. The cradle BODY still stays inside the notch (tab_back), which
+    test_render_19mm_pocket_stl checks on the mesh."""
+    from k0d3.geometry import load_layout
     v = stack["19mm-pocket"]
-    # Use the SLAB reach, not the absolute far corner. The module's far corner (module_reach) sits
-    # above the PCB top, where there is no board to foul; what has to fit the notch is how far it
-    # gets while it is inside the 1.6 mm slab. Checking the wrong one of the three rejects legal
-    # geometry by 0.7 mm.
-    assert v["module_slab_reach"] <= v["notch_apothem"], (
-        f"the module reaches {v['module_slab_reach']:.3f} mm inside the PCB slab, notch apothem "
-        f"is {v['notch_apothem']:.3f}")
+    right = load_layout("right")
+    module = right.sensor_board()          # plan projection of the module, from the layout
+    a = math.radians(v["window_az"])
+    reach = max(((x - right.ball_center[0]) * math.cos(a) + (y - right.ball_center[1]) * math.sin(a))
+                for x, y in module.exterior.coords)
+    assert reach >= v["module_slab_reach"] - 1e-6, "the layout projection is shorter than the module"
+    gap = module.distance(right.outline)
+    assert gap >= 1.0, f"the module comes within {gap:.2f} mm of the PCB outline"
     assert v["board_reach"] <= v["module_reach"] + 1e-6
 
 

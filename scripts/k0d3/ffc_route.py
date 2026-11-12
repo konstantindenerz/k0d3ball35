@@ -92,3 +92,32 @@ def route(layout: Layout) -> Route:
     band_top = max(z, 0.6) + _param("ffc_w") / 2
     return Route((round(mouth[0], 3), round(mouth[1], 3), round(z, 3)), sweep, band_top, INSERT_MODULE,
                  exit_len, math.hypot(plan, climb), LEADS, INSERT_J1)
+
+
+# Slack. No stocked 6-way 0.5 mm type B cable comes between 30 mm (shorter than the route) and
+# 50 mm, so the cable is 50 mm and the rest is laid as an S-fold of the upright band in the free
+# corner of the pocket beside J1's mouth, towards the thumb, under the pocket cover. The zone is
+# relative to the ball axis, layout frame; tests/test_ffc_route.py checks that it is free (cradle
+# mesh, PCB outline, pocket opening, cover) and that the fold holds the slack.
+SLACK_ZONE = (-14.0, -15.4, -9.0, -6.0)    # x0, y0, x1, y1 relative to the ball centre
+SLACK_Z = (-1.6, 1.9)                     # the band stands on the tray shelf at the PCB underside
+FOLD_PITCH = 1.2                          # leg to leg, a 0.6 mm bend radius per fold
+
+
+def slack_capacity() -> float:
+    """Extra cable an S-fold in SLACK_ZONE can take: legs along y, FOLD_PITCH apart, each running
+    from the zone's key-side edge to the cup envelope (or the zone's far edge), minus one leg the
+    straight route would use anyway, plus the folds."""
+    s = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
+    rho = s["cup_outer_d"] / 2 + BAND_CLEAR + 0.3
+    x0, y0, x1, y1 = SLACK_ZONE
+    legs = []
+    x = x0 + FOLD_PITCH / 2
+    while x <= x1:
+        top = y1 if abs(x) >= rho else min(y1, -math.sqrt(rho * rho - x * x))
+        legs.append(max(0.0, top - y0))
+        x += FOLD_PITCH
+    if len(legs) < 2:
+        return 0.0
+    bends = (len(legs) - 1) * math.pi * FOLD_PITCH / 2
+    return sum(legs) - min(legs) + bends
