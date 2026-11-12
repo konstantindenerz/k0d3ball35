@@ -237,3 +237,14 @@ def test_silkscreen_revision_matches_the_layout_revision(layout):
     assert layout.cfg["silkscreen"]["revision_text"] == layout.cfg["revision"], (
         "silkscreen revision_text %r does not match revision %r"
         % (layout.cfg["silkscreen"]["revision_text"], layout.cfg["revision"]))
+
+
+def test_exported_sensor_board_is_where_the_module_is():
+    """points-right.json / the site data carry the module's plan centre with its offset towards the
+    window; it once said "centred under the ball" while the module sat 13.4 mm beside it."""
+    right = load_layout("right")
+    sb = right.to_dict()["trackball"]["sensor_board"]
+    c = right.sensor_board().centroid
+    assert (sb["x"], sb["y"]) == (round(c.x, 3), round(c.y, 3))
+    off = right.cfg["trackball"]["pocket"]["sensor_board_offset"]
+    assert math.dist((sb["x"], sb["y"]), right.ball_center) == pytest.approx(math.hypot(off["x"], off["y"]), abs=1e-3)

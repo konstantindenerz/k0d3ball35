@@ -276,9 +276,11 @@ class Layout:
                   "pocket_diameter": t["cradle_diameter"] + 2 * t["pocket"]["wall"],
                   "housing_footprint": [[round(x, 3), round(y, 3)] for x, y in self.housing_footprint().exterior.coords],
                   "case_screws": [[x, y] for x, y in self.case_screws()],
-                  # sensor board centred under the ball, long side along x
+                  # plan projection of the tilted module, centred where sensor_board() puts it
+                  # (pocket.sensor_board_offset off the ball, towards the window)
                   "sensor_board": {"width": t["pocket"]["sensor_board"]["x"], "height": t["pocket"]["sensor_board"]["y"],
-                                   "x": self.ball_center[0], "y": self.ball_center[1]},
+                                   "x": round(self.sensor_board().centroid.x, 3),
+                                   "y": round(self.sensor_board().centroid.y, 3)},
                   # plan view of the module on its way into the pocket (chamfered corner)
                   "module_footprint": [[round(x, 3), round(y, 3)] for x, y in self.insertion_corridor().exterior.coords],
                   "cable_corridor": ([[round(x, 3), round(y, 3)] for x, y in self.cable_corridor().exterior.coords]

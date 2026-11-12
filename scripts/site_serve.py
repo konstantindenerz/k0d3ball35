@@ -25,6 +25,9 @@ class NoStoreHandler(SimpleHTTPRequestHandler):
 
 
 def main(argv: list[str]) -> None:
+    if len(argv) > 1 and argv[1] in ("-h", "--help"):
+        print(__doc__.strip())
+        return
     port = int(argv[1]) if len(argv) > 1 else 8000
     bind = argv[2] if len(argv) > 2 else "127.0.0.1"
     handler = functools.partial(NoStoreHandler, directory=str(REPO))
