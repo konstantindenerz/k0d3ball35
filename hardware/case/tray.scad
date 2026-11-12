@@ -69,6 +69,10 @@ module tray_cuts() {
         // above usb_z1 (no thin bridge over the opening)
         translate([usb_x() - usb_cut[0] / 2, box_y_in() - wall - 1, usb_z0])
             cube([usb_cut[0], wall + 2, box_top_z - usb_z0 + 1]);
+        // The controller stands 0.9 mm over the main PCB's top edge (layout usb_overhang), which is
+        // 0.7 mm into this wall: a pocket for its board, open to the top so it drops in.
+        translate([cr[0] - ctrl_fit, cr[1] - ctrl_fit, ctrl_under_z - ctrl_fit])
+            cube([cr[2] - cr[0] + 2 * ctrl_fit, box_y_in() - cr[1] + ctrl_fit + eps, box_roof_under_z - ctrl_under_z + ctrl_fit + eps]);
         // rebate for the cap plate on the tall walls
         translate([box_x_in() - box_rebate, box_y_in() - box_rebate, box_roof_under_z])
             cube([box_inner_x - box_x_in() + box_rebate + 1, r[3] - box_y_in() + box_rebate + 1, box_roof_t + 1]);

@@ -16,7 +16,10 @@ checked a part against its own numbers and none against its neighbours: the lid 
 inside the keycaps, the battery well was shallower than its own stack-up (and the left cell lies
 under sockets), two standoffs sat in hot-swap sockets and on switch pegs, the USB opening took
 5.3 mm overmolds, the reset button's plunger pointed along the board over a hole in the floor,
-M2 x 6 bottomed out, and the trackball axes were exchanged in the firmware. All of these are fixed
+M2 x 6 bottomed out, and the trackball axes were exchanged in the firmware. The assembly test
+written afterwards (`tests/test_assembly_interference.py`) found two more on its first run: the
+controller board, which overhangs the main PCB by 0.9 mm, stood 0.7 mm inside the USB wall, and
+the end knuckles of the two lid plates overlapped by 0.2 mm. All of these are fixed
 and have a test now. What a test cannot show is listed here for the first print.
 
 ## Acceptance criteria
@@ -26,6 +29,8 @@ and have a test now. What a test cannot show is listed here for the first print.
 - [ ] Standoffs: inserts set flush in the 5.6 mm standoffs without the 1.2 mm wall bulging into a socket or peg (0.44 mm of air)
 - [ ] Sockets: with the PCB screwed down, a switch pressed in does not lift a socket (the floor is 0.25 mm under them); the PCB sits flat on all five standoffs
 - [ ] USB: three different USB-C cables seat fully; the cap's tongue closes the slot
+- [ ] Controller: drops onto its sockets with the PCB in the tray; its board end sits in the pocket of the USB wall with air all round
+- [ ] Hinge: the two lid plates go together and fold freely, also at the two end knuckles
 - [ ] Reset: a paper clip through the hole in the inner wall resets the controller, both halves
 - [ ] Sensor sleeve: the 0.5 mm roof over the slot (65 degree overhang, no supports) printed without sagging and the module slides in; the rib behind the module leaves the cradle free to drop into the pocket
 - [ ] Guard: lies flat under the switch flanges, does not rattle (`mech-pcb-guard`)
@@ -34,7 +39,9 @@ and have a test now. What a test cannot show is listed here for the first print.
 
 ## Notes
 
-Tests added by the review: `tests/test_print_parts.py`, `tests/mesh_tools.py`, and in
+Tests added by the review: `tests/test_assembly_interference.py` (every printed and bought part of
+the closed half, cut every 0.4 mm, nothing may overlap), `tests/test_print_parts.py`,
+`tests/mesh_tools.py`, and in
 `tests/test_case.py` `test_lid_stays_clear_of_the_keycaps`, `test_usb_plug_overmold_reaches_the_receptacle`,
 `test_reset_pin_reaches_the_plunger`, `test_module_backstop_behind_the_sensor`; in
 `tests/test_pcb_review.py` `test_case_standoffs_clear_the_underside` and

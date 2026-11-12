@@ -143,11 +143,17 @@ module hinge_cylinders(side, r, ext = 0, end_ext = 0) {
 module hinge_grooves(side) {
     r = hinge_knuckle_d / 2 + hinge_clear;
     dir = side == "outer" ? 1 : -1;
-    hinge_cylinders(side, r, hinge_seg_gap);
-    for (i = [0 : hinge_segments() - 1])
-        if (hinge_owner(i) == side)
-            translate([hx + (dir > 0 ? -r : -10), hinge_seg_y0(i) - hinge_seg_gap, lid_top_z - hinge_knuckle_d - 1])
-                cube([10 + r, hinge_seg() + 2 * hinge_seg_gap, hinge_knuckle_d + 2]);
+    // the end knuckles run hinge_end_ext into the skirt, so their grooves must too (they used to
+    // stop hinge_seg_gap past the span and the plates overlapped by 0.2 mm at both ends)
+    n = hinge_segments();
+    hinge_cylinders(side, r, hinge_seg_gap, hinge_end_ext);
+    for (i = [0 : n - 1])
+        if (hinge_owner(i) == side) {
+            e0 = hinge_seg_gap + (i == 0 ? hinge_end_ext : 0);
+            e1 = hinge_seg_gap + (i == n - 1 ? hinge_end_ext : 0);
+            translate([hx + (dir > 0 ? -r : -10), hinge_seg_y0(i) - e0, lid_top_z - hinge_knuckle_d - 1])
+                cube([10 + r, hinge_seg() + e0 + e1, hinge_knuckle_d + 2]);
+        }
 }
 module hinge_pin_hole() {
     s = hinge_span();

@@ -66,6 +66,6 @@ def test_ci_renders_the_parts():
     assert len(scad) == 1, "one job in an OpenSCAD image"
     runs = " ".join(str(s.get("run", "")) for s in scad[0]["steps"])
     for name in ("test_case.py", "test_cradle.py", "test_retainer.py", "test_thin_walls.py", "test_print_parts.py",
-                 "test_case_pocket.py", "test_case_guard.py"):
+                 "test_case_pocket.py", "test_case_guard.py", "test_assembly_interference.py"):
         assert f"tests/{name}" in runs, f"{name} is not run with OpenSCAD in CI"
     assert "openscad --version" in runs

@@ -46,3 +46,4 @@ jobs:
           tests/test_case.py tests/test_case_guard.py tests/test_case_pocket.py
           tests/test_case_handedness.py tests/test_cradle.py tests/test_retainer.py
           tests/test_thin_walls.py tests/test_print_parts.py
+          tests/test_assembly_interference.py
