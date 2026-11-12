@@ -528,7 +528,7 @@
     23.05,
     10.53
    ],
-   "triangles": 7224,
+   "triangles": 7208,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -692,8 +692,8 @@
      "cup_outer_d": 23.05,
      "envelope_d_above_pcb": 23.05,
      "notch_apothem": 15.5,
-     "housing_x": 11.0,
-     "housing_y": 18.0,
+     "housing_x": 10.4,
+     "housing_y": 17.4,
      "footprint_x": 23.05,
      "footprint_y": 26.725
     },
