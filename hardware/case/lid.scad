@@ -44,6 +44,10 @@ module lid_roof_magnets(under) {
 
 // where the lip must not be: the controller box walls (plus their notch) and the pocket cup
 module lip_clear_2d() {
+    // the hinge cut leans by hinge_stop_deg below the axis and would shave a lip that crosses it
+    // into a feather edge
+    hc = (hinge_axis_z - lip_bottom_z) * tan(hinge_stop_deg) + 1;
+    translate([hx - hc, -500]) square([2 * hc, 1000]);
     if (controller_box) offset(delta = pcb_clear + wall + lid_box_clear + 1) box_2d();
     if (has_ball(half)) {
         offset(delta = 1) pocket_cavity_2d();

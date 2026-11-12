@@ -340,6 +340,8 @@ def test_copied_cradle_facts_agree(cradle_stack):
     c = cradle_stack
     assert val("ball_d") == [c["ball_d"]]
     assert val("ball_top_z") == [c["ball_top_above_pcb_top"]]
+    assert abs(val("module_reach")[0] - c["module_reach"]) < 0.01, "the module stop is placed from this"
+    assert c["window_az"] == 0.0, "the module stop assumes the sleeve leans to +x"
     assert not re.search(r"^notch_apothem\s*=", src, re.M), "the notch comes from the layout data, not a copy"
     assert not re.search(r"^sensor_(angle|az|sleeve|reach)\s*=", src, re.M), "the assembly imports the cradle STL"
 
@@ -497,6 +499,37 @@ def test_render_tray(tmp_path, half, data):
     else:
         assert np.hypot(v[:, 0] - BALL[0], v[:, 1] - BALL[1]).min() < 20 or True   # left half has no pocket
         assert values["has_ball"] == 0
+
+
+@pytest.mark.skipif(openscad() is None, reason="openscad not installed")
+def test_module_backstop_behind_the_sensor(tmp_path, cradle_stack):
+    """The sensor module is only taped into its open sleeve. A rib on the pocket wall has to stand
+    close behind its rear corner, or the cable can pull it out of focus: every 0.1 mm of travel
+    along the 65 degree axis adds 0.1 mm of lens distance, and the wall itself left 1.27 mm
+    (review 2026-11-12). The rib must not close the cable exit on the key side, and the cradle
+    with the module fitted must still drop into the pocket."""
+    import math
+    from shapely.geometry import Point
+    from mesh_tools import section
+
+    out = tmp_path / "tray-right.stl"
+    run_scad("tray", "right", out)
+    mesh = mesh_of(out)
+    c = cradle_stack
+    reach = c["module_reach"]
+    # the rear upper corner of the module board, from the sleeve geometry
+    corner_z = c["board_top_z"] - 1.0 * math.cos(math.radians(65))   # 1.0 mm board, tilted 65 degrees
+    assert 0.5 < corner_z < 1.2
+    for z in (corner_z, corner_z - 3.0, -6.0):
+        cut = section(mesh, z)
+        gap = cut.distance(Point(BALL[0] + reach, BALL[1] + 1.5))
+        assert 0.15 <= gap <= 0.4, f"module backstop {gap:.2f} mm behind the module at z {z:.2f}"
+        travel = gap / math.sin(math.radians(65))
+        assert 2.4 + travel <= 2.9, "the lens distance could leave the sensor's range"
+        # nothing in the way of the cable on the key side of the sleeve
+        assert cut.distance(Point(BALL[0] + reach, BALL[1] - 6.0)) >= 1.0, "the rib blocks the cable exit"
+        # and the cradle body (tab to radius body_back_reach) keeps its 0.5 mm all round
+        assert cut.distance(Point(BALL[0] + c["body_back_reach"], BALL[1] + 1.5)) >= 0.5
 
 
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")

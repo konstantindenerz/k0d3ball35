@@ -23,13 +23,15 @@ from shapely.geometry import Polygon  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 PARTS = [
     "hardware/case/stl/tray-left.stl", "hardware/case/stl/tray-right.stl",
-    "hardware/case/stl/lid-left.stl", "hardware/case/stl/lid-right.stl",
+    "hardware/case/stl/lid-outer-left.stl", "hardware/case/stl/lid-outer-right.stl",
+    "hardware/case/stl/lid-inner-left.stl", "hardware/case/stl/lid-inner-right.stl",
+    "hardware/case/stl/guard-left.stl", "hardware/case/stl/guard-right.stl",
     "hardware/case/stl/box-cap-left.stl", "hardware/case/stl/box-cap-right.stl",
     "hardware/case/stl/pocket-cover-right.stl",
     "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
     "hardware/case/stl/pocket-clip-right.stl",
 ]
-SKIN = 0.25      # mm: thinner than this does not print
+SKIN = 0.45      # mm: thinner than this does not print
 STEP = 0.4       # mm between sections
 TALL = 3         # consecutive sections: a skin at least ~1.2 mm tall
 

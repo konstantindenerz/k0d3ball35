@@ -51,9 +51,9 @@
     96.45,
     18.3
    ],
-   "triangles": 9144,
+   "triangles": 9168,
    "watertight": false,
-   "non_manifold_edges": 4
+   "non_manifold_edges": 7
   },
   {
    "id": "guard-right",
@@ -142,7 +142,7 @@
     96.45,
     15.51
    ],
-   "triangles": 4912,
+   "triangles": 4896,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -173,9 +173,9 @@
     90.0,
     15.51
    ],
-   "triangles": 2594,
+   "triangles": 2318,
    "watertight": false,
-   "non_manifold_edges": 25
+   "non_manifold_edges": 21
   },
   {
    "id": "lid-right",
@@ -204,9 +204,9 @@
     96.45,
     15.51
    ],
-   "triangles": 7594,
+   "triangles": 7302,
    "watertight": false,
-   "non_manifold_edges": 39
+   "non_manifold_edges": 35
   },
   {
    "id": "lid-folded-right",
@@ -235,9 +235,9 @@
     96.45,
     47.96
    ],
-   "triangles": 7602,
+   "triangles": 7310,
    "watertight": false,
-   "non_manifold_edges": 16
+   "non_manifold_edges": 10
   },
   {
    "id": "pocket-cover-right",
@@ -383,7 +383,7 @@
     83.55,
     15.51
    ],
-   "triangles": 5070,
+   "triangles": 4966,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -411,9 +411,9 @@
     91.77,
     15.51
    ],
-   "triangles": 3614,
+   "triangles": 3206,
    "watertight": false,
-   "non_manifold_edges": 31
+   "non_manifold_edges": 25
   },
   {
    "id": "lid-left",
@@ -439,9 +439,9 @@
     94.0,
     15.51
    ],
-   "triangles": 8684,
+   "triangles": 8172,
    "watertight": false,
-   "non_manifold_edges": 31
+   "non_manifold_edges": 25
   },
   {
    "id": "lid-folded-left",
@@ -467,9 +467,9 @@
     94.0,
     54.79
    ],
-   "triangles": 8684,
+   "triangles": 8172,
    "watertight": false,
-   "non_manifold_edges": 21
+   "non_manifold_edges": 19
   },
   {
    "id": "pocket-test-right",
@@ -497,9 +497,9 @@
     43.5,
     14.61
    ],
-   "triangles": 2956,
+   "triangles": 2980,
    "watertight": false,
-   "non_manifold_edges": 4
+   "non_manifold_edges": 7
   },
   {
    "id": "cradle-19mm-pocket",

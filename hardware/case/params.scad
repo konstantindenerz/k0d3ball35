@@ -144,7 +144,7 @@ lid_cap_clear   = 0.5;         // the lip keeps this far from every keycap. Alon
                                // end only 0.5 mm inside the PCB edge (0.7 from the wall face), so
                                // no lip fits there: it stands on the column sides, the step faces
                                // and the outer edge, where the caps are 1.6 mm inside.
-lid_lip_min     = 0.4;         // lip slivers thinner than this are dropped
+lid_lip_min     = 0.8;         // lip pieces thinner than two perimeters are dropped
 
 // ---------------------------------------------------------------- lid hinge and tenting foot
 tent_deg        = 18;          // tilt of the half on the folded lid. 15 no longer solves on the
@@ -170,6 +170,15 @@ pocket_d        = 32.0;        // round pocket wall above the PCB plane (cradle 
 pocket_wall     = 2.0;
 cradle_d        = 28.0;        // cradle clearance circle above the PCB plane
 ball_top_z      = 13.95;        // cradle stack.json ball_top_above_pcb_top (19.05 mm ball)
+// Backstop for the sensor module. It slides into the cradle's sleeve from the open back and only
+// a strip of tape keeps it against the lens seat; the cable pulls on it. A rib on the pocket wall
+// stands module_stop_gap behind the module's rear corner, so it cannot back out of focus (the
+// wall itself is 1.15 mm away, which would let the lens distance grow from 2.4 to 3.7 mm).
+module_reach    = 16.40;       // cradle stack.json module_reach: rear upper board corner from the ball axis, towards +x
+module_stop_gap = 0.3;         // the cradle (0.5 mm loose in its pocket, module fitted) still drops in
+module_stop_w   = 8.0;         // along y, on the lens half of the board, clear of the cable exit (key side)
+module_stop_dy  = 1.5;         // rib centre from the ball centre, away from the keys
+module_stop_top_z = 1.6;       // above the module's rear corner (z 0.86)
 // Flush cover over the cradle opening (tray.scad pocket_cover): it sits in a rebate on a ledge,
 // flush with rim_z, and reaches over the cup rim as a bezel to cover_ball_gap from the ball, so
 // the cup is out of sight. Until this bezel the hole was 26.5 mm (the old clip had to pass) with

@@ -186,8 +186,8 @@ silkscreen right under the controller. Same on both halves.
 4. Make the pins **flush** on the **bottom face** inside the dashed battery bay: the 6.5 mm well
    allows 0.4 mm for the solder joints over the 5.7 mm cell. Conthrough pins are flush by
    design; socket strips: cut the tails flush after soldering and file off any solder spike.
-   Then cover the joints inside the bay with a strip of Kapton tape: the cell is a soft pouch
-   and no sharp point may touch it.
+   The Kapton or foam pad of chapter 7 goes over them: the cell is a soft pouch and no sharp
+   point may touch it.
 
 Checkpoint: two socket rows soldered flat, controller plugs in and out, USB connector at the top
 edge, square pad at top-left, bottom face inside the battery bay smooth.

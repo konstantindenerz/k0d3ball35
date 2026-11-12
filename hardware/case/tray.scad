@@ -125,12 +125,23 @@ module boss_holes() {
 
 // standoffs and bosses are added after the cavity cuts (they stand inside the cavities),
 // then the screw holes are drilled
+// rib on the +x pocket wall behind the sensor module (params.scad, module_stop_*)
+module module_stop() {
+    if (has_ball(half)) {
+        x0 = bc()[0] + module_reach + module_stop_gap;
+        x1 = maxx(housing_box(half)) + 0.5;                 // the pocket wall (pocket_well_2d)
+        translate([x0, bc()[1] + module_stop_dy - module_stop_w / 2, pocket_floor_z - eps])
+            cube([x1 - x0 + 1, module_stop_w, module_stop_top_z - pocket_floor_z + eps]);
+    }
+}
+
 module tray() {
     difference() {
         union() {
             difference() { tray_body(); tray_cuts(); }
             standoffs();
             bosses();
+            module_stop();
         }
         screw_holes();
         boss_holes();
