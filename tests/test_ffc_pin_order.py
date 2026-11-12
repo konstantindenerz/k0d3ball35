@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 """Desk verification of the 6-pin FFC between the right PCB (J1) and the trackball sensor module.
 
-Since r2.4 the sensor is not a board of ours any more: it is the bought 14 x 8 mm PixArt PAW3222
+Since r2.4 the sensor is not a board of ours any more: it is the bought 13.4 x 7.4 mm PixArt PAW3222
 module (sekigon-gonnoc / nogikes-ya, the one torabo-tsuki LP uses), so its FFC pinout is given by
 its vendor and J1 has to follow it. There is no second `.kicad_pcb` left to read the far end from,
 so the module side enters this test as the declared constant `MODULE_PINS` below and the pairing is
@@ -9,17 +9,23 @@ so the module side enters this test as the declared constant `MODULE_PINS` below
 
 What decides the pairing is the cable type, and the cable type follows from the mounting:
 
-* An FH12-style bottom-contact connector only mates with the face of the cable that carries the
-  contact window, and that face has to point at the board the connector is soldered to.
+* Both connectors mate with the face of the cable that points at the board they are soldered to.
+  J1 (FH12, bottom contact) by its datasheet; the module's FH19C as the maker's and torabo-tsuki
+  LP's photos show (the cable's blue stiffener, on the face away from the contacts, is on top at
+  both ends of their cable).
 * Right PCB J1 sits on the KEY side with the cable lying on top of the board
   (`issues/hw-j1-top-side.md`), so at that end the cable's contact window points DOWN.
-* The module is tilted beside the ball with its optics towards the ball and its FPC connector on
-  the back face, so the cable runs along the back of the module and its contact window points at
-  that back face, i.e. away from the ball and with an upward component
-  (`spec/08-trackball-module.md`, `hardware/trackball-cradle/params.scad`).
-* Contact windows on opposite faces at the two ends is exactly what a **type B** FFC provides. A
-  type A cable (windows on the same face at both ends, the usual default) presents insulation to
-  the contacts at one end and connects nothing.
+* The module's FH19C sits on its LENS side, at the board's short end, and the cable leaves it in
+  the board plane (maker drawing, github.com/sekigon-gonnoc/small-mouse-sensor-module). Until
+  r2.4b this file assumed a connector on the back; the conclusion below survives, the old
+  reason for it ("type A connects nothing") does not.
+* On its way the cable stands upright round the cup and then twists 90 degrees to lie flat on the
+  PCB. That twist can go EITHER way, so either face of the cable can end up down at J1: a type A
+  cable (windows on the same face at both ends) makes contact too, with the far end numbered the
+  other way round. That puts pin 1 (3.3 V) on pin 6 (GND) - reverse polarity on the module.
+* So the choice is the pin mapping, not whether anything connects. J1 is wired pin for pin, which
+  is the **type B** mapping (windows on opposite faces), twisted so the exposed metal faces DOWN
+  at J1. A type A cable must never be fitted (`spec/08-trackball-module.md` section 2).
 
 Pin numbering across the cable. For one cable end write `m` for the direction the cable leaves the
 mouth and `c` for the normal from the connector's contacts towards the cable. Pin 1 and pin 6 sit
@@ -172,6 +178,18 @@ def cable_pairs(cable_type: str, pins: int = 6) -> dict[int, int]:
     raise ValueError(f"unknown FFC type {cable_type!r}: this design uses type B")
 
 
+def test_a_type_a_cable_would_swap_supply_and_ground():
+    """With the free twist a type A cable connects - reversed. Pin 1 of J1 (3.3 V) would land on
+    the module's GND and J1's GND on its 3.3 V pin. That is why the docs say type B and warn."""
+    pairs = cable_pairs("A")
+    assert MODULE_PINS[pairs[1]] == "GND" and MODULE_PINS[pairs[6]] == "3.3V"
+    assert NET_TO_MODULE_SIGNAL[FPC_PINS[1]] == "3.3V"
+    for doc in ("spec/08-trackball-module.md", "spec/03-bom.md", "spec/04-build-guide.md",
+                "spec/12-order-checklist.md"):
+        text = (REPO_ROOT / doc).read_text()
+        assert "type A" in text and "reverses" in text and "GND" in text, f"{doc} lacks the type A warning"
+
+
 def test_type_b_is_straight_through_and_type_a_reverses():
     assert cable_pairs("B") == {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}
     assert cable_pairs("A") == {1: 6, 2: 5, 3: 4, 4: 3, 5: 2, 6: 1}
@@ -248,9 +266,10 @@ def test_power_pins_sit_at_opposite_cable_edges(right):
     This is worth writing down because it is a regression against r2.3. Then VCC faced MOT across
     the cable and a laterally reversed cable was current-limited by the series resistor on our own
     sensor board; the bought module's pinout is not ours to choose and that resistor went with the
-    board. The failure mode a type B cable protects against is the common one (a type A cable, a
-    cable swapped end for end or inserted upside down all present insulation and connect nothing),
-    but a cable whose contact window is on the wrong face at one end would now short VCC to GND.
+    board. Since r2.4b (connector on the module's lens side, a free 90 degree twist on the way) a
+    type A cable can be laid into contact at both ends and then puts VCC on GND
+    (test_a_type_a_cable_would_swap_supply_and_ground); a cable swapped end for end or inserted
+    upside down presents insulation at one end and connects nothing.
     Hence the continuity test before power in issues/hw-ffc-pin-order-verification.md, and the
     palindromic-pinout idea parked in spec/08-trackball-module.md section 6.
     """

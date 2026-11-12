@@ -78,13 +78,18 @@ def trackball_cfg():
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")
 def test_module_can_be_inserted(tmp_path):
     """The bought module must be able to get INTO its sleeve: along its own axis from the back,
-    until the board rests on the shoulder round the lens cavity. r2.4 first shipped a sleeve
-    closed on every side, which no clearance check notices because the seated module touches
-    nothing. Swept 40 mm back from the seat, the board must not meet the cradle anywhere."""
+    with its cable already plugged, until the lens face meets the cavity floor. r2.4 first shipped
+    a sleeve closed on every side, which no clearance check notices because the seated module
+    touches nothing. Swept 40 mm back from the seat, board, lens body, connector and the cable stub
+    must not meet the cradle anywhere; the seat itself is a touching face (zero volume)."""
     out = tmp_path / "insert.stl"
     res = subprocess.run([openscad(), "--backend", "manifold", "-D", 'part="insert_path"',
                           "-o", str(out), str(SCAD)], capture_output=True, text=True, timeout=600)
-    assert "Current top level object is empty" in res.stderr, "the module's way into the sleeve is blocked"
+    assert res.returncode == 0, res.stderr
+    if "Current top level object is empty" not in res.stderr:
+        trimesh = pytest.importorskip("trimesh")
+        vol = abs(trimesh.load(out, force="mesh").volume)
+        assert vol < 0.01, f"the module's way into the sleeve is blocked ({vol:.3f} mm3)"
 
 
 def test_sources_present():
@@ -228,6 +233,23 @@ def _lean_frame(x, y, az_deg):
     return x * math.cos(a) + y * math.sin(a), -x * math.sin(a) + y * math.cos(a)
 
 
+def _to_layout(x, y, z, s):
+    """A point of the cradle's sensor frame (sensor_frame() in cradle.scad: tilt about local y, then
+    turn by sensor_az = window_az + 180) in the layout frame. One transform for every test that
+    probes the mesh at a module feature; a hand-rolled copy once sent a test's probes to the wrong
+    side of the ball, where it found no plastic and passed."""
+    th, saz = math.radians(s["sensor_angle"]), math.radians(s["window_az"] + 180)
+    xp, zp = x * math.cos(th) + z * math.sin(th), -x * math.sin(th) + z * math.cos(th)
+    return np.array([xp * math.cos(saz) - y * math.sin(saz), xp * math.sin(saz) + y * math.cos(saz),
+                     zp + s["ball_centre_z"]])
+
+
+def _param_list(name: str) -> list[float]:
+    m = re.search(rf"^{name}\s*=\s*\[([^\]]+)\]", (CRADLE / "params.scad").read_text(), re.M)
+    assert m, f"{name} missing from params.scad"
+    return [float(v) for v in m.group(1).split(",")]
+
+
 def _dxf_loops(path):
     ezdxf = pytest.importorskip("ezdxf")
     doc = ezdxf.readfile(str(path))
@@ -365,7 +387,10 @@ def test_sensor_window_clears_the_rim_and_every_bearing():
     optical = _param("optical_d")
     r_in = ball_d / 2 + gap
 
-    half = math.degrees(math.asin((optical / 2) / r_in))       # angular half-width of the window
+    half = math.degrees(math.asin((optical / 2) / r_in))       # angular half-height of the window
+    # and its extent in azimuth, per side: the slot is shifted towards the lens end
+    reach = _param("optical_l") / 2 + _param("optical_shift")
+    half_az = math.degrees(math.asin(min(1.0, reach / r_in)))
     below = 90.0 - tilt                                        # window centre below the equator
     rim = math.degrees(math.asin(_param("rim_drop") / (ball_d / 2)))
     assert below - half >= rim - 1e-6, (
@@ -383,9 +408,9 @@ def test_sensor_window_clears_the_rim_and_every_bearing():
         if abs(elev - below) >= half + boss_half:
             continue                     # the boss sits outside the window's elevation band
         d = abs((bearing - az + 180) % 360 - 180)
-        assert d > half + boss_half, (
+        assert d > half_az + boss_half, (
             f"bearing boss at azimuth {bearing:g} is {d:.1f} deg from the sensor window, needs "
-            f"more than {half + boss_half:.1f} deg")
+            f"more than {half_az + boss_half:.1f} deg")
 
 
 def test_layout_pocket_offsets_follow_the_real_tilt(stack, trackball_cfg):
@@ -406,7 +431,7 @@ def test_layout_pocket_offsets_follow_the_real_tilt(stack, trackball_cfg):
         assert abs(across) < 1e-9, f"{key} must not lean across the tilt"
         assert along > 0, f"{key} leans the wrong way for window_az = {az}"
     # the corridor has to cover where the module really is: sensor_board is (x, y) in the layout,
-    # its extent along the lean is the projection, across it the 14 mm module length
+    # its extent along the lean is the projection, across it the 13.4 mm module length
     a = math.radians(az)
     sb_along = abs(pk["sensor_board"]["x"] * math.cos(a)) + abs(pk["sensor_board"]["y"] * math.sin(a))
     sb_across = abs(pk["sensor_board"]["x"] * math.sin(a)) + abs(pk["sensor_board"]["y"] * math.cos(a))
@@ -466,25 +491,27 @@ def test_case_screws_miss_the_bearing_seats():
 
 
 def test_optical_window_is_open_along_the_axis():
-    """The sensor must see the ball: a bundle of rays from the ball centre along the optical axis
-    (window_az, sensor_angle) has to leave the committed cradle without touching plastic until it
-    reaches the module. Until r2.4b the window cylinder was cut along local +z, away from the
-    sensor, and the whole 1.6 mm cup wall stayed solid in front of the lens; the trigonometric
-    window checks above stayed green because they never looked at the mesh."""
-    trimesh = pytest.importorskip("trimesh")
+    """The sensor must see the ball. Light goes from each of the lens's two apertures (domes 0.64
+    and 3.12 mm from the optical centre towards the lens end, photo) to the spot on the ball under
+    the optical axis; every ray from anywhere on either dome has to reach it without touching the
+    committed cradle. Until r2.4b the window was cut along +z, away from the sensor; then a centred
+    slot clipped a third of the outer dome. Both passed the old checks, which probed a symmetric
+    pattern round the axis."""
+    pytest.importorskip("trimesh")
     s = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
     mesh = load_layout_frame(CRADLE / "stl" / "cradle-19mm-pocket.stl")
-    th, a = math.radians(s["sensor_angle"]), math.radians(s["window_az"])
-    u = np.array([math.sin(th) * math.cos(a), math.sin(th) * math.sin(a), -math.cos(th)])
-    side = np.array([-math.sin(a), math.cos(a), 0.0])
-    up = np.cross(u, side)
-    c = np.array([0.0, 0.0, s["ball_centre_z"]])
-    ts = np.arange(s["ball_d"] / 2, s["sensor_pcb_plane_dist"] - _param("lens_h"), 0.1)
-    r = 0.8 * _param("optical_d") / 2
-    for off in (np.zeros(3), r * side, -r * side, r * up, -r * up):
-        pts = c + off + np.outer(ts, u)
-        hit = mesh.contains(pts)
-        assert not hit.any(), f"plastic on the optical path at t = {ts[hit][0]:.2f} mm (offset {off.round(2)})"
+    face = s["ball_d"] / 2 + _param("lens_z") + _param("lens_shim")
+    spot = np.array([0.0, 0.0, -s["ball_d"] / 2 + 0.05])
+    to_lens_end = -_param("conn_end")
+    r = 0.95 * _param("aperture_d") / 2
+    ts = np.linspace(0.0, 1.0, 400)
+    for off in _param_list("lens_apertures"):
+        for dx, dy in [(0, 0), (r, 0), (-r, 0), (0, r), (0, -r), (0.7 * r, 0.7 * r), (-0.7 * r, -0.7 * r)]:
+            a = np.array([dx, to_lens_end * off + dy, -face + 0.02])
+            pts = np.array([_to_layout(*(a + (spot - a) * k), s) for k in ts])
+            hit = mesh.contains(pts)
+            assert not hit.any(), (f"ray from the aperture at {off} mm (+{dx:.2f}, {dy:.2f}) runs "
+                                   f"{hit.mean():.0%} through plastic")
 
 
 def test_module_sits_at_the_window_azimuth():
@@ -502,6 +529,83 @@ def test_module_sits_at_the_window_azimuth():
                              capture_output=True, text=True, timeout=600)
         assert res.returncode == 0, res.stderr
         v = load_layout_frame(out).vertices
-    cx, cy = v[:, 0].mean(), v[:, 1].mean()
-    az = math.degrees(math.atan2(cy, cx)) % 360
-    assert abs((az - s["window_az"] + 180) % 360 - 180) < 2.0, f"module at {az:.1f} deg, window at {s['window_az']}"
+    along, across = _lean_frame(v[:, 0], v[:, 1], s["window_az"])
+    assert along.min() > 8.0, f"part of the module sits {along.min():.1f} mm from the axis, not on the window side"
+    assert abs(across).max() < _param("sensor_pcb_l") / 2 + 7.0, "the module dummy reaches round the cup"
+
+
+def _render_scad(expr, out):
+    """Render cradle.scad with its last line (the export) replaced by expr, in the layout frame."""
+    src = SCAD.read_text()
+    last = "mirror([0, 1, 0]) dispatch();"
+    assert src.rstrip().endswith(last)
+    tmp = SCAD.parent / f".test_{out.stem}.scad"
+    tmp.write_text(src.rstrip()[: -len(last)] + expr + "\n")
+    try:
+        res = subprocess.run([openscad(), "--backend", "manifold", "-o", str(out), str(tmp)],
+                             capture_output=True, text=True, timeout=600)
+    finally:
+        tmp.unlink()
+    if "Current top level object is empty" in res.stderr:     # OpenSCAD exits 1 on an empty export
+        return 0.0
+    assert res.returncode == 0, res.stderr
+    trimesh = pytest.importorskip("trimesh")
+    return abs(trimesh.load(out, force="mesh").volume)
+
+
+@pytest.mark.skipif(openscad() is None, reason="openscad not installed")
+def test_real_module_fits_and_its_lens_face_seats(tmp_path):
+    """The maker's module (github.com/sekigon-gonnoc/small-mouse-sensor-module, 13.4 x 7.4 board,
+    9.06 x 7.4 lens body, FH19C on the lens side) sits in the sleeve without overlapping plastic,
+    and its lens face really rests on the cavity floor: a lens 0.05 mm taller collides, one 0.05 mm
+    shorter is free. Until r2.4b the cradle was drawn for an unsourced 14 x 8 module whose lens
+    body (7 x 6 cavity) the real one does not fit (issues/mech-cradle-real-module.md)."""
+    assert _param("sensor_pcb_l") == 13.4 and _param("sensor_pcb_w") == 7.4
+    assert _param("lens_l") == 7.4 and _param("lens_w") == 9.06
+    assert _render_scad("intersection() { cradle(); sensor_dummy(); }", tmp_path / "fit.stl") < 0.01
+    lens = ("intersection() {{ cradle(); sensor_frame() translate([-lens_l / 2 + 0.3, lens_y[0] + 0.3, -L_pcb])"
+            " cube([lens_l - 0.6, lens_y[1] - lens_y[0] - 0.6, lens_h + {d}]); }}")
+    assert _render_scad(lens.format(d=0.05), tmp_path / "tall.stl") > 0.1, "the lens face does not reach the floor"
+    assert _render_scad(lens.format(d=-0.05), tmp_path / "short.stl") < 0.01
+
+
+@pytest.mark.skipif(openscad() is None, reason="openscad not installed")
+def test_ffc_leaves_the_sleeve_towards_the_keys(tmp_path):
+    """The cable leaves the FH19C in the board plane, out of the module's short end, and has to
+    get out of the sleeve through the end wall on the key side (layout -y), where J1 is."""
+    free = ("intersection() { cradle(); sensor_frame() translate([-ffc_w / 2, y_conn_end - 2.3, -L_pcb + 0.35])"
+            " cube([ffc_w, 14, 0.15]); }")
+    assert _render_scad(free, tmp_path / "out.stl") < 0.01, "the cable runs into plastic on its way out"
+    trimesh = pytest.importorskip("trimesh")
+    out = tmp_path / "stub.stl"
+    res = subprocess.run([openscad(), "--backend", "manifold", "-D", 'part="sensor_dummy"', "-o", str(out), str(SCAD)],
+                         capture_output=True, text=True, timeout=600)
+    assert res.returncode == 0, res.stderr
+    v = load_layout_frame(out).vertices
+    assert v[:, 1].min() < -8.5, "the cable stub does not point to the key side (layout -y)"
+
+
+def test_skin_over_the_lens_cavity_is_printable():
+    """The lens body is as wide as the board, so its cavity's upper edge comes within 0.5 mm of
+    the cradle top. Two 0.2 mm layers plus margin must stay: no ray from that edge may leave the
+    part through less than 0.45 mm of plastic."""
+    trimesh = pytest.importorskip("trimesh")
+    s = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
+    mesh = load_layout_frame(CRADLE / "stl" / "cradle-19mm-pocket.stl")
+    face = s["ball_d"] / 2 + _param("lens_z") + _param("lens_shim")
+    half_w = _param("sensor_pcb_w") / 2 + _param("sensor_pcb_gap")
+    world = lambda x, y, z: _to_layout(x, y, z, s)
+    worst = 9.0
+    for y in np.linspace(-6.5, 2.0, 6):
+        p = world(-(half_w - 0.01), y, -face - 0.02)
+        assert not mesh.contains([p])[0], "probe not inside the lens cavity"
+        for el in np.radians([30, 50, 70, 90]):
+            for az in np.linspace(0, 2 * np.pi, 16, endpoint=False):
+                d = np.array([math.cos(el) * math.cos(az), math.cos(el) * math.sin(az), math.sin(el)])
+                ts = np.arange(0.01, 3.0, 0.01)
+                ins = mesh.contains(p + np.outer(ts, d))
+                if ins.any() and (~ins[np.argmax(ins):]).any():
+                    i0 = np.argmax(ins)
+                    worst = min(worst, ts[i0 + np.argmax(~ins[i0:])] - ts[i0])
+    assert worst < 2.0, "no probe met plastic: the probes are not at the cavity edge"
+    assert worst >= 0.45, f"only {worst:.2f} mm of plastic over the lens cavity"
