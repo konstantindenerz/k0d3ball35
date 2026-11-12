@@ -8,7 +8,7 @@
  "hardware/case/preview/lid-foot-right.png": "74f958d1d4",
  "hardware/case/preview/lid-hinge-right.png": "0f382801d8",
  "hardware/case/preview/lid-on-right.png": "5fb87d0e7c",
- "hardware/case/preview/section-right.png": "89788d1598",
+ "hardware/case/preview/section-right.png": "84e246578c",
  "hardware/case/preview/tray-bottom-right.png": "79eaa04cc7",
  "hardware/case/stl/box-cap-left.stl": "a7d838ad52",
  "hardware/case/stl/box-cap-right.stl": "76485b2494",
@@ -53,8 +53,8 @@
  "hardware/right-pcb/renders/layers/outline.svg": "6b3434ceda",
  "hardware/right-pcb/renders/right-pcb-bottom.png": "a8770e3a2d",
  "hardware/right-pcb/renders/right-pcb-top.png": "d0dc0896a3",
- "hardware/trackball-cradle/preview/assembly-19mm-pocket.png": "f031be9198",
- "hardware/trackball-cradle/preview/section-19mm-pocket.png": "f0c77cbd3e",
- "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl": "9150ff6e37",
+ "hardware/trackball-cradle/preview/assembly-19mm-pocket.png": "d069c22167",
+ "hardware/trackball-cradle/preview/section-19mm-pocket.png": "e5d8cc3eca",
+ "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl": "eaaec01c98",
  "spec/images/concept-render.png": "7a3047db4f"
 }

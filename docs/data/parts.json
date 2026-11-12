@@ -528,7 +528,7 @@
     23.05,
     10.53
    ],
-   "triangles": 7208,
+   "triangles": 7196,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -686,7 +686,7 @@
      "rim_z": 3.425,
      "rim_below_equator": 1.0,
      "lens_reference_plane_dist": 2.4,
-     "sensor_pcb_plane_z": -1.671,
+     "sensor_pcb_plane_z": -2.073,
      "lowest_plastic_z": -7.1,
      "floor_z": -7.1,
      "cup_outer_d": 23.05,

@@ -1190,9 +1190,9 @@
      ]
     ],
     "sensor_board": {
-     "width": 4.4,
+     "width": 5.0,
      "height": 13.4,
-     "x": 0.4,
+     "x": 0.9,
      "y": 66.0
     },
     "housing_footprint": [
@@ -1430,12 +1430,12 @@
     "ball_top_above_pcb_top": 13.95,
     "cup_outer_d": 23.05,
     "lowest_plastic_z": -7.1,
-    "lowest_sensor_board_z": -5.95437,
+    "lowest_sensor_board_z": -6.35585,
     "lens_reference_plane_dist": 2.4,
     "bearing_contact_z": -1.03832,
     "rim_z": 3.425,
     "floor_z": -7.1,
-    "sensor_pcb_plane_z": -1.67127,
+    "sensor_pcb_plane_z": -2.07276,
     "housing_x": 10.4,
     "housing_y": 17.4,
     "housing_top_z": 3.425,
