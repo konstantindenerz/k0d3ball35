@@ -22,7 +22,7 @@ BUILD      := build
 SCHS := $(wildcard $(HALF_SCHS))
 PCBS := $(wildcard $(HALF_PCBS))
 
-.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case site share-card pcb-3d exploded site-serve print print-check print-plots clean help
+.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case site share-card pcb-3d exploded site-serve print print-check print-plots release-zip clean help
 
 all: layout board erc drc gerbers
 
@@ -117,3 +117,7 @@ docs-check: ## Run only the documentation and ticket checks
 clean:
 	rm -rf $(BUILD) .pytest_cache
 	find . -name __pycache__ -type d -prune -exec rm -rf {} +
+
+TAG ?= dev
+release-zip: ## Pack the printed parts into build/k0d3ball35-print-$(TAG).zip (what a tag attaches to its release)
+	python3 scripts/release_zip.py $(TAG)
