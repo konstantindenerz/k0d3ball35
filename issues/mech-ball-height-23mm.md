@@ -34,7 +34,7 @@ module fits. The 65 degree mount has not been printed yet.
 - [ ] Lens distance with the 2.0 mm feeler gauge within 2.3 to 2.5 mm; otherwise set `lens_shim` and reprint
 - [ ] Measure the tight value: module 14.76 mm radial against the 15.5 mm notch apothem
 - [ ] Ball top measured on the assembled right half, within 0.3 mm of 23.75 mm over the desk
-- [ ] Module slides into the sleeve from the open back and seats on the shoulder; Kapton tape holds it
+- [ ] Module slides into the sleeve from the open back and seats with its lens face on the cavity floor; Kapton tape holds it
 - [ ] Lens gauge fits the 4 mm window: a feeler blade may be too wide, use a 2.0 mm pin or drill shank
 - [ ] Two 0.3 mm first-layer slivers beside the FFC exit and a 0.7 mm wedge on the pocket wall top
   print or drop out cleanly and do not snag the cable

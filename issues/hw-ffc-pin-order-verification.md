@@ -16,8 +16,8 @@ faces: J1 sits on the key side of the right PCB with the cable on top of the boa
 connector sits on the back of the sensor. The cable must therefore be a **type B** FFC (contacts
 on opposite faces at its two ends) and the pin order runs straight through, 1 to 1. Since r2.4 the
 far end is the bought PAW3222 module, whose pinout is the vendor's, so J1 follows it instead of
-the other way round. A wrong cable type connects nothing at one end; a wrong order now shorts 3V3
-to GND, because the module puts those two on the outer pins.
+the other way round. A wrong order shorts 3V3 to GND, because the module puts those two on the
+outer pins, and since r2.4b a type A cable is such a wrong order (see the correction at the end).
 
 ## Acceptance criteria
 
@@ -152,7 +152,7 @@ thanks to R3 and R2.
 
 ### Desk check 2026-11-11, r2.4 (current)
 
-The sensor daughterboard is gone (`hw-paw3222-variant`): r2.4 buys the 14 x 8 mm PixArt PAW3222
+The sensor daughterboard is gone (`hw-paw3222-variant`): r2.4 buys the 13.4 x 7.4 mm PixArt PAW3222
 module (sekigon-gonnoc / nogikes-ya, as in torabo-tsuki LP) and tilts it beside the ball, so
 `hardware/sensor-pcb/` and `tests/test_sensor_pcb_vs_cradle.py` were deleted. There is no second
 `.kicad_pcb` to read the far end from, so the module's pinout is a declared constant in
@@ -162,9 +162,9 @@ Module pinout (vendor's, the same one `spec/08-trackball-module.md` section 2.2 
 torabo-tsuki's module side): **1 3.3V, 2 CS, 3 MOTION, 4 SDIO, 5 SCLK, 6 GND**.
 
 Faces are unchanged from r2.2 on our side and equivalent on the module side: J1 is on the key side
-with the cable on top of the board, so its contact window points DOWN; the module's connector is on
-its back face, away from the ball, so the cable lies against that face and its contact window points
-UP and inwards. Opposite faces, so the cable stays **type B**.
+with the cable on top of the board, so its contact window points DOWN. (This paragraph assumed the
+module's connector on its back face; the real FH19C is on the lens side, see the correction at the
+end. The conclusion, type B, stands; the reason is the pin order, not the faces.)
 
 Why type B pairs pin i with pin i, without needing either board's coordinates. For one cable end
 write `m` for the direction the cable leaves the mouth and `c` for the normal from the contacts
@@ -201,13 +201,21 @@ this cost a pad relabelling in `scripts/k0d3/netlist.py` and nothing else:
 What got worse, and it is worth saying out loud. Until r2.3 VCC faced MOT across the cable and a
 laterally reversed cable was current-limited by R3 (1 k in series with MOTION) on our own sensor
 board. The module's fixed order puts 3.3V on pin 1 and GND on pin 6, so the two supply pins now sit
-at opposite cable edges, and R3 went with the board. The common mistakes are still harmless, because
-a type A cable, a cable swapped end for end and a cable inserted upside down all present insulation
-to the contacts at one end and connect nothing. But a cable whose contact window is on the wrong
-face at one end would short 3.3V to GND. Hence: continuity test before power, every time, and the
+at opposite cable edges, and R3 went with the board. A cable swapped end for end or inserted upside
+down presents insulation at one end and connects nothing; a type A cable, since r2.4b, can make
+contact and short 3.3V to GND (correction below). Hence: continuity test before power, every time, and the
 palindromic-pinout idea stays parked in `spec/08-trackball-module.md` section 6.
 
 Open assumption. `p = m x c` needs the same sign at both ends, i.e. the module has to call the same
 end of its contact row "1" as the Hirose part does. Two identical footprints made that free in
 r2.2; a bought module does not. This is the one thing in the chain that no file in this repository
 can settle, and it is a continuity test on the first physical cable.
+
+**Correction (2026-11-12, `mech-cradle-real-module`).** The paragraph above says a type A cable
+"connects nothing". That held only for the assumed connector on the back of the module. The real
+module has its FH19C on the lens side, the cable leaves it in the board plane and twists 90 degrees
+on its way round the cup, and that twist can go either way. So a type A cable CAN be laid into
+contact at both ends, and then it reverses the pin order: J1's 3.3 V on the module's GND. Type B
+with the exposed metal down at J1 stays the right cable, and the docs now warn about type A
+explicitly (`tests/test_ffc_pin_order.py::test_a_type_a_cable_would_swap_supply_and_ground`). The
+continuity test before power is now the only guard against that mistake, not a formality.

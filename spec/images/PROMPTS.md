@@ -118,7 +118,7 @@ Aspect 1:1. Trackball cradle cross-section.
 ```prompt
 Technical cross-section drawing of a trackball module in a case pocket: a 19 mm ball resting on
 three small 2 mm ceramic balls set in a printed cup whose rim ends just below the equator, beside
-the cup a small 14 x 8 mm sensor board tilted 65 degrees in a printed sleeve, looking at the
+the cup a small 13.4 x 7.4 mm sensor board tilted 65 degrees in a printed sleeve, looking at the
 ball's lower flank through a small window, the cup standing on a shallow case floor beside a
 1.6 mm PCB, two screws coming up through the floor into the cup, a dimension arrow "2.4 mm"
 between lens and ball surface, the ball top about 3 mm above the keycaps, white background, thin
@@ -132,7 +132,7 @@ Aspect 4:3. Exploded view of the trackball module.
 ```prompt
 Exploded technical rendering on white, vertically stacked with thin guide lines: a white 19 mm
 ball, a beige printed cup whose rim ends just below the ball's equator with a tilted sleeve on one
-side, three small ceramic balls shown slightly lifted out of their seats, a small green 14 x 8 mm
+side, three small ceramic balls shown slightly lifted out of their seats, a small green 13.4 x 7.4 mm
 sensor module with a flat flex cable sliding into the tilted sleeve, two M2 screws that pass the
 case floor into the cup, a beige case floor with a shallow pocket and two screw holes, soft studio
 lighting, clean.

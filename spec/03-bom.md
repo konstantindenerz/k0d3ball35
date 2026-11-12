@@ -58,9 +58,9 @@ well to print. The ball half still drains faster because of the sensor.
 
 | Qty | Part | Spec | Source | Price | LCSC | Notes |
 |-----|------|------|--------|-------|------|-------|
-| 1 | Trackball sensor module | PixArt PAW3222 with lens on a 14 x 8 mm board, 6-pin 0.5 mm FPC connector (pinout 3.3V, CS, MOTION, SDIO, SCLK, GND) | beekeeb, https://shop.beekeeb.com (ships worldwide, free shipping from 80 USD), or BOOTH, https://booth.pm | see shop | | The module torabo-tsuki LP uses. Shipping to the EU is fine. Sits tilted in the cradle sleeve (`spec/08-trackball-module.md`) |
+| 1 | Trackball sensor module | PixArt PAW3222 with lens on a 13.4 x 7.4 mm board, 6-pin 0.5 mm FPC connector (Hirose FH19C, lens side) (pinout 3.3V, CS, MOTION, SDIO, SCLK, GND) | beekeeb, https://shop.beekeeb.com (ships worldwide, free shipping from 80 USD), or BOOTH, https://booth.pm | see shop | | The module torabo-tsuki LP uses. Shipping to the EU is fine. Sits tilted in the cradle sleeve (`spec/08-trackball-module.md`) |
 | 2 | FPC connector J1 | Hirose FH12-6S-0.5SH(55), 6 pin, 0.5 mm, bottom contact, ZIF slider | Mouser DE 798-FH12-6S-0.5SH55 | about 1 EUR each | C2764370 | One on the right PCB (key side), one spare for rework; the left PCB has none. The LCSC code is a pin-compatible equivalent for a JLCPCB assembly run |
-| 1 (+1) | FFC cable | 6 conductor, 0.5 mm pitch, 30 to 40 mm, **opposite-side contacts (type B)** | AliExpress, Mouser DE (Molex 15166 series) | about 0.50 EUR | | Type B is mandatory: J1 and the module look at the cable from opposite faces, a type A cable connects nothing |
+| 1 (+1) | FFC cable | 6 conductor, 0.5 mm pitch, 40 mm, **opposite-side contacts (type B)** | AliExpress or LCSC, listed as "6P 0.5 mm reverse" (Molex calls opposite-side contacts "Type D"; its stock lengths are 30 and 51 mm, neither fits) | about 0.50 EUR | | Type B is mandatory. A type A cable can be twisted so that it makes contact too, and then it reverses the pin order: J1's 3.3 V lands on the module's GND. Never fit type A. The route is 32 mm (`spec/08-trackball-module.md` section 2) |
 
 ## 7. Trackball and bearings
 

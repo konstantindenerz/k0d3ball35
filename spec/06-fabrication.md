@@ -48,7 +48,7 @@ squared off; JLCPCB mills it without a note.
 
 ## Sensor
 
-Nothing to order from the fab house. Since r2.4 the sensor is the ready-made 14 x 8 mm PixArt
+Nothing to order from the fab house. Since r2.4 the sensor is the ready-made 13.4 x 7.4 mm PixArt
 PAW3222 module (sekigon-gonnoc / nogikes-ya), bought as a part and listed in `spec/03-bom.md`
 with the other bought parts.
 

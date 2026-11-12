@@ -11,7 +11,7 @@ created: 2026-11-05
 
 ## Context
 
-Since r2.4 the trackball sensor is the bought 14 x 8 mm PAW3222 module (the one torabo-tsuki LP
+Since r2.4 the trackball sensor is the bought 13.4 x 7.4 mm PAW3222 module (maker drawing: github.com/sekigon-gonnoc/small-mouse-sensor-module; until r2.4b the repo said an unsourced 14 x 8, see `mech-cradle-real-module`) (the one torabo-tsuki LP
 uses), not our own PMW3610 board. It is narrow enough in the tilt plane to sit 65 degrees beside
 the ball, which made the flatter stack possible (`mech-ball-height-23mm`), it draws roughly half
 the PMW3610's tracking current, and it takes a board out of fabrication.

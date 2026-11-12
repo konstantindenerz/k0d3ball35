@@ -31,7 +31,7 @@ One cart; everything ships from the same warehouse.
 | [ ] | 1 (+1) | FPC connector, 6 pin 0.5 mm, bottom contact | 798-FH12-6S-0.5SH55 | open | for the right PCB (J1, key side); since r2.4 the sensor module brings its own connector |
 | [ ] | 2 | Battery connector JST PH 2.0 side entry | 306-S2B-PH-SM4-TB | open | |
 | [ ] | 2 | Reset button, side actuated | 667-EVQ-P7A01P | open | |
-| [ ] | 1 (+1), optional | FFC cable 6 pos 0.5 mm, **type B** (opposite-side contacts), 30 to 40 mm | Molex 15166 series, 6 circuits, type B | open | type B is mandatory, a type A cable does not connect (`spec/08-trackball-module.md` section 2); or take the AliExpress cable below |
+| [ ] | 1 (+1), optional | FFC cable 6 pos 0.5 mm, **type B** (opposite-side contacts), 40 mm | 6P 0.5 mm "reverse" (Molex: "Type D"), 40 mm. Molex stocks 30 mm (too short, the route is 33.6) and 51 mm (bows); a 40 mm listing is not confirmed yet, check before ordering | open | type B is mandatory: a type A cable can make contact and then reverses the pin order, 3.3 V onto GND |
 
 ## 3. EU shops (open)
 
@@ -57,8 +57,8 @@ One cart; everything ships from the same warehouse.
 
 | Done | Qty | Part | Spec | Status | You do |
 |------|-----|------|------|--------|--------|
-| [ ] | 1 | PAW3222 trackball sensor module, 14 x 8 mm | beekeeb (https://shop.beekeeb.com, worldwide, free shipping from 80 USD) or BOOTH (https://booth.pm); price: see shop | open | EU shipping is fine; check the pinout on arrival (1 3.3V, 2 CS, 3 MOTION, 4 SDIO, 5 SCLK, 6 GND) |
-| [ ] | 2 | FFC cable (alternative to Mouser) | 6 pin 0.5 mm, 30 to 40 mm, **type B** opposite-side contacts | open | only one of the two cable lines is needed; check the two ends against the light before ordering a batch |
+| [ ] | 1 | PAW3222 trackball sensor module, 13.4 x 7.4 mm | beekeeb (https://shop.beekeeb.com, worldwide, free shipping from 80 USD) or BOOTH (https://booth.pm); price: see shop | open | EU shipping is fine; check the pinout on arrival (1 3.3V, 2 CS, 3 MOTION, 4 SDIO, 5 SCLK, 6 GND) |
+| [ ] | 2 | FFC cable (alternative to Mouser) | 6 pin 0.5 mm, 40 mm, **type B** opposite-side contacts | open | only one of the two cable lines is needed; check the two ends against the light before ordering a batch |
 
 ## 6. JLCPCB and LCSC (open)
 

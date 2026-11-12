@@ -99,7 +99,7 @@
  * (At the pole both are 1:1; at the equator X would read nothing.) res-cpi is raised by
  * 1 / cos 65 so X reaches the target, and Y is scaled down by cos 65 = 0.4226 ~ 11/26
  * (0.4231). This assumes the sensor's X axis runs across the tilt plane, along the
- * module's 14 mm edge: if the cursor is fast up/down and slow sideways, move the scale
+ * module's 13.4 mm edge: if the cursor is fast up/down and slow sideways, move the scale
  * to zip_x_scaler. Layer overrides replace the base processors, so each one repeats it.
  * Starting value from geometry; tune on hardware, issues/fw-cpi-tuning-19mm.md. */
 #define BALL_TILT <&zip_y_scaler 11 26>

@@ -105,10 +105,11 @@ The left PCB has no J1 and no sensor nets.
 
 Connector: Hirose FH12-6S-0.5SH (0.5 mm pitch, 6 contacts, bottom contact, ZIF slider) or a
 pin-compatible LCSC equivalent. Cable: 0.5 mm pitch, 6 conductor, **opposite-side contacts
-(type B)**, 30 to 40 mm long. J1 and the module look at the cable from opposite faces, which is
-what makes type B the right cable and the pin order straight through.
+(type B)**, 40 mm long, pin order straight through. A type A cable can be twisted into contact
+and then reverses the pin order (3.3 V onto GND), so it must never be fitted
+(`spec/08-trackball-module.md` section 2).
 
-Sensor: the bought PAW3222 module, 14 x 8 mm, 3.3 V, tilted 65 degrees beside the ball in the
+Sensor: the bought PAW3222 module, 13.4 x 7.4 mm, 3.3 V, tilted 65 degrees beside the ball in the
 cradle (`spec/08-trackball-module.md`). Lens distance 2.4 mm nominal (2.2 to 2.6).
 
 ## 4. Power

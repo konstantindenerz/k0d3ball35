@@ -48,16 +48,9 @@ Three variants were compared as top views of the real layout:
 
 ## Notes
 
-- Open, test print: check the FFC route from the +x module round the cup to J1 (-20.6, 47).
-  J1 sits at azimuth -112 deg from the ball, so the cable now runs about 112 deg round the cup
-  (key side, under the cover) instead of about 158 deg from +y before: a little shorter.
+- The FFC route was re-done with the real module in `mech-cradle-real-module`.
 - Found in review, on main since r2.4 and fixed here: the optical window was cut along local +z,
   away from the sensor, so the whole cup wall stood solid in front of the lens. It is now cut
   along -z, and `test_optical_window_is_open_along_the_axis` casts rays through the mesh.
   `test_module_sits_at_the_window_azimuth` checks the slot against the window independently.
-- Check before ordering: the docs give the FFC as 30 to 40 mm, but the route (sleeve back,
-  round the cup, over the edge into J1) estimates at 45 to 50 mm. Lay a paper strip on the test
-  print, then order a 50 mm type B cable if it confirms.
-- Found on the way, not caused by this change: the back-side dummy in `cradle.scad`
-  `sensor_dummy()` is a 10.1 x 16.2 mm block (PMW3610 package size) on the 14 mm PAW3222 module.
-  It overlaps the sleeve by 15.9 mm3, the same on main. It only affects previews.
+- The 16.2 mm back-side dummy is gone with `mech-cradle-real-module`.

@@ -9,10 +9,10 @@ beside the right PCB and is connected to the PCB only by a 6-pin flat cable.
 
 | Item | Value |
 |------|-------|
-| Module | PixArt PAW3222 sensor with its lens on a 14 x 8 mm board, the module torabo-tsuki LP uses (sekigon-gonnoc / nogikes-ya design) |
+| Module | PixArt PAW3222 sensor on a 13.4 x 7.4 mm board, lens body 9.06 x 7.4 mm, Hirose FH19C connector on the lens side at the short end (maker drawing, github.com/sekigon-gonnoc/small-mouse-sensor-module, img/size.png); the module torabo-tsuki LP uses |
 | Source | beekeeb (ships worldwide, free shipping from 80 USD) or BOOTH; see `spec/03-bom.md` |
 | Supply | 3.3 V from the controller's VCC on the right PCB |
-| Interface | 3-wire SPI plus motion interrupt, 6-pin 0.5 mm FPC connector on the back of the module |
+| Interface | 3-wire SPI plus motion interrupt, 6-pin 0.5 mm FPC connector (FH19C) on the lens side, cable out of the short end |
 | Pinout | 1 3.3V, 2 CS, 3 MOTION, 4 SDIO, 5 SCLK, 6 GND |
 | Driver | `sekigon-gonnoc/zmk-driver-paw3222` (`pixart,paw3222`); `res-cpi` 1444 with a Y scaler of 11/26 for the tilt, about 610 CPI on both axes (`spec/05-firmware.md`) |
 
@@ -26,7 +26,7 @@ Why this module: tilted, one edge of a sensor board swings down and the other sw
 upper edge has to stay under the cup rim. What limits the tilt is the board's width in the tilt
 plane. The old PMW3610 board could not get narrower than about 13 mm there (the sensor sits in a
 16.96 x 8.60 mm cutout), so its best legal angle was 38 degrees, worth 0.06 mm of ball height.
-The 8 mm module allows 65 degrees.
+The 7.4 mm module allows 65 degrees.
 
 ## 2. Connector and cable
 
@@ -39,22 +39,26 @@ pin:
 | Right PCB (J1) | VCC 3.3 V | TB_NCS | TB_MOT | TB_SDIO | TB_SCLK | GND |
 | Module | 3.3V | CS | MOTION | SDIO | SCLK | GND |
 
-Cable: 6 conductors, 0.5 mm pitch, 30 to 40 mm, **opposite-side contacts (type B)**. J1 looks at
-the cable from below (the cable lies on top of the board), the module's connector from the other
-face, so a type B cable joins pin 1 to pin 1. A type A cable presents insulation to one connector
-and connects nothing. `tests/test_ffc_pin_order.py` derives this; the first physical cable gets a
-continuity check (`issues/hw-ffc-pin-order-verification.md`).
+Cable: 6 conductors, 0.5 mm pitch, 40 mm, **opposite-side contacts (type B)**, twisted so its
+exposed metal faces DOWN at J1. Both connectors take the cable on the face towards their own
+board, and on its way the cable twists 90 degrees, which can go either way. A type B cable then
+joins pin 1 to pin 1. **Type B is mandatory.** A type A cable can be twisted so that it makes contact too, and then it reverses the pin order: J1's 3.3 V lands on the module's GND. Never fit type A. `tests/test_ffc_pin_order.py` derives this; the first physical cable
+gets a continuity check before power (`issues/hw-ffc-pin-order-verification.md`).
 
-Cable route: the FFC leaves the sleeve below the PCB, climbs past the PCB plane in the 3.98 mm gap
-between the cup (23.05 mm) and the PCB notch (apothem 15.5 mm), runs round the cup above
-the PCB and folds over the board edge into J1. The lock stays reachable with the keyboard
-assembled, so the module can be unplugged and lifted out without touching the PCB.
+Cable route: the FFC leaves the module's connector in the board plane, out of the module's short
+end on the key side, straight through a slot in the sleeve's end wall (2.1 mm). It runs about 81
+degrees round the cup as an upright band, under the retainer clip's pins and the pocket cover,
+twists flat and lies down over the board edge into J1. Mouth to mouth that is 23.8 mm, 33.6 mm
+with both insertions
+(`scripts/k0d3/ffc_route.py`, held against the 40 mm cable by `tests/test_ffc_route.py`). The lock
+stays reachable with the keyboard assembled, so the module can be unplugged and lifted out
+without touching the PCB.
 
 ## 3. Geometry and heights
 
 The ball rests on three 2.0 mm ceramic balls in an open cup. The module sits in a sleeve beside
 the cup, tilted 65 degrees from vertical (`sensor_angle`) and leaning towards +x, under the middle
-column where the PCB already ends (`sensor_az` = 180, window azimuth 0 in the layout frame); it looks at the ball through a 4 mm window 25 degrees
+column where the PCB already ends (`sensor_az` = 180, window azimuth 0 in the layout frame); it looks at the ball through a 4 x 8 mm window slot 25 degrees
 below the equator. Nominal lens distance 2.4 mm (window 2.2 to 2.6, aim for 2.3 to 2.5).
 
 The cup floor sets the ball height (`drop_cup` 11.53 mm against `drop_board` 10.65 mm for the

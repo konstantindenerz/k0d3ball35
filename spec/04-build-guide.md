@@ -71,11 +71,11 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 2 | MSK-12C02 slide switch | bottom face, inner edge | 6 |
 | 2 | EVQ-P7A01P tact switch | bottom face, below the controller | 6 |
 | 2 | Hirose FH12-6S-0.5SH (or LCSC clone) 6-pin 0.5 mm FPC connector | one on the right PCB (key side), one spare | 6 |
-| 1 (+1) | 6-conductor 0.5 mm FFC, **type B** (contacts on OPPOSITE faces at the two ends), 30 to 40 mm | right half | 11 |
+| 1 (+1) | 6-conductor 0.5 mm FFC, **type B** (contacts on OPPOSITE faces at the two ends), 40 mm | right half | 11 |
 | 2 | JST S2B-PH-SM4-TB battery connector | bottom face, below the controller, inside the battery well | 7 |
 | 2 | LiPo PKCELL LP552035, 350 mAh, protected, JST-PH plug | one per half, battery bay on the bottom face under the controller | 7 |
 | 2 | Kapton or foam pad, about 20 x 27 x 0.25 mm, plus thin double-sided tape | between PCB underside and cell | 7 |
-| 1 | PAW3222 trackball sensor module, 14 x 8 mm, assembled | cradle sleeve | 10 |
+| 1 | PAW3222 trackball sensor module, 13.4 x 7.4 mm, assembled | cradle sleeve | 10 |
 | 1 (+1) | 19.05 mm (3/4 inch) POM trackball, or the PandaKB TB19 phenolic ball | right half | 11 |
 | 3 (+3) | 2.0 mm ZrO2 ceramic bearing balls | cradle | 11 |
 | 1 | printed cradle (`hardware/trackball-cradle/stl/cradle-19mm-pocket.stl`) | right half, case pocket | 11 |
@@ -313,7 +313,8 @@ table are in [trackball module](08-trackball-module.md).
 
 1. Never touch the lens; clean it with a lens cloth only.
 2. Plug the **type B** FFC into the module's connector, close the lock. The pin order runs
-   straight through to J1 (pin 1 to pin 1); a type A cable connects nothing.
+   straight through to J1 (pin 1 to pin 1). A type A cable can make contact too and then reverses
+   the pin order, 3.3 V onto GND: it kills the module. Check the type before plugging in.
 3. Bench test: other cable end into J1 (exposed metal down), right half on USB. The ZMK log shows
    the sensor at boot, and the cursor moves when you wave a finger 2 mm over the lens.
 
@@ -332,19 +333,20 @@ the ball in when the half is turned over; otherwise the lid covers the ball in t
    seat from inside the cup until it bottoms out. A dot of cyanoacrylate at each seat rim, never
    under the ball. Let it cure 10 minutes.
 2. Roll the trackball in the cup: no click, no scrape. A scrape means a bearing is not seated.
-3. Slide the module into the tilted sleeve from its open back, lens first, cable out through the
-   notch in the sleeve wall, until the board rests on the shoulder round the lens window.
+3. With the cable plugged in, slide the module into the tilted sleeve from its open back, lens
+   first, the cable through the slot in the sleeve's end wall on the key side, until the lens
+   face rests on the floor of its cavity.
    Tape the open back shut with a strip of Kapton so the module cannot slide back.
 4. Lens distance (ball out): a 2.0 mm feeler gauge on the lens through
-   the 4 mm window must sit flush with the cup's inner surface (2.0 + 0.4 mm ball gap = 2.4 mm).
+   the 4 x 8 mm window must sit flush with the cup's inner surface (2.0 + 0.4 mm ball gap = 2.4 mm).
    Outside 2.3 to 2.5 mm: set `lens_shim` and reprint (cradle README).
 
 ![Checking the lens-to-ball distance with a feeler gauge](images/img-build-step-lens-gauge.png)
 
 5. Lower the cradle into the case pocket and fasten it with two M2 x 8 countersunk
    self-tapping screws from below, through the floor into the cup skirt. Snug, not tight.
-6. Route the cable up past the sleeve on the outer (+x) side, round the cup on the key side
-   below the cup rim (the clip's pins hang down there), and over the board edge into
+6. Lay the cable round the cup on the key side as an upright band, below the cup rim (the
+   clip's pins hang down there), twist it flat and lay it over the board edge into
    J1 on the **key side**, exposed metal **down**. Close the lock. Fold gently, no crease.
 7. Drop the ball in: it spins freely, a strip of paper passes between ball and rim all round.
    (In the finished case it goes in last, through the pocket cover, chapter 12.)
@@ -463,7 +465,7 @@ reconnect after a power cycle.
 | thumb catches a retainer claw | clip on the wrong way round, or a hand that sweeps wide | the pins fit one way only, claws left and right of the ball; otherwise run without the clip (the lid still covers transport) |
 | ball rubs on the PCB notch | cradle not centred in the pocket | loosen the two floor screws, centre the cup in the notch, retighten |
 | module will not go into the pocket | wrong print or a scrap board with the old octagonal notch; the corner towards the keys must be square | reprint the tray and check the notch against `hardware/layout/output/outline-right.dxf` |
-| FFC creases at the board edge | too little radius in the fold, or the cable is too long and bows in the pocket | 30 to 40 mm cable, let it arc above the board before pressing it down, deburr the board edge |
+| FFC creases at the board edge | too little radius in the fold, or the cable is too long and bows in the pocket | 40 mm cable, let it arc above the board before pressing it down, deburr the board edge |
 | switch will not go in | socket tilted, bent switch pin | reflow the socket flat, straighten the pin |
 
 Measurements that settle most arguments: cell 3.6 to 4.2 V; RAW equals cell voltage with the
