@@ -33,17 +33,20 @@ pocket_rim_drop = 0.5;         // the pocket wall stops this far below the cup r
                                // the ball sits low enough that rim_z would otherwise be above it.
 
 // ---------------------------------------------------------------- floors
-well_floor_z    = -7.6;        // battery well floor: 6.0 under the PCB underside (tails 0.1 + pad 0.25 +
-                               // LP552035 5.7 mm + 0.1). Was -11.6, shared with the pocket floor until r2.4.
+well_floor_z    = -8.1;        // battery well floor: 6.5 under the PCB underside. Socket solder joints
+                               // 0.4 + Kapton 0.1 + LP552035 5.7 mm (datasheet maximum) + 0.3 for the
+                               // cell to breathe. Was 6.0, which the old sum (0.1 + 0.25 + 5.7 + 0.1 =
+                               // 6.15) already overran; a pouch cell must never be clamped.
 pocket_floor_z  = -7.1;        // cradle floor, cradle stack.json floor_z. Since r2.4 the sensor is
                                // tilted beside the ball, so the pocket no longer sets the case depth.
-floor_t         = 2.0;         // floor under the deepest well; the underside is flat everywhere
+floor_t         = 2.0;         // floor under the pocket; the underside is flat everywhere
+well_floor_t    = 1.5;         // floor under the battery well. Thinner than floor_t so the deeper well
+                               // adds no height; the two foot recesses under it keep 0.7 mm of skin.
 floor_z_key     = -pcb_t - under_pcb_clear;          // -4.6
-// One flat underside for the whole half: the deepest well sets it. Since r2.4 the two wells are
-// no longer at the same level - the battery needs -7.6, the pocket only -7.1 - so the floor comes
-// out 2.0 mm thick under the battery and 2.5 mm under the pocket, which is what the countersunk
+// One flat underside for the whole half: the deepest well sets it. The battery well reaches
+// -8.1 over a 1.5 mm floor and the pocket -7.1 over 2.5 mm, which is what the countersunk
 // cradle screws need (case_screw_floor_left in case.scad).
-base_z          = min(well_floor_z, pocket_floor_z) - floor_t;   // -9.6
+base_z          = min(well_floor_z - well_floor_t, pocket_floor_z - floor_t);   // -9.6
 
 // ---------------------------------------------------------------- PCB fastening
 // Default: M2 heat-set inserts (brass, M2 x 3 mm, OD about 3.5) in the standoffs and the cap

@@ -57,7 +57,7 @@ person needs to order parts, build the two halves and flash them.
 Boxy, angular printed case in the style of the reference build: flat tray following the stepped
 PCB outline, walls flush with the keycap skirts, a rectangular controller box at the inner edge
 with the LED window, USB-C opening, power switch slot and reset hole (the controller top is only
-+5.7 mm now, so raising the box is a styling choice), a 6.0 mm deep battery well under the
++5.7 mm now, so raising the box is a styling choice), a 6.5 mm deep battery well under the
 controller block on both halves for the LP552035 cell (`battery` block in `points-*.json`), a 32 mm
 pocket beside the right PCB for the ball and the tilted sensor module, bumper recesses. A hinged two-plate lid per half covers keys and ball
 for transport (the cup is open; the lid, or the optional clip-on retainer, keeps the ball in a bag) and folds

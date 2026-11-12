@@ -128,7 +128,7 @@ rectangle on both boards and is printed on the back silkscreen:
 |------|-------|
 | Bay (back of the PCB, layout frame) | centre (-53.9, +17.5), 21 x 41 mm, i.e. x -64.4 to -43.4, y -3 to +38 (`battery.bay` in the layout yaml); it starts between the two controller hole rows and ends above the reset button |
 | Cell | PKCELL LP552035, 350 mAh, 5.7 x 20 x 37 mm maximum including the protection circuit, JST-PH plug (Eckstein, Germany); lead end towards +y |
-| Well depth | 6.0 mm below the PCB underside (flush controller pins 0.1 + 0.25 mm pad + 5.7 mm cell), floor at z = -7.6 mm; the pins must be flush (conthrough, or trimmed after soldering) |
+| Well depth | 6.5 mm below the PCB underside (solder joints 0.4 + Kapton 0.1 + 5.7 mm cell + 0.3 mm air), floor at z = -8.1 mm; the pins must be flush (conthrough, or trimmed after soldering) |
 | Clearances | bay 1.75 mm from the top PCB edge, 0.37 mm from the left controller hole pads, 1.25 mm from the reset button, 2.6 mm from the inner column's hot-swap sockets; checked by the layout generator against every back-side part |
 | Alternatives | any cell up to 20.5 x 37.5 x 5.7 mm with a PH 2.0 plug, e.g. 502030 or 402025; 6 and 7 mm cells no longer fit |
 
@@ -241,7 +241,7 @@ and derives everything from it; the numbers below are the contract between PCB a
 |------|-------|
 | Wall top (rim) | +5.0 mm, beside the keycap skirts |
 | Pocket cavity above the PCB plane | notch (octagon with the square corner) + 0.2 mm, union with the 28 mm cradle circle; 2 mm wall around it |
-| Case floor | -7.6 mm under the battery bay, J3 and RB1 (6.0 mm well), -7.1 mm under the cradle; underside -9.6 mm |
+| Case floor | -8.1 mm under the battery bay, J3 and RB1 (6.5 mm well), -7.1 mm under the cradle; underside -9.6 mm |
 | Floor under the key area | -4.6 mm (3.0 mm for sockets and diodes) |
 | PCB fastening | M2 machine screws from the top into heat-set inserts in 6 mm standoffs on the five mounting holes |
 | Controller box | walls to +8.7 mm, separate cap with its roof underside at +6.7 mm (controller top +5.7 plus 1 mm) |

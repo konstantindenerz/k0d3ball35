@@ -49,7 +49,7 @@ Quantities marked "+n" include recommended spares.
 | Qty | Part | Spec | Source | Price | Notes |
 |-----|------|------|--------|-------|-------|
 | 2 | LiPo PKCELL LP552035 | 350 mAh, 5.7 x 20 x 37 mm max. incl. protection circuit (S-8261), JST-PH 2.0 plug, 10 cm leads | https://eckstein-shop.de/LiPo-Akku-Lithium-Ion-Polymer-Batterie-37V-350mAh-mit-JST-PHR-2-Stecker-LP552035 | 4.97 EUR each | One per half, in the battery bay under the PCB below the controller; plugs into J3. Same cell at tinytronics.nl |
-| | Alternatives | 502030 (250 mAh, 20 x 30 x 5 mm), 402025 (150 mAh, Eckstein LP402025) | 42keebs, Eckstein, Amazon | | Any cell up to 20.5 x 37.5 x 5.7 mm with a PH 2.0 plug fits: the case well is 6.0 mm deep. 6 and 7 mm cells (602025, 702025, 602030) do not. Mouser does not ship lithium cells to Germany |
+| | Alternatives | 502030 (250 mAh, 20 x 30 x 5 mm), 402025 (150 mAh, Eckstein LP402025) | 42keebs, Eckstein, Amazon | | Any cell up to 20.5 x 37.5 x 5.7 mm with a PH 2.0 plug fits: the case well is 6.5 mm deep. 6 and 7 mm cells (602025, 702025, 602030) do not. Mouser does not ship lithium cells to Germany |
 
 Both halves use the same cell and the same bay, so there is one battery part to buy and one case
 well to print. The ball half still drains faster because of the sensor.

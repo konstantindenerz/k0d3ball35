@@ -75,7 +75,7 @@ main PCB top:
 |---|---|---|
 | desk (1 mm rubber feet in 0.8 mm recesses) | -9.8 | 0 |
 | case underside | -9.6 | 0.2 |
-| battery well floor | -7.6 | |
+| battery well floor | -8.1 | |
 | pocket floor, cradle base | -7.1 | |
 | ball bottom | -5.1 | |
 | PCB | -1.6 to 0 | |

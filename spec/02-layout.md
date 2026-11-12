@@ -110,7 +110,7 @@ notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 | Part | Position | Notes | Halves |
 |------|----------|-------|--------|
 | Controller U1 | hole-pattern centre (-58, 11.7), USB-C shell 1.5 mm past the top edge | nice!nano v2 / SuperMini, component side up, on 2.5 mm low-profile sockets, nothing underneath | both |
-| Battery bay | centre (-53.9, 17.5), 21 x 41 mm, on the back | PKCELL LP552035 cell (350 mAh, 20 x 37 x 5.7 mm) under the PCB in a 6.0 mm deep well of the case floor (flush controller pins), lead end towards +y; dashed outline on the back silkscreen; `battery` block in `points-*.json` | both |
+| Battery bay | centre (-53.9, 17.5), 21 x 41 mm, on the back | PKCELL LP552035 cell (350 mAh, 20 x 37 x 5.7 mm) under the PCB in a 6.5 mm deep well of the case floor (flush controller pins), lead end towards +y; dashed outline on the back silkscreen; `battery` block in `points-*.json` | both |
 | Power switch PS1 | (-68.5, 30), rotated 270 | MSK12C02, bottom side, actuator through the inner edge (270 puts the footprint's +y actuator at -x) | both |
 | Reset button RB1 | (-66, 41) | EVQ-P7A, bottom side, below the battery bay | both |
 | JST J3 | (-56, 44) | default battery connection, 6 mm tall, bottom side, below the bay inside the same well | both |
@@ -146,8 +146,8 @@ and outside the bands the hot-swap socket pads occupy:
 | H5 (right) | -31.0 | 49.0 |
 
 The case can add standoffs under the controller block; the cradle has its own two screws into the
-case floor. Under the controller block the case floor drops to a 6.0 mm deep well for the battery
-(`battery.well_floor_z` in `points-*.json`, -7.6 mm), the same on both halves.
+case floor. Under the controller block the case floor drops to a 6.5 mm deep well for the battery
+(`battery.well_floor_z` in `points-*.json`, -8.1 mm), the same on both halves.
 
 ## Outline
 

@@ -58,7 +58,7 @@ z = 0 is the PCB top, from `hardware/case/stack.json`:
 |-------|------|-------|------|
 | Desk | -9.8 | -9.8 | 1 mm rubber feet in 0.8 mm recesses |
 | Underside | -9.6 | -9.6 | flat, 2.0 mm under the battery well |
-| Battery well floor | -7.6 | -7.6 | 6.0 mm under the PCB underside: 5.7 mm cell, 0.25 mm pad, flush pins |
+| Battery well floor | -8.1 | -8.1 | 6.5 mm under the PCB underside: 5.7 mm cell, 0.4 mm solder joints, 0.1 mm Kapton, 0.3 mm air; 1.5 mm floor |
 | Pocket floor | - | -7.1 | the cradle's `floor_z`; 2.5 mm of floor under it for the countersunk screws |
 | Key floor | -4.6 | -4.6 | hot-swap sockets 1.8 mm, diodes 1.1 mm, air |
 | PCB | -1.6 to 0 | -1.6 to 0 | on 3.0 mm standoffs |

@@ -465,7 +465,7 @@
         "y": 41.0
       }
     },
-    "depth_below_pcb": 6.0,
+    "depth_below_pcb": 6.5,
     "edge_clearance": 1.5,
     "leads": "+y",
     "bay_polygon": [
@@ -490,7 +490,7 @@
         -3.0
       ]
     ],
-    "well_floor_z": -7.6
+    "well_floor_z": -8.1
   },
   "fpc": {
     "center": {
@@ -499,7 +499,7 @@
     },
     "rotation": 0,
     "side": "top",
-    "cable_length": 40
+    "cable_length": 50
   },
   "outline": [
     [

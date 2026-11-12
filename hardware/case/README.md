@@ -59,7 +59,7 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   diodes); the underside is flat everywhere at -9.6.
 - Five M2 standoffs (6.0 mm, 3.0 mm tall) under the PCB holes with heat-set inserts.
 - Battery well under the controller block: bay plus the J3 and RB1 courtyards, each grown by
-  1 mm, floor at -7.6, 6.0 mm under the PCB underside (5.7 mm cell, 0.25 mm pad, flush
+  1 mm, floor at -8.1, 6.5 mm under the PCB underside (5.7 mm cell, 0.4 mm solder joints, Kapton, 0.3 mm air, flush
   controller pins). The reset
   button is reached through a 3 mm pin hole in the floor, the slide switch lever through a
   7 x 3 mm slot in the outer wall directly under the PCB.
@@ -139,7 +139,7 @@ From `stack.json` (`make stack`):
 |-------|------|-------|
 | desk (1 mm feet in 0.8 mm recesses) | -9.8 | -9.8 |
 | base (underside) | -9.6 | -9.6 |
-| battery well floor / pocket floor | -7.6 / - | -7.6 / -7.1 |
+| battery well floor / pocket floor | -8.1 / - | -8.1 / -7.1 |
 | key floor | -4.6 | -4.6 |
 | PCB | -1.6 .. 0 | -1.6 .. 0 |
 | cradle cup rim / pocket cover | - | +3.425 / +3.6 .. +5.0 |

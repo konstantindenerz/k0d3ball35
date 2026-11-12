@@ -108,7 +108,7 @@ battery:
   capacity_mah: 350
   size: { x: 20.5, y: 37.5, z: 5.7 }            # PKCELL datasheet maxima incl. protection circuit
   bay: { center: { x: -53.9, y: 17.5 }, size: { x: 21.0, y: 41.0 } }   # on the back, x -64.4..-43.4, y -3..38
-  depth_below_pcb: 6.0          # well floor below the PCB underside: tails 0.1 + pad 0.25 + 5.7 mm cell + 0.1
+  depth_below_pcb: 6.5          # well floor below the PCB underside: solder joints 0.4 + Kapton 0.1 + 5.7 mm cell + 0.3 air
   edge_clearance: 1.5           # minimum distance from the bay to the PCB edge
   leads: "+y"                   # lead end towards J3 / J2
 

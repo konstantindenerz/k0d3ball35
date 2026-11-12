@@ -142,7 +142,7 @@
     96.45,
     15.51
    ],
-   "triangles": 4318,
+   "triangles": 4912,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -165,17 +165,17 @@
    ],
    "bbox_max": [
     -28.5,
-    9.72,
+    7.95,
     17.51
    ],
    "size": [
     50.23,
-    91.77,
+    90.0,
     15.51
    ],
-   "triangles": 2408,
-   "watertight": true,
-   "non_manifold_edges": 0
+   "triangles": 2594,
+   "watertight": false,
+   "non_manifold_edges": 25
   },
   {
    "id": "lid-right",
@@ -204,9 +204,9 @@
     96.45,
     15.51
    ],
-   "triangles": 6792,
+   "triangles": 7594,
    "watertight": false,
-   "non_manifold_edges": 2
+   "non_manifold_edges": 39
   },
   {
    "id": "lid-folded-right",
@@ -235,9 +235,9 @@
     96.45,
     47.96
    ],
-   "triangles": 6852,
+   "triangles": 7602,
    "watertight": false,
-   "non_manifold_edges": 1
+   "non_manifold_edges": 16
   },
   {
    "id": "pocket-cover-right",
@@ -383,7 +383,7 @@
     83.55,
     15.51
    ],
-   "triangles": 4670,
+   "triangles": 5070,
    "watertight": true,
    "non_manifold_edges": 0
   },
@@ -403,17 +403,17 @@
    ],
    "bbox_max": [
     78.73,
-    11.95,
+    9.72,
     17.51
    ],
    "size": [
     68.23,
-    94.0,
+    91.77,
     15.51
    ],
-   "triangles": 3334,
-   "watertight": true,
-   "non_manifold_edges": 0
+   "triangles": 3614,
+   "watertight": false,
+   "non_manifold_edges": 31
   },
   {
    "id": "lid-left",
@@ -439,9 +439,9 @@
     94.0,
     15.51
    ],
-   "triangles": 8026,
-   "watertight": true,
-   "non_manifold_edges": 0
+   "triangles": 8684,
+   "watertight": false,
+   "non_manifold_edges": 31
   },
   {
    "id": "lid-folded-left",
@@ -467,9 +467,9 @@
     94.0,
     54.79
    ],
-   "triangles": 8016,
+   "triangles": 8684,
    "watertight": false,
-   "non_manifold_edges": 5
+   "non_manifold_edges": 21
   },
   {
    "id": "pocket-test-right",

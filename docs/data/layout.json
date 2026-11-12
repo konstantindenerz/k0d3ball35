@@ -583,7 +583,7 @@
       "y": 41.0
      }
     },
-    "depth_below_pcb": 6.0,
+    "depth_below_pcb": 6.5,
     "edge_clearance": 1.5,
     "leads": "+y",
     "bay_polygon": [
@@ -608,13 +608,13 @@
       -3.0
      ]
     ],
-    "well_floor_z": -7.6
+    "well_floor_z": -8.1
    },
    "stack": null,
    "case_stack": {
     "base_z": -9.6,
     "floor_z_key": -4.6,
-    "well_floor_z": -7.6,
+    "well_floor_z": -8.1,
     "pocket_floor_z": -7.1,
     "rim_z": 5.0,
     "standoff_h": 3.0,
@@ -1398,7 +1398,7 @@
       "y": 41.0
      }
     },
-    "depth_below_pcb": 6.0,
+    "depth_below_pcb": 6.5,
     "edge_clearance": 1.5,
     "leads": "+y",
     "bay_polygon": [
@@ -1423,7 +1423,7 @@
       -3.0
      ]
     ],
-    "well_floor_z": -7.6
+    "well_floor_z": -8.1
    },
    "stack": {
     "ball_centre_z": 4.425,
@@ -1447,7 +1447,7 @@
    "case_stack": {
     "base_z": -9.6,
     "floor_z_key": -4.6,
-    "well_floor_z": -7.6,
+    "well_floor_z": -8.1,
     "pocket_floor_z": -7.1,
     "rim_z": 5.0,
     "standoff_h": 3.0,

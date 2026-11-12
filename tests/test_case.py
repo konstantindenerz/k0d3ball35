@@ -151,11 +151,12 @@ def test_sources_present_and_defaults():
     params = (CASE / "params.scad").read_text()
     assert re.search(r'^half\s*=\s*"right"', params, re.M)
     assert re.search(r"^mirror_left\s*=\s*true", params, re.M)
-    # r2.4 decoupled the two wells: the battery needs -7.6, the pocket only -7.1, and the floor
-    # comes out 2.0 mm thick under the battery and 2.5 under the pocket - which is what the
-    # countersunk cradle screws need (case_screw_floor_left).
+    # r2.4 decoupled the two wells: the battery needs -8.1 (6.5 mm for a 5.7 mm cell that must
+    # not be clamped), the pocket only -7.1, and the floor comes out 1.5 mm thick under the
+    # battery and 2.5 under the pocket - which is what the countersunk cradle screws need
+    # (case_screw_floor_left).
     assert re.search(r"^pocket_floor_z\s*=\s*-7\.1", params, re.M)
-    assert re.search(r"^well_floor_z\s*=\s*-7\.6", params, re.M)
+    assert re.search(r"^well_floor_z\s*=\s*-8\.1", params, re.M)
     assert not re.search(r"^lid_mode\s*=", params, re.M), "the ball fits under the roof since r2.4"
     assert re.search(r'^pcb_screws\s*=\s*"insert"', params, re.M)
     assert re.search(r"^insert_hole_d\s*=\s*3\.2", params, re.M)
@@ -348,7 +349,11 @@ def test_stack_json(stack, cradle_stack):
         assert v["pocket_floor_z"] == cradle_stack["floor_z"], name
         assert abs(v["standoff_h"] - (-PCB_T - v["floor_z_key"])) < 1e-6, name
         assert v["floor_z_key"] <= -PCB_T - 3.0, "3 mm under the PCB for sockets and diodes"
-        assert v["base_z"] <= v["well_floor_z"] - 2.0 and v["base_z"] <= v["pocket_floor_z"] - 2.0, name
+        assert v["base_z"] <= v["well_floor_z"] - 1.5 and v["base_z"] <= v["pocket_floor_z"] - 2.0, name
+        # The cell must lie loose: solder joints 0.4 + Kapton 0.1 + cell + 0.3 mm to breathe. The
+        # well was 6.0 mm for a 6.15 mm stack once (review 2026-11-12).
+        cell_z = load_layout(name).cfg["battery"]["size"]["z"]
+        assert (-PCB_T - v["well_floor_z"]) >= 0.4 + 0.1 + cell_z + 0.3 - 1e-6, f"{name}: battery well clamps the cell"
         assert v["box_roof_under_z"] >= 5.7 + 1.0, name
         assert v["box_top_z"] > v["box_roof_under_z"], name
         # The general rim may now stand ABOVE the cup rim - the ball sits that low - so what has
