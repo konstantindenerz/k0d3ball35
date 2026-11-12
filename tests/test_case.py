@@ -189,8 +189,9 @@ def test_data_matches_layout(data):
         assert data["has_ball"][half] == layout.has_ball
         parts = layout.back_parts()
         well = Polygon(data["well"][half])
-        for name in ("J3", "RB1"):
-            assert well.contains(parts[name].buffer(1.0 - 1e-3, join_style=2)), (half, name)
+        assert well.contains(parts["J3"].buffer(1.0 - 1e-3, join_style=2)), half
+        # the reset button is side actuated and sits at the inner edge, under the PCB like PS1
+        assert not well.intersects(parts["RB1"]), half
         assert well.contains(layout.battery_bay().buffer(1.0 - 1e-3, join_style=2)), half
         # foot magnets: four in the thick floor under the outer lid plate, clear of the wells, the
         # channel and the standoffs
@@ -594,6 +595,72 @@ def test_logo_reads_the_same_on_both_halves(tmp_path):
         # the wordmark itself, relative to its own centre: no handedness map, that is the point
         sides[half] = {(round(x - xy[:, 0].mean(), 3), round(y - xy[:, 1].mean(), 3)) for x, y in xy}
     assert sides["left"] == sides["right"]
+
+
+@pytest.mark.skipif(openscad() is None, reason="openscad not installed")
+@pytest.mark.parametrize("half", ["left", "right"])
+def test_reset_pin_reaches_the_plunger(tmp_path, half):
+    """A straight pin from outside the case has to reach the reset button's side plunger: a free
+    1.2 mm wide path at the plunger height from the outer wall face to the plunger tip, with wall
+    on both sides of it."""
+    from shapely.geometry import box
+    from mesh_tools import section
+
+    sx = -1 if half == "left" else 1
+    out = tmp_path / f"tray-{half}.stl"
+    values, _ = run_scad("tray", half, out)
+    layout = load_layout(half)
+    rb = layout.cfg["reset_button"]
+    assert rb["rotation"] == 270, "the plunger (local +y) points to -x at 270"
+    tip_x, y = rb["center"]["x"] - 2.1, rb["center"]["y"]
+    z = values["reset_plunger_z"]
+    assert abs(z - (-PCB_T - 0.7)) < 0.01
+    cut = section(mesh_of(out), z)
+    from shapely.geometry import LineString
+    wall_out = layout.outline.intersection(LineString([(-200, y), (200, y)])).bounds[0] - 0.2 - 3.0   # pcb_clear, wall
+    xs = sorted(((wall_out - 1.0) * sx, tip_x * sx))
+    path = box(xs[0], y - 0.6, xs[1], y + 0.6)
+    assert cut.intersection(path).area < 0.01, f"{half}: the reset pin path is blocked"
+    xw = sorted(((wall_out + 0.3) * sx, (wall_out + 2.7) * sx))
+    for dy in (-3.0, 3.0):
+        assert cut.intersection(box(xw[0], y + dy - 0.5, xw[1], y + dy + 0.5)).area > 2.0, "no wall beside the pin hole: the probe measured nothing"
+    assert tip_x - (wall_out + 3.0) <= 1.5, "more than 1.5 mm of free air between the wall and the plunger"
+
+
+@pytest.mark.skipif(openscad() is None, reason="openscad not installed")
+@pytest.mark.parametrize("half", ["left", "right"])
+def test_usb_plug_overmold_reaches_the_receptacle(tmp_path, half):
+    """The receptacle sits behind the wall, so a USB-C plug only seats if its overmold fits into
+    the opening all the way to the receptacle face. The largest overmold the Type-C spec allows is
+    12.35 x 6.5 mm, centred on the receptacle. The opening used to stop at the cap plate and took
+    5.3 mm (review 2026-11-12). Tray and cap are both cut through the plug's volume."""
+    import numpy as np
+    from shapely.geometry import box
+    from mesh_tools import section
+
+    sx = -1 if half == "left" else 1
+    meshes = {}
+    for part in ("tray", "box_cap"):
+        out = tmp_path / f"{part}-{half}.stl"
+        values, _ = run_scad(part, half, out)
+        meshes[part] = mesh_of(out)
+    cx = values["usb_x"] * sx
+    cz = values["ctrl_top_z"] - values["usb_shell_h"] / 2
+    y_out, y_face = values["usb_wall_y"], values["usb_face_y"]
+    assert 1.0 < y_face - y_out < 2.5, "receptacle face behind the outer wall face"
+    plug = box(cx - 12.35 / 2, y_out - 1.0, cx + 12.35 / 2, y_face)
+    beside = box(cx + 9.0, y_out + 0.2, cx + 10.0, y_out + 1.0) if sx == 1 else box(cx - 10.0, y_out + 0.2, cx - 9.0, y_out + 1.0)
+    hit = 0.0
+    for z in np.linspace(cz - 3.25 + 0.01, cz + 3.25 - 0.01, 14):
+        for part, mesh in meshes.items():
+            cut = section(mesh, float(z))
+            assert cut.intersection(plug).area < 0.01, f"{half} {part} blocks the plug overmold at z {z:.2f}"
+            assert cut.is_empty or cut.distance(plug) >= 0.25, f"{half} {part} closer than 0.25 mm to the overmold at z {z:.2f}"
+            hit += cut.intersection(beside).area
+    assert hit > 5.0, "the wall beside the opening was not found: the probe measured nothing"
+    # above the opening the cap's tongue closes the slot in the wall again
+    top = section(meshes["box_cap"], values["usb_z1"] + 0.3)
+    assert top.intersection(box(cx - 5, y_out + 0.1, cx + 5, y_out + 1.0)).area > 8.0, "USB slot open above the plug"
 
 
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")

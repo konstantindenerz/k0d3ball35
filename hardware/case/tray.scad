@@ -65,9 +65,10 @@ module tray_cuts() {
     if (controller_box) {
         r = box_r();
         cr = ctrl_rect(half);
-        // USB-C opening in the top (-y) wall, up to the cap plate
-        translate([usb_x() - usb_cut[0] / 2, box_y_in() - wall - 1, box_roof_under_z - usb_cut[1]])
-            cube([usb_cut[0], wall + 2, usb_cut[1]]);
+        // USB-C opening in the top (-y) wall: a slot open to the top, the cap's tongue closes it
+        // above usb_z1 (no thin bridge over the opening)
+        translate([usb_x() - usb_cut[0] / 2, box_y_in() - wall - 1, usb_z0])
+            cube([usb_cut[0], wall + 2, box_top_z - usb_z0 + 1]);
         // rebate for the cap plate on the tall walls
         translate([box_x_in() - box_rebate, box_y_in() - box_rebate, box_roof_under_z])
             cube([box_inner_x - box_x_in() + box_rebate + 1, r[3] - box_y_in() + box_rebate + 1, box_roof_t + 1]);
@@ -79,9 +80,9 @@ module tray_cuts() {
     sw = switch(half);
     translate([box_x_in() - wall - 1, sw[1] - switch_slot[0] / 2, -pcb_t - switch_slot[1]])
         cube([wall + 2, switch_slot[0], switch_slot[1] + eps]);
-    // reset pin hole through the floor of the well
+    // reset pin hole through the inner wall, on the axis of the button's side plunger
     rs = reset(half);
-    translate([rs[0], rs[1], base_z - 1]) cylinder(d = reset_hole_d, h = (well_floor_z - base_z) + 2);
+    translate([box_x_in() - wall - 1, rs[1], reset_plunger_z]) rotate([0, 90, 0]) cylinder(d = reset_hole_d, h = wall + 2, $fn = 32);
     magnet_pockets_bottom();
     for (f = feet(half))
         translate([f[0], f[1], base_z - 1]) cylinder(d = foot_d, h = 1 + foot_recess);
@@ -153,9 +154,15 @@ module box_cap() {
             translate([x0, y0, box_roof_under_z]) cube([x1 - x0, y1 - y0, box_roof_t]);
             translate([x1 - box_skirt_t, ys, box_skirt_z]) cube([box_skirt_t, y1 - ys, h]);
             translate([xs, y1 - box_skirt_t, box_skirt_z]) cube([x1 - xs, box_skirt_t, h]);
+            // tongue that closes the USB slot of the wall above the opening
+            translate([usb_x() - usb_cut[0] / 2 + box_fit, box_y_in() - wall, usb_z1])
+                cube([usb_cut[0] - 2 * box_fit, y0 - (box_y_in() - wall) + eps, box_top_z - usb_z1]);
         }
         for (a = boss_axes())
             translate([a[0], a[1], box_roof_under_z - 1]) cylinder(d = 2.4, h = box_roof_t + 2);
+        // room for the plug's overmold under the plate edge, back to the receptacle face
+        translate([usb_x() - usb_cut[0] / 2, y0 - 1, box_roof_under_z - eps])
+            cube([usb_cut[0], ctrl_rect(half)[1] - usb_face_in + 0.3 - y0 + 1, usb_z1 - box_roof_under_z + eps]);
         if (logo_on_cap) logo_cut(logo_cap_pos, 0, logo_cell, box_top_z, logo_depth);
     }
 }
@@ -300,7 +307,7 @@ module controller_dummy() {
     cr = ctrl_rect(half);
     sh = 2.5;
     color("steelblue") translate([cr[0], cr[1], sh]) cube([cr[2] - cr[0], cr[3] - cr[1], 1.6]);
-    color("silver") translate([usb_x() - 4.5, cr[1] - 0.6, ctrl_top_z - 3.26]) cube([9, 7.35, 3.26]);
+    color("silver") translate([usb_x() - 4.5, cr[1] - usb_face_in, ctrl_top_z - usb_shell_h]) cube([9, 7.35, usb_shell_h]);
 }
 
 module battery_dummy() {

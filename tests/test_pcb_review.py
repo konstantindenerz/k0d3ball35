@@ -612,6 +612,27 @@ def test_battery_bay_holds_nothing_but_u1(board, layout, half):
     assert len(tails) >= 12, "the keys-side row of U1 socket tails is the only thing inside the bay (cut flush by hand)"
 
 
+def test_reset_plunger_faces_the_inner_edge(board, layout, half):
+    """EVQ-P7A is side actuated: the plunger leaves the body at local +y (KiCad SW_SPST_EVQP7A,
+    F.Fab). It has to point at the nearest board edge and end just inside it, or no pin from
+    outside the case can press it. It used to lie flat over a hole in the case floor, which only
+    reached the switch body (review 2026-11-12)."""
+    rb = board.footprints["RB1"]
+    tip = rb.local_box(-0.85, 2.05, 0.85, 2.1)
+    body = rb.local_box(-1.75, -1.45, 1.75, 1.45)
+    edge = board.outline.exterior
+    assert board.outline.contains(tip), "plunger tip off the board"
+    gap = edge.distance(tip)
+    assert 0.2 <= gap <= 1.0, f"{half}: reset plunger tip {gap:.2f} mm from the board edge"
+    assert edge.distance(body) > gap + 0.5, "the plunger must be the part nearest to the edge"
+    # the case drills its pin hole at the layout position of the button, through the inner wall
+    cx, cy = _board(layout, layout.cfg["reset_button"]["center"]["x"], layout.cfg["reset_button"]["center"]["y"])
+    assert abs(tip.centroid.y - cy) < 0.05 and abs(rb.x - cx) < 0.01 and abs(rb.y - cy) < 0.01
+    from shapely.geometry import LineString
+    inner = layout.outline.intersection(LineString([(-200, layout.cfg["reset_button"]["center"]["y"]), (200, layout.cfg["reset_button"]["center"]["y"])])).bounds[0]
+    assert abs(layout.cfg["reset_button"]["center"]["x"] - 2.1 - inner) == pytest.approx(gap, abs=0.05), "plunger not on the inner (-x) edge"
+
+
 def test_case_standoffs_clear_the_underside(board, layout, half):
     """A printed standoff stands under every mounting hole. On the real board it has to clear the
     hot-swap socket bodies, their solder tabs, the switch pegs that come through the PCB and the

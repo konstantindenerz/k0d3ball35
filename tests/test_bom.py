@@ -77,7 +77,12 @@ def test_bom_covers_placed_parts(rows, placed):
     assert _qty(rows, r"reset button") >= placed["reset"] == 2
     assert _qty(rows, r"fpc connector|ffc connector") >= placed["fpc"] + 1 == 2  # right PCB + sensor PCB
     assert _qty(rows, r"lipo") >= 2
-    assert _qty(rows, r"lipo.*552035") == 2, "one LP552035 cell per half, the same bay on both"
+    # one cell per half, each the one the layout names for that half (the left one lies under
+    # the inner column's sockets and is thinner)
+    from k0d3.geometry import load_layout
+    for h in ("left", "right"):
+        cell = load_layout(h).cfg["battery"]["cell"]
+        assert _qty(rows, rf"lipo.*{cell[2:]}") == 1, f"the BOM must list one {cell} for the {h} half"
     assert not any(re.search(r"301230", r.get("part", "")) and r["_qty"] for r in rows), "the 301230 does not fit the bay"
     assert _qty(rows, r"bearing ball|zirconia|zro2") >= 3
     assert _qty(rows, r"ball 19\.05 mm|19\.05 mm ball|3/4 inch") >= 1

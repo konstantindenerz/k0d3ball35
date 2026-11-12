@@ -116,7 +116,7 @@ cradle (`spec/08-trackball-module.md`). Lens distance 2.4 mm nominal (2.2 to 2.6
 
 | Half | Battery | Position | Expected runtime |
 |------|---------|----------|------------------|
-| left (peripheral) | PKCELL LP552035, 350 mAh, protected, JST-PH | battery bay under the PCB, below the controller | two to three months |
+| left (peripheral) | LP402025, 150 mAh, protected, JST-PH (4 mm: it lies under the inner column's sockets) | battery bay under the PCB, below the controller | about one month |
 | right (central, trackball) | PKCELL LP552035, 350 mAh, protected, JST-PH | battery bay under the PCB, below the controller | 4 to 7 weeks mixed use |
 
 Both halves mount the cell the same way (decided 2026-11-06, `issues/hw-battery-bay-both-halves.md`):
@@ -127,9 +127,9 @@ rectangle on both boards and is printed on the back silkscreen:
 | Item | Value |
 |------|-------|
 | Bay (back of the PCB, layout frame) | centre (-53.9, +17.5), 21 x 41 mm, i.e. x -64.4 to -43.4, y -3 to +38 (`battery.bay` in the layout yaml); it starts between the two controller hole rows and ends above the reset button |
-| Cell | PKCELL LP552035, 350 mAh, 5.7 x 20 x 37 mm maximum including the protection circuit, JST-PH plug (Eckstein, Germany); lead end towards +y |
+| Cell | right: PKCELL LP552035, 350 mAh, 5.7 x 20 x 37 mm maximum including the protection circuit; left: LP402025, 150 mAh, 4.2 x 20.5 x 26.5 mm maximum; both with a JST-PH plug, lead end towards +y |
 | Well depth | 6.5 mm below the PCB underside (solder joints 0.4 + Kapton 0.1 + 5.7 mm cell + 0.3 mm air), floor at z = -8.1 mm; the pins must be flush (conthrough, or trimmed after soldering) |
-| Clearances | bay 1.75 mm from the top PCB edge, 0.37 mm from the left controller hole pads, 1.25 mm from the reset button, 2.6 mm from the inner column's hot-swap sockets; checked by the layout generator against every back-side part |
+| Clearances | bay 1.75 mm from the top PCB edge, 0.37 mm from the left controller hole pads, 2.6 mm from the inner column's hot-swap sockets on the right board. On the left board those sockets point the other way and reach 2.8 mm INTO the bay, which is why the left cell is 4 mm (socket 1.85 + cell + 0.3 mm air must fit the well); checked by the layout generator against every back-side part of each half |
 | Alternatives | any cell up to 20.5 x 37.5 x 5.7 mm with a PH 2.0 plug, e.g. 502030 or 402025; 6 and 7 mm cells no longer fit |
 
 Because nothing lies between the controller and the PCB any more, the controller sits on the
@@ -142,7 +142,7 @@ Both PCBs carry the same power parts in the controller block: JST-PH 2.0 connect
 (S2B-PH-SM4-TB, 6 mm tall, at (-56, +44), below the bay in the same well) as the default connection for
 the cell's plug, solder pads J2 for bare battery leads (2.54 mm pitch, B+ is the square pad, at
 (-57, +50.5)) as the alternative, MSK-12C02 slide switch PS1 in the B+ line at (-68.5, +30) with
-the actuator through the inner edge, reset button RB1 on RST at (-66, +41) below the bay.
+the actuator through the inner edge, reset button RB1 on RST at (-68.9, +41) below the power switch, turned so its side plunger ends 0.5 mm inside the inner edge.
 
 RAW, GND, RST and VCC connect straight to their controller holes on both boards. There are no
 solder jumpers and no sacrificed pins: D0 is a free test pad. Sensor supply on the right half is
@@ -243,7 +243,7 @@ and derives everything from it; the numbers below are the contract between PCB a
 | Pocket cavity above the PCB plane | notch (octagon with the square corner) + 0.2 mm, union with the 28 mm cradle circle; 2 mm wall around it |
 | Case floor | -8.1 mm under the battery bay, J3 and RB1 (6.5 mm well), -7.1 mm under the cradle; underside -9.6 mm |
 | Floor under the key area | -4.6 mm (3.0 mm for sockets and diodes) |
-| PCB fastening | M2 machine screws from the top into heat-set inserts in 6 mm standoffs on the five mounting holes |
+| PCB fastening | M2 machine screws from the top into heat-set inserts in 5.6 mm standoffs on the five mounting holes |
 | Controller box | walls to +8.7 mm, separate cap with its roof underside at +6.7 mm (controller top +5.7 plus 1 mm) |
 | Cradle screws | two M2 x 8 countersunk (90 degree flat head) from below at (-13, 56) and (-13, 76) in a 4.8 mm countersink 1.3 mm deep, head 0.2 mm below the flat underside |
 

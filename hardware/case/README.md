@@ -57,14 +57,14 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   `spec/11-case.md` section 5a.
 - Floor under the keys at -4.6 (3 mm under the PCB underside for hot-swap sockets and
   diodes); the underside is flat everywhere at -9.6.
-- Five M2 standoffs (6.0 mm, 3.0 mm tall) under the PCB holes with heat-set inserts.
-- Battery well under the controller block: bay plus the J3 and RB1 courtyards, each grown by
+- Five M2 standoffs (5.6 mm, 3.0 mm tall; they clear the sockets and switch pegs by 0.44 mm) under the PCB holes with heat-set inserts.
+- Battery well under the controller block: bay plus the J3 courtyard, each grown by
   1 mm, floor at -8.1, 6.5 mm under the PCB underside (5.7 mm cell, 0.4 mm solder joints, Kapton, 0.3 mm air, flush
   controller pins). The reset
-  button is reached through a 3 mm pin hole in the floor, the slide switch lever through a
+  button is side actuated and is reached through a 2 mm pin hole in the inner wall, the slide switch lever through a
   7 x 3 mm slot in the outer wall directly under the PCB.
 - Controller box: walls to +8.7 on the outer and USB side (the other two sides are inside
-  the PCB and belong to the cap), USB-C opening 11 x 5.8 up to the cap plate, LED window
+  the PCB and belong to the cap), USB-C opening 13 x 7.1 centred on the receptacle (closed above by the cap's tongue), LED window
   3 x 3 in the inner wall 8 mm from the USB end, rebate for the cap plate, two corner bosses
   with inserts, 45 degree undersides.
 - Cap (`box_cap`): 2 mm plate in the rebate plus an L-shaped 2 mm skirt (key side at

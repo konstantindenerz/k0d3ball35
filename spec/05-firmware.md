@@ -160,7 +160,7 @@ CPI matters more than on a 34 mm Keyball.
 
 | Half | Battery | Estimate |
 |------|---------|----------|
-| left (peripheral) | 350 mAh | two to three months |
+| left (peripheral) | 150 mAh | about one month |
 | right (central, sensor) | 350 mAh | four to seven weeks of mixed use |
 
 Numbers are estimates from the old PMW3610 figures (the PAW3222 draws roughly half) plus typical

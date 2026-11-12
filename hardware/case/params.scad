@@ -79,11 +79,18 @@ box_rebate      = 2.0;         // inner part of the tall walls lowered to box_ro
 box_fit         = 0.15;        // clearance between the cap plate and the rebate
 boss_in         = 0.5;         // boss screw axis this far inside the wall's inner face
 boss_skin       = 1.4;         // material around the insert hole
-// The receptacle is about 9 x 3.3; the opening has to admit the plug's overmold, which is commonly
-// 12 mm wide and 7 mm tall on a charging cable. 11 mm was receptacle-sized, not cable-sized.
-usb_cut         = [12.5, 5.8]; // width, height; the cut ends at box_roof_under_z
+// The receptacle (8.94 x 3.26) sits 1.7 mm behind the outer wall face, so the plug's overmold has
+// to enter the opening or the plug does not seat. USB Type-C allows an overmold of 12.35 x 6.5 mm;
+// the opening is that plus 0.3 mm all round, centred on the receptacle. It used to end at the cap
+// plate (5.8 tall, off-centre), which admitted overmolds up to 5.3 mm only.
+usb_shell_h     = 3.26;        // receptacle shell height; its top is ctrl_top_z
+usb_cut         = [13.0, 7.1]; // width, height of the opening
+usb_z0          = ctrl_top_z - usb_shell_h / 2 - usb_cut[1] / 2;   // 0.52
+usb_z1          = usb_z0 + usb_cut[1];                             // 7.62, above the cap plate underside
+usb_face_in     = 0.6;         // receptacle face this far outside the controller rectangle (controller_dummy)
 switch_slot     = [7, 3.0];    // slide switch lever: width along the wall, height under the PCB
-reset_hole_d    = 3.0;         // through the floor under RB1
+reset_hole_d    = 2.0;         // pin hole through the inner wall onto the reset button's side plunger
+reset_plunger_z = -pcb_t - 0.7; // plunger axis: half of the 1.35 mm EVQ-P7A body below the PCB underside
 led_window      = [3, 3];      // width along the wall, height; in the inner (-x) wall
 led_offset_y    = 8.0;         // from the controller board's USB end
 led_z           = 3.5;         // bottom of the window

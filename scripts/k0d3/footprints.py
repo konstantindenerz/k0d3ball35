@@ -356,6 +356,8 @@ def evqp7a_reversible() -> Footprint:
               Pad("2", "smd", "roundrect", 1.8, 0.72, 1.4, 1.05, F_SMD, rratio=0.24)]
     pads = both_faces(pads_f, mirror=False)
     gfx_f = rect_lines(0, 0, 3.5, 2.9, "F.Fab", 0.1) + rect_lines(0, 0, 5.4, 3.5, "F.CrtYd", 0.05) + [Circle(0, 0, 0.6, "F.SilkS")]
+    # the side plunger at local +y (KiCad SW_SPST_EVQP7A): x +-0.85, y 1.45..2.1
+    gfx_f += [Line(-0.85, 1.45, -0.85, 2.1, "F.Fab"), Line(-0.85, 2.1, 0.85, 2.1, "F.Fab"), Line(0.85, 2.1, 0.85, 1.45, "F.Fab")]
     gfx = both_face_graphics(gfx_f, mirror=False)
     return Footprint("SW_SPST_EVQP7A_reversible", "Panasonic EVQ-P7A 3.5x2.9 mm tactile switch, pads on both faces", "smd", pads, gfx, "F.Fab", (0, -2.4))
 

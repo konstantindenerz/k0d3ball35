@@ -73,7 +73,7 @@ Lay everything out and tick the list. Quantities are for one keyboard (two halve
 | 2 | Hirose FH12-6S-0.5SH (or LCSC clone) 6-pin 0.5 mm FPC connector | one on the right PCB (key side), one spare | 6 |
 | 1 (+1) | 6-conductor 0.5 mm FFC, **type B** (contacts on OPPOSITE faces at the two ends), 50 mm | right half | 11 |
 | 2 | JST S2B-PH-SM4-TB battery connector | bottom face, below the controller, inside the battery well | 7 |
-| 2 | LiPo PKCELL LP552035, 350 mAh, protected, JST-PH plug | one per half, battery bay on the bottom face under the controller | 7 |
+| 1 + 1 | LiPo PKCELL LP552035 (350 mAh, right half) and LP402025 (150 mAh, 4 mm, left half), protected, JST-PH plug | battery bay on the bottom face under the controller | 7 |
 | 2 | Kapton or foam pad, about 20 x 27 x 0.25 mm, plus thin double-sided tape | between PCB underside and cell | 7 |
 | 1 | PAW3222 trackball sensor module, 13.4 x 7.4 mm, assembled | cradle sleeve | 10 |
 | 1 (+1) | 19.05 mm (3/4 inch) POM trackball, or the PandaKB TB19 phenolic ball | right half | 11 |
@@ -211,7 +211,9 @@ Power switch MSK-12C02 (PS1, inner edge of the controller block):
 
 Reset button EVQ-P7A01P (RB1, below the power switch near the inner corner):
 
-4. Place it on its four pads; it is symmetric. Solder diagonally opposite pads first.
+4. The button is side actuated: place it on its four pads with the plunger pointing at the
+   board edge (0.5 mm inside it), as drawn on the fab layer. Solder diagonally opposite pads
+   first. In the case a paper clip through the 2 mm hole in the inner wall presses it.
 
 FPC connector FH12-6S-0.5SH (J1, right PCB only, **top face**, between the middle column's bottom
 key and the notch around the ball pocket):
@@ -233,7 +235,10 @@ keycap fitted on the middle column's bottom key (1.05 mm clear), no shorts betwe
 
 ## 7. Battery
 
-Both halves are identical here: one LP552035 cell (350 mAh, 20 x 37 mm) lies on the **bottom face** in the
+The bay is the same on both halves, the cell is not: the **right** half takes the LP552035
+(350 mAh, 5.7 mm), the **left** half the LP402025 (150 mAh, 4 mm), because on the left board the
+hot-swap sockets of the inner column reach into the bay and the cell lies under them. The bay
+print names the cell. It lies on the **bottom face** in the
 dashed battery bay printed right under the controller, lead end towards the JST connector J3, and
 plugs into J3. The case provides a 6.5 mm deep well under the controller block for it: 5.7 mm cell, 0.4 mm for the trimmed solder joints, a strip of Kapton tape over them and 0.3 mm of air, because a pouch cell must never be clamped (chapter 5, step 4). The solder
 pads J2 remain for cells with bare leads.
@@ -383,8 +388,8 @@ hardware allows, so do not improvise.
    their skirts overhang the screw heads by 1.5 mm. Five M2 x 5 machine screws from the
    top, snug.
 6. Controller onto its sockets, box cap on, two M2 screws into the bosses - the engraved
-   wordmark faces up. USB-C in its opening, the slide switch lever in its slot, the reset button
-   over its pin hole in the floor.
+   wordmark faces up. USB-C in its opening, the slide switch lever in its slot, the reset button's
+   plunger behind its pin hole in the inner wall.
 7. Lay the PCB guard onto the PCB top, the holes over the five screw heads and the open corner
    over the controller box and J1. It lies loose until the switches go in; their flanges hold
    it. Switches and keycaps on (chapter 13).

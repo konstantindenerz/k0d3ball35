@@ -113,9 +113,9 @@ The tray only carries the two box walls that are outside the PCB (the outer wall
 USB wall, up to +8.7); a roof in the tray would block dropping the PCB in and be a 65 mm
 bridge. The other two walls hang from the separate cap and stand on the PCB top. Two M2
 screws go into corner bosses on the outer wall (heat-set inserts, same as the standoffs).
-The USB-C opening is 11 x 5.8 mm in the USB wall, the LED window 3 x 3 mm in the outer wall
+The USB-C opening is 13 x 7.1 mm in the USB wall, centred on the receptacle (the largest overmold USB Type-C allows plus 0.3 mm; the cap plate closes it above with a tongue), the LED window 3 x 3 mm in the outer wall
 8 mm from the USB end, the slide switch lever has a 7 x 3 mm slot in the outer wall directly
-under the PCB and the reset button a 3 mm pin hole in the floor of the well. The cap plate
+under the PCB and the side-actuated reset button a 2 mm pin hole in the same wall, on the axis of its plunger. The cap plate
 carries the wordmark (section 9).
 
 ## 5. Assembly order

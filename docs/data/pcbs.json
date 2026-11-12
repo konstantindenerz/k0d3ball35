@@ -17,13 +17,13 @@
     "gerbers": "hardware/left-pcb/k0d3ball35-left-gerbers.zip"
    },
    "sizes": {
-    "kicad_pcb": 1211235,
-    "glb": 3031064,
+    "kicad_pcb": 1172425,
+    "glb": 2997656,
     "outline": 738,
-    "render_top": 480044,
-    "render_bottom": 450048,
+    "render_top": 476905,
+    "render_bottom": 452638,
     "step": 350741,
-    "gerbers": 255167
+    "gerbers": 245430
    },
    "layers": [
     {
@@ -129,11 +129,11 @@
     ],
     [
      "Track segments",
-     "738"
+     "805"
     ],
     [
      "Vias",
-     "94"
+     "98"
     ]
    ],
    "parts": [
@@ -189,13 +189,13 @@
     "gerbers": "hardware/right-pcb/k0d3ball35-right-gerbers.zip"
    },
    "sizes": {
-    "kicad_pcb": 1107841,
-    "glb": 2922832,
+    "kicad_pcb": 1055838,
+    "glb": 2839188,
     "outline": 753,
-    "render_top": 459765,
-    "render_bottom": 446914,
+    "render_top": 465738,
+    "render_bottom": 437928,
     "step": 337196,
-    "gerbers": 239179
+    "gerbers": 226554
    },
    "layers": [
     {
@@ -305,11 +305,11 @@
     ],
     [
      "Track segments",
-     "782"
+     "746"
     ],
     [
      "Vias",
-     "101"
+     "96"
     ]
    ],
    "parts": [

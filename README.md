@@ -71,7 +71,7 @@ Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 
   65 degrees beside the ball, connected with a 6-pin flat cable
 - Low: keycaps 20.8 mm over the desk, ball top 23.75 mm, 27.3 mm with the transport lid on
 - Fully wireless: nice!nano v2 (or SuperMini nRF52840) per half on 2.5 mm low-profile sockets,
-  Bluetooth split, one LP552035 LiPo cell (350 mAh) per half in a bay under the PCB below the
+  Bluetooth split, one LiPo cell per half (350 mAh LP552035 right, 150 mAh LP402025 left) in a bay under the PCB below the
   controller (the same bay on both halves), the controller's charger, JST-PH connector, slide
   power switch, reset button
 - Two separate PCBs with identical controller wiring: no solder jumpers, no mirrored pin maps,

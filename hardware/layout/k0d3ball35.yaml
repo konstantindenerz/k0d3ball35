@@ -113,7 +113,11 @@ battery:
   leads: "+y"                   # lead end towards J3 / J2
 
 power_switch: { center: { x: -68.5, y: 30.0 }, rotation: 270 }  # MSK12C02, bottom side; 270 puts the actuator (local +y) at -x, through the inner edge
-reset_button: { center: { x: -66.0, y: 41.0 }, rotation: 0 }    # EVQP7A, bottom side, inner corner below the power switch and the battery bay
+# EVQ-P7A is SIDE actuated: its plunger leaves the body at local +y. 270 turns it to -x like the
+# power switch, 0.5 mm inside the inner edge, so a pin through a hole in the case wall presses it.
+# (Until the 2026-11-12 review it sat at rotation 0 over a hole in the floor, which only reached
+# the body of the switch.)
+reset_button: { center: { x: -68.9, y: 41.0 }, rotation: 270 }  # bottom side, inner edge below the power switch
 battery_pads: { center: { x: -57.0, y: 50.5 }, rotation: 0 }    # 2 x 1.7 mm PTH, 2.54 mm pitch, B+ / B-, below the JST (solder alternative)
 battery_jst:  { center: { x: -56.0, y: 44.0 }, rotation: 0 }    # S2B-PH-SM4-TB, 6 mm tall, bottom side, default, below the battery bay (sits in the same well)
 

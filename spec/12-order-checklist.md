@@ -37,7 +37,8 @@ One cart; everything ships from the same warehouse.
 
 | Done | Qty | Part | Exact number | Shop | Status | You do |
 |------|-----|------|--------------|------|--------|--------|
-| [ ] | 2 | LiPo 350 mAh with PH 2.0 plug | PKCELL LP552035 | https://eckstein-shop.de/LiPo-Akku-Lithium-Ion-Polymer-Batterie-37V-350mAh-mit-JST-PHR-2-Stecker-LP552035 | open | |
+| [ ] | 1 | LiPo 150 mAh, 4 mm thick, with PH 2.0 plug (LEFT half) | LP402025 | Eckstein, 42keebs or Amazon DE | open | the 5.7 mm cell does not fit under the left board's sockets |
+| [ ] | 1 | LiPo 350 mAh with PH 2.0 plug (RIGHT half) | PKCELL LP552035 | https://eckstein-shop.de/LiPo-Akku-Lithium-Ion-Polymer-Batterie-37V-350mAh-mit-JST-PHR-2-Stecker-LP552035 | open | |
 | [ ] | 1 | Trackball 19 mm phenolic (premium option) | PandaKB TB19 | https://pandakb.com/shop/parts/pandakb-tb19-19mm-split-keyboard-trackball/ | open | optional next to the POM pack |
 
 ## 4. Amazon DE (open)

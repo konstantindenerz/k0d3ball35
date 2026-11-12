@@ -40,7 +40,7 @@ def scad_param(name: str) -> float:
 
 BOX_INNER_X = -45.5      # key-side wall of the controller box (params.scad box_inner_x)
 BOX_CAP_CLEAR = 1.0      # controller box keeps this to every keycap
-WELL_GROW = 1.0          # well = bay + J3 + RB1 courtyards grown by this
+WELL_GROW = 1.0          # well = bay + J3 courtyard grown by this
 WALL_GUESS = 3.2         # pcb_clear + wall, only for the sanity checks here
 FOOT_D = 10.5
 LIP_IN = 0.2 - 0.15 - 0.5   # params.scad pcb_clear - lid_fit - lid_lip_chamfer
@@ -118,9 +118,9 @@ def box_rect(layout: Layout) -> tuple[float, float, float, float]:
 
 def well_polygon(layout: Layout) -> Polygon:
     parts = layout.back_parts()
+    # RB1 (1.35 mm tall) needs no well: it fits the 3 mm under the PCB like the power switch
     well = unary_union([layout.battery_bay().buffer(WELL_GROW, join_style=2),
-                        parts["J3"].buffer(WELL_GROW, join_style=2),
-                        parts["RB1"].buffer(WELL_GROW, join_style=2)])
+                        parts["J3"].buffer(WELL_GROW, join_style=2)])
     well = well.buffer(0.5, join_style=2).buffer(-0.5, join_style=2)
     assert well.geom_type == "Polygon", well.geom_type
     return Polygon(well.exterior).simplify(0.01)
@@ -456,8 +456,6 @@ def sanity(layout: Layout, d: dict, well: Polygon) -> None:
         f = Point(x, y).buffer(FOOT_D / 2)
         if not layout.outline.buffer(WALL_GUESS - 0.3, join_style=2).contains(f):
             problems.append(f"foot at ({x}, {y}) outside the case floor")
-        if Point(*d["reset"]).distance(Point(x, y)) < FOOT_D / 2 + 2.0:
-            problems.append(f"foot at ({x}, {y}) over the reset hole")
         for sx, sy in d["case_screws"]:
             if Point(sx, sy).distance(Point(x, y)) < FOOT_D / 2 + 2.5:
                 problems.append(f"foot at ({x}, {y}) over a case screw")

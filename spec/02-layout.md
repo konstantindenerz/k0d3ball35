@@ -112,7 +112,7 @@ notch. The left half has no pocket: `trackball` is `null` in `points-left.json`.
 | Controller U1 | hole-pattern centre (-58, 11.7), USB-C shell 1.5 mm past the top edge | nice!nano v2 / SuperMini, component side up, on 2.5 mm low-profile sockets, nothing underneath | both |
 | Battery bay | centre (-53.9, 17.5), 21 x 41 mm, on the back | PKCELL LP552035 cell (350 mAh, 20 x 37 x 5.7 mm) under the PCB in a 6.5 mm deep well of the case floor (flush controller pins), lead end towards +y; dashed outline on the back silkscreen; `battery` block in `points-*.json` | both |
 | Power switch PS1 | (-68.5, 30), rotated 270 | MSK12C02, bottom side, actuator through the inner edge (270 puts the footprint's +y actuator at -x) | both |
-| Reset button RB1 | (-66, 41) | EVQ-P7A, bottom side, below the battery bay | both |
+| Reset button RB1 | (-68.9, 41), rotation 270 | EVQ-P7A (side actuated), bottom side, plunger towards the inner edge | both |
 | JST J3 | (-56, 44) | default battery connection, 6 mm tall, bottom side, below the bay inside the same well | both |
 | Battery pads J2 | (-57, 50.5) | 2.54 mm pitch, B+ is the square pad, solder alternative to J3 | both |
 | Test pads TP1.. | left: row from (-69.5, 54.5) along x; right: from (-66, 45.0) along y, 2.5 mm pitch | right: D0, D1, D2, D3, D9; left: the same plus D10, D14, D15, D16 | both |

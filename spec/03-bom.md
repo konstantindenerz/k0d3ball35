@@ -48,8 +48,9 @@ Quantities marked "+n" include recommended spares.
 
 | Qty | Part | Spec | Source | Price | Notes |
 |-----|------|------|--------|-------|-------|
-| 2 | LiPo PKCELL LP552035 | 350 mAh, 5.7 x 20 x 37 mm max. incl. protection circuit (S-8261), JST-PH 2.0 plug, 10 cm leads | https://eckstein-shop.de/LiPo-Akku-Lithium-Ion-Polymer-Batterie-37V-350mAh-mit-JST-PHR-2-Stecker-LP552035 | 4.97 EUR each | One per half, in the battery bay under the PCB below the controller; plugs into J3. Same cell at tinytronics.nl |
-| | Alternatives | 502030 (250 mAh, 20 x 30 x 5 mm), 402025 (150 mAh, Eckstein LP402025) | 42keebs, Eckstein, Amazon | | Any cell up to 20.5 x 37.5 x 5.7 mm with a PH 2.0 plug fits: the case well is 6.5 mm deep. 6 and 7 mm cells (602025, 702025, 602030) do not. Mouser does not ship lithium cells to Germany |
+| 1 | LiPo PKCELL LP552035 (right half) | 350 mAh, 5.7 x 20 x 37 mm max. incl. protection circuit (S-8261), JST-PH 2.0 plug, 10 cm leads | https://eckstein-shop.de/LiPo-Akku-Lithium-Ion-Polymer-Batterie-37V-350mAh-mit-JST-PHR-2-Stecker-LP552035 | 4.97 EUR each | Right half only, in the battery bay under the PCB below the controller; plugs into J3. Same cell at tinytronics.nl |
+| 1 | LiPo LP402025 (left half) | 150 mAh, 4.0 x 20 x 25 mm nominal (4.2 x 20.5 x 26.5 max.), protection circuit, JST-PH 2.0 plug | Eckstein (LP402025), 42keebs, Amazon DE | about 4 EUR | | Left half only: the inner column's hot-swap sockets reach 2.8 mm into the bay on the left board, so the cell lies under them and may be at most 4.3 mm thick (1.85 + cell + 0.3 in the 6.5 mm well). The left half is the split peripheral and draws far less than the right. Check the plug polarity against the + / - print at J3 |
+| | Alternatives | 502030 (250 mAh, 20 x 30 x 5 mm) on the right; any 4 mm cell up to 20.5 x 37.5 mm on the left (402030, 402035) | 42keebs, Eckstein, Amazon | | Right: any cell up to 20.5 x 37.5 x 5.7 mm with a PH 2.0 plug fits, the case well is 6.5 mm deep. Left: at most 4.3 mm thick. 6 and 7 mm cells (602025, 702025, 602030) do not. Mouser does not ship lithium cells to Germany |
 
 Both halves use the same cell and the same bay, so there is one battery part to buy and one case
 well to print. The ball half still drains faster because of the sensor.
