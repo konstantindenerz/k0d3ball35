@@ -47,3 +47,17 @@ the spec floor (-10.6) and 1.7 mm with the case well at -11.6, which is what the
 left half's maximum cell thickness is 6.0 mm (7.0 with the case well), recorded in the spec and
 BOM. Moving PS1/RB1 or rotating the inner column was judged not worth a re-layout before the
 first order; revisit if a thicker cell is ever wanted.
+
+## Reopened and closed again 2026-11-12
+
+The decision above assumed a 9 mm (later 10.6 / 11.6) well. r2.4 made the well 6.0 mm for the flat
+stack and nobody rechecked this ticket: socket 1.85 + cell 5.7 = 7.55 mm did not fit any more, the
+LP552035 could not go into the left half. The layout check missed it because it placed the left
+board's sockets as if the footprint were mirrored.
+
+Decision (user, 2026-11-12): thinner cell on the left, no layout change. Left half LP402025
+(150 mAh, 4.0 mm nominal, 4.2 max.), right half LP552035 as before; the well is 6.5 mm on both
+(1.85 + 4.2 + 0.3 = 6.35). The left half is the split peripheral and draws far less. Recorded in
+`halves.left.battery` of the layout yaml, the bay silkscreen, spec/01, spec/03 and spec/12.
+`check_layout` now mirrors the socket on the left board and fails if socket + cell + 0.3 mm
+exceeds the well (`tests/test_geometry.py::test_battery_bay_fits_cell_and_board`).

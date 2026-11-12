@@ -26,6 +26,12 @@ torabo-tsuki-lp (sekigon-gonnoc)
   https://github.com/sekigon-gonnoc/torabo-tsuki-lp - MIT
   Reference for low-profile 25 mm trackball mechanics and FPC-connected sensor modules.
 
+zmk-driver-paw3222 (sekigon-gonnoc)
+  https://github.com/sekigon-gonnoc/zmk-driver-paw3222 - see the repository for its licence
+  The PAW3222 sensor driver the right half builds against, fetched by west at the commit pinned
+  in firmware/zmk-config/config/west.yml. Not redistributed here. The sensor module's outline
+  comes from https://github.com/sekigon-gonnoc/small-mouse-sensor-module.
+
 kiswitch (formerly perigoso/keyswitch-kicad-library)
   https://github.com/kiswitch/kiswitch - MIT (scripts), CC-BY-SA 4.0 (library data)
   Kailh Choc V1 switch and hot-swap socket footprints, included in hardware/lib.

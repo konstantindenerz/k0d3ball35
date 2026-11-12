@@ -67,13 +67,9 @@ drc: ## Design rules check with schematic parity on every PCB
 gerbers: ## Export gerbers, drill files, zip, STEP, renders, schematic PDF, BOM and position file per half
 	KICAD_CLI=$(KICAD_CLI) scripts/export.sh $(HALVES)
 
-firmware: ## Build ZMK firmware locally with docker (CI is the reference build)
-	@if command -v docker >/dev/null 2>&1; then \
-	  scripts/build_firmware.sh; \
-	else \
-	  echo "docker not found. Firmware is built by .github/workflows/firmware.yml;"; \
-	  echo "see spec/05-firmware.md for a local west setup."; \
-	fi
+firmware: ## Where the firmware comes from (CI is the reference build)
+	@echo "Firmware is built by .github/workflows/firmware.yml (download the artifacts from the run);"
+	@echo "see spec/05-firmware.md for a local west setup."
 
 test: ## Run the test suite
 	$(PY) -m pytest -q

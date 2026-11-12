@@ -65,7 +65,7 @@ the cup, tilted 65 degrees from vertical (`sensor_angle`) and leaning towards +x
 column where the PCB already ends (`sensor_az` = 180, window azimuth 0 in the layout frame); it looks at the ball through a 4 x 8 mm window slot 25 degrees
 below the equator. Nominal lens distance 2.4 mm (window 2.2 to 2.6, aim for 2.3 to 2.5).
 
-The cup floor sets the ball height (`drop_cup` 11.53 mm against `drop_board` 10.65 mm for the
+The cup floor sets the ball height (`drop_cup` 11.53 mm against `drop_board` 10.78 mm for the
 module), so the unmeasured module values cannot raise the ball. `tests/test_cradle.py` asserts it.
 
 Heights from `hardware/trackball-cradle/stack.json` and `hardware/case/stack.json`, z = 0 is the
@@ -129,7 +129,7 @@ PCB stay where they are.
 ## 7. Open points (tickets)
 
 * First print of the 65 degree mount, lens distance with a feeler gauge, and the tight
-  value: module 14.76 mm radial against the 15.5 mm notch
+  value: the module reaches 16.4 mm radially (15.5 mm at the board's lens side), past the 15.5 mm notch apothem, but towards +x where no PCB is; the pocket wall's rib stands 0.3 mm behind it
   (`issues/mech-ball-height-23mm.md`).
 * Firmware: CPI and tilt scaling tuned on hardware (`issues/fw-cpi-tuning-19mm.md`).
 * FFC pin order on the first physical cable (`issues/hw-ffc-pin-order-verification.md`).

@@ -1,5 +1,5 @@
 ---
-title: Verify the 6-pin FFC pin order between main PCB and sensor PCB
+title: Verify the 6-pin FFC pin order between main PCB and sensor module
 type: task
 priority: P1
 status: open
@@ -26,8 +26,8 @@ outer pins, and since r2.4b a type A cable is such a wrong order (see the correc
 - [x] `tests/test_ffc_pin_order.py` checks J1 against the module's declared pinout (derives the
   type B pairing from the two mounting faces, cross-checks the sign against torabo-tsuki LP's
   published type A wiring of the same module, compares J1's copper with the generator model)
-- [ ] `make pcb` / `make route` re-run on the right board after the r2.4 pin reorder, so the
-  copper carries the new nets (`tests/test_ffc_pin_order.py::test_right_j1_copper_matches_the_model`
+- [x] `make pcb` / `make route` re-run on the right board after the r2.4 pin reorder, so the
+  copper carries the new nets (J1 reads 1 VCC, 2 NCS, 3 MOT, 4 SDIO, 5 SCLK, 6 GND; rerouted again 2026-11-12) (`tests/test_ffc_pin_order.py::test_right_j1_copper_matches_the_model`
   and `tests/test_pcb_review.py` fail until then)
 - [ ] The first cable must be type B: check the two ends against the light before plugging anything in
 

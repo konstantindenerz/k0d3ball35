@@ -1,5 +1,5 @@
 ---
-title: Test ball colours and materials on the PMW3610
+title: Test ball colours and materials on the PAW3222 module
 type: task
 priority: P1
 status: open

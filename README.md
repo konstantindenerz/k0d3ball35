@@ -42,7 +42,7 @@ case pocket right beside the thumb keys.
 | Trackball cradle | r2.4 pocket mount for 19.05 mm with the module tilted 65 degrees beside the ball, test print pending | [hardware/trackball-cradle](hardware/trackball-cradle) |
 | Firmware (ZMK) | r2.4 in progress: 35 keys, one shared pin set | [firmware/zmk-config](firmware/zmk-config) |
 | Documentation | build guide, firmware, fabrication, testing written for r2 | [docs](docs) |
-| Case | later phase; pocket geometry specified | [issues/mech-case.md](issues/mech-case.md), [issues/mech-case-ball-pocket.md](issues/mech-case-ball-pocket.md) |
+| Case | printed tray, controller box cap, PCB guard, pocket cover and hinged lid per half (OpenSCAD); test print pending | [hardware/case](hardware/case), [spec/11-case.md](spec/11-case.md) |
 | Tests and CI | pytest suite, workflows ready for GitHub | [tests](tests), [.github/workflows](.github/workflows) |
 
 Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 change itself is
@@ -92,6 +92,7 @@ hardware/left-pcb/    KiCad project of the left PCB (18 keys), gerbers and rende
 hardware/right-pcb/   KiCad project of the right PCB (17 keys, FPC connector, pocket notch)
 hardware/lib/         project symbol and footprint libraries
 hardware/trackball-cradle/  parametric cradle (pocket mount), STL and floor-footprint DXF exports
+hardware/case/        parametric printed case per half (tray, cap, guard, lid), STLs and previews
 firmware/zmk-config/  ZMK shield, keymap, build matrix
 scripts/              generators and checks (schematic, routing, export, tickets)
 tests/                pytest suite incl. KiCad ERC/DRC gates
@@ -138,7 +139,8 @@ a branch before it is merged.
 ```sh
 brew install --cask kicad          # KiCad 10.0.7 (copy the app from the DMG if the cask asks for admin rights)
 brew install openjdk               # Java for freerouting
-uv venv .venv && uv pip install --python .venv/bin/python pytest pyyaml shapely ezdxf matplotlib kiutils numpy trimesh
+brew install --cask openscad@snapshot   # OpenSCAD with the manifold backend, for the case and cradle
+uv venv .venv && uv pip install --python .venv/bin/python -e ".[test]"
 make freerouting-jar               # downloads freerouting 2.5.0 to build/
 make test                          # full test suite
 ```

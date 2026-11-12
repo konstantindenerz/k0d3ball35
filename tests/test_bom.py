@@ -75,7 +75,7 @@ def test_bom_covers_placed_parts(rows, placed):
     assert _qty(rows, r"nice!nano") >= placed["mcu"] == 2
     assert _qty(rows, r"msk-?12c02") >= placed["power_switch"] == 2
     assert _qty(rows, r"reset button") >= placed["reset"] == 2
-    assert _qty(rows, r"fpc connector|ffc connector") >= placed["fpc"] + 1 == 2  # right PCB + sensor PCB
+    assert _qty(rows, r"fpc connector|ffc connector") >= placed["fpc"] + 1 == 2  # the right PCB's J1 plus a spare
     assert _qty(rows, r"lipo") >= 2
     # one cell per half, each the one the layout names for that half (the left one lies under
     # the inner column's sockets and is thinner)

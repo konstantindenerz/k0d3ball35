@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run OpenSCAD on case.scad for both halves (and the 25 mm fallback) and collect the STACK
+"""Run OpenSCAD on case.scad for both halves and collect the STACK
 echo values into stack.json. Usage: ./stack.py [openscad-binary]"""
 import json
 import re

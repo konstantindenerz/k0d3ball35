@@ -24,7 +24,7 @@ Numbers from `hardware/case/stack.json` and `hardware/trackball-cradle/stack.jso
 | transport with lid | 31.7 | 27.3 |
 | case underside (`base_z`, from the PCB top) | -14.1 | -9.6 |
 
-The cup floor sets the ball height (`drop_cup` 11.53 mm against `drop_board` 10.65 mm), so the
+The cup floor sets the ball height (`drop_cup` 11.53 mm against `drop_board` 10.78 mm), so the
 nominal, unmeasured PAW3222 lens values cannot raise the ball; they only decide whether the
 module fits. The 65 degree mount has not been printed yet.
 
@@ -32,7 +32,7 @@ module fits. The 65 degree mount has not been printed yet.
 
 - [ ] Print `hardware/case/stl/pocket-test-right.stl` and the cradle at 0.12 mm, module in the sleeve
 - [ ] Lens distance with the 2.0 mm feeler gauge within 2.3 to 2.5 mm; otherwise set `lens_shim` and reprint
-- [ ] Measure the tight value: module 14.76 mm radial against the 15.5 mm notch apothem
+- [ ] Measure the tight value: module rear corner 16.4 mm radial (towards +x, no PCB there), 0.3 mm in front of the rib on the pocket wall
 - [ ] Ball top measured on the assembled right half, within 0.3 mm of 23.75 mm over the desk
 - [ ] Module slides into the sleeve from the open back and seats with its lens face on the cavity floor; Kapton tape holds it
 - [ ] Lens gauge fits the 4 mm window: a feeler blade may be too wide, use a 2.0 mm pin or drill shank

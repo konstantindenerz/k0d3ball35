@@ -18,3 +18,31 @@ jobs:
         run: .venv/bin/python scripts/issues.py --diff
       - name: Run tests (KiCad gates skip here, see hardware.yml)
         run: .venv/bin/python -m pytest -q -m "not kicad"
+
+  # The case and cradle tests render the parts with OpenSCAD and skip without it, so the job
+  # above never ran them. This one does, in the OpenSCAD nightly image (the tests use the
+  # manifold backend, which the 2021 release in the distributions does not have).
+  openscad-pytest:
+    runs-on: ubuntu-latest
+    container:
+      image: openscad/openscad:trixie.2026-11-09
+      options: --user root
+    steps:
+      - name: Build tools
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends git ca-certificates python3-venv
+          git config --global --add safe.directory '*'
+      - uses: actions/checkout@v4
+      - name: Python dependencies
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -q -e ".[test]"
+      - name: OpenSCAD is there
+        run: openscad --version
+      - name: Printed parts (rendered)
+        run: >
+          .venv/bin/python -m pytest -q -rs
+          tests/test_case.py tests/test_case_guard.py tests/test_case_pocket.py
+          tests/test_case_handedness.py tests/test_cradle.py tests/test_retainer.py
+          tests/test_thin_walls.py tests/test_print_parts.py

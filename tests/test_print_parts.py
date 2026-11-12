@@ -53,3 +53,19 @@ def test_print_part_fits_a_small_bed(path):
     x, y, z = load_layout_frame(path).extents
     assert max(x, y) <= BED and min(x, y) <= BED, f"{path.name}: {x:.1f} x {y:.1f} mm"
     assert z <= 60.0
+
+
+def test_ci_renders_the_parts():
+    """The render tests skip where OpenSCAD is missing, and for a long time that was every CI
+    job: nothing in tests/test_case.py or tests/test_cradle.py ever ran on a push. One job has to
+    carry OpenSCAD and run them."""
+    import yaml
+
+    jobs = yaml.safe_load((ROOT / ".github" / "workflows" / "tests.yml").read_text())["jobs"]
+    scad = [j for j in jobs.values() if "openscad" in str(j.get("container", {}).get("image", ""))]
+    assert len(scad) == 1, "one job in an OpenSCAD image"
+    runs = " ".join(str(s.get("run", "")) for s in scad[0]["steps"])
+    for name in ("test_case.py", "test_cradle.py", "test_retainer.py", "test_thin_walls.py", "test_print_parts.py",
+                 "test_case_pocket.py", "test_case_guard.py"):
+        assert f"tests/{name}" in runs, f"{name} is not run with OpenSCAD in CI"
+    assert "openscad --version" in runs

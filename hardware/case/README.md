@@ -96,17 +96,20 @@ in the layout frame. `tests/test_case_handedness.py` checks the STLs against the
   to the battery well. `gen_case.py` places them in the intersection of the outer lid plate's
   roof region (8 mm inside the outline, clear of the hinge strip) and the
   tray floor region shifted by `foot_dx`, clear of the wells, the FFC channel, J1 and the cable
-  corridor, the standoffs and the feet: right (-36.94, 9.69), (-26.35, 17.69),
-  (-26.35, 45.19), (-37.0, 38.94); left (-37.25, 9.69), (-29.478, 17.19), (-29.478, 45.19),
+  corridor, the standoffs and the feet: right (-36.96, 3.71), (-11.478, 9.69),
+  (-11.478, 30.75), (-37.0, 34.75); left (-37.25, 9.69), (-29.478, 17.19), (-29.478, 45.19),
   (-37.19, 38.94). The outer lid plate's roof carries the matching pockets at the same points
   shifted by -`foot_dx` (lid x about 28 to 38, well inside the outer plate). The outer wall is
   smooth, no pads.
 - Lid lip: a 1.0 mm lip on the inside of the lid skirt reaches 3.0 mm into the tray with
-  `lid_fit` = 0.15 to the wall and holds the lid on top by friction; the lip stops at the
-  controller box walls and the pocket cup. The keycaps end 1.6 mm inside the PCB edge, the
-  lip 0.95 mm inside it, so 0.65 mm remain between lip and caps.
-- Lid plates: the lid is split along the hinge line x = -13 (`hinge_x` in `data.scad`, the
-  left half mirrored like everything else). The outer plate (pinky side) carries all four
+  `lid_fit` = 0.15 to the wall and holds the lid on top by friction. It stands only where the keycaps leave room:
+  across the columns the caps end 1.6 mm inside the PCB edge and the lip 0.95 mm, so 0.65 mm
+  remain; along the rows the caps end only 0.5 mm inside the edge, so there is no lip there
+  (`lid_cap_clear` = 0.5 from every cap, pieces under 0.8 mm dropped). That leaves the outer
+  edge, the step faces of the stagger and the thumb corner. The lip also stops at the
+  controller box walls, the pocket cup and the hinge line.
+- Lid plates: the lid is split along the hinge line (`hinge_x` in `data.scad`: x = -13 on the
+  left half, -31 on the right, the left half mirrored like everything else). The outer plate (pinky side) carries all four
   roof magnets; the inner plate carries the controller box notch (to +9.0) and the thumb
   cluster and is the kickstand of the foot. Roof underside +14.5 (`lid_clear` 3.5 over the
   caps), roof top +17.5 on both halves; the ball top (+13.95) stays under the roof, so there is
@@ -142,7 +145,7 @@ From `stack.json` (`make stack`):
 | battery well floor / pocket floor | -8.1 / - | -8.1 / -7.1 |
 | key floor | -3.7 | -3.7 |
 | PCB | -1.6 .. 0 | -1.6 .. 0 |
-| cradle cup rim / pocket cover | - | +3.425 / +3.6 .. +5.0 |
+| cradle cup rim / pocket cover | - | +3.425 / +3.8 .. +5.0 |
 | rim | +5.0 | +5.0 |
 | cap plate under / box top | +6.7 / +8.7 | +6.7 / +8.7 |
 | keycap top | +11.0 | +11.0 |
@@ -256,7 +259,7 @@ closed pair, `lid_folded` the folded pair; the previews `lid_foot` (tilted on th
   in the grooves and the rod must push in by hand. Check on the first print that the folded
   lid does not rock as a foot (the stop faces meet along the whole cut, the outer bottom edge
   and the kickstand's lip edge both touch the desk).
-- As a foot the kickstand reaches about 54 mm (right; 57 left) inward beyond the inner wall,
+- As a foot the kickstand reaches about 34.5 mm (right; 53.3 left) inward beyond the inner wall,
   so the two halves need at least that gap between them; with both kickstands pointing at each
   other the halves cannot stand closer than about 11 cm.
 - `cover_fit` = 0.15 in the rebate is a guess like `lid_fit`; the cover should drop in by hand
