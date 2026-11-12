@@ -436,6 +436,17 @@ def test_stack_json(stack, cradle_stack):
     assert abs(r["cradle_rim_z"] - cradle_stack["rim_z"]) < 1e-6
 
 
+@pytest.mark.skipif(openscad() is None, reason="openscad not installed")
+@pytest.mark.parametrize("half", ["left", "right"])
+def test_stack_json_is_fresh(tmp_path, half, stack):
+    """test_stack_json and the docs read the committed stack.json. A params.scad change without
+    `make case` left it stale and every assert on it green (found by re-introducing the faults of
+    the 2026-11-12 review: a floor inside the sockets and a too shallow screw hole both passed)."""
+    values, _ = run_scad("tray", half, tmp_path / "tray.stl")
+    stale = {k: (stack[half].get(k), v) for k, v in values.items() if stack[half].get(k) != v}
+    assert not stale and set(values) == set(stack[half]), f"{half}: stack.json is stale, run `make case`: {stale}"
+
+
 # ----------------------------------------------------------------- renders
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")
 @pytest.mark.parametrize("half", ["left", "right"])

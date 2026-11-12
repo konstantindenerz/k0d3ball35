@@ -6,7 +6,9 @@ were all between two parts that each passed: the lid lip inside the keycaps, cas
 hot-swap sockets, a battery well shallower than cell plus socket, a screw longer than its hole, a
 USB opening smaller than the plug. This test puts the half together - the printed parts rendered
 from the sources, the bought parts as simple prisms at their real positions - cuts the stack
-every 0.4 mm and demands that no two things overlap in any cut.
+every 0.4 mm and just inside every horizontal face of every part, and demands that no two things
+overlap in any cut. The cuts at the faces matter: a floor 0.25 mm inside a socket lies between
+two cuts of a fixed grid (found by re-introducing the reviewed faults one by one).
 
 The bought parts are modelled at their MAXIMUM size (datasheet maxima, tallest solder joint), so a
 pass means they fit, not that they fit on a good day. Add a prism here for every new part.
@@ -66,6 +68,9 @@ def bought_parts(half: str, v: dict) -> list[tuple[str, object, float, float]]:
     parts: list[tuple[str, object, float, float]] = [("PCB", layout.outline, -PCB_T, 0.0)]
     for k in layout.keys:
         parts.append((f"{k.ref} switch body", rotated_box(k.x, k.y, cfg["switch_body"], cfg["switch_body"], k.rotation), 0.0, 5.0))
+        # the body fills the guard's hole with a 0.1 mm fit, so that pair is allowed; its core is not
+        core = cfg["switch_body"] - 1.0
+        parts.append((f"{k.ref} switch core", rotated_box(k.x, k.y, core, core, k.rotation), 0.0, 5.0))
         parts.append((f"{k.ref} keycap", layout.keycap_polygon(k), v["rim_z"], v["cap_top_z"]))
         for name, poly, h in layout.under_switch(k):
             parts.append((name, poly, under - h, under))
@@ -111,10 +116,10 @@ def cut_of(shape, z: float):
 # Pairs that touch by design. Each entry says why, so nobody adds one to silence a real clash.
 ALLOWED = [
     (r"switch body$", r"keycap$"),            # the cap sits on the switch
-    (r"switch body$", r"^guard$"),            # the guard's holes are the switch bodies (0.1 mm fit, see below)
-    (r"PCB screw thread", r"^PCB$"),          # through its hole
-    (r"PCB screw thread", r"^tray$"),         # in the insert; the tip is checked on its own below
-    (r"centre post|side peg", r"switch body"),
+    (r"switch body$", r"^guard$"),            # the guard's holes are the switch bodies (0.1 mm fit); "switch core" is not allowed
+    (r"PCB screw thread", r"^PCB$"),          # through its hole. NOT allowed against the tray: the 2 mm thread
+                                              # runs free in the 3.2 mm insert hole and must not reach its bottom
+    (r"centre post|side peg", r"switch (body|core)"),
     (r"socket (body|tab)$", r"socket (body|tab)$"),
     (r"USB receptacle", r"controller board"),
     (r"USB receptacle", r"USB-C plug"),
@@ -123,6 +128,52 @@ ALLOWED = [
 
 def allowed(a: str, b: str) -> bool:
     return any((re.search(x, a) and re.search(y, b)) or (re.search(x, b) and re.search(y, a)) for x, y in ALLOWED)
+
+
+def cut_levels(meshes: dict, bought: list) -> list[float]:
+    """The 0.4 mm grid plus a cut 0.03 mm inside every horizontal face of every part."""
+    z_lo = min(m.bounds[0][2] for m in meshes.values())
+    z_hi = max(m.bounds[1][2] for m in meshes.values())
+    levels = set(np.round(np.arange(z_lo + 0.13, z_hi, STEP), 2).tolist())
+    faces = {z for _, _, z0, z1 in bought for z in (z0, z1)}
+    for m in meshes.values():
+        flat = np.abs(m.face_normals[:, 2]) > 0.999
+        faces |= set(np.round(m.triangles[flat][:, 0, 2], 2).tolist())
+    for z in faces:
+        levels |= {round(z - 0.03, 2), round(z + 0.03, 2)}
+    return sorted(z for z in levels if z_lo < z < z_hi)
+
+
+def find_clashes(meshes: dict, bought: list) -> tuple[dict, int]:
+    """{(a, b): (mm2 in the worst cut, z)} for every pair with a printed part in it, and the
+    number of pairs compared."""
+    clashes: dict[tuple[str, str], tuple[float, float]] = {}
+    seen_pairs = 0
+    for z in cut_levels(meshes, bought):
+        layer = [(name, section(m, z)) for name, m in meshes.items() if m.bounds[0][2] < z < m.bounds[1][2]]
+        layer = [(n, c) for n, c in layer if not c.is_empty]
+        layer += [(n, cut_of(s, z)) for n, s, z0, z1 in bought if z0 < z < z1]
+        for i in range(len(layer)):
+            for j in range(i + 1, len(layer)):
+                (a, ga), (b, gb) = layer[i], layer[j]
+                printed = (a in meshes) + (b in meshes)
+                if printed == 0 or allowed(a, b):
+                    continue                       # two bought parts: the PCB tests own those
+                seen_pairs += 1
+                if not ga.intersects(gb):
+                    continue
+                area = ga.intersection(gb).area
+                if area > OVERLAP and area > clashes.get((a, b), (0.0, 0.0))[0]:
+                    clashes[(a, b)] = (round(area, 2), round(z, 2))
+    return clashes, seen_pairs
+
+
+def in_board_frame(half: str, parts: list) -> list:
+    """Bought parts are described in the layout frame; the left board mirrors x."""
+    if half != "left":
+        return parts
+    return [(n, (s[0], (-s[1][0], s[1][1]), s[2], s[3]) if isinstance(s, tuple) else affinity.scale(s, xfact=-1, origin=(0, 0)), z0, z1)
+            for n, s, z0, z1 in parts]
 
 
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")
@@ -139,46 +190,30 @@ def test_nothing_overlaps_in_the_closed_half(tmp_path, half):
         bx, by = load_layout(half).ball_center
         cradle.apply_translation([bx * sx, by, 0.0])
         meshes["cradle"] = cradle
-    bought = [(n, s if isinstance(s, tuple) else affinity.scale(s, xfact=sx, origin=(0, 0)), z0, z1)
-              for n, s, z0, z1 in bought_parts(half, values)]
-    if half == "left":
-        bought = [(n, (s[0], (s[1][0] * sx, s[1][1]), s[2], s[3]) if isinstance(s, tuple) else s, z0, z1) for n, s, z0, z1 in bought]
-
-    z_lo = min(m.bounds[0][2] for m in meshes.values())
-    z_hi = max(m.bounds[1][2] for m in meshes.values())
-    clashes: dict[tuple[str, str], tuple[float, float]] = {}
-    seen_pairs = 0
-    for z in np.arange(z_lo + 0.13, z_hi, STEP):
-        z = float(z)
-        layer = [(name, section(m, z)) for name, m in meshes.items() if m.bounds[0][2] < z < m.bounds[1][2]]
-        layer = [(n, c) for n, c in layer if not c.is_empty]
-        layer += [(n, cut_of(s, z)) for n, s, z0, z1 in bought if z0 < z < z1]
-        for i in range(len(layer)):
-            for j in range(i + 1, len(layer)):
-                (a, ga), (b, gb) = layer[i], layer[j]
-                printed = (a in meshes) + (b in meshes)
-                if printed == 0 or allowed(a, b):
-                    continue                       # two bought parts: the PCB tests own those
-                seen_pairs += 1
-                if not ga.intersects(gb):
-                    continue
-                area = ga.intersection(gb).area
-                if area > OVERLAP and area > clashes.get((a, b), (0.0, 0.0))[0]:
-                    clashes[(a, b)] = (round(area, 2), round(z, 2))
+    clashes, seen_pairs = find_clashes(meshes, in_board_frame(half, bought_parts(half, values)))
     assert seen_pairs > 2000, "the stack was hardly compared: the test measured nothing"
     assert not clashes, f"{half}: parts in the same space (mm2 in the worst cut, z): {clashes}"
 
 
 @pytest.mark.skipif(openscad() is None, reason="openscad not installed")
-def test_the_check_sees_a_known_clash(tmp_path):
-    """Mutation: a 5.7 mm cell under the left board's sockets must be reported."""
+def test_the_check_sees_known_clashes(tmp_path):
+    """The check itself, fed faults the review found: each must come back by name."""
     half = "left"
     out = tmp_path / "tray.stl"
     values = render("tray", half, out)
-    tray = load_layout_frame(out)
-    parts = bought_parts(half, values)
-    name, cell, z0, z1 = next(p for p in parts if "cell" in p[0])
-    thick = z1 - (5.7 + CELL_AIR)                    # the right half's cell in the left half
-    cut = section(tray, thick + 0.1)
-    assert cut.intersection(affinity.scale(cell, xfact=-1, origin=(0, 0))).area > 50.0, "a cell 1.5 mm too thick went unnoticed"
-    assert section(tray, z0 + 0.1).intersection(affinity.scale(cell, xfact=-1, origin=(0, 0))).area < OVERLAP
+    meshes = {"tray": load_layout_frame(out)}
+    good = bought_parts(half, values)
+    assert not find_clashes(meshes, in_board_frame(half, good))[0]
+
+    def clash_names(parts):
+        return {" / ".join(k) for k in find_clashes(meshes, in_board_frame(half, parts))[0]}
+
+    # the right half's 5.7 mm cell under the left board's sockets
+    thick = [(n, s, z1 - (5.7 + CELL_AIR), z1) if "cell" in n else (n, s, z0, z1) for n, s, z0, z1 in good]
+    assert any("cell" in n for n in clash_names(thick)), "a cell 1.5 mm too thick went unnoticed"
+    # an M2 x 8 in the PCB holes: its tip is in the floor under the insert hole
+    long = [(n, s, -8.0, z1) if n == "PCB screw thread" else (n, s, z0, z1) for n, s, z0, z1 in good]
+    assert any("screw thread" in n for n in clash_names(long)), "a screw that bottoms out went unnoticed"
+    # sockets 0.3 mm taller than the floor allows: thinner than the cut grid
+    tall = [(n, s, z0 - 0.3, z1) if n.endswith("socket body") else (n, s, z0, z1) for n, s, z0, z1 in good]
+    assert any("socket body" in n for n in clash_names(tall)), "0.3 mm of interference in z went unnoticed"

@@ -209,6 +209,11 @@ def test_ball_axes_follow_the_sensor_position():
     on_x_axis = stack["window_az"] % 180 == 0
     assert stack["window_az"] % 90 == 0
     assert ("INPUT_TRANSFORM_XY_SWAP" in tilt) == on_x_axis, "axis swap does not match the sensor azimuth"
+    # Signs, derived in the overlay's comment for each window azimuth and to be confirmed on the
+    # first board (issues/fw-cpi-tuning-19mm.md). A new azimuth needs its own derivation.
+    flags = {0: {"INPUT_TRANSFORM_XY_SWAP", "INPUT_TRANSFORM_Y_INVERT"}}
+    assert stack["window_az"] in flags, "derive the axis signs for this sensor azimuth and add them here"
+    assert set(re.findall(r"INPUT_TRANSFORM_\w+", tilt)) == flags[stack["window_az"]]
     scale = re.search(r"<&zip_y_scaler (\d+) (\d+)>", tilt)
     assert scale, "the fast sensor axis (Y, in the tilt plane) must be scaled down"
     assert abs(int(scale.group(1)) / int(scale.group(2)) - math.cos(math.radians(angle))) < 0.005
