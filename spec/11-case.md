@@ -23,6 +23,7 @@ together and how the wordmark is engraved into them. Tickets: [mech-case](../iss
 | Pocket cover | `pocket-cover-right.stl` | flush 1.2 mm plate over the cradle opening, a bezel over the cup rim with a 20.55 mm hole (0.75 mm round the ball), two M2 x 6 countersunk screws |
 | Retainer clip | `pocket-clip-right.stl` | optional: C-ring on the cover with two claws over the ball, two snap pins into the cover; keeps the ball in upside down |
 | Pocket test | `pocket-test-right.stl` | the 50 x 50 mm corner of the right tray around the ball, for the first test print with the cradle |
+| PCB test plate | `pcb-test-left.stl`, `pcb-test-right.stl` | the main board as a 1.6 mm printed plate with the mounting and switch holes and J1 as a block, for the test fit before the boards are ordered |
 
 The tray and the box cap carry the owner wordmark as an engraved relief (section 9).
 
@@ -193,7 +194,7 @@ upward faces. No supports anywhere, 0.2 mm layers (0.12 mm for the pocket test),
 The engraved wordmark on the cap plate and the case underside is one more set of bridges, all
 of them one groove wide (1.0 mm on the cap, 0.9 mm on the floor) and 0.6 mm tall, on the face
 that lies on the bed. Print
-`pocket-test-right.stl` first and check it with the cradle and a scrap PCB with the notch:
+`pocket-test-right.stl` first and check it with the cradle and the PCB test plate (`pcb-test-right.stl`):
 0.3 mm all round, the module drops in and lifts out vertically with the board in place, and the
 FFC reaches J1 over the board edge without a crease.
 

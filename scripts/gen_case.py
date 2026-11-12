@@ -24,6 +24,7 @@ from shapely.affinity import translate
 from shapely.ops import unary_union
 
 from k0d3 import ffc_route
+from k0d3.footprints import choc_v1_hotswap_reversible
 from k0d3.geometry import HALVES, Layout, load_layout, rotated_box
 
 REPO = Path(__file__).resolve().parents[1]
@@ -354,6 +355,9 @@ def half_data(layout: Layout) -> dict:
     step = tp["pitch"]
     d["test_pads"] = [(round(tp["start"]["x"] + i * step, 3), tp["start"]["y"]) for i in range(9)]
     d["keys"] = [(k.x, k.y, k.rotation) for k in layout.keys]
+    # the drills of one switch footprint (x, y, diameter in the key's own frame), for the printed
+    # PCB test plate: the same holes the board gets, from the same footprint
+    d["switch_holes"] = [(p.x, p.y, p.drill) for p in choc_v1_hotswap_reversible().pads if p.kind == "np_thru_hole"]
     d["has_ball"] = layout.has_ball
     if layout.has_ball:
         d["ball_center"] = layout.ball_center
@@ -472,7 +476,7 @@ def render(data: dict[str, dict]) -> str:
              "// the user, origin at the middle-column top key. z is not part of this file.",
              "// Selector functions take the half name: outline(\"left\"), holes(\"right\"), ...", ""]
     names = ["outline", "holes", "bay", "well", "j3", "rb1", "ps1", "reset", "switch", "ctrl_rect", "box_rect",
-             "test_pads", "keys", "has_ball", "ball_center", "housing_footprint", "housing_box", "case_screws",
+             "test_pads", "keys", "switch_holes", "has_ball", "ball_center", "housing_footprint", "housing_box", "case_screws",
              "case_outline", "pocket_opening", "cover_rect", "cover_screws",
              "notch", "fpc_box", "fpc_body", "fpc_tails", "cable_corridor", "ffc_path", "hinge_x", "lip_min_x", "skirt_min_x", "foot_dx", "foot_magnets", "feet", "guard"]
     for name in names:
@@ -490,7 +494,7 @@ def render(data: dict[str, dict]) -> str:
                 s = "[" + ", ".join(pts(r) for r in v) + "]"
             elif name == "ffc_path":      # x, y, z over the PCB top, roll (k0d3.ffc_route.path)
                 s = "[" + ", ".join("[" + ", ".join(fmt(c) for c in q) + "]" for q in v) + "]"
-            elif name == "keys":
+            elif name in ("keys", "switch_holes"):
                 s = "[" + ", ".join(f"[{fmt(x)}, {fmt(y)}, {fmt(r)}]" for x, y, r in v) + "]"
             else:
                 s = pts(v)

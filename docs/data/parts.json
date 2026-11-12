@@ -502,6 +502,90 @@
    "non_manifold_edges": 7
   },
   {
+   "id": "pcb-test-right",
+   "path": "hardware/case/stl/pcb-test-right.stl",
+   "group": "test",
+   "name": "PCB test plate, right",
+   "role": "The main board as a 1.6 mm printed plate with the mounting and switch holes, to test the fit before the boards are ordered.",
+   "printed": true,
+   "doc": "hardware/case/README.md",
+   "previews": [],
+   "bbox_min": [
+    -74.63,
+    -77.95,
+    -1.6
+   ],
+   "bbox_max": [
+    46.35,
+    8.75,
+    2.0
+   ],
+   "size": [
+    120.98,
+    86.7,
+    3.6
+   ],
+   "triangles": 27948,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "pcb-test-left",
+   "path": "hardware/case/stl/pcb-test-left.stl",
+   "group": "test",
+   "name": "PCB test plate, left",
+   "role": "The main board as a 1.6 mm printed plate with the mounting and switch holes, to test the fit before the boards are ordered.",
+   "printed": true,
+   "doc": "hardware/case/README.md",
+   "previews": [],
+   "bbox_min": [
+    -46.35,
+    -77.95,
+    -1.6
+   ],
+   "bbox_max": [
+    74.63,
+    8.75,
+    0.0
+   ],
+   "size": [
+    120.98,
+    86.7,
+    1.6
+   ],
+   "triangles": 29488,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "ball-19mm-test-half",
+   "path": "hardware/trackball-cradle/stl/ball-19mm-test-half.stl",
+   "group": "test",
+   "name": "Test ball, half",
+   "role": "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.",
+   "printed": true,
+   "doc": "hardware/case/README.md",
+   "previews": [],
+   "bbox_min": [
+    -9.52,
+    -9.52,
+    0.0
+   ],
+   "bbox_max": [
+    9.52,
+    9.52,
+    9.52
+   ],
+   "size": [
+    19.04,
+    19.04,
+    9.52
+   ],
+   "triangles": 4924,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
    "id": "cradle-19mm-pocket",
    "path": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
    "group": "cradle",

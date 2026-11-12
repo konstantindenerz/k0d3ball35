@@ -24,6 +24,10 @@ and have a test now. What a test cannot show is listed here for the first print.
 
 ## Acceptance criteria
 
+Before the boards are ordered the print uses the PCB test plates (`hardware/case/stl/pcb-test-*.stl`)
+and, until the ball arrives, the glued test ball (`hardware/trackball-cradle/stl/ball-19mm-test-half.stl`).
+
+- [ ] PCB test plate: drops into each tray with 0.2 mm all round, all five holes meet their standoffs, switches seat in every position
 - [ ] Lid: goes on over the keycaps and holds. The lip now stands only where the caps leave room (outer edge, step faces, thumb corner), so the friction hold is weaker than drawn before; if the lid is loose, add magnets or a detent rather than more lip
 - [ ] Battery: both cells lie loose in the well with the PCB screwed down (right 5.7 mm, left 4 mm under the inner column's sockets); JST plug and leads fit beside the cell
 - [ ] Standoffs: inserts set flush in the 5.6 mm standoffs without the 1.2 mm wall bulging into a socket or peg (0.44 mm of air)

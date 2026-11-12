@@ -30,9 +30,10 @@ BED = 180.0     # the smallest common bed (Prusa Mini, Bambu A1 mini)
 def test_the_list_is_complete():
     names = {p.name for p in PRINTED}
     for half in ("left", "right"):
-        for part in ("tray", "box-cap", "guard", "lid-outer", "lid-inner"):
+        for part in ("tray", "box-cap", "guard", "lid-outer", "lid-inner", "pcb-test"):
             assert f"{part}-{half}.stl" in names
-    assert {"pocket-cover-right.stl", "pocket-clip-right.stl", "cradle-19mm-pocket.stl"} <= names
+    assert {"pocket-cover-right.stl", "pocket-clip-right.stl", "cradle-19mm-pocket.stl",
+            "ball-19mm-test-half.stl"} <= names
 
 
 @pytest.mark.parametrize("path", PRINTED, ids=lambda p: p.name)
@@ -66,6 +67,6 @@ def test_ci_renders_the_parts():
     assert len(scad) == 1, "one job in an OpenSCAD image"
     runs = " ".join(str(s.get("run", "")) for s in scad[0]["steps"])
     for name in ("test_case.py", "test_cradle.py", "test_retainer.py", "test_thin_walls.py", "test_print_parts.py",
-                 "test_case_pocket.py", "test_case_guard.py", "test_assembly_interference.py"):
+                 "test_case_pocket.py", "test_case_guard.py", "test_assembly_interference.py", "test_test_prints.py"):
         assert f"tests/{name}" in runs, f"{name} is not run with OpenSCAD in CI"
     assert "openscad --version" in runs

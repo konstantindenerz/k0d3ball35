@@ -303,6 +303,21 @@ module pocket_test() {
     }
 }
 
+// ---------------------------------------------------------------- PCB test print
+// The main board as a printed plate, to try the case, the cradle and the switches before the
+// boards are ordered: outline with the ball notch, the mounting holes, every drill of the switch
+// footprints (data.scad switch_holes) and J1 as a block on the key side. Not printed: the
+// controller's 1 mm holes. Prints as it lies, back face on the bed.
+module pcb_test() {
+    translate([0, 0, -pcb_t]) linear_extrude(pcb_t) difference() {
+        pcb_2d();
+        for (hp = holes(half)) translate(hp) circle(d = 2.2 + test_hole_fit);
+        for (k = keys(half)) translate([k[0], k[1]]) rotate(-k[2])
+            for (sh = switch_holes(half)) translate([sh[0], sh[1]]) circle(d = sh[2] + test_hole_fit);
+    }
+    if (has_ball(half)) translate([0, 0, -0.01]) polygon_box(fpc_body(half), 2.0 + 0.01);
+}
+
 // ---------------------------------------------------------------- dummies for views
 module pcb_dummy() {
     color("darkgreen") translate([0, 0, -pcb_t]) linear_extrude(pcb_t) pcb_2d();

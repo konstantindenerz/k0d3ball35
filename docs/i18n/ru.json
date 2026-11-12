@@ -443,5 +443,11 @@
  "Sensor module": "Модуль сенсора",
  "FFC cable": "Шлейф FFC",
  "Rubber feet": "Резиновые ножки",
- "Sensor module (envelope)": "Модуль сенсора (габарит)"
+ "Sensor module (envelope)": "Модуль сенсора (габарит)",
+ "PCB test plate": "Тестовая пластина платы",
+ "PCB test plate, right": "Тестовая пластина платы, правая",
+ "PCB test plate, left": "Тестовая пластина платы, левая",
+ "Test ball, half": "Тестовый шар, половина",
+ "The main board as a 1.6 mm printed plate with the mounting and switch holes, to test the fit before the boards are ordered.": "Основная плата в виде печатной пластины 1,6 мм с крепёжными отверстиями и отверстиями под переключатели — для проверки посадки до заказа плат.",
+ "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.": "Половина шара 19,05 мм: печатается дважды и склеивается, пока нет настоящего шара. Для проверки посадки и удержания, не для проверки трекинга."
 }

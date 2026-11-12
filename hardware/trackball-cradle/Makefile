@@ -15,7 +15,7 @@ CAM_ASM   = --camera=0,0,5,55,0,145,170 --imgsize=1200,900 --colorscheme=Tomorro
 CAM_BODY  = --camera=0,0,0,55,0,325,90 --imgsize=1200,900 --colorscheme=Tomorrow
 POCKET19  = -D ball_d=19.05
 
-STL = stl/cradle-19mm-pocket.stl
+STL = stl/cradle-19mm-pocket.stl stl/ball-19mm-test-half.stl
 # not a print part: the bought sensor module where it sits, for the case assembly views, the
 # interference test and the site (ball-centred and in the print frame like the cradle STL)
 REF = ref/sensor-module.stl
@@ -37,6 +37,10 @@ ref/sensor-module.stl: cradle.scad params.scad | ref
 
 stl/cradle-19mm-pocket.stl: cradle.scad params.scad | stl
 	$(OSC) -D 'part="cradle"'   $(POCKET19) -o $@ $<
+
+# half a test ball, printed twice and glued until the bought ball is there
+stl/ball-19mm-test-half.stl: cradle.scad params.scad | stl
+	$(OSC) -D 'part="ball_test_half"' $(POCKET19) -o $@ $<
 
 dxf/floor-19mm-pocket.dxf: cradle.scad params.scad | dxf
 	$(OSC) -D 'part="floor2d"'  $(POCKET19) -o $@ $<

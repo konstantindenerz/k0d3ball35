@@ -9,12 +9,13 @@
 
 // ---------------------------------------------------------------- selection
 half            = "right";     // "left" | "right"
-part            = "assembly";  // tray | box_cap | lid | lid_outer | lid_inner | lid_folded | pocket_test | assembly | section | floor2d
+part            = "assembly";  // tray | box_cap | lid | lid_outer | lid_inner | lid_folded | pocket_test | pcb_test | assembly | section | floor2d
 mirror_left     = true;        // mirror x once at the top level for the left half (physical part)
 
 // ---------------------------------------------------------------- PCB and walls
 pcb_t           = 1.6;
 pcb_clear       = 0.2;         // gap between the PCB edge and the cavity wall
+test_hole_fit   = 0.2;         // printed PCB test plate: added to every hole diameter, printed holes come out small
 // Broken edges. Both halves print with their large flat face on the bed - the tray floor down,
 // the lid roof down - and that first layer squashes out by a tenth or two (elephant's foot).
 // A 45 degree taper there keeps the part sitting flat and takes the sharp edge off the one that

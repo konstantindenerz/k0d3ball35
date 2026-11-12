@@ -240,6 +240,19 @@ module cradle() {
 }
 
 
+// ------------------------------------------------------------------ test ball
+// Half a ball to print twice and glue, flat face on the bed, until the bought ball is there.
+// A piece of 1.75 mm filament in the centre hole lines the halves up. It shows fit, gap and
+// retention; the sensor does not track a printed surface like the real ball.
+ball_pin_d = 1.9;
+ball_pin_depth = 4.0;
+module ball_test_half() {
+    difference() {
+        intersection() { sphere(r = R); translate([-R, -R, 0]) cube([2 * R, 2 * R, R]); }
+        translate([0, 0, -0.01]) cylinder(d = ball_pin_d, h = ball_pin_depth + 0.01, $fn = 32);
+    }
+}
+
 // ------------------------------------------------------------------ dummies for the assembly view
 module ball() { at_ball() color("ivory") sphere(r = R); }
 
@@ -287,6 +300,7 @@ module floor2d() {
 // (issues/mech-case-stl-mirrored.md). The echoed STACK numbers stay in the layout frame.
 module dispatch() {
     if (part == "cradle")        cradle();
+    else if (part == "ball_test_half") ball_test_half();
     else if (part == "sensor_dummy") sensor_dummy();
     else if (part == "sensor_module") sensor_dummy(ffc = false);   // ref/sensor-module.stl: the bought module in its place
     else if (part == "floor2d")  floor2d();

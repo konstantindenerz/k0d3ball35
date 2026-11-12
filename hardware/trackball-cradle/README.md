@@ -15,7 +15,7 @@ Files
 | `params.scad` | every dimension, documented |
 | `Makefile` | builds STL, DXF (floor footprint), PNG previews and `stack.json` |
 | `stack.py` | collects the computed stack heights into `stack.json` |
-| `stl/` | `cradle-19mm-pocket.stl` |
+| `stl/` | `cradle-19mm-pocket.stl`; `ball-19mm-test-half.stl`, half a test ball to print twice and glue until the real ball is there (fit only, not tracking) |
 | `dxf/` | `floor-19mm-pocket.dxf`, the footprint on the case floor with the two screw holes |
 | `preview/` | cradle, section and assembly views |
 
@@ -105,7 +105,7 @@ stay in place.
   the 15.5 mm notch apothem but towards +x, where there is no board within 13 mm; lens height
   3.45 mm (board to lens face, datasheet); the module (13.4 x 7.4 mm, lens body 9.06 x 7.4 mm) goes into its slot by hand, lens
   face on the cavity floor, and the cable passes the end-wall slot without kinking.
-- With a scrap PCB at the PCB plane, the module goes into the pocket and out again vertically.
+- With the PCB test plate (`../case/stl/pcb-test-right.stl`) at the PCB plane, the module goes into the pocket and out again vertically.
 - The FFC reaches J1 without a crease.
 - Firmware: at 600 CPI a half turn of the ball moves the cursor about one screen width.
 

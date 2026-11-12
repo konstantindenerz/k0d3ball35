@@ -443,5 +443,11 @@
  "Sensor module": "传感器模块",
  "FFC cable": "FFC 排线",
  "Rubber feet": "橡胶脚垫",
- "Sensor module (envelope)": "传感器模块（外形）"
+ "Sensor module (envelope)": "传感器模块（外形）",
+ "PCB test plate": "PCB 试打板",
+ "PCB test plate, right": "PCB 试打板，右",
+ "PCB test plate, left": "PCB 试打板，左",
+ "Test ball, half": "测试球，半球",
+ "The main board as a 1.6 mm printed plate with the mounting and switch holes, to test the fit before the boards are ordered.": "打印出来的 1.6 mm 主板，带安装孔和轴体孔，用于在下单 PCB 之前测试配合。",
+ "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.": "19.05 mm 球的一半，打印两个后粘合，在真球到货前使用。用于测试配合和固定，不能用于测试追踪。"
 }

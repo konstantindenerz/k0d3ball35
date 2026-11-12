@@ -54,6 +54,9 @@ for _h in ("right", "left"):
 
 PARTS["pocket-cover-right"] = ("right", "Pocket cover, right", "Flush plate over the cradle opening, with the funnel down to the ball. Two M2 x 6 countersunk screws.", True)
 PARTS["pocket-test-right"] = ("test", "Pocket test, right", "The corner of the right tray around the ball pocket, to test the cradle fit.", True)
+for _h in ("right", "left"):
+    PARTS[f"pcb-test-{_h}"] = ("test", f"PCB test plate, {_h}", "The main board as a 1.6 mm printed plate with the mounting and switch holes, to test the fit before the boards are ordered.", True)
+PARTS["ball-19mm-test-half"] = ("test", "Test ball, half", "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.", True)
 PARTS["cradle-19mm-pocket"] = ("cradle", "Cradle, 19.05 mm ball", "Cup on three ceramic bearings, with the tilted sensor module sleeve beside it. The only variant since r2.4.", True)
 PARTS["pocket-clip-right"] = ("retainer", "Retainer clip, right", "Optional clip on the pocket cover that keeps the ball in when the half is turned over.", True)
 

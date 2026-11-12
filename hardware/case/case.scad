@@ -1,6 +1,6 @@
 // k0d3ball35 printed case - entry point
 // Usage: openscad --backend manifold -D half=\"right\" -D part=\"tray\" -o tray-right.stl case.scad
-// Parts: tray | box_cap | pocket_cover | pocket_clip | guard | guard2d | lid | lid_outer | lid_inner | lid_folded | pocket_test | assembly | section | floor2d
+// Parts: tray | box_cap | pocket_cover | pocket_clip | guard | guard2d | lid | lid_outer | lid_inner | lid_folded | pocket_test | pcb_test | assembly | section | floor2d
 // Previews: lid_on | lid_foot (tilted on the desk) | lid_foot_flat
 // Layout facts come from data.scad (scripts/gen_case.py), dimensions from params.scad.
 
@@ -208,6 +208,7 @@ module dispatch() {
     else if (part == "lid_inner") lid_plate("inner");
     else if (part == "lid_folded") lid_folded();
     else if (part == "pocket_test") pocket_test();
+    else if (part == "pcb_test") pcb_test();
     else if (part == "assembly") assembly();
     else if (part == "section") section();
     else if (part == "guide_bottom") guide_bottom();

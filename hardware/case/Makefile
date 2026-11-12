@@ -30,7 +30,7 @@ RIGHT     = -D 'half="right"'
 STL = stl/tray-left.stl stl/tray-right.stl stl/box-cap-left.stl stl/box-cap-right.stl \
       stl/lid-left.stl stl/lid-right.stl stl/lid-outer-left.stl stl/lid-outer-right.stl \
       stl/lid-inner-left.stl stl/lid-inner-right.stl stl/lid-folded-left.stl stl/lid-folded-right.stl \
-      stl/pocket-test-right.stl stl/pocket-cover-right.stl stl/pocket-clip-right.stl stl/guard-left.stl stl/guard-right.stl
+      stl/pocket-test-right.stl stl/pcb-test-left.stl stl/pcb-test-right.stl stl/pocket-cover-right.stl stl/pocket-clip-right.stl stl/guard-left.stl stl/guard-right.stl
 DXF = dxf/floor-left.dxf dxf/floor-right.dxf dxf/guard-left.dxf dxf/guard-right.dxf
 PNG = preview/assembly-left.png preview/assembly-right.png preview/section-right.png \
       preview/lid-on-right.png preview/lid-foot-right.png preview/lid-folded-right.png \
@@ -89,6 +89,11 @@ stl/pocket-cover-right.stl: $(SRC) | stl
 	$(OSC) -D 'part="pocket_cover"' $(RIGHT) -o $@ case.scad
 stl/pocket-test-right.stl: $(SRC) | stl
 	$(OSC) -D 'part="pocket_test"' $(RIGHT) -o $@ case.scad
+# the main board as a printed plate, for the test fit before the boards are ordered
+stl/pcb-test-left.stl: $(SRC) | stl
+	$(OSC) -D 'part="pcb_test"' $(LEFT) -o $@ case.scad
+stl/pcb-test-right.stl: $(SRC) | stl
+	$(OSC) -D 'part="pcb_test"' $(RIGHT) -o $@ case.scad
 
 stl/guard-left.stl: $(SRC) | stl
 	$(OSC) -D 'part="guard"' $(LEFT) -o $@ case.scad

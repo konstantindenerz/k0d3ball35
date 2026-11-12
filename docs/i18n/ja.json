@@ -443,5 +443,11 @@
  "Sensor module": "センサーモジュール",
  "FFC cable": "FFCケーブル",
  "Rubber feet": "ゴム足",
- "Sensor module (envelope)": "センサーモジュール（外形）"
+ "Sensor module (envelope)": "センサーモジュール（外形）",
+ "PCB test plate": "基板テストプレート",
+ "PCB test plate, right": "基板テストプレート（右）",
+ "PCB test plate, left": "基板テストプレート（左）",
+ "Test ball, half": "テストボール（半球）",
+ "The main board as a 1.6 mm printed plate with the mounting and switch holes, to test the fit before the boards are ordered.": "基板を発注する前にはめ合いを確認するための、取り付け穴とスイッチ穴を備えた厚さ1.6 mmの印刷版メイン基板。",
+ "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.": "本物のボールが届くまでの代用品。19.05 mmボールの半球で、2個印刷して貼り合わせます。はめ合いと保持の確認用で、トラッキングの確認には使えません。"
 }

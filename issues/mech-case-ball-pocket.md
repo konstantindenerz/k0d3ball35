@@ -35,7 +35,7 @@ or the optional clip-on retainer (`mech-ball-retainer-clip`), so the pocket itse
 
 - [x] Parametric pocket in `hardware/case/` built from the layout (notch polygon, housing box and footprint, case screws via `scripts/gen_case.py`), checked against `floor-19mm-pocket.dxf` in `tests/test_case.py`
 - [x] Floor at -7.1 mm under the module, two 2.2 mm holes 20 mm apart on the y axis for the M2 x 8 case screws (countersunk, 1.2 mm floor left at the bore)
-- [ ] Test print of the pocket corner alone with the cradle and a scrap PCB with the notch: 0.3 mm gap all round, the module drops in and lifts out vertically with the board in place, FFC folds over the board edge into J1 without a crease
+- [ ] Test print of the pocket corner alone with the cradle and the PCB test plate (`pcb-test-right.stl`): 0.3 mm gap all round, the module drops in and lifts out vertically with the board in place, FFC folds over the board edge into J1 without a crease
 - [x] Image prompt for the pocket detail in `spec/images/PROMPTS.md` (`img-case-pocket-detail`)
 
 ## Notes
@@ -49,7 +49,7 @@ test print, `stl/pocket-test-right.stl`). Pocket floor -11.6, housing well 30 x 
 block, case screws (-13, 56) and (-13, 76), cavity above the PCB plane is the notch plus
 0.2 mm, rim +5.0 under the cup rim +6.575.
 `tests/test_case.py` checks the floor DXF against the cradle's and the rendered mesh against
-`hardware/trackball-cradle/stack.json`. Open: the test print with the cradle and a scrap PCB.
+`hardware/trackball-cradle/stack.json`. Open: the test print with the cradle and the PCB test plate.
 See `spec/11-case.md`.
 
 2026-11-06 (r2.2): the pocket follows `mech-cradle-notch-relief` and `hw-j1-top-side`. Housing

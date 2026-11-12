@@ -91,6 +91,8 @@ No LCSC lines: the sensor is a bought module (`issues/hw-paw3222-variant.md`).
 | [ ] | Controller caps | `hardware/case/stl/box-cap-left.stl`, `hardware/case/stl/box-cap-right.stl` | being generated | same |
 | [ ] | Lid plates | `hardware/case/stl/lid-outer-left.stl`, `lid-inner-left.stl`, `lid-outer-right.stl`, `lid-inner-right.stl` | being generated | same (`issues/mech-case-lid.md`); `lid-left.stl` / `lid-right.stl` are the closed pairs for the exploded view, not for printing |
 | [ ] | Pocket test piece | `hardware/case/stl/pocket-test-right.stl` | being generated | print first, test the cradle and the right PCB notch in it |
+| [ ] | PCB test plates | `hardware/case/stl/pcb-test-left.stl`, `hardware/case/stl/pcb-test-right.stl` | generated | print before the PCB order, fit them in the trays with switches and cradle |
+| [ ] | Test ball | `hardware/trackball-cradle/stl/ball-19mm-test-half.stl` | generated | print twice and glue, until the real ball arrives |
 
 Print service or own printer: a service (JLC3DP or Craftcloud, SLA resin or MJF nylon) gives the
 cleanest bearing seats and the flattest floor; for the cradle pick SLA. On an own FDM printer use
