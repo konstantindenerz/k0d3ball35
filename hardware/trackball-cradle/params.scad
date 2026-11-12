@@ -60,7 +60,11 @@ lens_z          = 2.4;     // ball surface to lens reference plane (the lens fac
 // NEGATIVE decreases it. With the tilted module a shim moves it along the optical axis and does
 // NOT raise the ball.
 lens_shim       = 0;       // measured correction to lens_z; 0 = nominal
-lens_h          = 2.5;     // lens face to module board (lens side), nominal
+lens_h          = 3.45;    // lens face (reference plane) to module board, lens side. PixArt PAW3204LU
+                           // datasheet (same lens family as the PAW3222's PNSR-015-RB3): PCB to the
+                           // tracking surface 5.85, lens plane to surface 2.4, so 3.45 (+-0.15); the
+                           // maker's 12 mm case puts the lens ceiling 3.4 over the board. Was an
+                           // unsourced 2.5 until r2.4b.
 lens_l          = 7.4;     // lens body across the board, local x (maker drawing: the full board width)
 lens_w          = 9.06;    // lens body along the board, local y (maker drawing)
 lens_far        = 6.79;    // optical centre to the board end the lens body is flush with (maker drawing)

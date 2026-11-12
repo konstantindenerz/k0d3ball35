@@ -62,7 +62,7 @@ stays in the layout frame.
 - **Cable.** The FFC leaves the module's FH19C (lens side) out of the module's short end, through a
   slot in the sleeve's end wall on the key side that is open to the back, so the module slides in
   with its cable plugged. It runs round the cup as an upright band and lies down over the board
-  edge into J1: 32.3 mm with both insertions, a 40 mm type B cable (`spec/08-trackball-module.md`).
+  edge into J1: 34.4 mm with both insertions, a 50 mm type B cable with its slack in an S-fold beside J1 (`spec/08-trackball-module.md`).
 - **Bearings.** Three 2.0 mm ZrO2 balls at 60, 180 and 300 degrees, 35 degrees below the equator,
   clear of the sensor window. Seats are 1.9 mm holes drilled radially into the solid cup skirt; printed holes come out
   undersize, ream with a 1.9 to 2.0 mm bit.
@@ -101,8 +101,9 @@ stay in place.
   window 2.2 to 2.6). Otherwise set `lens_shim` to the difference (positive moves the module
   away from the ball) and reprint; the shim does not move the ball. Suspect the bearing seats
   first: a radial seat error d moves the ball centre by 1.43 d.
-- Tight values to measure: module 14.96 mm radial (inside the PCB slab) against the 15.5 mm notch
-  apothem; the module (13.4 x 7.4 mm, lens body 9.06 x 7.4 mm) goes into its slot by hand, lens
+- Tight values to measure: the module reaches 16.0 mm from the ball axis inside the PCB slab, past
+  the 15.5 mm notch apothem but towards +x, where there is no board within 13 mm; lens height
+  3.45 mm (board to lens face, datasheet); the module (13.4 x 7.4 mm, lens body 9.06 x 7.4 mm) goes into its slot by hand, lens
   face on the cavity floor, and the cable passes the end-wall slot without kinking.
 - With a scrap PCB at the PCB plane, the module goes into the pocket and out again vertically.
 - The FFC reaches J1 without a crease.

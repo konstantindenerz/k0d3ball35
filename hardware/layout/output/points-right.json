@@ -185,11 +185,11 @@
       "housing_clearance": 0.5,
       "case_screw_spacing": 20.0,
       "sensor_board": {
-        "x": 4.4,
+        "x": 5.0,
         "y": 13.4
       },
       "sensor_board_offset": {
-        "x": 13.4,
+        "x": 13.9,
         "y": 0.0
       },
       "square_corner": true,
@@ -380,9 +380,9 @@
       ]
     ],
     "sensor_board": {
-      "width": 4.4,
+      "width": 5.0,
       "height": 13.4,
-      "x": 0.4,
+      "x": 0.9,
       "y": 66.0
     },
     "module_footprint": [
