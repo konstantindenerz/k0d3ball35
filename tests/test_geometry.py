@@ -174,7 +174,11 @@ def test_housing_footprint_and_case_screws():
 
 def test_battery_bay_identical_on_both_halves():
     left, right = load_layout("left"), load_layout("right")
-    assert left.cfg["battery"] == right.cfg["battery"]
+    # same bay and well on both halves; only the cell differs (the left one lies under the
+    # inner column's hot-swap sockets and has to be thinner)
+    same = lambda cfg: {k: v for k, v in cfg["battery"].items() if k not in ("cell", "capacity_mah", "size")}
+    assert same(left.cfg) == same(right.cfg)
+    assert left.cfg["battery"]["size"]["z"] < right.cfg["battery"]["size"]["z"]
     assert left.battery_bay().equals(right.battery_bay())
     assert left.cfg["controller"]["socket_height"] <= 3.0
 
@@ -184,20 +188,26 @@ def test_battery_bay_fits_cell_and_board(layout):
     edge, clear of everything assembled on the back and fully under the controller's footprint."""
     bay = layout.battery_bay()
     bat = layout.cfg["battery"]
-    assert bat["cell"] == "LP552035"
+    from k0d3.geometry import CELL_AIR, SOCKET_H
+
+    assert bat["cell"] == {"left": "LP402025", "right": "LP552035"}[layout.half]
     assert bat["bay"]["size"]["x"] - bat["size"]["x"] >= 0.5 and bat["bay"]["size"]["y"] - bat["size"]["y"] >= 1.0
     # The well depth is the documented stack-up, not a round number: the cell plus whatever sits
     # between it and the PCB underside. Since r2.4 that is only 0.3 mm, which REQUIRES the
     # controller socket tails to be flush (conthrough pins, or trimmed after soldering) - the
     # 1.0 mm of protruding tails the r2.3 well allowed would not fit. spec/04-build-guide.md.
-    head = bat["depth_below_pcb"] - bat["size"]["z"]
+    # What reaches into the bay on the back takes its height off the room for the cell. On the
+    # left board that is the inner column's hot-swap sockets (the footprint is chiral, the board
+    # mirrored): the r2.4 well was made 3 mm shallower without rechecking them, and the 5.7 mm
+    # cell no longer fitted there (review 2026-11-12).
+    over = {name for name, poly in layout.back_parts().items() if poly.intersects(bay)}
+    assert over == ({"SW04 socket", "SW14 socket", "SW24 socket"} if layout.half == "left" else set()), over
+    head = bat["depth_below_pcb"] - bat["size"]["z"] - (SOCKET_H if over else 0.0)
     assert head >= 0.3 - 1e-9, f"only {head:.2f} mm above the cell, needs 0.3"
     assert head <= 1.0, (f"{head:.2f} mm above the cell is more than the stack-up needs - "
                          "the well is deeper than it has to be, which costs the same in height")
     assert layout.outline.contains(bay)
     assert layout.outline.exterior.distance(bay) >= bat["edge_clearance"] - 0.05
-    for name, poly in layout.back_parts().items():
-        assert not poly.intersects(bay), name
     c = layout.cfg["controller"]
     ctrl = rotated_box(c["center"]["x"], c["center"]["y"], c["size"]["x"], c["size"]["y"], 0, offset=(0, c["pcb_offset_y"]))
     assert ctrl.intersection(bay).area >= 0.5 * bay.area, "bay must lie mostly under the controller"

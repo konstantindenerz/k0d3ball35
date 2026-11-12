@@ -576,7 +576,9 @@ def test_battery_bay_on_back_silkscreen(board, layout, half):
     assert any(p.symmetric_difference(bay).area < 1e-6 for p in dashed), "dashed bay rectangle on B.SilkS"
     assert tuple(round(v, 3) for v in bay.bounds) == {"right": (55.6, 57.0, 76.6, 98.0), "left": (163.4, 57.0, 184.4, 98.0)}[half]
     texts = {g.text for g in board.gr_texts if g.layer == "B.SilkS" and bay.contains(Point(g.pts[0]))}
-    assert texts == {"LP552035 cell", "350 mAh", "leads +y"}
+    bat = layout.cfg["battery"]
+    assert texts == {f"{bat['cell']} cell", f"{bat['capacity_mah']} mAh", "leads +y"}
+    assert bat["cell"] == {"left": "LP402025", "right": "LP552035"}[half]
     assert bay.within(board.outline.buffer(-layout.cfg["battery"]["edge_clearance"] + 1e-6)), "bay keeps the edge clearance"
 
 
@@ -610,6 +612,37 @@ def test_battery_bay_holds_nothing_but_u1(board, layout, half):
     assert len(tails) >= 12, "the keys-side row of U1 socket tails is the only thing inside the bay (cut flush by hand)"
 
 
+def test_case_standoffs_clear_the_underside(board, layout, half):
+    """A printed standoff stands under every mounting hole. On the real board it has to clear the
+    hot-swap socket bodies, their solder tabs, the switch pegs that come through the PCB and the
+    diodes, on BOTH halves: the socket footprint is chiral, so the left board is not the mirror
+    of the right here. The 6 mm standoffs of r2.4 sat 0.9 mm inside a socket on the left and on
+    the side pegs on both (review 2026-11-12). Measured on the routed board, not on the layout."""
+    from k0d3.geometry import STANDOFF_CLEAR, STANDOFF_D
+
+    r = STANDOFF_D / 2
+    checked = 0
+    for h in board.by_prefix("H"):
+        centre = Point(h.x, h.y)
+        for sw in board.by_prefix("SW"):
+            shapes = {"socket body": [sw.local_box(-2.275, -8.275, 2.475, -3.625), sw.local_box(2.475, -6.075, 7.575, -1.425)],
+                      "back pad": [p.poly() for p in sw.pads if p.kind == "smd" and p.on("B.Cu")],
+                      "peg": [Point(p.x, p.y).buffer(p.drill / 2) for p in sw.pads
+                              if p.kind == "np_thru_hole" and p.drill in (1.7, 3.4)]}
+            assert len(shapes["back pad"]) == 2 and len(shapes["peg"]) == 3, sw.ref
+            for name, polys in shapes.items():
+                for poly in polys:
+                    checked += 1
+                    gap = poly.distance(centre) - r
+                    assert gap >= STANDOFF_CLEAR - 1e-6, f"{half} {h.ref}: standoff {gap:.2f} mm from {sw.ref} {name}"
+        for d in board.by_prefix("D"):
+            for p in d.pads:
+                if p.kind == "smd" and p.on("B.Cu"):
+                    checked += 1
+                    assert p.poly().distance(centre) - r >= STANDOFF_CLEAR - 1e-6, f"{half} {h.ref}: standoff on {d.ref}"
+    assert checked > 5 * 17 * 7
+
+
 # ----- mounting holes ------------------------------------------------------------------
 def test_mounting_holes(board, layout):
     holes = board.by_prefix("H")
@@ -624,8 +657,6 @@ def test_mounting_holes(board, layout):
         for sw in board.by_prefix("SW"):
             body = sw.local_box(-6.9, -6.9, 6.9, 6.9)
             assert body.distance(centre) >= HOLE_RADIUS + 0.9, f"{h.ref} hits the switch body of {sw.ref}"
-            # H1 passes 1.49 mm from the SW11 socket body: standoffs on the back must stay below 3 mm diameter there
-            assert sw.local_box(*SOCKET_BODY).distance(centre) >= HOLE_RADIUS + 0.3, f"{h.ref} hits the socket of {sw.ref}"
         for d in board.by_prefix("D"):
             assert d.courtyard("B.CrtYd").distance(centre) >= HOLE_RADIUS + 0.5, f"{h.ref} hits {d.ref}"
         for layer in ("F.Cu", "B.Cu"):

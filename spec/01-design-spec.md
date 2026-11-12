@@ -219,8 +219,8 @@ switch bodies and outside the hot-swap socket pad bands, identical on both board
 
 | Hole | x | y | Location |
 |------|---|---|----------|
-| H1 | +27.0 | +10.8 | ring / pinky, top |
-| H2 | +27.0 | +44.5 | ring / pinky, bottom |
+| H1 | +26.75 | +12.1 | ring / pinky, between row 0 and row 1 |
+| H2 | +26.75 | +29.1 | ring / pinky, between row 1 and row 2 |
 | H3 | -9.0 | +40.0 | middle / index, bottom |
 | H4 | -27.0 | +8.0 | index / inner, top |
 | H5 (left) | -32.0 | +61.0 | between outer and middle thumb key |

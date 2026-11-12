@@ -50,16 +50,19 @@ base_z          = min(well_floor_z - well_floor_t, pocket_floor_z - floor_t);   
 
 // ---------------------------------------------------------------- PCB fastening
 // Default: M2 heat-set inserts (brass, M2 x 3 mm, OD about 3.5) in the standoffs and the cap
-// bosses, M2 x 5 / x 6 machine screws from the top (head max 3.5 mm, under the keycaps).
+// bosses, M2 x 5 machine screws from the top (head max 3.5 mm, under the keycaps). M2 x 6
+// bottoms out in the cap bosses, so the build uses one length everywhere: x 5.
 // "pilot": 1.6 mm pilots for M2 self-tapping screws instead.
 pcb_screws      = "insert";    // "insert" | "pilot"
 insert_hole_d   = 3.2;
-insert_depth    = 4.0;
-standoff_d      = 6.0;         // leaves 1.4 mm around the insert hole
+insert_depth    = 4.0;         // cap bosses: deeper would break through the boss chamfer
+standoff_hole_depth = 4.8;     // PCB standoffs: M2 x 5 ends at -5.0, the hole at -6.4 (it runs on into the floor)
+standoff_d      = 5.6;         // 1.2 mm around the insert hole; 6.0 touched the switch pegs and sockets (geometry.py STANDOFF_D)
 standoff_pilot_d = 1.6;        // only used for pcb_screws == "pilot"
 standoff_h      = -pcb_t - floor_z_key;              // 3.0
 screw_hole_d    = (pcb_screws == "insert") ? insert_hole_d : standoff_pilot_d;
-screw_hole_depth = (pcb_screws == "insert") ? insert_depth : 6.0;
+screw_hole_depth = (pcb_screws == "insert") ? insert_depth : 6.0;          // cap bosses
+pcb_hole_depth   = (pcb_screws == "insert") ? standoff_hole_depth : 6.0;   // PCB standoffs
 min_floor_under_insert = 1.5;
 
 // ---------------------------------------------------------------- controller box

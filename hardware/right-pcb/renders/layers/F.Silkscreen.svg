@@ -1050,76 +1050,68 @@ L9.1809 51.8043
 <path d="M9.1809 51.8043
 L9.1047 51.8424
 " />
-</g></g>
-<g style="fill:none; 
-stroke:currentColor; stroke-width:0.0900; stroke-opacity:1; 
-stroke-linecap:round; stroke-linejoin:round;">
-<text x="2.7285" y="36.0500"
-textLength="1.4071" font-size="0.8000" lengthAdjust="spacingAndGlyphs"
+</g><text x="10.0285" y="36.1500"
+textLength="1.8762" font-size="1.0667" lengthAdjust="spacingAndGlyphs"
 text-anchor="middle" opacity="0" stroke-opacity="0">ON</text>
 <g class="stroked-text"><desc>ON</desc>
-<path d="M2.3571 35.4229
-L2.4714 35.4229
+<path d="M9.5333 35.3139
+L9.6856 35.3139
 " />
-<path d="M2.4714 35.4229
-L2.5285 35.4515
+<path d="M9.6856 35.3139
+L9.7618 35.3519
 " />
-<path d="M2.5285 35.4515
-L2.5856 35.5086
+<path d="M9.7618 35.3519
+L9.8380 35.4281
 " />
-<path d="M2.5856 35.5086
-L2.6142 35.6229
+<path d="M9.8380 35.4281
+L9.8761 35.5805
 " />
-<path d="M2.6142 35.6229
-L2.6142 35.8229
+<path d="M9.8761 35.5805
+L9.8761 35.8472
 " />
-<path d="M2.6142 35.8229
-L2.5856 35.9372
+<path d="M9.8761 35.8472
+L9.8380 35.9996
 " />
-<path d="M2.5856 35.9372
-L2.5285 35.9943
+<path d="M9.8380 35.9996
+L9.7618 36.0758
 " />
-<path d="M2.5285 35.9943
-L2.4714 36.0229
+<path d="M9.7618 36.0758
+L9.6856 36.1139
 " />
-<path d="M2.4714 36.0229
-L2.3571 36.0229
+<path d="M9.6856 36.1139
+L9.5333 36.1139
 " />
-<path d="M2.3571 36.0229
-L2.2999 35.9943
+<path d="M9.5333 36.1139
+L9.4571 36.0758
 " />
-<path d="M2.2999 35.9943
-L2.2428 35.9372
+<path d="M9.4571 36.0758
+L9.3809 35.9996
 " />
-<path d="M2.2428 35.9372
-L2.2142 35.8229
+<path d="M9.3809 35.9996
+L9.3428 35.8472
 " />
-<path d="M2.2142 35.8229
-L2.2142 35.6229
+<path d="M9.3428 35.8472
+L9.3428 35.5805
 " />
-<path d="M2.2142 35.6229
-L2.2428 35.5086
+<path d="M9.3428 35.5805
+L9.3809 35.4281
 " />
-<path d="M2.2428 35.5086
-L2.2999 35.4515
+<path d="M9.3809 35.4281
+L9.4571 35.3519
 " />
-<path d="M2.2999 35.4515
-L2.3571 35.4229
+<path d="M9.4571 35.3519
+L9.5333 35.3139
 " />
-<path d="M2.8714 36.0229
-L2.8714 35.4229
+<path d="M10.2190 36.1139
+L10.2190 35.3139
 " />
-<path d="M2.8714 35.4229
-L3.2142 36.0229
+<path d="M10.2190 35.3139
+L10.6761 36.1139
 " />
-<path d="M3.2142 36.0229
-L3.2142 35.4229
+<path d="M10.6761 36.1139
+L10.6761 35.3139
 " />
-</g></g>
-<g style="fill:none; 
-stroke:currentColor; stroke-width:0.1200; stroke-opacity:1; 
-stroke-linecap:round; stroke-linejoin:round;">
-<text x="17.6285" y="56.6500"
+</g><text x="17.6285" y="56.6500"
 textLength="1.5714" font-size="1.0667" lengthAdjust="spacingAndGlyphs"
 text-anchor="middle" opacity="0" stroke-opacity="0">J2</text>
 <g class="stroked-text"><desc>J2</desc>
@@ -3860,24 +3852,26 @@ L51.9142 52.2657
 <path d="M51.9142 52.2657
 L51.8571 52.2943
 " />
-</g><text x="17.6285" y="47.6500"
-textLength="0.7214" font-size="0.8000" lengthAdjust="spacingAndGlyphs"
-text-anchor="middle" opacity="0" stroke-opacity="0">1</text>
-<g class="stroked-text"><desc>1</desc>
-<path d="M17.7999 47.6229
-L17.4571 47.6229
+</g></g>
+<g style="fill:none; 
+stroke:currentColor; stroke-width:0.1500; stroke-opacity:1; 
+stroke-linecap:round; stroke-linejoin:round;">
+<text x="16.2285" y="47.8500"
+textLength="1.4881" font-size="1.3333" lengthAdjust="spacingAndGlyphs"
+text-anchor="middle" opacity="0" stroke-opacity="0">+</text>
+<g class="stroked-text"><desc>+</desc>
+<path d="M15.8475 47.4239
+L16.6095 47.4239
 " />
-<path d="M17.6285 47.6229
-L17.6285 47.0229
+<path d="M16.2285 47.8048
+L16.2285 47.0429
 " />
-<path d="M17.6285 47.0229
-L17.5714 47.1086
-" />
-<path d="M17.5714 47.1086
-L17.5142 47.1657
-" />
-<path d="M17.5142 47.1657
-L17.4571 47.1943
+</g><text x="21.0285" y="47.8500"
+textLength="1.4881" font-size="1.3333" lengthAdjust="spacingAndGlyphs"
+text-anchor="middle" opacity="0" stroke-opacity="0">-</text>
+<g class="stroked-text"><desc>-</desc>
+<path d="M20.6475 47.4239
+L21.4095 47.4239
 " />
 </g></g>
 <g style="fill:none; 

@@ -195,9 +195,11 @@ def foot_magnets(layout: Layout, box_r, keep_out: list[Polygon], dx: float) -> l
 
 
 def feet(layout: Layout, box_r) -> list[tuple[float, float]]:
-    """Rubber feet: the five mounting holes projected onto the floor plus two under the
-    controller block so the half does not rock when a thumb key is pressed."""
-    holes = [(h["x"], h["y"]) for h in layout.cfg["mounting_holes"]]
+    """Rubber feet: under the mounting holes (unless marked `foot: false`), at the extra spots
+    of the layout (`feet_extra`, the outer corner) and two under the controller block so the half
+    does not rock when a thumb key is pressed. Seven per half."""
+    holes = [(h["x"], h["y"]) for h in layout.cfg["mounting_holes"] if h.get("foot", True)]
+    holes += [(f["x"], f["y"]) for f in layout.cfg.get("feet_extra", [])]
     bay = layout.battery_bay().bounds
     c = layout.cfg["controller"]["center"]["x"]
     extra = [(c, round(bay[1] + 4.0, 3)), (c, round(bay[3] - 4.0, 3))]

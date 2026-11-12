@@ -138,8 +138,8 @@ and outside the bands the hot-swap socket pads occupy:
 
 | Hole | x | y |
 |------|---|---|
-| H1 | 27.0 | 10.8 |
-| H2 | 27.0 | 44.5 |
+| H1 | 26.75 | 12.1 |
+| H2 | 26.75 | 29.1 |
 | H3 | -9.0 | 40.0 |
 | H4 | -27.0 | 8.0 |
 | H5 (left) | -32.0 | 61.0 |

@@ -32,7 +32,7 @@ module standoffs() {
 
 module screw_holes() {
     for (hp = holes(half))
-        translate([hp[0], hp[1], -pcb_t - screw_hole_depth]) cylinder(d = screw_hole_d, h = screw_hole_depth + 1);
+        translate([hp[0], hp[1], -pcb_t - pcb_hole_depth]) cylinder(d = screw_hole_d, h = pcb_hole_depth + 1);
 }
 
 // foot magnets: pockets from below in the thick floor under the key area, north pole down

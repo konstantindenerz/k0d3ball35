@@ -123,15 +123,21 @@ test_pads:                      # spare controller pins as 1.5 mm pads, in a row
   direction: x
 
 mounting_holes:                 # M2 through holes for the case (2.2 mm), in the gaps between switches, both halves
-  - { x: 27.0,  y: 10.8 }       # ring / pinky, top (outside the socket pad bands)
-  - { x: 27.0,  y: 44.5 }       # ring / pinky, bottom
+  # The two holes between the ring and the pinky column sit where a 5.6 mm case standoff
+  # clears the hot-swap sockets and the switch pegs on BOTH boards (the sockets point the other
+  # way on the mirrored left board): 0.44 mm at best, and only at y = 12.1 + n x 17.
+  - { x: 26.75, y: 12.1 }       # ring / pinky, between row 0 and row 1
+  - { x: 26.75, y: 29.1, foot: false }   # ring / pinky, between row 1 and row 2; the foot stays at the corner
   - { x: -9.0,  y: 40.0 }       # middle / index, bottom
   - { x: -27.0, y: 8.0 }        # index / inner, top
 # The fifth hole sits in the thumb cluster, whose shape differs per half since r2.3, so it is
 # listed under halves.<side>.mounting_holes instead of here.
 
+feet_extra:                     # rubber feet that are not under a mounting hole, both halves
+  - { x: 27.0,  y: 44.5 }       # outer corner towards the user
+
 stitching_vias:                 # GND vias tying the two pours together (free spots between switches), both halves
-  - [27.0, 27.5]
+  - [27.0, 25.5]
   - [9.0, 6.0]
   - [-27.0, 25.0]
   - [-45.0, 31.5]
@@ -165,6 +171,14 @@ silkscreen:
 # scalar blocks (trackball.center, fpc) exist only where given.
 halves:
   left:
+    # The hot-swap sockets of the inner column reach 2.8 mm into the bay on the left board
+    # (issues/hw-left-bay-inner-sockets.md), so the cell lies under them: 1.85 + cell + 0.3 mm
+    # must fit the 6.5 mm well. That is a 4 mm cell. The left half is the split peripheral and
+    # draws far less than the central right half.
+    battery:
+      cell: "LP402025"
+      capacity_mah: 150
+      size: { x: 20.5, y: 26.5, z: 4.2 }          # 4.0 x 20 x 25 nominal, maxima incl. protection circuit
     thumbs: [thumb_outer, thumb_middle, thumb_inner]
     mounting_holes:
       - { x: -32.0, y: 61.0 }     # between the outer and the middle thumb key

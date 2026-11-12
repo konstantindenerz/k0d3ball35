@@ -133,7 +133,7 @@ This order is the only one the hardware allows, and the build guide
    vertically past the square notch corner (section 3).
 4. Cell onto the back of the PCB in the dashed bay, plug into J3. The battery well is fully
    covered by the board, so the cell travels with the PCB and cannot go in afterwards.
-5. PCB into the tray over the cup, keycaps off, five M2 x 5 or x 6 machine screws from the top.
+5. PCB into the tray over the cup, keycaps off, five M2 x 5 machine screws from the top.
 6. Controller on, box cap on, two M2 screws.
 7. PCB guard onto the PCB top (holes over the screw heads), then the switches through it into
    the sockets: their flanges hold it down. Keycaps on.

@@ -1266,76 +1266,68 @@ L103.8643 61.4948
 <path d="M103.8643 61.4948
 L103.8262 61.5710
 " />
-</g></g>
-<g style="fill:none; 
-stroke:currentColor; stroke-width:0.0900; stroke-opacity:1; 
-stroke-linecap:round; stroke-linejoin:round;">
-<text x="118.2500" y="42.0500"
-textLength="1.4071" font-size="0.8000" lengthAdjust="spacingAndGlyphs"
+</g><text x="110.9500" y="42.1500"
+textLength="1.8762" font-size="1.0667" lengthAdjust="spacingAndGlyphs"
 text-anchor="middle" opacity="0" stroke-opacity="0">ON</text>
 <g class="stroked-text"><desc>ON</desc>
-<path d="M117.8786 41.4229
-L117.9929 41.4229
+<path d="M110.4548 41.3139
+L110.6071 41.3139
 " />
-<path d="M117.9929 41.4229
-L118.0500 41.4515
+<path d="M110.6071 41.3139
+L110.6833 41.3519
 " />
-<path d="M118.0500 41.4515
-L118.1071 41.5086
+<path d="M110.6833 41.3519
+L110.7595 41.4281
 " />
-<path d="M118.1071 41.5086
-L118.1357 41.6229
+<path d="M110.7595 41.4281
+L110.7976 41.5805
 " />
-<path d="M118.1357 41.6229
-L118.1357 41.8229
+<path d="M110.7976 41.5805
+L110.7976 41.8472
 " />
-<path d="M118.1357 41.8229
-L118.1071 41.9372
+<path d="M110.7976 41.8472
+L110.7595 41.9996
 " />
-<path d="M118.1071 41.9372
-L118.0500 41.9943
+<path d="M110.7595 41.9996
+L110.6833 42.0758
 " />
-<path d="M118.0500 41.9943
-L117.9929 42.0229
+<path d="M110.6833 42.0758
+L110.6071 42.1139
 " />
-<path d="M117.9929 42.0229
-L117.8786 42.0229
+<path d="M110.6071 42.1139
+L110.4548 42.1139
 " />
-<path d="M117.8786 42.0229
-L117.8214 41.9943
+<path d="M110.4548 42.1139
+L110.3786 42.0758
 " />
-<path d="M117.8214 41.9943
-L117.7643 41.9372
+<path d="M110.3786 42.0758
+L110.3024 41.9996
 " />
-<path d="M117.7643 41.9372
-L117.7357 41.8229
+<path d="M110.3024 41.9996
+L110.2643 41.8472
 " />
-<path d="M117.7357 41.8229
-L117.7357 41.6229
+<path d="M110.2643 41.8472
+L110.2643 41.5805
 " />
-<path d="M117.7357 41.6229
-L117.7643 41.5086
+<path d="M110.2643 41.5805
+L110.3024 41.4281
 " />
-<path d="M117.7643 41.5086
-L117.8214 41.4515
+<path d="M110.3024 41.4281
+L110.3786 41.3519
 " />
-<path d="M117.8214 41.4515
-L117.8786 41.4229
+<path d="M110.3786 41.3519
+L110.4548 41.3139
 " />
-<path d="M118.3929 42.0229
-L118.3929 41.4229
+<path d="M111.1405 42.1139
+L111.1405 41.3139
 " />
-<path d="M118.3929 41.4229
-L118.7357 42.0229
+<path d="M111.1405 41.3139
+L111.5976 42.1139
 " />
-<path d="M118.7357 42.0229
-L118.7357 41.4229
+<path d="M111.5976 42.1139
+L111.5976 41.3139
 " />
-</g></g>
-<g style="fill:none; 
-stroke:currentColor; stroke-width:0.1200; stroke-opacity:1; 
-stroke-linecap:round; stroke-linejoin:round;">
-<text x="103.3500" y="56.6500"
+</g><text x="103.3500" y="56.6500"
 textLength="1.5714" font-size="1.0667" lengthAdjust="spacingAndGlyphs"
 text-anchor="middle" opacity="0" stroke-opacity="0">J2</text>
 <g class="stroked-text"><desc>J2</desc>
@@ -4158,26 +4150,24 @@ L96.7833 61.4567
 " />
 </g></g>
 <g style="fill:none; 
-stroke:currentColor; stroke-width:0.0900; stroke-opacity:1; 
+stroke:currentColor; stroke-width:0.1500; stroke-opacity:1; 
 stroke-linecap:round; stroke-linejoin:round;">
-<text x="101.3500" y="47.6500"
-textLength="0.7214" font-size="0.8000" lengthAdjust="spacingAndGlyphs"
-text-anchor="middle" opacity="0" stroke-opacity="0">1</text>
-<g class="stroked-text"><desc>1</desc>
-<path d="M101.5214 47.6229
-L101.1786 47.6229
+<text x="99.9500" y="47.8500"
+textLength="1.4881" font-size="1.3333" lengthAdjust="spacingAndGlyphs"
+text-anchor="middle" opacity="0" stroke-opacity="0">+</text>
+<g class="stroked-text"><desc>+</desc>
+<path d="M99.5690 47.4239
+L100.3310 47.4239
 " />
-<path d="M101.3500 47.6229
-L101.3500 47.0229
+<path d="M99.9500 47.8048
+L99.9500 47.0429
 " />
-<path d="M101.3500 47.0229
-L101.2929 47.1086
-" />
-<path d="M101.2929 47.1086
-L101.2357 47.1657
-" />
-<path d="M101.2357 47.1657
-L101.1786 47.1943
+</g><text x="104.7500" y="47.8500"
+textLength="1.4881" font-size="1.3333" lengthAdjust="spacingAndGlyphs"
+text-anchor="middle" opacity="0" stroke-opacity="0">-</text>
+<g class="stroked-text"><desc>-</desc>
+<path d="M104.3690 47.4239
+L105.1310 47.4239
 " />
 </g></g>
 <g style="fill:none; 

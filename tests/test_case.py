@@ -35,7 +35,7 @@ PCB_T = 1.6
 BALL_D = 19.05
 # Four holes are shared; the fifth sits in the thumb cluster, whose shape differs per half
 # since r2.3, so it comes from the layout.
-HOLES = [(27.0, 10.8), (27.0, 44.5), (-9.0, 40.0), (-27.0, 8.0)]
+HOLES = [(26.75, 12.1), (26.75, 29.1), (-9.0, 40.0), (-27.0, 8.0)]
 HOLE5 = {"left": (-32.0, 61.0), "right": (-31.0, 49.0)}
 BALL = (-13.0, 66.0)
 CASE_SCREWS = [(BALL[0], BALL[1] - 10.0), (BALL[0], BALL[1] + 10.0)]   # y axis: clear of the bearings and the +x sleeve
@@ -161,7 +161,7 @@ def test_sources_present_and_defaults():
     assert re.search(r'^pcb_screws\s*=\s*"insert"', params, re.M)
     assert re.search(r"^insert_hole_d\s*=\s*3\.2", params, re.M)
     assert re.search(r"^insert_depth\s*=\s*4\.0", params, re.M)
-    assert re.search(r"^standoff_d\s*=\s*6\.0", params, re.M)
+    assert re.search(r"^standoff_d\s*=\s*5\.6", params, re.M)
     assert re.search(r"^standoff_pilot_d\s*=\s*1\.6", params, re.M)
     assert re.search(r"^ball_d\s*=\s*19\.05", params, re.M)
     assert re.search(r"^box_inner_x\s*=\s*-45\.5", params, re.M)
@@ -362,8 +362,20 @@ def test_stack_json(stack, cradle_stack):
         assert v["pocket_rim_z"] < cradle_stack["rim_z"], "pocket wall must stay below the cup rim"
         assert v["lid_roof_under_z"] >= 11.0 + 1.0, name
         assert v["lid_top_z"] > v["lid_roof_under_z"], name
-        assert v["insert_hole_d"] == 3.2 and v["standoff_d"] == 6.0, name
-        assert v["standoff_d"] - v["insert_hole_d"] >= 2 * 1.4, "1.4 mm around the insert"
+        from k0d3.geometry import STANDOFF_D
+        assert v["insert_hole_d"] == 3.2 and v["standoff_d"] == STANDOFF_D == 5.6, "the layout check assumes this standoff"
+        assert v["standoff_d"] - v["insert_hole_d"] >= 2 * 1.2 - 1e-9, "1.2 mm around the insert"
+        # The documented screw must not bottom out before its head is down (M2 x 6 did, review
+        # 2026-11-12): PCB screws start on the PCB top (z 0), cap screws on the cap roof.
+        screw = 5.0
+        assert f"M2 x {screw:g} machine screw" in (ROOT / "spec" / "03-bom.md").read_text()
+        assert -screw >= -PCB_T - v["pcb_hole_depth"] + 0.5, f"{name}: PCB screw bottoms out in the standoff"
+        assert screw - PCB_T >= 3.0, "the screw must run through the whole 3 mm insert"
+        cap_tip = v["box_top_z"] - screw
+        assert cap_tip >= v["box_roof_under_z"] - v["boss_hole_depth"] + 0.5, f"{name}: cap screw bottoms out in the boss"
+        assert v["box_roof_under_z"] - cap_tip >= 2.5, "cap screw holds less than 2.5 mm of the insert"
+        for doc in ("spec/04-build-guide.md", "spec/11-case.md", "spec/12-order-checklist.md", "hardware/case/README.md"):
+            assert not re.search(r"M2 x 5 or (M2 )?x 6|\(or x 6\)", (ROOT / doc).read_text()), f"{doc} still offers M2 x 6"
         assert v["foot_magnets"] == 4, name
         assert v["logo_on_cap"] == 1 and v["logo_on_floor"] == 0, name
         assert 0.4 <= v["logo_depth"] <= 0.8, "deep enough to read, shallow enough to bridge"
@@ -434,15 +446,15 @@ def test_render_tray(tmp_path, half, data):
     # standoff rings just below the PCB underside: insert hole 3.2 in a 6.0 standoff
     for hx, hy in HOLES + [HOLE5[half]]:
         hx *= sx
-        near = v[(np.hypot(v[:, 0] - hx, v[:, 1] - hy) < 3.5) & (v[:, 2] > -PCB_T - 0.05) & (v[:, 2] < -PCB_T + 0.05)]
+        near = v[(np.hypot(v[:, 0] - hx, v[:, 1] - hy) < values["standoff_d"] / 2 + 0.3) & (v[:, 2] > -PCB_T - 0.05) & (v[:, 2] < -PCB_T + 0.05)]
         r = np.hypot(near[:, 0] - hx, near[:, 1] - hy)
         assert len(near) > 40, (hx, hy)
         assert abs(r.min() - values["insert_hole_d"] / 2) < 0.02, (hx, hy, r.min())
-        assert abs(r.max() - values["standoff_d"] / 2) < 0.4, (hx, hy, r.max())
+        assert abs(r.max() - values["standoff_d"] / 2) < 0.05, (hx, hy, r.max())
         # the insert hole ends with at least 1.5 mm of floor below it
         column = v[(np.hypot(v[:, 0] - hx, v[:, 1] - hy) < values["insert_hole_d"] / 2 + 0.1) & (v[:, 2] > values["base_z"] + 0.01)]
         bottom = column[:, 2].min()
-        assert abs(bottom - (-PCB_T - values["insert_depth"])) < 0.05, (hx, hy, bottom)
+        assert abs(bottom - (-PCB_T - values["pcb_hole_depth"])) < 0.05, (hx, hy, bottom)
         assert bottom - values["base_z"] >= 1.5
     # foot magnet pockets from below at the generated positions, nothing in the rim
     bottom = circle_centres(v, values["base_z"] + 2.4)

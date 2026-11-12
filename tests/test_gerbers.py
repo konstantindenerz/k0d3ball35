@@ -75,7 +75,8 @@ GRAPHIC_LAYERS = {
 
 # KiCad coordinates of the battery bay (layout bay centre (-53.9, 17.5), 21 x 41 mm, offset 120/60)
 BAY_KICAD = (55.6, 57.0, 76.6, 98.0)   # right board; the left board is mirrored about the page origin x = 120
-BAY_TEXTS = ("LP552035 cell", "350 mAh", "leads +y")
+BAY_TEXTS = {"right": ("LP552035 cell", "350 mAh", "leads +y"),
+             "left": ("LP402025 cell", "150 mAh", "leads +y")}   # the left cell lies under sockets and is thinner
 # controller footprint area in KiCad coordinates (centre (62, 74), 18 x 33.5 mm)
 CONTROLLER_KICAD = (53.0, 57.25, 71.0, 90.75)
 # Derived, not pinned: the notch grew from 15.0 to 15.5 in r2.4 when the tilted sensor module
@@ -317,7 +318,7 @@ def test_main_board_drill_table(board: str):
 @pytest.mark.parametrize("board", MAIN)
 def test_battery_bay_marking_on_back_silkscreen(board: str):
     pcb = (REPO / BOARDS[board]["pcb"]).read_text(encoding="utf-8")
-    for text in BAY_TEXTS:
+    for text in BAY_TEXTS[board]:
         m = re.search(r'\(gr_text "' + re.escape(text) + r'"\s*\(at ([\d.-]+) ([\d.-]+)[^)]*\)\s*\(layer "([^"]+)"\)', pcb)
         assert m, f"{board}: text {text!r} missing"
         x, y, layer = float(m.group(1)), float(m.group(2)), m.group(3)

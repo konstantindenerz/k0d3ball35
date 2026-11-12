@@ -182,10 +182,11 @@ Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
 ## Inserts and screws
 
 - PCB: M2 heat-set inserts (brass, M2 x 3 mm, outer diameter about 3.5) in the 3.2 mm holes
-  of the five standoffs and the two cap bosses, 4 mm deep. Press them with a soldering iron
-  at about 200 C before the PCB goes in; the standoff floor is 8.5 mm thick, the boss hole
-  ends 0.4 mm above the chamfer and nothing can reach through. Screws: M2 x 5 or M2 x 6
-  machine screws from the top, head at most 3.5 mm (under the keycaps); the keycaps come off
+  of the five standoffs (4.8 mm deep) and the two cap bosses (4 mm deep). Press them with a
+  soldering iron at about 200 C before the PCB goes in, flush with the top; 3.2 mm of floor
+  stays under a standoff hole, the boss hole ends 0.4 mm above the chamfer and nothing can
+  reach through. Screws: M2 x 5 machine screws from the top (M2 x 6 bottoms out in the cap
+  bosses), head at most 3.5 mm (under the keycaps); the keycaps come off
   for assembly.
 - Alternative: `-D pcb_screws="pilot"` turns the holes into 1.6 mm pilots for M2 self-tapping
   screws (6 mm deep).

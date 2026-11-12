@@ -380,7 +380,7 @@ hardware allows, so do not improvise.
 4. Cell onto the back of the PCB in the dashed bay and into J3 (chapter 7). The battery well is
    completely covered by the board, so the cell has to travel with the PCB.
 5. Lower the PCB into the tray, cup through the notch, onto the five standoffs. Keycaps off:
-   their skirts overhang the screw heads by 1.5 mm. Five M2 x 5 or x 6 machine screws from the
+   their skirts overhang the screw heads by 1.5 mm. Five M2 x 5 machine screws from the
    top, snug.
 6. Controller onto its sockets, box cap on, two M2 screws into the bosses - the engraved
    wordmark faces up. USB-C in its opening, the slide switch lever in its slot, the reset button

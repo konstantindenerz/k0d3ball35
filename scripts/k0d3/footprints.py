@@ -310,7 +310,11 @@ def jst_ph_sm4_reversible() -> Footprint:
               Pad("", "smd", "roundrect", -3.35, 2.9, 1.5, 3.4, F_SMD, rratio=0.17),
               Pad("", "smd", "roundrect", 3.35, 2.9, 1.5, 3.4, F_SMD, rratio=0.17)]
     pads = both_faces(pads_f, mirror=True)
-    gfx_f = rect_lines(0, 0.5, 8.0, 6.0, "F.Fab", 0.1) + rect_lines(0, 0.3, 9.4, 8.4, "F.CrtYd", 0.05) + [Text("1", -1.0, -5.4, "F.SilkS", 0.6)]
+    gfx_f = rect_lines(0, 0.5, 8.0, 6.0, "F.Fab", 0.1) + rect_lines(0, 0.3, 9.4, 8.4, "F.CrtYd", 0.05) 
+    # Polarity in plain signs beside the pad ends, 1.0 mm tall so the fab prints them legibly: there
+    # is no standard for which PH pin carries the battery plus, and a reversed cell kills the
+    # controller. Pad 1 is BAT+.
+    gfx_f += [Text("+", -2.4, -5.4, "F.SilkS", 1.0), Text("-", 2.4, -5.4, "F.SilkS", 1.0)]
     gfx = both_face_graphics(gfx_f, mirror=True)
     return Footprint("JST_PH_S2B-PH-SM4-TB_reversible", "JST PH 2.0 mm S2B-PH-SM4-TB, side entry, pad sets on both faces (optional, 6 mm tall)",
                      "smd", pads, gfx, "F.Fab", (0, 5.6))
@@ -338,7 +342,8 @@ def msk12c02_reversible() -> Footprint:
              Pad("", "np_thru_hole", "circle", 1.5, 0, 0.85, 0.85, ("*.Mask",), 0.85)]
     gfx_f = rect_lines(0, 0, 7.0, 3.0, "F.Fab", 0.1) + rect_lines(0, 0.6, 8.4, 5.4, "F.CrtYd", 0.05)
     gfx_f += [Line(-1.0, 1.5, -1.0, 2.9, "F.Fab"), Line(1.0, 1.5, 1.0, 2.9, "F.Fab"), Line(-1.0, 2.9, 1.0, 2.9, "F.Fab"),
-              Text("ON", -3.0, 3.4, "F.SilkS", 0.6)]
+              # on the board side of the body: beyond the actuator the label fell off the PCB edge
+              Text("ON", -3.0, -3.9, "F.SilkS", 0.8)]
     gfx = both_face_graphics(gfx_f, mirror=True)
     return Footprint("SW_SPDT_MSK12C02_reversible", "MSK-12C02 SPDT slide switch, actuator towards +y, pad sets on both faces",
                      "smd", pads, gfx, "F.Fab", (0, -3.2))

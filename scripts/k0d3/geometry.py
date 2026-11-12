@@ -241,14 +241,41 @@ class Layout:
         parts["J2"] = rotated_box(j2["center"]["x"], j2["center"]["y"], 4.6, 2.6, j2["rotation"])
         for k in self.keys:
             parts[k.ref] = rotated_box(k.x, k.y, cfg["switch_body"], cfg["switch_body"], k.rotation)
-            # CPG135001S30 hot-swap socket body on the back: local x -4.8..10.2, y -8.9..-2.0
-            parts[k.ref + " socket"] = rotated_box(k.x, k.y, 15.0, 6.9, k.rotation, offset=(2.7, -5.45))
+            # CPG135001S30 hot-swap socket on the back incl. its solder tabs: board-local x
+            # -4.8..10.2, y -8.9..-2.0. The footprint is chiral and NOT mirrored on the left board,
+            # so in the (mirrored) layout frame the socket points the other way there.
+            parts[k.ref + " socket"] = rotated_box(k.x, k.y, 15.0, 6.9, k.rotation, offset=(self.board_sx * 2.7, -5.45))
             # SOD-123 diode 6 mm south of the key centre (netlist.build_components), courtyard 4.6 x 2.2
             parts[k.diode_ref] = rotated_box(k.x, k.y, 4.6, 2.2, k.rotation, offset=(0.0, 6.0))
         fp = self.fpc_box()
         if fp is not None and self.fpc_side == "bottom":
             parts["J1"] = fp
         return parts
+
+    def under_switch(self, key: Key) -> list[tuple[str, Polygon, float]]:
+        """What stands out of the PCB underside at one switch, as (name, polygon in the layout
+        frame, height in mm): the hot-swap socket body (outline from the kiswitch footprint
+        SW_Hotswap_Kailh_Choc_V1, B.Fab), its two solder tabs on their pads, the switch's two side
+        pegs and its centre post (they come about 1 mm through a 1.6 mm board) and the diode.
+        Board-local shapes are mirrored in x on the left half, like everything physical."""
+        sx = self.board_sx
+        local = [
+            ("socket body", box(-2.275, -8.275, 2.475, -3.625), SOCKET_H),
+            ("socket body", box(2.475, -6.075, 7.575, -1.425), SOCKET_H),
+            ("socket tab", box(-4.775, -7.45, -2.225, -5.45), SOCKET_H),
+            ("socket tab", box(7.225, -5.05, 9.775, -2.55), SOCKET_H),
+            ("side peg", Point(-5.5, 0).buffer(0.85, 32), PEG_OUT),
+            ("side peg", Point(5.5, 0).buffer(0.85, 32), PEG_OUT),
+            ("centre post", Point(0, 0).buffer(1.7, 32), PEG_OUT),
+            ("diode", box(-2.3, 4.9, 2.3, 7.1), 1.2),
+        ]
+        out = []
+        for name, shape, h in local:
+            # board frame: rotate about the switch (KiCad sign), then mirror into the layout frame
+            g = affinity.rotate(shape, -sx * key.rotation, origin=(0, 0))
+            g = affinity.scale(g, xfact=sx, origin=(0, 0))
+            out.append((f"{key.ref} {name}", affinity.translate(g, key.x, key.y), h))
+        return out
 
     def front_parts(self) -> dict[str, Polygon]:
         """Courtyards of everything assembled on the key side of the PCB besides switches and
@@ -303,6 +330,13 @@ class Layout:
                        "width": maxx - minx, "height": maxy - miny},
             "mounting_holes": self.cfg["mounting_holes"],
         }
+
+
+SOCKET_H = 1.85        # CPG135001S30 body height under the PCB
+PEG_OUT = 1.1          # Choc V1 posts are 2.65 mm long: this much comes through a 1.6 mm board
+STANDOFF_D = 5.6       # case standoff under a mounting hole (hardware/case/params.scad standoff_d)
+STANDOFF_CLEAR = 0.3   # air between a standoff and anything on the PCB underside
+CELL_AIR = 0.3         # a pouch cell must lie loose
 
 
 def rotated_box(cx: float, cy: float, w: float, h: float, rotation_deg: float,
@@ -566,6 +600,13 @@ def check_layout(layout: Layout) -> list[str]:
             body = rotated_box(k.x, k.y, cfg["switch_body"], cfg["switch_body"], k.rotation)
             if body.distance(p) < 0.9:
                 problems.append(f"mounting hole at ({hole['x']}, {hole['y']}) collides with switch {ref}")
+        # the case standoff under the hole must clear everything on the underside
+        for k in layout.keys:
+            for name, poly, _ in layout.under_switch(k):
+                gap = poly.distance(p) - STANDOFF_D / 2
+                if gap < STANDOFF_CLEAR - 1e-6:
+                    problems.append(f"standoff at ({hole['x']}, {hole['y']}) only {gap:.2f} mm from {name} "
+                                    f"(needs {STANDOFF_CLEAR})")
         if layout.has_ball and p.distance(Point(*layout.ball_center)) < cfg["trackball"]["cradle_diameter"] / 2 + 2:
             problems.append(f"mounting hole at ({hole['x']}, {hole['y']}) collides with the cradle")
     bay = layout.battery_bay()
@@ -578,9 +619,16 @@ def check_layout(layout: Layout) -> list[str]:
     b = cfg["battery"]["bay"]["size"]
     if cell["x"] > b["x"] or cell["y"] > b["y"]:
         problems.append(f"battery cell {cell['x']} x {cell['y']} mm does not fit the bay {b['x']} x {b['y']} mm")
+    # Parts on the back inside the bay are only allowed if the cell still fits under them.
+    depth = cfg["battery"]["depth_below_pcb"]
     for name, poly in layout.back_parts().items():
-        if poly.intersects(bay):
+        if not poly.intersects(bay):
+            continue
+        if not name.endswith(" socket"):
             problems.append(f"battery bay collides with {name} on the back of the PCB")
+        elif SOCKET_H + cell["z"] + CELL_AIR > depth + 1e-6:
+            problems.append(f"{name} reaches into the battery bay: socket {SOCKET_H} + cell {cell['z']} + "
+                            f"{CELL_AIR} air does not fit the {depth} mm well")
     expected = 15 + len(cfg["thumbs"])
     if len(layout.keys) != expected:
         problems.append(f"expected {expected} keys on the {layout.half} half, got {len(layout.keys)}")
