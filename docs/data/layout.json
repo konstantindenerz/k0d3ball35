@@ -1192,7 +1192,7 @@
     "sensor_board": {
      "width": 4.4,
      "height": 13.4,
-     "x": -13.0,
+     "x": 0.4,
      "y": 66.0
     },
     "housing_footprint": [
