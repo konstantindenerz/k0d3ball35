@@ -23,6 +23,7 @@ from shapely.geometry import LineString, Point, Polygon, box
 from shapely.affinity import translate
 from shapely.ops import unary_union
 
+from k0d3 import ffc_route
 from k0d3.geometry import HALVES, Layout, load_layout, rotated_box
 
 REPO = Path(__file__).resolve().parents[1]
@@ -368,6 +369,7 @@ def half_data(layout: Layout) -> dict:
         d["fpc_body"] = ring(fpc_body(layout))
         d["fpc_tails"] = ring(fpc_tails(layout))
         d["cable_corridor"] = ring(layout.cable_corridor()) if layout.cable_corridor() is not None else []
+        d["ffc_path"] = ffc_route.path(layout)
         keep = [layout.housing_box().buffer(0.5, join_style=2).buffer(2.0, join_style=2),
                 layout.notch_polygon().buffer(2.0, join_style=2),
                 layout.fpc_box().buffer(2.0, join_style=2)]
@@ -387,6 +389,7 @@ def half_data(layout: Layout) -> dict:
         d["fpc_body"] = []
         d["fpc_tails"] = []
         d["cable_corridor"] = []
+        d["ffc_path"] = []
         keep = []
     keep.append(well.buffer(2.0, join_style=2))
     # Two candidates touch the desk when the kickstand folds down, and which one wins depends
@@ -471,7 +474,7 @@ def render(data: dict[str, dict]) -> str:
     names = ["outline", "holes", "bay", "well", "j3", "rb1", "ps1", "reset", "switch", "ctrl_rect", "box_rect",
              "test_pads", "keys", "has_ball", "ball_center", "housing_footprint", "housing_box", "case_screws",
              "case_outline", "pocket_opening", "cover_rect", "cover_screws",
-             "notch", "fpc_box", "fpc_body", "fpc_tails", "cable_corridor", "hinge_x", "lip_min_x", "skirt_min_x", "foot_dx", "foot_magnets", "feet", "guard"]
+             "notch", "fpc_box", "fpc_body", "fpc_tails", "cable_corridor", "ffc_path", "hinge_x", "lip_min_x", "skirt_min_x", "foot_dx", "foot_magnets", "feet", "guard"]
     for name in names:
         for half in HALVES:
             v = data[half][name]
@@ -485,6 +488,8 @@ def render(data: dict[str, dict]) -> str:
                 s = "[" + ", ".join(fmt(c) for c in v) + "]"
             elif name == "guard":
                 s = "[" + ", ".join(pts(r) for r in v) + "]"
+            elif name == "ffc_path":      # x, y, z over the PCB top, roll (k0d3.ffc_route.path)
+                s = "[" + ", ".join("[" + ", ".join(fmt(c) for c in q) + "]" for q in v) + "]"
             elif name == "keys":
                 s = "[" + ", ".join(f"[{fmt(x)}, {fmt(y)}, {fmt(r)}]" for x, y, r in v) + "]"
             else:

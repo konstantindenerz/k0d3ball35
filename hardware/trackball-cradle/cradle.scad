@@ -243,13 +243,13 @@ module cradle() {
 // ------------------------------------------------------------------ dummies for the assembly view
 module ball() { at_ball() color("ivory") sphere(r = R); }
 
-module sensor_dummy() {
+module sensor_dummy(ffc = true) {
     sensor_frame() {
         color("gray", 0.6) translate([-lens_l / 2, lens_y[0], -L_pcb]) cube([lens_l, lens_y[1] - lens_y[0], lens_h]);     // lens body
         color("green", 0.7) translate([-sensor_pcb_w / 2, board_y[0], -L_pcb - sensor_pcb_t])
             cube([sensor_pcb_w, board_y[1] - board_y[0], sensor_pcb_t]);                                            // module board
         color("black", 0.7) translate([-3.0, conn_y[0] + 0.2, -L_pcb]) cube([6.0, conn_y[1] - conn_y[0] - 0.2, conn_h]);  // FH19C
-        color("white", 0.8) translate([-ffc_w / 2, conn_end > 0 ? y_conn_end - 2.3 : y_conn_end - 3.7, -L_pcb + 0.35])
+        if (ffc) color("white", 0.8) translate([-ffc_w / 2, conn_end > 0 ? y_conn_end - 2.3 : y_conn_end - 3.7, -L_pcb + 0.35])
             cube([ffc_w, 6.0, 0.15]);                                                                               // FFC stub
     }
 }
@@ -288,6 +288,7 @@ module floor2d() {
 module dispatch() {
     if (part == "cradle")        cradle();
     else if (part == "sensor_dummy") sensor_dummy();
+    else if (part == "sensor_module") sensor_dummy(ffc = false);   // ref/sensor-module.stl: the bought module in its place
     else if (part == "floor2d")  floor2d();
     else if (part == "insert_path") {     // must be empty (tests): the module's way in along -z
         intersection() {

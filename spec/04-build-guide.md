@@ -343,6 +343,9 @@ the ball in when the half is turned over; otherwise the lid covers the ball in t
    first, the cable through the slot in the sleeve's end wall on the key side, until the lens
    face rests on the floor of its cavity.
    Tape the open back shut with a strip of Kapton so the module cannot slide back.
+
+![Section through the cradle: the module in its sleeve, lens towards the ball](../hardware/trackball-cradle/preview/section-19mm-pocket.png)
+
 4. Lens distance (ball out): a 2.0 mm feeler gauge on the lens through
    the 4 x 8 mm window must sit flush with the cup's inner surface (2.0 + 0.4 mm ball gap = 2.4 mm).
    Outside 2.3 to 2.5 mm: set `lens_shim` and reprint (cradle README).
@@ -351,11 +354,20 @@ the ball in when the half is turned over; otherwise the lid covers the ball in t
 
 5. Lower the cradle into the case pocket and fasten it with two M2 x 8 countersunk
    self-tapping screws from below, through the floor into the cup skirt. Snug, not tight.
+
+![Underside of the right half: the two cradle screws and the seven feet](../hardware/case/preview/guide-bottom-right.png)
+
 6. Lay the cable round the cup on the key side as an upright band, below the cup rim (the
    clip's pins hang down there). The cable is longer than the way (50 mm against 34 mm): fold
    the extra into an upright S in the free corner of the pocket beside J1, towards the thumb,
    with gentle folds, no crease. Then twist it flat and lay it over the board edge into
    J1 on the **key side**, exposed metal **down**. Close the lock. Fold gently, no crease.
+
+![The cable round the cup, the S-fold beside J1 and the flat end in J1](../hardware/case/preview/guide-ffc-right.png)
+
+   The picture is drawn from the model with the full 50 mm of cable; lay yours the same way,
+   it does not have to match to the millimetre.
+
 7. Drop the ball in: it spins freely, a strip of paper passes between ball and rim all round.
    (In the finished case it goes in last, through the pocket cover, chapter 12.)
 
@@ -390,6 +402,9 @@ hardware allows, so do not improvise.
 6. Controller onto its sockets, box cap on, two M2 screws into the bosses - the engraved
    wordmark faces up. USB-C in its opening, the slide switch lever in its slot, the reset button's
    plunger behind its pin hole in the inner wall.
+
+![Controller on its sockets, the box cap and its two screws](../hardware/case/preview/guide-cap-right.png)
+
 7. Lay the PCB guard onto the PCB top, the holes over the five screw heads and the open corner
    over the controller box and J1. It lies loose until the switches go in; their flanges hold
    it. Switches and keycaps on (chapter 13).
@@ -398,7 +413,11 @@ hardware allows, so do not improvise.
    with everything assembled.
 9. Right half: put the pocket cover into its rebate (chamfered hole up, screw holes towards you)
    and fasten it with two M2 x 6 countersunk screws from the top, snug: it sits flush with the rim.
-   Ball into the cup through the cover. Optional retainer clip (`pocket-clip-right.stl`, PETG,
+   Ball into the cup through the cover.
+
+![Pocket cover, its two screws and the ball](../hardware/case/preview/guide-cover-right.png)
+
+   Optional retainer clip (`pocket-clip-right.stl`, PETG,
    pins down on the bed, supports under the ring): claws left and right of the ball, press its
    two pins into the cover until they click; pull it straight up to take it off. Seven rubber feet
    into the recesses of the underside, lid on. As a stand, fold the inner lid plate down to its stop and

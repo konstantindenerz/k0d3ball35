@@ -27,9 +27,10 @@ import pytest
 
 pytest.importorskip("trimesh")
 from shapely import affinity  # noqa: E402
-from shapely.geometry import Point, Polygon, box  # noqa: E402
+from shapely.geometry import LineString, Point, Polygon, box  # noqa: E402
 from shapely.ops import unary_union  # noqa: E402
 
+import gen_case  # noqa: E402
 from k0d3.geometry import CELL_AIR, PEG_OUT, SOCKET_H, load_layout, rotated_box  # noqa: E402
 from mesh_tools import section  # noqa: E402
 from scad_frame import load_layout_frame  # noqa: E402
@@ -37,6 +38,7 @@ from scad_frame import load_layout_frame  # noqa: E402
 ROOT = Path(__file__).resolve().parents[1]
 CASE = ROOT / "hardware" / "case"
 CRADLE_STL = ROOT / "hardware" / "trackball-cradle" / "stl" / "cradle-19mm-pocket.stl"
+SENSOR_STL = ROOT / "hardware" / "trackball-cradle" / "ref" / "sensor-module.stl"
 PCB_T = 1.6
 STEP = 0.4
 OVERLAP = 0.05          # mm2 per cut: below this it is numerical noise on a shared face
@@ -94,15 +96,86 @@ def bought_parts(half: str, v: dict) -> list[tuple[str, object, float, float]]:
     cz = v["ctrl_top_z"] - v["usb_shell_h"] / 2
     parts.append(("USB receptacle", box(ux - 4.47, face, ux + 4.47, face + 7.35), v["ctrl_top_z"] - v["usb_shell_h"], v["ctrl_top_z"]))
     parts.append(("USB-C plug overmold", box(ux - 12.35 / 2, face - 12.0, ux + 12.35 / 2, face), cz - 3.25, cz + 3.25))
+    # what stands on the controller: the two socket strips under it and everything soldered onto it,
+    # as one slab up to the receptacle's top (the nice!nano is 3.2 mm over all, pin ends included)
+    for sx in (-1, 1):
+        x = c["center"]["x"] + sx * c["row_spacing"] / 2
+        parts.append(("controller socket strip", box(x - 1.3, ctrl.bounds[1] + 1.5, x + 1.3, ctrl.bounds[3] - 1.5), 0.0, 2.5))
+    parts.append(("controller components", ctrl, 4.1, v["ctrl_top_z"]))
     # screws: the documented M2 x 5 with a pan head, in the PCB holes and in the cap bosses
     for h in cfg["mounting_holes"]:
         p = Point(h["x"], h["y"])
         parts.append(("PCB screw thread", p.buffer(1.0, 24), -5.0, 0.0))
         parts.append(("PCB screw head", p.buffer(1.75, 24), 0.0, 1.5))
+    for y in (v["boss_y0"], v["boss_y1"]):
+        p = Point(v["boss_x"], y)
+        parts.append(("cap screw thread", p.buffer(1.0, 24), v["box_top_z"] - 5.0, v["box_top_z"]))
+        parts.append(("cap screw head", p.buffer(1.75, 24), v["box_top_z"], v["box_top_z"] + 1.5))
+    data = gen_case.half_data(layout)
+    # the two self-tapping countersunk screws of the ball half. Their length counts from the flat
+    # head face. The thread cuts into its pilot, so thread against the part it holds is allowed;
+    # the core is not, and it is what reaches the bottom of a hole that is too short.
+    if layout.has_ball:
+        z = v["case_screw_head_z"]                       # M2 x 8 from below into the cup skirt
+        for x, y in data["case_screws"]:
+            parts += countersunk("cradle screw", Point(x, y), z, +1, v["case_screw_head_d"], 8.0)
+        for x, y in data["cover_screws"]:                # M2 x 6 from the top into the tray ledge
+            parts += countersunk("cover screw", Point(x, y), v["rim_z"], -1, 3.8, 6.0)
+        parts += ffc_prisms(data["ffc_path"])
+    # rubber feet, 10 x 1 mm, standing on the desk
+    for x, y in data["feet"]:
+        parts.append(("rubber foot", Point(x, y).buffer(5.0, 48), v["desk_z"], v["desk_z"] + 1.0))
     # the ball, as a stack of discs (handled by z in `cut_of`)
     if layout.has_ball:
         parts.append(("ball", ("sphere", layout.ball_center, 19.05 / 2, v["ball_top_z"] - 19.05 / 2), v["ball_top_z"] - 19.05, v["ball_top_z"]))
     return parts
+
+
+def countersunk(name: str, p, z_face: float, up: int, head_d: float, length: float, d: float = 2.0, steps: int = 4):
+    """A 90 degree flat-head screw as prisms: flat face at z_face, pointing along `up` (+1 or -1).
+    The cone is a stack of discs that stay inside it, then thread and core down to the tip."""
+    k = (head_d - d) / 2
+    out = []
+    for i in range(steps):
+        a, b = z_face + up * k * i / steps, z_face + up * k * (i + 1) / steps
+        out.append((f"{name} head", p.buffer(head_d / 2 - k * (i + 1) / steps, 24), min(a, b), max(a, b)))
+    a, b = z_face + up * k, z_face + up * length
+    out.append((f"{name} thread", p.buffer(d / 2, 24), min(a, b), max(a, b)))
+    out.append((f"{name} core", p.buffer(0.7, 24), min(a, b), max(a, b)))
+    return out
+
+
+FFC_W = 3.5             # 6-way, 0.5 mm pitch
+FFC_T = 0.3             # 0.12 mm of cable, drawn thicker: it is laid by hand
+
+
+def ffc_prisms(path: list) -> list:
+    """The cable as it is laid (k0d3.ffc_route.path) where a prism can stand for it: the upright
+    band round the cup and through the fold, and the flat end on the board. Not the first
+    millimetres in the sleeve, where it leans with the module (tests/test_cradle.py has those),
+    and not the twist before J1."""
+    out, run = [], []
+
+    def flush():
+        if run:
+            z0, z1 = min(z for _, z in run) - FFC_W / 2, max(z for _, z in run) + FFC_W / 2
+            out.append(("FFC band", unary_union([g for g, _ in run]), z0, z1))
+            run.clear()
+
+    for a, b in zip(path, path[1:]):
+        if a[3] <= 5 and b[3] <= 5:
+            if a[2] != b[2] or (run and run[-1][1] != a[2]):     # climbing: every piece at its own height
+                flush()
+            run.append((LineString([a[:2], b[:2]]).buffer(FFC_T / 2, cap_style=2), a[2]))
+            run.append((Point(b[:2]).buffer(FFC_T / 2, 8), b[2]))
+            if a[2] != b[2]:
+                flush()
+        else:
+            flush()
+            if a[3] == 90 and b[3] == 90:
+                out.append(("FFC end in J1", LineString([a[:2], b[:2]]).buffer(FFC_W / 2, cap_style=2), a[2] - FFC_T / 2, a[2] + FFC_T / 2))
+    flush()
+    return out
 
 
 def cut_of(shape, z: float):
@@ -123,6 +196,8 @@ ALLOWED = [
     (r"socket (body|tab)$", r"socket (body|tab)$"),
     (r"USB receptacle", r"controller board"),
     (r"USB receptacle", r"USB-C plug"),
+    (r"cradle screw thread", r"^cradle$"),    # self-tapping in the 1.6 mm pilot of the cup skirt; "core" is not allowed
+    (r"cover screw thread", r"^tray$"),       # the same in the tray ledge
 ]
 
 
@@ -190,6 +265,10 @@ def test_nothing_overlaps_in_the_closed_half(tmp_path, half):
         bx, by = load_layout(half).ball_center
         cradle.apply_translation([bx * sx, by, 0.0])
         meshes["cradle"] = cradle
+        # the bought sensor module stands tilted in its sleeve, so it is a mesh like the printed parts
+        module = load_layout_frame(SENSOR_STL)
+        module.apply_translation([bx * sx, by, 0.0])
+        meshes["sensor module"] = module
     clashes, seen_pairs = find_clashes(meshes, in_board_frame(half, bought_parts(half, values)))
     assert seen_pairs > 2000, "the stack was hardly compared: the test measured nothing"
     assert not clashes, f"{half}: parts in the same space (mm2 in the worst cut, z): {clashes}"
@@ -217,3 +296,20 @@ def test_the_check_sees_known_clashes(tmp_path):
     # sockets 0.3 mm taller than the floor allows: thinner than the cut grid
     tall = [(n, s, z0 - 0.3, z1) if n.endswith("socket body") else (n, s, z0, z1) for n, s, z0, z1 in good]
     assert any("socket body" in n for n in clash_names(tall)), "0.3 mm of interference in z went unnoticed"
+
+
+@pytest.mark.skipif(openscad() is None, reason="openscad not installed")
+def test_the_check_sees_a_cradle_screw_that_is_too_long(tmp_path):
+    """r2.4 had M2 x 10 here: the tip left its pilot and came out inside the cup. The thread may
+    cut into the cup skirt, so only the screw's core can show that."""
+    half = "right"
+    out = tmp_path / "tray.stl"
+    values = render("tray", half, out)
+    cradle = load_layout_frame(CRADLE_STL)
+    bx, by = load_layout(half).ball_center
+    cradle.apply_translation([bx, by, 0.0])
+    meshes = {"tray": load_layout_frame(out), "cradle": cradle}
+    good = bought_parts(half, values)
+    assert not find_clashes(meshes, good)[0]
+    long = [(n, s, z0, z0 + 10.0 - 1.2) if n == "cradle screw core" else (n, s, z0, z1) for n, s, z0, z1 in good]
+    assert ("cradle", "cradle screw core") in find_clashes(meshes, long)[0], "an M2 x 10 in the cradle went unnoticed"

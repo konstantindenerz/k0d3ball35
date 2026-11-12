@@ -126,6 +126,8 @@ magnet_skin     = 0.6;         // roof left above the lid magnets (lid_roof_t - 
 magnet_pocket_extra = 0.2;     // pocket depth = magnet_h + this (glue film)
 foot_d          = 10.5;        // rubber feet recess
 foot_h          = 1.0;         // rubber foot thickness (spec/03-bom.md)
+ffc_w           = 3.5;         // the 6-way 0.5 mm FFC in the assembly views: (6 + 1) x 0.5 wide,
+ffc_t           = 0.12;        // 0.12 thick (the cradle cuts its slot from its own ffc_w)
 foot_recess     = 0.8;         // 1 mm feet stand 0.2 mm proud: flush would not grip (r2.4)
 
 // ---------------------------------------------------------------- lid
@@ -145,6 +147,10 @@ lid_fit         = 0.15;        // clearance between the lip and the inner wall f
 lid_lip_chamfer = 0.5;         // lead-in on the lower outer edge of the lip
 lid_lip_steps   = 5;
 lid_box_clear   = 0.3;         // lid skirt around the controller box walls
+cap_screw_head_d = 3.5;        // the box cap's two M2 x 5: pan or button head, BOM maximum
+cap_screw_head_h = 1.5;        // tallest such head. The axes are boss_in inside the box wall, so each
+lid_screw_clear = 0.4;         // head stands 1.25 mm over the wall, under the lid skirt: the skirt
+                               // gets a relief over each head (1.35 mm of its 3 mm stay)
 cap_size        = [17.5, 16.5]; // Choc 1u keycap footprint (layout yaml `keycap`)
 lid_cap_clear   = 0.5;         // the lip keeps this far from every keycap. Along the rows the caps
                                // end only 0.5 mm inside the PCB edge (0.7 from the wall face), so

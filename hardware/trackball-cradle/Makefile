@@ -16,17 +16,24 @@ CAM_BODY  = --camera=0,0,0,55,0,325,90 --imgsize=1200,900 --colorscheme=Tomorrow
 POCKET19  = -D ball_d=19.05
 
 STL = stl/cradle-19mm-pocket.stl
+# not a print part: the bought sensor module where it sits, for the case assembly views, the
+# interference test and the site (ball-centred and in the print frame like the cradle STL)
+REF = ref/sensor-module.stl
 DXF = dxf/floor-19mm-pocket.dxf
 PNG = preview/section-19mm-pocket.png preview/assembly-19mm-pocket.png preview/cradle-19mm-pocket.png
 
-.PHONY: all stls dxfs previews stack clean
-all: stls dxfs previews stack
+.PHONY: all stls refs dxfs previews stack clean
+all: stls refs dxfs previews stack
 stls: $(STL)
+refs: $(REF)
 dxfs: $(DXF)
 previews: $(PNG)
 
-stl dxf preview:
+stl ref dxf preview:
 	@mkdir -p $@
+
+ref/sensor-module.stl: cradle.scad params.scad | ref
+	$(OSC) -D 'part="sensor_module"' $(POCKET19) -o $@ $<
 
 stl/cradle-19mm-pocket.stl: cradle.scad params.scad | stl
 	$(OSC) -D 'part="cradle"'   $(POCKET19) -o $@ $<
@@ -48,4 +55,4 @@ stack.json: cradle.scad params.scad stack.py
 	$(PYTHON) stack.py $(OPENSCAD)
 
 clean:
-	rm -rf build stl dxf preview stack.json
+	rm -rf build stl ref dxf preview stack.json

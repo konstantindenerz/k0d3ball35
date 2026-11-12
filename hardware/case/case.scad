@@ -101,6 +101,9 @@ echo(str("STACK box_x0=", box_r()[0]));
 echo(str("STACK box_y0=", box_r()[1]));
 echo(str("STACK box_x1=", box_inner_x));
 echo(str("STACK box_y1=", box_r()[3]));
+echo(str("STACK boss_x=", boss_axes()[0][0]));
+echo(str("STACK boss_y0=", boss_axes()[0][1]));
+echo(str("STACK boss_y1=", boss_axes()[1][1]));
 echo(str("STACK foot_magnets=", len(foot_magnets(half))));
 echo(str("STACK logo_on_cap=", logo_on_cap ? 1 : 0));
 echo(str("STACK logo_on_floor=", logo_on_floor ? 1 : 0));
@@ -120,6 +123,47 @@ module assembly() {
     if (guard) color("dimgray") guard();
     if (controller_box) color("tan") box_cap();
     if (has_ball(half)) { ball_dummy(); cradle_dummy(); color("tan") pocket_cover(); }
+    bought_dummies();
+}
+
+// the bought parts that are neither on the PCB nor in the keys: screws, feet, sensor module, FFC
+module bought_dummies() {
+    screws_dummy();
+    feet_dummy();
+    if (has_ball(half)) { sensor_module_dummy(); ffc_dummy(); }
+}
+
+// ---------------------------------------------------------------- build guide pictures
+// One step each of spec/04-build-guide.md chapters 11 and 12, with the part that goes on lifted
+// off along the way it travels. Rendered into preview/guide-*.png (Makefile).
+module lift(dz) translate([0, 0, dz]) children();
+
+// cradle from above into its pocket, its two screws from below; the seven feet
+module guide_bottom() {
+    tray();
+    feet_dummy();
+    if (has_ball(half)) lift(-14) cradle_screws_dummy();
+}
+
+// module in the sleeve, the cable round the cup, folded beside J1 and flat into it
+module guide_ffc() {
+    tray(); pcb_dummy(); cradle_dummy(); sensor_module_dummy(); ffc_dummy();
+}
+
+// controller on its sockets, box cap and its two screws
+module guide_cap() {
+    tray(); pcb_dummy(); controller_dummy();
+    lift(12) color("tan") box_cap();
+    lift(24) cap_screws_dummy();
+}
+
+// pocket cover, its two screws, then the ball through the cover
+module guide_cover() {
+    tray(); pcb_dummy(); if (guard) color("dimgray") guard(); keys_dummy();
+    cradle_dummy(); sensor_module_dummy(); ffc_dummy();
+    lift(10) color("tan") pocket_cover();
+    lift(20) cover_screws_dummy();
+    lift(34) ball_dummy();
 }
 
 module section() {
@@ -166,6 +210,10 @@ module dispatch() {
     else if (part == "pocket_test") pocket_test();
     else if (part == "assembly") assembly();
     else if (part == "section") section();
+    else if (part == "guide_bottom") guide_bottom();
+    else if (part == "guide_ffc") guide_ffc();
+    else if (part == "guide_cap") guide_cap();
+    else if (part == "guide_cover") guide_cover();
     else if (part == "floor2d") floor2d();
     else if (part == "lid_on") { tray(); if (controller_box) box_cap(); if (has_ball(half)) pocket_cover(); color("tan", 0.6) lid(); }
     else if (part == "lid_foot") on_desk() { tray(); if (controller_box) box_cap(); if (has_ball(half)) pocket_cover(); color("tan") lid_under_tray(); }

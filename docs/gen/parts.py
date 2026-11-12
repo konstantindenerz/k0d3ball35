@@ -59,6 +59,8 @@ PARTS["pocket-clip-right"] = ("retainer", "Retainer clip, right", "Optional clip
 
 # STLs in the two folders that the page does not list, with the reason
 EXCLUDED: dict[str, str] = {}
+# not a print part and not in the part list: the bought sensor module's envelope where it sits
+SENSOR_REF = "hardware/trackball-cradle/ref/sensor-module.stl"
 
 # preview renders: path -> (caption, parts it shows)
 PREVIEWS = {
@@ -142,6 +144,7 @@ def build() -> dict:
         variants.append({
             "id": vid, "label": label, "cradle": f"cradle-{vid}",
             "retainer": retainer if retainer in PARTS else None,
+            "sensor": SENSOR_REF,
             "mount": "pocket" if s.get("mount_pocket") else "cutout",
             "stack": {k: _r(s[k], 3) for k in STACK_KEYS if k in s},
             "retention": {k: (_r(r[k], 3) if isinstance(r.get(k), float) else r.get(k)) for k in RETENTION_KEYS if k in r},

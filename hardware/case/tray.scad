@@ -321,6 +321,9 @@ module keys_dummy() {
 module controller_dummy() {
     cr = ctrl_rect(half);
     sh = 2.5;
+    // the two socket strips (2.54 mm pitch, rows 15.24 apart) and the radio module's can
+    color("black") for (sx = [-1, 1]) translate([usb_x() + sx * 7.62 - 1.3, cr[1] + 1.5, 0]) cube([2.6, cr[3] - cr[1] - 3, sh]);
+    color("silver") translate([usb_x() - 5, cr[3] - 16, sh + 1.6]) cube([10, 13, ctrl_top_z - sh - 1.6 - 0.4]);
     color("steelblue") translate([cr[0], cr[1], sh]) cube([cr[2] - cr[0], cr[3] - cr[1], 1.6]);
     color("silver") translate([usb_x() - 4.5, cr[1] - usb_face_in, ctrl_top_z - usb_shell_h]) cube([9, 7.35, usb_shell_h]);
 }
@@ -338,3 +341,48 @@ module ball_dummy() color("white") translate([bc()[0], bc()[1], ball_centre_z()]
 module cradle_dummy()
     color("royalblue") translate([bc()[0], bc()[1], 0]) mirror([0, 1, 0])
         import("../trackball-cradle/stl/cradle-19mm-pocket.stl");
+
+// The bought sensor module in its sleeve: the cradle's own dummy (cradle.scad sensor_dummy),
+// exported next to the cradle STL and placed the same way.
+module sensor_module_dummy()
+    color("seagreen") translate([bc()[0], bc()[1], 0]) mirror([0, 1, 0])
+        import("../trackball-cradle/ref/sensor-module.stl");
+
+// The FFC as the build guide lays it (data.scad ffc_path, from scripts/k0d3/ffc_route.py): each
+// point is x, y, z and the band's roll about its own direction, 0 upright and 90 flat.
+module ffc_section(i) {
+    pp = ffc_path(half);
+    p = pp[i];
+    a = pp[max(i - 1, 0)];
+    b = pp[min(i + 1, len(pp) - 1)];
+    translate([p[0], p[1], p[2]]) rotate([0, 0, atan2(b[1] - a[1], b[0] - a[0])]) rotate([-p[3], 0, 0])
+        cube([0.01, ffc_t, ffc_w], center = true);
+}
+module ffc_dummy()
+    color("orange") for (i = [0 : len(ffc_path(half)) - 2]) hull() { ffc_section(i); ffc_section(i + 1); }
+
+// A 90 degree flat-head screw: head face at the origin, thread along +z, length over all.
+module flat_head_screw(len, head_d, d = 2.0) {
+    cylinder(d1 = head_d, d2 = d, h = (head_d - d) / 2, $fn = 32);
+    cylinder(d = d, h = len, $fn = 24);
+}
+
+// Every screw the PCB dummy does not carry: the two M2 x 5 of the box cap (pan head, BOM max
+// 3.5 mm), and on the ball half the M2 x 8 from below into the cradle and the M2 x 6 of the cover.
+module cap_screws_dummy()
+    color("silver") if (controller_box) for (a = boss_axes()) translate([a[0], a[1], box_top_z]) {
+        cylinder(d = cap_screw_head_d, h = cap_screw_head_h, $fn = 32);
+        translate([0, 0, -5]) cylinder(d = 2.0, h = 5, $fn = 24);
+    }
+module cradle_screws_dummy()
+    color("silver") for (s = case_screws(half)) translate([s[0], s[1], base_z + (case_screw_cs_d - case_screw_head_d) / 2])
+        flat_head_screw(8, case_screw_head_d);
+module cover_screws_dummy()
+    color("silver") for (s = cover_screws(half)) translate([s[0], s[1], rim_z]) mirror([0, 0, 1])
+        flat_head_screw(6, cover_screw_head_d);
+module screws_dummy() { cap_screws_dummy(); cradle_screws_dummy(); cover_screws_dummy(); }
+
+// The seven 10 x 1 mm rubber feet, glued into their recesses: 0.2 mm proud of the underside.
+module feet_dummy()
+    color("dimgray") for (f = feet(half)) translate([f[0], f[1], base_z + foot_recess - foot_h])
+        cylinder(d = foot_d - 0.5, h = foot_h, $fn = 48);

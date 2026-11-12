@@ -33,7 +33,7 @@ gets its own case chapter. The order follows the hardware:
 
 1. Heat-set inserts, then the four foot magnets.
 2. Bearings into the cup, sensor board plus cable into the cradle, module into the pocket, two
-   M2 x 10 from below.
+   M2 x 8 from below.
 3. Cell onto the back of the PCB, plug into J3.
 4. PCB into the tray over the cup, five M2 screws from the top.
 5. Controller, box cap, keycaps.

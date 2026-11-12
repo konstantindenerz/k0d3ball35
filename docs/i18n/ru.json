@@ -439,5 +439,9 @@
  "PCB guard": "Защитная пластина PCB",
  "PCB guard, left": "Защитная пластина PCB, левая",
  "PCB guard, right": "Защитная пластина PCB, правая",
- "0.8 mm plate on the PCB between the switches, under the keycaps. Adds no height.": "Пластина 0,8 мм на плате между переключателями, под кейкапами. Высоту не увеличивает."
+ "0.8 mm plate on the PCB between the switches, under the keycaps. Adds no height.": "Пластина 0,8 мм на плате между переключателями, под кейкапами. Высоту не увеличивает.",
+ "Sensor module": "Модуль сенсора",
+ "FFC cable": "Шлейф FFC",
+ "Rubber feet": "Резиновые ножки",
+ "Sensor module (envelope)": "Модуль сенсора (габарит)"
 }

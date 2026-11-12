@@ -21,10 +21,10 @@ const signed = (v, d = 2) => (v == null ? '-' : `${v >= 0 ? '+' : '−'}${fmt(Ma
 
 let root, viewer, data, ctx;
 let variant = null;
-const objs = { cradle: null, ball: null, retainer: null };
+const objs = { cradle: null, ball: null, retainer: null, sensor: null };
 const geomCache = new Map();
 let token = 0;
-const state = { view: 'iso', ball: true, retainer: false, clip: true, at: 0, flip: false };
+const state = { view: 'iso', ball: true, retainer: false, sensor: true, clip: true, at: 0, flip: false };
 
 const variantById = (id) => data.trackball.variants.find((v) => v.id === id);
 const part = (id) => data.parts.find((p) => p.id === id);
@@ -127,6 +127,16 @@ async function sync({ refit = false } = {}) {
         attach('retainer', o);
       }
     } else detach('retainer');
+    // the bought module's envelope in the sleeve, same frame as the cradle
+    if (state.sensor && v.sensor) {
+      const sg = await stlGeometry(v.sensor);
+      if (my !== token) return;
+      if (!objs.sensor || objs.sensor.userData.path !== v.sensor) {
+        const o = solid(sg, '--tb-sensor', '#3C6E4A', '--tb-sensor-cut', '#2B5136');
+        o.userData.path = v.sensor;
+        attach('sensor', o);
+      }
+    } else detach('sensor');
     viewer.hideStatus();
   } catch (e) {
     if (my === token) viewer.showError(e.message);
@@ -298,6 +308,7 @@ export async function mount(section, c) {
         <div class="toggles">
           <label><input type="checkbox" data-toggle="ball" checked> ${t('Ball and its three bearings')}</label>
           <label><input type="checkbox" data-toggle="retainer"> ${t('Retainer (optional clip-on ring)')}</label>
+          <label><input type="checkbox" data-toggle="sensor" checked> ${t('Sensor module (envelope)')}</label>
         </div>
       </section>
       <section class="tb-stack"></section>

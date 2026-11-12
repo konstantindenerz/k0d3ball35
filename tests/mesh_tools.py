@@ -43,14 +43,24 @@ def section(mesh, z: float):
     """The solid cross-section at height z as a shapely (Multi)Polygon (even-odd nesting)."""
     import trimesh
     from shapely.geometry import MultiLineString, Polygon
-    from shapely.ops import polygonize, unary_union
+    from shapely.ops import polygonize_full, unary_union
 
-    lines = trimesh.intersections.mesh_plane(mesh, [0, 0, 1], [0, 0, z])
-    lines = np.round(lines[:, :, :2], 5)
-    lines = [l for l in lines if not (l[0] == l[1]).all()]
-    if not lines:
+    raw = trimesh.intersections.mesh_plane(mesh, [0, 0, 1], [0, 0, z])
+    if len(raw) == 0:
         return Polygon()
-    faces = list(polygonize(unary_union(MultiLineString(lines))))
+    # Two faces compute their shared end point separately; rounding welds the two results, unless
+    # they fall on either side of a rounding step. Then that ring stays open, polygonize drops it
+    # and a hole reads as solid (pocket cover at z 4.88, a screw hole). A coarser grid has its
+    # steps elsewhere, so take the first one on which every segment ends up in a closed ring.
+    for decimals in (5, 4, 3):
+        lines = np.round(raw[:, :, :2], decimals)
+        lines = [l for l in lines if not (l[0] == l[1]).all()]
+        if not lines:
+            return Polygon()
+        polys, dangles, cuts, _ = polygonize_full(unary_union(MultiLineString(lines)))
+        if dangles.is_empty and cuts.is_empty:
+            break
+    faces = list(polys.geoms)
     filled = [Polygon(f.exterior) for f in faces]
     solid = []
     for i, f in enumerate(faces):

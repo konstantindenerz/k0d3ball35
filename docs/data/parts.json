@@ -173,7 +173,7 @@
     90.0,
     15.51
    ],
-   "triangles": 2162,
+   "triangles": 2396,
    "watertight": false,
    "non_manifold_edges": 21
   },
@@ -204,7 +204,7 @@
     96.45,
     15.51
    ],
-   "triangles": 7008,
+   "triangles": 7242,
    "watertight": false,
    "non_manifold_edges": 21
   },
@@ -235,7 +235,7 @@
     96.45,
     47.96
    ],
-   "triangles": 7008,
+   "triangles": 7242,
    "watertight": false,
    "non_manifold_edges": 10
   },
@@ -411,7 +411,7 @@
     91.77,
     15.51
    ],
-   "triangles": 3206,
+   "triangles": 3440,
    "watertight": false,
    "non_manifold_edges": 25
   },
@@ -439,7 +439,7 @@
     94.0,
     15.51
    ],
-   "triangles": 8142,
+   "triangles": 8376,
    "watertight": false,
    "non_manifold_edges": 25
   },
@@ -467,7 +467,7 @@
     94.0,
     54.79
    ],
-   "triangles": 8142,
+   "triangles": 8376,
    "watertight": false,
    "non_manifold_edges": 19
   },
@@ -676,6 +676,7 @@
     "label": "19 mm pocket",
     "cradle": "cradle-19mm-pocket",
     "retainer": "pocket-clip-right",
+    "sensor": "hardware/trackball-cradle/ref/sensor-module.stl",
     "mount": "cutout",
     "stack": {
      "ball_d": 19.05,

@@ -84,7 +84,7 @@ trackball:
     # 3.03 mm, so that one corner of the notch is square (issues/mech-cradle-notch-relief.md).
     square_corner: true
     corner_clearance: 0.3       # minimum gap between the module and the PCB edge on its way in
-    cable_width: 6.0            # FFC corridor on the board: 4.4 mm cable plus handling clearance
+    cable_width: 6.0            # FFC corridor on the board: 3.5 mm cable plus handling clearance
 
 controller:                     # nice!nano v2 / SuperMini, Pro Micro pinout, on the lowest sockets (2.5 mm class,
   center: { x: -58.0, y: 11.7 } # Mill-Max 315 or conthrough): nothing lies between the controller and the PCB any more.

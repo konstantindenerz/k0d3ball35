@@ -18,7 +18,12 @@ CAM_FOLD  = --camera=-31,-30,10,60,0,140,260 --imgsize=1400,1000 --colorscheme=T
 CAM_HINGE = --camera=-31,9,14,70,0,180,60 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_BOT   = --camera=-10,-30,-10,125,0,155,400 --imgsize=1400,1000 --colorscheme=Tomorrow
 CAM_CAP   = --camera=-59.5,-21.9,8.7,0,0,0,170 --imgsize=700,1200 --colorscheme=Tomorrow
-SRC       = case.scad params.scad data.scad logo_data.scad common.scad logo.scad tray.scad lid.scad ../trackball-cradle/stl/cradle-19mm-pocket.stl
+# build guide pictures (spec/04-build-guide.md): one step each, the part that goes on lifted off
+CAM_G_FFC = --camera=-13,-62,0,30,0,160,120 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_G_BOT = --camera=-10,-36,-12,135,0,155,330 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_G_CAP = --camera=-58,-22,10,60,0,240,220 --imgsize=1400,1000 --colorscheme=Tomorrow
+CAM_G_COV = --camera=-13,-66,14,55,0,335,190 --imgsize=1400,1000 --colorscheme=Tomorrow
+SRC       = case.scad params.scad data.scad logo_data.scad common.scad logo.scad tray.scad lid.scad ../trackball-cradle/stl/cradle-19mm-pocket.stl ../trackball-cradle/ref/sensor-module.stl
 LEFT      = -D 'half="left"'
 RIGHT     = -D 'half="right"'
 
@@ -30,7 +35,9 @@ DXF = dxf/floor-left.dxf dxf/floor-right.dxf dxf/guard-left.dxf dxf/guard-right.
 PNG = preview/assembly-left.png preview/assembly-right.png preview/section-right.png \
       preview/lid-on-right.png preview/lid-foot-right.png preview/lid-folded-right.png \
       preview/lid-hinge-right.png preview/box-right.png \
-      preview/tray-bottom-right.png preview/cap-logo-right.png preview/clip-right.png
+      preview/tray-bottom-right.png preview/cap-logo-right.png preview/clip-right.png \
+      preview/guide-ffc-right.png preview/guide-bottom-right.png preview/guide-cap-right.png \
+      preview/guide-cover-right.png
 
 .PHONY: all data logo stls dxfs previews stack retention clean
 all: data logo stls dxfs previews stack
@@ -39,7 +46,7 @@ dxfs: $(DXF)
 previews: $(PNG)
 
 data: data.scad
-data.scad: ../../scripts/gen_case.py ../../scripts/k0d3/geometry.py ../layout/k0d3ball35.yaml params.scad
+data.scad: ../../scripts/gen_case.py ../../scripts/k0d3/geometry.py ../../scripts/k0d3/ffc_route.py ../trackball-cradle/stack.json ../layout/k0d3ball35.yaml params.scad
 	cd ../.. && PYTHONPATH=scripts $(subst ../../,,$(PYTHON)) scripts/gen_case.py
 
 # one run writes logo_data.scad and the vector master spec/images/logo.svg; only the first is
@@ -118,6 +125,15 @@ preview/cap-logo-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="box_cap"' $(RIGHT) $(CAM_CAP) -o $@ case.scad
 preview/box-right.png: $(SRC) | preview
 	$(OSC) --render -D 'part="assembly"' $(RIGHT) $(CAM_BOX) -o $@ case.scad
+
+preview/guide-ffc-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="guide_ffc"' $(RIGHT) $(CAM_G_FFC) -o $@ case.scad
+preview/guide-bottom-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="guide_bottom"' $(RIGHT) $(CAM_G_BOT) -o $@ case.scad
+preview/guide-cap-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="guide_cap"' $(RIGHT) $(CAM_G_CAP) -o $@ case.scad
+preview/guide-cover-right.png: $(SRC) | preview
+	$(OSC) --render -D 'part="guide_cover"' $(RIGHT) $(CAM_G_COV) -o $@ case.scad
 
 stack: stack.json
 stack.json: $(SRC) stack.py

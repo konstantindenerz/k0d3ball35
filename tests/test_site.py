@@ -138,10 +138,11 @@ def test_modules_import_only_pinned_or_local_code():
 def test_layout_names_the_case_stls(tracked):
     layout = json.loads((DATA / "layout.json").read_text())
     for half, h in layout["halves"].items():
-        ball = {"cover", "cradle", "clip"} if h["ball"] else set()
+        # "sensor" is the bought module's envelope (trackball-cradle/ref), placed like the cradle
+        ball = {"cover", "cradle", "clip", "sensor"} if h["ball"] else set()
         assert set(h["case_files"]) == {"tray", "guard", "cap", "lid", "lid_folded"} | ball
         for k, path in h["case_files"].items():
-            assert path in tracked and (k == "cradle" or half in path)
+            assert path in tracked and (k in ("cradle", "sensor") or half in path)
 
 
 def test_explorer_loads_every_case_part():

@@ -18,7 +18,7 @@ const col = (hex) => new THREE.Color(hex);
 const reducedMq = matchMedia('(prefers-reduced-motion: reduce)');
 const reduced = () => reducedMq.matches;
 const HALVES = ['right', 'left'];
-const CASE_KEYS = ['tray', 'guard', 'cap', 'lid', 'lid_folded', 'cover', 'cradle', 'clip'];   // cover, cradle, clip: ball half only
+const CASE_KEYS = ['tray', 'guard', 'cap', 'lid', 'lid_folded', 'cover', 'cradle', 'clip', 'sensor'];   // cover, cradle, clip, sensor: ball half only
 
 // ---------- geometry helpers ----------
 function outlineShape(points, holes = []) {
@@ -52,6 +52,24 @@ function cyl(r, h, mat, x, y, z, rt = r, open = false) {
   m.position.set(x, y, z);
   return m;
 }
+// The FFC as a ribbon along layout.json ffc_path: x, y, height and the band's roll about its own
+// direction (0 upright, 90 flat), w wide.
+function ribbon(path, w, mat) {
+  const pos = [], idx = [];
+  path.forEach(([x, y, z, roll], i) => {
+    const a = path[Math.max(i - 1, 0)], b = path[Math.min(i + 1, path.length - 1)];
+    const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
+    const nx = -(b[1] - a[1]) / l, ny = (b[0] - a[0]) / l;
+    const r = THREE.MathUtils.degToRad(roll), s = Math.sin(r) * w / 2, c = Math.cos(r) * w / 2;
+    pos.push(x - s * nx, z - c, y - s * ny, x + s * nx, z + c, y + s * ny);
+    if (i) { const k = 2 * i; idx.push(k - 2, k - 1, k, k - 1, k + 1, k); }
+  });
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return new THREE.Mesh(g, mat);
+}
 // local key offset (lx, ly) rotated by the KiCad rotation (positive = counter-clockwise on screen)
 function keyLocal(k, lx, ly) {
   const t = THREE.MathUtils.degToRad(k.rot);
@@ -69,8 +87,8 @@ const UNMIRROR = new THREE.Matrix4().makeScale(-1, 1, 1);
 const caseMatrix = (half) => (half === 'left'
   ? SWAP.clone().multiply(UNMIRROR).multiply(TO_LAYOUT)
   : SWAP.clone().multiply(TO_LAYOUT));
-// The cradle and clip STLs are in the same print frame but centred on the ball: move them to the ball after the turn.
-const partMatrix = (half, key, ball) => (key === 'cradle' || key === 'clip'
+// The cradle, clip and sensor module STLs are in the same print frame but centred on the ball: move them to the ball after the turn.
+const partMatrix = (half, key, ball) => (key === 'cradle' || key === 'clip' || key === 'sensor'
   ? new THREE.Matrix4().makeTranslation(ball.x, 0, ball.y).multiply(caseMatrix(half))
   : caseMatrix(half));
 
@@ -98,6 +116,8 @@ const M = {
   ball: new THREE.MeshStandardMaterial({ color: col('#FFFFFF'), roughness: .25 }),
   bumper: new THREE.MeshStandardMaterial({ color: col('#2A2A2C'), roughness: 1 }),
   bearing: new THREE.MeshStandardMaterial({ color: col('#F2F2F2'), roughness: .2 }),
+  sensor: new THREE.MeshStandardMaterial({ color: col('#3C6E4A'), roughness: .6 }),
+  ffc: new THREE.MeshStandardMaterial({ color: col('#7FA6C9'), roughness: .7 }),
 };
 for (const m of Object.values(M)) m.side = THREE.DoubleSide;
 
@@ -219,6 +239,11 @@ function build(which) {
 
   // --- case tray: the printed part from hardware/case (key floor -4.6, well and pocket floor -11.6, rim +5) ---
   layer(t('Case tray'), -34, '#CFC3AE', { x: B.min_x + 10, y: -14, z: B.max_y - 10 }).add(caseMesh('tray', M.tray));
+  // --- rubber feet: seven 10 x 1 mm pads in the recesses of the underside, 0.2 mm proud ---
+  {
+    const g = layer(t('Rubber feet'), -44, '#2A2A2C', { x: B.max_x - 16, y: H.case_stack.desk_z - 2, z: B.min_y + 24 });
+    for (const [fx, fz] of H.feet) g.add(cyl(5, 1.0, M.bumper, fx, H.case_stack.desk_z + 0.5, fz));
+  }
   // --- battery: one cell per half, under the PCB in the bay below the controller (case well) ---
   {
     const bt = H.battery, bay = bt.bay, cell = bt.size;
@@ -241,8 +266,18 @@ function build(which) {
       m.position.set(bx + r * Math.cos(t), S.bearing_contact_z - 0.5, bz + r * Math.sin(t)); g.add(m);
     }
   }
+  // --- sensor module in the cradle's sleeve and the 50 mm FFC to J1, as the build guide lays it ---
+  if (ball) {
+    layer(t('Sensor module'), -8, '#3C6E4A', { x: bx + 22, y: -2, z: bz + 6 }).add(caseMesh('sensor', M.sensor));
+    layer(t('FFC cable'), -8, '#7FA6C9', { x: bx - 4, y: 3, z: bz - 20 }).add(ribbon(H.ffc_path, 3.5, M.ffc));
+  }
   // --- pocket cover: flush plate over the cradle opening, funnel down to the ball ---
-  if (ball) layer(t('Pocket cover'), 40, '#B9A98E', { x: bx + 16, y: H.case_stack.rim_z + 2, z: bz + 18 }).add(caseMesh('cover', M.boxCap));
+  if (ball) {
+    const g = layer(t('Pocket cover'), 40, '#B9A98E', { x: bx + 16, y: H.case_stack.rim_z + 2, z: bz + 18 });
+    g.add(caseMesh('cover', M.boxCap));
+    // two M2 x 6 flat heads, flush with the rim
+    for (const [sx, sz] of ball.cover_screws) g.add(cyl(1.0, 0.9, M.metal, sx, H.case_stack.rim_z - 0.45, sz, 1.9));
+  }
   // --- optional retainer clip on the cover: keeps the ball in when the half is turned over (off by default) ---
   if (ball) layer(t('Retainer clip'), 50, '#E8762E', { x: bx - 16, y: H.case_stack.rim_z + 6, z: bz - 10 }, true).add(caseMesh('clip', M.clip));
   // --- PCB guard: 0.8 mm plate on the PCB top between the switches, under the keycaps ---
@@ -313,7 +348,13 @@ function build(which) {
     m.position.set(bx, S.ball_centre_z, bz); g.add(m);
   }
   // --- controller box cap: separate printed roof over the controller block, roof underside +6.7 ---
-  layer(t('Controller box cap'), 44, '#B9A98E', { x: c.x, y: H.case_stack.box_top_z + 2, z: B.min_y + 4 }).add(caseMesh('cap', M.boxCap));
+  {
+    const CS = H.case_stack;
+    const g = layer(t('Controller box cap'), 44, '#B9A98E', { x: c.x, y: CS.box_top_z + 2, z: B.min_y + 4 });
+    g.add(caseMesh('cap', M.boxCap));
+    // its two M2 x 5 pan heads (BOM: max 3.5 mm) over the bosses
+    for (const sz of [CS.boss_y0, CS.boss_y1]) g.add(cyl(1.75, 1.3, M.metal, CS.boss_x, CS.box_top_z + 0.65, sz));
+  }
   // --- lid: cover on top (inner lip, no magnets) or foot under the tray (magnets in floor and roof) ---
   {
     const g = layer(t('Lid'), 60, '#E8762E', { x: B.max_x - 20, y: H.case_stack.lid_top_z + 2, z: B.min_y + 10 }, true);

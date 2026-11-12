@@ -11,11 +11,16 @@ bay under the controller.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import yaml
 
 from . import REPO, case_param
+
+sys.path.insert(0, str(REPO / "scripts"))
+import gen_case  # noqa: E402
+from k0d3.geometry import load_layout  # noqa: E402
 
 HALVES = ("left", "right")
 TEST_PADS = {"left": ["D0", "D1", "D2", "D3", "D9", "D10", "D14", "D15", "D16"], "right": ["D0", "D1", "D2", "D3", "D9"]}
@@ -29,7 +34,9 @@ CASE_PARTS = {"tray": "hardware/case/stl/tray-{half}.stl", "guard": "hardware/ca
               "lid": "hardware/case/stl/lid-{half}.stl", "lid_folded": "hardware/case/stl/lid-folded-{half}.stl"}
 BALL_PARTS = {"cover": "hardware/case/stl/pocket-cover-{half}.stl",
               "cradle": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
-              "clip": "hardware/case/stl/pocket-clip-{half}.stl"}
+              "clip": "hardware/case/stl/pocket-clip-{half}.stl",
+              # not printed: the bought sensor module in its place, same frame as the cradle STL
+              "sensor": "hardware/trackball-cradle/ref/sensor-module.stl"}
 
 
 def _ring(poly) -> list[list[float]]:
@@ -53,28 +60,11 @@ def offset(points: list[list[float]], by: float) -> list[list[float]]:
     return _ring(Polygon(points).buffer(by, join_style=2, mitre_limit=3.0).simplify(0.1))
 
 
-def feet(outline: list[list[float]], inset: float = 7.0) -> list[list[float]]:
-    """Four rubber feet: the points of the case floor (inset so a 10 mm foot stays inside) that
-    lie closest to the four corners of the bounding box."""
-    from shapely.geometry import Point, Polygon
-    from shapely.ops import nearest_points
-
-    poly = Polygon(outline).buffer(-inset, join_style=2)
-    if poly.geom_type != "Polygon":
-        poly = max(poly.geoms, key=lambda g: g.area)
-    minx, miny, maxx, maxy = Polygon(outline).bounds
-    out = []
-    for cx, cy in ((minx, miny), (maxx, miny), (minx, maxy), (maxx, maxy)):
-        p = nearest_points(poly, Point(cx, cy))[0]
-        out.append([round(p.x, 1), round(p.y, 1)])
-    return out
-
-
 CASE_STACK_KEYS = ("base_z", "floor_z_key", "well_floor_z", "pocket_floor_z", "rim_z", "standoff_h",
                    "box_roof_under_z", "box_top_z", "lid_roof_under_z", "lid_top_z", "lid_lip_depth",
                    "hinge_x", "hinge_axis_z", "hinge_fold_deg", "tent_deg", "foot_dx", "foot_hinge_h", "foot_reach",
                    "case_screw_d", "case_screw_head_d", "case_screw_cs_d", "case_screw_cs_h", "case_screw_head_z",
-                   "cover_z0", "cover_hole_d")
+                   "cover_z0", "cover_hole_d", "desk_z", "boss_x", "boss_y0", "boss_y1")
 
 
 def half_data(half: str, cfg: dict, stack: dict) -> dict:
@@ -89,13 +79,18 @@ def half_data(half: str, cfg: dict, stack: dict) -> dict:
                 "notch": tb["notch"], "sensor_board": tb["sensor_board"],
                 "housing_footprint": tb["housing_footprint"], "case_screws": tb["case_screws"]}
     fpc = points.get("fpc")
+    # screws, feet and the cable as the case generator places them (scripts/gen_case.py)
+    case = gen_case.half_data(load_layout(half))
+    if ball:
+        ball["cover_screws"] = [list(p) for p in case["cover_screws"]]
     return {
         "half": half,
         "keys": [{"ref": f"SW{k['row']}{k['col']}", "x": k["x"], "y": k["y"], "rot": k["rotation"], "kind": k["kind"]} for k in points["keys"]],
         "outline": simplify(points["outline"]),
         "outline_case": offset(points["outline"], 3.0),      # case wall outer edge
         "outline_frame_hole": offset(points["outline"], -2.5),  # top frame opening
-        "feet": feet(offset(points["outline"], 3.0)),
+        "feet": [list(p) for p in case["feet"]],
+        "ffc_path": [list(p) for p in case["ffc_path"]] or None,   # x, y, z, roll (k0d3.ffc_route.path)
         "bounds": points["bounds"],
         "ball": ball,
         "fpc": fpc["center"] if fpc else None,

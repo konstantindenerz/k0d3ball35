@@ -65,8 +65,13 @@ def _around(a: tuple[float, float], b: tuple[float, float], r: float) -> tuple[f
     return math.sqrt(da * da - r * r) + math.sqrt(db * db - r * r) + r * arc, math.degrees(d)
 
 
-def route(layout: Layout) -> Route:
-    s = json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
+def _stack() -> dict:
+    return json.loads((CRADLE / "stack.json").read_text())["variants"]["19mm-pocket"]
+
+
+def _module_end(s: dict) -> tuple[tuple[float, float], tuple[float, float], float]:
+    """The cable at the module, relative to the ball axis: its mouth in the FH19C, the point
+    where it leaves the sleeve's end wall, and its height over the PCB top."""
     th, az = math.radians(s["sensor_angle"]), math.radians(s["window_az"])
     L = s["sensor_pcb_plane_dist"]
     # the cable mouth in the sensor frame: the connector-side board end, at the cable's height
@@ -74,7 +79,6 @@ def route(layout: Layout) -> Route:
     y_end = conn_end * (_param("sensor_pcb_l") - _param("lens_far"))
     # the cable first runs straight along the board through the end-wall slot, to the tab's face
     y_wall = conn_end * s["housing_y"] / 2                # the sleeve tab is housing_y wide
-    exit_len = abs(y_wall - y_end)
     z_loc = -L + 0.35 + 0.075
     along = -z_loc * math.sin(th)                       # x = 0 on the board's centre line
     z = s["ball_centre_z"] + z_loc * math.cos(th)
@@ -82,8 +86,14 @@ def route(layout: Layout) -> Route:
     # local +y -> window_az + 90 deg turned by the frame (sensor_az = window_az + 180)
     sensor_az = az + math.pi
     mouth = (along * math.cos(az) - y_end * math.sin(sensor_az), along * math.sin(az) + y_end * math.cos(sensor_az))
-    mx = along * math.cos(az) - y_wall * math.sin(sensor_az)
-    my = along * math.sin(az) + y_wall * math.cos(sensor_az)
+    wall = (along * math.cos(az) - y_wall * math.sin(sensor_az), along * math.sin(az) + y_wall * math.cos(sensor_az))
+    return mouth, wall, z
+
+
+def route(layout: Layout) -> Route:
+    s = _stack()
+    mouth, (mx, my), z = _module_end(s)
+    exit_len = math.dist(mouth, (mx, my))
     bx, by = layout.ball_center
     jx, jy = layout.fpc_mouth()
     rho = s["cup_outer_d"] / 2 + BAND_CLEAR
@@ -121,3 +131,109 @@ def slack_capacity() -> float:
         return 0.0
     bends = (len(legs) - 1) * math.pi * FOLD_PITCH / 2
     return sum(legs) - min(legs) + bends
+
+
+# ---------------------------------------------------------------- the cable as it lies
+# route() above is the shortest way and gives the length to buy. path() is the whole 50 mm cable
+# as the build guide lays it, for the drawings and for the interference test: a nominal lay, the
+# real cable is put in by hand. A flat cable bends only across its width, so the upright band
+# changes direction in plan only, and the flat end into J1 is straight in plan.
+ARC_END_DEG = 50.0      # the band follows the cup this far before it leaves for the fold
+J1_CABLE_Z = 0.6        # the cable in J1 over the PCB top (as in route())
+EXIT_BEND = 1.0         # bend radius where the band leaves the sleeve and turns round the cup
+
+
+def _fillet(points: list[tuple[float, float]], radii: list[float], step_deg: float = 15.0) -> list[tuple[float, float]]:
+    """The polyline with its inner corners rounded (radii[i] belongs to points[i + 1])."""
+    out = [points[0]]
+    for i in range(1, len(points) - 1):
+        (ax, ay), (px, py), (cx, cy) = points[i - 1], points[i], points[i + 1]
+        r = radii[i - 1]
+        u = ((ax - px) / math.dist(points[i - 1], points[i]), (ay - py) / math.dist(points[i - 1], points[i]))
+        w = ((cx - px) / math.dist(points[i + 1], points[i]), (cy - py) / math.dist(points[i + 1], points[i]))
+        turn = math.pi - math.acos(max(-1.0, min(1.0, u[0] * w[0] + u[1] * w[1])))
+        if r <= 0 or turn < 1e-6:
+            out.append(points[i])
+            continue
+        t = r * math.tan(turn / 2)
+        assert t <= math.dist(points[i - 1], points[i]) + 1e-6 and t <= math.dist(points[i + 1], points[i]) + 1e-6, \
+            f"corner {points[i]} has no room for a {r} mm bend"
+        p0 = (px + u[0] * t, py + u[1] * t)
+        side = 1.0 if u[0] * w[1] - u[1] * w[0] < 0 else -1.0      # centre left (+) or right of the travel
+        d = (-u[0], -u[1])
+        centre = (p0[0] - side * d[1] * r, p0[1] + side * d[0] * r)
+        a0 = math.atan2(p0[1] - centre[1], p0[0] - centre[0])
+        n = max(2, math.ceil(math.degrees(turn) / step_deg))
+        out += [(centre[0] + r * math.cos(a0 + side * turn * k / n), centre[1] + r * math.sin(a0 + side * turn * k / n))
+                for k in range(n + 1)]
+    out.append(points[-1])
+    return out
+
+
+def path(layout: Layout) -> list[tuple[float, float, float, float]]:
+    """The centre line of the cable from its end in the module to its end in J1, layout frame:
+    (x, y, z over the PCB top, roll in degrees). Roll is how far the band leans from upright about
+    its own direction: 0 upright, 90 flat. The length is the cable of the layout (fpc.cable_length):
+    the fold's depth is solved for it."""
+    s = _stack()
+    if s["window_az"] != 0.0 or layout.cfg["fpc"]["rotation"] != 0:
+        raise NotImplementedError("path() is drawn for the sensor at +x and J1's mouth towards the ball")
+    (m0x, m0y), (wx, wy), zm = _module_end(s)
+    bx, by = layout.ball_center
+    jx, jy = layout.fpc_mouth()[0] - bx, layout.fpc_mouth()[1] - by
+    rho = s["cup_outer_d"] / 2 + BAND_CLEAR
+    lean = 90.0 - s["sensor_angle"]                     # the board's lean carries on in the cable
+    z_band = (SLACK_Z[0] + SLACK_Z[1]) / 2
+    length = layout.cfg["fpc"]["cable_length"]
+
+    # round the cup: tangent from the sleeve wall, then clockwise (seen from above) to ARC_END_DEG
+    a_w = math.atan2(wy, wx)
+    a1 = a_w - math.acos(rho / math.hypot(wx, wy))
+    a2 = a1 - math.radians(ARC_END_DEG)
+    arc = [(rho * math.cos(a1 + (a2 - a1) * k / 8), rho * math.sin(a1 + (a2 - a1) * k / 8)) for k in range(9)]
+    head = (math.sin(a2), -math.cos(a2))                # the band's direction where it leaves the cup
+
+    def line_y(x: float) -> float:
+        return arc[-1][1] + (x - arc[-1][0]) / head[0] * head[1]
+
+    # the S-fold: down, up, down, FOLD_PITCH apart, the last leg straight above J1's mouth
+    x3, x2, x1 = jx, jx - FOLD_PITCH, jx - 2 * FOLD_PITCH
+    y_top = line_y(x3) - FOLD_PITCH                     # the upper bend stays under the incoming band
+    y_lead = jy + LEADS                                 # here the band starts to twist flat
+
+    def lay(y_bot: float) -> list[tuple[float, float, float, float]]:
+        r = FOLD_PITCH / 2
+        head_pts = _fillet([(m0x, m0y + INSERT_MODULE), (wx, wy), arc[0]], [EXIT_BEND])
+        fold = _fillet([arc[-1], (x1, line_y(x1)), (x1, y_bot), (x2, y_bot), (x2, y_top), (x3, y_top), (x3, y_lead)],
+                       [r, r, r, r, r])
+        plan = head_pts + arc[1:] + fold[1:]
+        n_exit = 2                                      # end in the FH19C and the sleeve wall: still in the board plane
+        n_fold = len(head_pts) + len(arc) - 1           # first point of the fold run (the arc's end)
+        run = [0.0]
+        for a, b in zip(plan, plan[1:]):
+            run.append(run[-1] + math.dist(a, b))
+        s_wall, s_arc, s_fold = run[n_exit - 1], run[len(head_pts) - 1], run[n_fold]
+        pts = []
+        for (x, y), d in zip(plan, run):
+            if d <= s_wall:
+                pts.append((x, y, zm, lean))
+            elif d < s_fold:                            # climbing to the shelf, upright by the cup
+                k = (d - s_wall) / (s_fold - s_wall)
+                pts.append((x, y, zm + (z_band - zm) * k, lean * max(0.0, 1 - (d - s_wall) / (s_arc - s_wall))))
+            else:
+                pts.append((x, y, z_band, 0.0))
+        for k in range(1, 7):                           # the twist over the lead, onto the board
+            pts.append((x3, y_lead + (jy - y_lead) * k / 6, z_band + (J1_CABLE_Z - z_band) * k / 6, 90.0 * k / 6))
+        pts.append((x3, jy - INSERT_J1, J1_CABLE_Z, 90.0))
+        return pts
+
+    def total(pts) -> float:
+        return sum(math.dist(a[:3], b[:3]) for a, b in zip(pts, pts[1:]))
+
+    lo, hi = SLACK_ZONE[1] + 0.3, y_top - FOLD_PITCH    # deepest and shallowest fold
+    if not total(lay(hi)) <= length <= total(lay(lo)):
+        raise ValueError(f"a {length} mm cable does not fit the fold: {total(lay(hi)):.1f} to {total(lay(lo)):.1f} mm")
+    for _ in range(40):
+        mid = (lo + hi) / 2
+        lo, hi = (lo, mid) if total(lay(mid)) < length else (mid, hi)
+    return [(round(x + bx, 3), round(y + by, 3), round(z, 3), round(roll, 2)) for x, y, z, roll in lay((lo + hi) / 2)]

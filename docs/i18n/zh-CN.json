@@ -439,5 +439,9 @@
  "PCB guard": "PCB 护板",
  "PCB guard, left": "PCB 护板，左",
  "PCB guard, right": "PCB 护板，右",
- "0.8 mm plate on the PCB between the switches, under the keycaps. Adds no height.": "位于轴体之间、覆盖在 PCB 上的 0.8 mm 板，藏在键帽下方，不增加高度。"
+ "0.8 mm plate on the PCB between the switches, under the keycaps. Adds no height.": "位于轴体之间、覆盖在 PCB 上的 0.8 mm 板，藏在键帽下方，不增加高度。",
+ "Sensor module": "传感器模块",
+ "FFC cable": "FFC 排线",
+ "Rubber feet": "橡胶脚垫",
+ "Sensor module (envelope)": "传感器模块（外形）"
 }
