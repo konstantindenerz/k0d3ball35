@@ -22,7 +22,7 @@ BUILD      := build
 SCHS := $(wildcard $(HALF_SCHS))
 PCBS := $(wildcard $(HALF_PCBS))
 
-.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case site share-card pcb-3d exploded site-serve print print-check print-plots release-zip clean help
+.PHONY: all layout sch pcb route board erc drc gerbers freerouting-jar firmware test issues docs-check case-data case-logo case keycaps site share-card pcb-3d exploded site-serve print print-check print-plots release-zip clean help
 
 all: layout board erc drc gerbers
 
@@ -86,10 +86,13 @@ case-logo: ## Regenerate logo_data.scad and spec/images/logo.svg from spec/image
 case: ## Render the printed case: STLs, floor DXFs, previews and stack.json (needs OpenSCAD)
 	$(MAKE) -C hardware/case all PYTHON=../../$(PY)
 
+keycaps: ## Render the printed keycaps, their stem fit test and the preview (needs OpenSCAD)
+	$(MAKE) -C hardware/keycaps all
+
 pcb-3d: ## Export the board GLBs and per-layer SVGs the page shows (renders/*.glb, renders/layers/)
 	KICAD_CLI=$(KICAD_CLI) KPY=$(KPY) $(PY) scripts/export_site_pcbs.py
 
-site: ## Regenerate the page data in docs/data (run after `make layout`, `make case`, `make pcb-3d`)
+site: ## Regenerate the page data in docs/data (run after `make layout`, `make case`, `make keycaps`, `make pcb-3d`)
 	$(PY) docs/build.py
 
 exploded: site ## Old name of `make site`

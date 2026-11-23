@@ -32,6 +32,16 @@
  },
  "pcb_thickness": 1.6,
  "cap_top_z": 11.0,
+ "keycaps": {
+  "files": {
+   "finger": "hardware/keycaps/stl/keycap-1u.stl",
+   "homing": "hardware/keycaps/stl/keycap-1u-homing.stl",
+   "thumb": "hardware/keycaps/stl/keycap-thumb.stl"
+  },
+  "plane_z": 8.0,
+  "depth": 16.4,
+  "top_z": 10.6
+ },
  "halves": {
   "left": {
    "half": "left",
@@ -41,126 +51,144 @@
      "x": 36.0,
      "y": 10.44,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW01",
      "x": 18.0,
      "y": 4.19,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW02",
      "x": 0.0,
      "y": 0.0,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW03",
      "x": -18.0,
      "y": 2.23,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW04",
      "x": -36.0,
      "y": 4.46,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW10",
      "x": 36.0,
      "y": 27.439999999999998,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW11",
      "x": 18.0,
      "y": 21.19,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW12",
      "x": 0.0,
      "y": 17.0,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW13",
      "x": -18.0,
      "y": 19.23,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "homing"
     },
     {
      "ref": "SW14",
      "x": -36.0,
      "y": 21.46,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW20",
      "x": 36.0,
      "y": 44.44,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW21",
      "x": 18.0,
      "y": 38.19,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW22",
      "x": 0.0,
      "y": 34.0,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW23",
      "x": -18.0,
      "y": 36.23,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW24",
      "x": -36.0,
      "y": 38.46,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW32",
      "x": -21.78,
      "y": 59.65,
      "rot": 0,
-     "kind": "thumb"
+     "kind": "thumb",
+     "cap": "thumb"
     },
     {
      "ref": "SW33",
      "x": -42.14,
      "y": 61.26,
      "rot": 10,
-     "kind": "thumb"
+     "kind": "thumb",
+     "cap": "thumb"
     },
     {
      "ref": "SW34",
      "x": -61.91,
      "y": 66.19,
      "rot": 20,
-     "kind": "thumb"
+     "kind": "thumb",
+     "cap": "thumb"
     }
    ],
    "outline": [
@@ -672,119 +700,136 @@
      "x": 36.0,
      "y": 10.44,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW01",
      "x": 18.0,
      "y": 4.19,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW02",
      "x": 0.0,
      "y": 0.0,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW03",
      "x": -18.0,
      "y": 2.23,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW04",
      "x": -36.0,
      "y": 4.46,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW10",
      "x": 36.0,
      "y": 27.439999999999998,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW11",
      "x": 18.0,
      "y": 21.19,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW12",
      "x": 0.0,
      "y": 17.0,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW13",
      "x": -18.0,
      "y": 19.23,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "homing"
     },
     {
      "ref": "SW14",
      "x": -36.0,
      "y": 21.46,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW20",
      "x": 36.0,
      "y": 44.44,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW21",
      "x": 18.0,
      "y": 38.19,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW22",
      "x": 0.0,
      "y": 34.0,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW23",
      "x": -18.0,
      "y": 36.23,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW24",
      "x": -36.0,
      "y": 38.46,
      "rot": 0.0,
-     "kind": "finger"
+     "kind": "finger",
+     "cap": "finger"
     },
     {
      "ref": "SW33",
      "x": -42.14,
      "y": 61.26,
      "rot": 10,
-     "kind": "thumb"
+     "kind": "thumb",
+     "cap": "thumb"
     },
     {
      "ref": "SW34",
      "x": -61.91,
      "y": 66.19,
      "rot": 20,
-     "kind": "thumb"
+     "kind": "thumb",
+     "cap": "thumb"
     }
    ],
    "outline": [

@@ -27,6 +27,11 @@ together and how the wordmark is engraved into them. Tickets: [mech-case](../iss
 
 The tray and the box cap carry the owner wordmark as an engraved relief (section 9).
 
+The keycaps can be printed too: `hardware/keycaps` (17.4 x 16.4 mm, top +10.6, skirt +6.7 at
+rest). They stay inside the 17.5 x 16.5 mm keycap envelope from `cap_skirt_z` to `cap_top_z`
+that every check in this case uses, so the lid, the box and the interference test hold for them
+as for MBK caps (`tests/test_keycaps.py`).
+
 The layout facts (outline, holes, bay, courtyards, pocket, controller block) are generated
 from `hardware/layout/k0d3ball35.yaml` by `scripts/gen_case.py` into `hardware/case/data.scad`;
 every offset and height is a parameter in `params.scad`. `make case` renders everything;
@@ -314,7 +319,7 @@ Set `logo_on_cap = false` for a plain case.
   halves need that gap between them.
 - First print: pocket test, then the right tray, then the four lid plates.
 - PCB guard: `cap_skirt_z` 5.0 and `switch_travel` 3.0 come from the keycap model and the Choc
-  V1 data. Press a real MBK-capped switch all the way down and check that the skirt clears
+  V1 data. Press a real MBK-capped or printed-cap switch all the way down and check that the skirt clears
   the guard (1.2 mm expected). Check also that the flange holds the guard without lifting the
   switch out of its socket.
 - The supplied wordmark is cropped at the top; the frame foot is mirrored in to close it. If

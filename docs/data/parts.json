@@ -19,6 +19,10 @@
   {
    "id": "retainer",
    "label": "Ball retainer"
+  },
+  {
+   "id": "keycaps",
+   "label": "Keycaps"
   }
  ],
  "parts": [
@@ -586,6 +590,34 @@
    "non_manifold_edges": 0
   },
   {
+   "id": "keycap-fit-test",
+   "path": "hardware/keycaps/stl/keycap-fit-test.stl",
+   "group": "test",
+   "name": "Keycap stem fit test",
+   "role": "Six stem tabs, 0.00 to 0.25 mm off the legs, tab n has n notches. Print first, keep the loosest that holds on a Choc V1 switch.",
+   "printed": true,
+   "doc": "hardware/case/README.md",
+   "previews": [],
+   "bbox_min": [
+    -43.5,
+    -3.0,
+    0.0
+   ],
+   "bbox_max": [
+    43.5,
+    1.6,
+    7.0
+   ],
+   "size": [
+    87.0,
+    4.6,
+    7.0
+   ],
+   "triangles": 4964,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
    "id": "cradle-19mm-pocket",
    "path": "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
    "group": "cradle",
@@ -643,6 +675,96 @@
     6.12
    ],
    "triangles": 1598,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "keycap-1u",
+   "path": "hardware/keycaps/stl/keycap-1u.stl",
+   "group": "keycaps",
+   "name": "Keycap 1u, finger",
+   "role": "Choc V1 cap, 17.4 x 16.4 mm, shallow cylindrical dish. 28 of them: 6 grey for the pinky columns, 22 white.",
+   "printed": true,
+   "doc": "hardware/keycaps/README.md",
+   "previews": [
+    "hardware/keycaps/preview/keycaps.png"
+   ],
+   "bbox_min": [
+    -8.7,
+    -3.0,
+    -0.0
+   ],
+   "bbox_max": [
+    8.7,
+    2.6,
+    16.4
+   ],
+   "size": [
+    17.4,
+    5.6,
+    16.4
+   ],
+   "triangles": 3092,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "keycap-1u-homing",
+   "path": "hardware/keycaps/stl/keycap-1u-homing.stl",
+   "group": "keycaps",
+   "name": "Keycap 1u, homing",
+   "role": "The finger cap with a rounded bar for the index home keys, F and J. 2 of them.",
+   "printed": true,
+   "doc": "hardware/keycaps/README.md",
+   "previews": [
+    "hardware/keycaps/preview/keycaps.png"
+   ],
+   "bbox_min": [
+    -8.7,
+    -3.0,
+    -0.0
+   ],
+   "bbox_max": [
+    8.7,
+    2.6,
+    16.4
+   ],
+   "size": [
+    17.4,
+    5.6,
+    16.4
+   ],
+   "triangles": 3558,
+   "watertight": true,
+   "non_manifold_edges": 0
+  },
+  {
+   "id": "keycap-thumb",
+   "path": "hardware/keycaps/stl/keycap-thumb.stl",
+   "group": "keycaps",
+   "name": "Keycap, thumb",
+   "role": "Flat top with a 1.5 mm round-over, no dish. 5 of them in the accent colour, 3 left and 2 right.",
+   "printed": true,
+   "doc": "hardware/keycaps/README.md",
+   "previews": [
+    "hardware/keycaps/preview/keycaps.png"
+   ],
+   "bbox_min": [
+    -8.7,
+    -3.0,
+    -0.0
+   ],
+   "bbox_max": [
+    8.7,
+    2.6,
+    16.4
+   ],
+   "size": [
+    17.4,
+    5.6,
+    16.4
+   ],
+   "triangles": 2700,
    "watertight": true,
    "non_manifold_edges": 0
   }
@@ -735,6 +857,15 @@
    "caption": "Tray from below, right",
    "parts": [
     "tray-right"
+   ]
+  },
+  {
+   "path": "hardware/keycaps/preview/keycaps.png",
+   "caption": "Finger, homing and thumb keycap",
+   "parts": [
+    "keycap-1u",
+    "keycap-1u-homing",
+    "keycap-thumb"
    ]
   },
   {

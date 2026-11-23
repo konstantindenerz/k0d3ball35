@@ -2,7 +2,8 @@
 """docs/data/layout.json: the layout facts the explorer and the keymap draw from.
 
 Reads hardware/layout/output/points-left.json and points-right.json, hardware/layout/k0d3ball35.yaml,
-hardware/trackball-cradle/stack.json (19 mm pocket variant) and hardware/case/stack.json. The case
+hardware/trackball-cradle/stack.json (19 mm pocket variant), hardware/case/stack.json and
+hardware/keycaps/params.scad (where the printed caps sit; `keycaps.files` names their STLs). The case
 meshes are not embedded any more: `case_files` names the repo path of each STL and the page fetches
 it (raw.githubusercontent.com on the published site, the working tree on localhost).
 The right half carries the ball pocket, the left half has no ball; both carry the same battery
@@ -11,6 +12,7 @@ bay under the controller.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -37,6 +39,22 @@ BALL_PARTS = {"cover": "hardware/case/stl/pocket-cover-{half}.stl",
               "clip": "hardware/case/stl/pocket-clip-{half}.stl",
               # not printed: the bought sensor module in its place, same frame as the cradle STL
               "sensor": "hardware/trackball-cradle/ref/sensor-module.stl"}
+
+# The printed keycaps (hardware/keycaps): one STL per top, shared by both halves. The STLs are in
+# their print frame, which is the cap frame moved by half the cap depth (keycaps.scad); the page
+# moves them back and stands each one at plane_z, where the cap rests on the switch slider.
+KEYCAP_PARAMS = "hardware/keycaps/params.scad"
+KEYCAP_FILES = {"finger": "hardware/keycaps/stl/keycap-1u.stl", "homing": "hardware/keycaps/stl/keycap-1u-homing.stl",
+                "thumb": "hardware/keycaps/stl/keycap-thumb.stl"}
+HOMING_KEYS = ("index_1",)     # F and J: the index finger home row of both halves
+
+
+def keycap_param(name: str) -> float:
+    return float(re.search(rf"^{name}\s*=\s*(-?[\d.]+);", (REPO / KEYCAP_PARAMS).read_text(), flags=re.M)[1])
+
+
+def cap_kind(key: dict) -> str:
+    return "thumb" if key["kind"] == "thumb" else ("homing" if key["name"] in HOMING_KEYS else "finger")
 
 
 def _ring(poly) -> list[list[float]]:
@@ -85,7 +103,8 @@ def half_data(half: str, cfg: dict, stack: dict) -> dict:
         ball["cover_screws"] = [list(p) for p in case["cover_screws"]]
     return {
         "half": half,
-        "keys": [{"ref": f"SW{k['row']}{k['col']}", "x": k["x"], "y": k["y"], "rot": k["rotation"], "kind": k["kind"]} for k in points["keys"]],
+        "keys": [{"ref": f"SW{k['row']}{k['col']}", "x": k["x"], "y": k["y"], "rot": k["rotation"], "kind": k["kind"],
+                  "cap": cap_kind(k)} for k in points["keys"]],
         "outline": simplify(points["outline"]),
         "outline_case": offset(points["outline"], 3.0),      # case wall outer edge
         "outline_frame_hole": offset(points["outline"], -2.5),  # top frame opening
@@ -127,6 +146,8 @@ def build() -> dict:
         "battery_pads": cfg["battery_pads"]["center"],
         "jst": cfg["battery_jst"]["center"],
         "pcb_thickness": 1.6,
-        "cap_top_z": case_param("cap_top_z"),   # Choc keycap top over the PCB top
+        "cap_top_z": case_param("cap_top_z"),   # Choc keycap top over the PCB top: the envelope of the case checks
+        "keycaps": {"files": KEYCAP_FILES, "plane_z": keycap_param("plane_z"), "depth": keycap_param("cap_d"),
+                    "top_z": round(keycap_param("plane_z") + keycap_param("top_h"), 2)},
         "halves": {half: half_data(half, cfg, stack) for half in HALVES},
     }

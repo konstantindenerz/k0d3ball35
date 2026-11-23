@@ -141,7 +141,6 @@
  "Key positions": "キー位置",
  "Key styles": "キーの種類",
  "Keycap top": "キーキャップ上面",
- "Keycaps (MBK 1u)": "キーキャップ（MBK 1u）",
  "Keymap": "キーマップ",
  "Keys": "キー",
  "KiCad board": "KiCad 基板",
@@ -449,5 +448,17 @@
  "PCB test plate, left": "基板テストプレート（左）",
  "Test ball, half": "テストボール（半球）",
  "The main board as a 1.6 mm printed plate with the mounting and switch holes, to test the fit before the boards are ordered.": "基板を発注する前にはめ合いを確認するための、取り付け穴とスイッチ穴を備えた厚さ1.6 mmの印刷版メイン基板。",
- "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.": "本物のボールが届くまでの代用品。19.05 mmボールの半球で、2個印刷して貼り合わせます。はめ合いと保持の確認用で、トラッキングの確認には使えません。"
+ "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.": "本物のボールが届くまでの代用品。19.05 mmボールの半球で、2個印刷して貼り合わせます。はめ合いと保持の確認用で、トラッキングの確認には使えません。",
+ "Choc V1 cap, 17.4 x 16.4 mm, shallow cylindrical dish. 28 of them: 6 grey for the pinky columns, 22 white.": "Choc V1 用キーキャップ、17.4 x 16.4 mm、浅い円筒形のくぼみ付き。28個：小指の列用にグレー6個、白22個。",
+ "Finger, homing and thumb keycap": "指用、ホーム用、親指用キーキャップ",
+ "Flat top with a 1.5 mm round-over, no dish. 5 of them in the accent colour, 3 left and 2 right.": "くぼみのない平らな上面、縁は1.5 mmの丸み。アクセントカラーで5個（左3個、右2個）。",
+ "Keycap 1u, finger": "キーキャップ 1u（指用）",
+ "Keycap 1u, homing": "キーキャップ 1u（ホームポジション用）",
+ "Keycap envelope (case checks)": "キーキャップの外形範囲（ケースの検証用）",
+ "Keycap stem fit test": "キーキャップ軸のはめ合いテスト",
+ "Keycap, thumb": "キーキャップ（親指用）",
+ "Keycaps": "キーキャップ",
+ "Keycaps (printed, Choc V1)": "キーキャップ（3Dプリント、Choc V1）",
+ "Six stem tabs, 0.00 to 0.25 mm off the legs, tab n has n notches. Print first, keep the loosest that holds on a Choc V1 switch.": "軸付きのタブ6枚。脚を0.00〜0.25 mm細くしてあり、タブnには切り欠きがn個あります。最初に印刷し、Choc V1 スイッチから外れない中で一番緩いものを選びます。",
+ "The finger cap with a rounded bar for the index home keys, F and J. 2 of them.": "人差し指のホームキー（FとJ）用に、丸い突起を付けた指用キーキャップ。2個。"
 }

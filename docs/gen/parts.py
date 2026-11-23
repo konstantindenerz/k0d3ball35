@@ -1,14 +1,16 @@
 # SPDX-License-Identifier: MIT
-"""docs/data/parts.json: every STL of the printed case and the trackball cradle, for the Case and
-Trackball tabs.
+"""docs/data/parts.json: every STL of the printed case, the trackball cradle and the keycaps, for
+the Case and Trackball tabs.
 
-Reads hardware/case/stl/*.stl and hardware/trackball-cradle/stl/*.stl (measured with trimesh:
+Reads hardware/case/stl/*.stl, hardware/trackball-cradle/stl/*.stl and hardware/keycaps/stl/*.stl
+(measured with trimesh:
 bounding box, triangles, watertightness), hardware/trackball-cradle/stack.json and
 retention.json, and names the preview renders in hardware/case/preview and
 hardware/trackball-cradle/preview. Each part gets a name and one line; how to print and fit it
-stays in hardware/case/README.md and hardware/trackball-cradle/README.md, which the page links.
+stays in hardware/case/README.md, hardware/trackball-cradle/README.md and
+hardware/keycaps/README.md, which the page links.
 
-Every STL in the two folders has an entry in PARTS or in EXCLUDED (with the reason), otherwise
+Every STL in the three folders has an entry in PARTS or in EXCLUDED (with the reason), otherwise
 build() fails, so a new part cannot silently stay off the page.
 """
 from __future__ import annotations
@@ -19,8 +21,10 @@ from . import REPO
 
 CASE_STL = "hardware/case/stl"
 CRADLE_STL = "hardware/trackball-cradle/stl"
+KEYCAP_STL = "hardware/keycaps/stl"
 CASE_PREVIEW = "hardware/case/preview"
 CRADLE_PREVIEW = "hardware/trackball-cradle/preview"
+KEYCAP_PREVIEW = "hardware/keycaps/preview"
 
 GROUPS = (
     ("right", "Right half"),
@@ -28,11 +32,13 @@ GROUPS = (
     ("test", "Test prints"),
     ("cradle", "Trackball cradle"),
     ("retainer", "Ball retainer"),
+    ("keycaps", "Keycaps"),
 )
 
 # where the details live: the page names a part, the README says how to print and fit it
 DOCS = {"right": "hardware/case/README.md", "left": "hardware/case/README.md", "test": "hardware/case/README.md",
-        "cradle": "hardware/trackball-cradle/README.md", "retainer": "hardware/case/README.md"}
+        "cradle": "hardware/trackball-cradle/README.md", "retainer": "hardware/case/README.md",
+        "keycaps": "hardware/keycaps/README.md"}
 
 # stem -> group, name, one line on what it is, printed (True = a part to print, False = display only)
 PARTS: dict[str, tuple[str, str, str, bool]] = {}
@@ -58,9 +64,13 @@ for _h in ("right", "left"):
     PARTS[f"pcb-test-{_h}"] = ("test", f"PCB test plate, {_h}", "The main board as a 1.6 mm printed plate with the mounting and switch holes, to test the fit before the boards are ordered.", True)
 PARTS["ball-19mm-test-half"] = ("test", "Test ball, half", "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.", True)
 PARTS["cradle-19mm-pocket"] = ("cradle", "Cradle, 19.05 mm ball", "Cup on three ceramic bearings, with the tilted sensor module sleeve beside it. The only variant since r2.4.", True)
+PARTS["keycap-fit-test"] = ("test", "Keycap stem fit test", "Six stem tabs, 0.00 to 0.25 mm off the legs, tab n has n notches. Print first, keep the loosest that holds on a Choc V1 switch.", True)
+PARTS["keycap-1u"] = ("keycaps", "Keycap 1u, finger", "Choc V1 cap, 17.4 x 16.4 mm, shallow cylindrical dish. 28 of them: 6 grey for the pinky columns, 22 white.", True)
+PARTS["keycap-1u-homing"] = ("keycaps", "Keycap 1u, homing", "The finger cap with a rounded bar for the index home keys, F and J. 2 of them.", True)
+PARTS["keycap-thumb"] = ("keycaps", "Keycap, thumb", "Flat top with a 1.5 mm round-over, no dish. 5 of them in the accent colour, 3 left and 2 right.", True)
 PARTS["pocket-clip-right"] = ("retainer", "Retainer clip, right", "Optional clip on the pocket cover that keeps the ball in when the half is turned over.", True)
 
-# STLs in the two folders that the page does not list, with the reason
+# STLs in the three folders that the page does not list, with the reason
 EXCLUDED: dict[str, str] = {}
 # not a print part and not in the part list: the bought sensor module's envelope where it sits
 SENSOR_REF = "hardware/trackball-cradle/ref/sensor-module.stl"
@@ -78,6 +88,7 @@ PREVIEWS = {
     f"{CASE_PREVIEW}/lid-hinge-right.png": ("Lid hinge close-up, right", ("lid-right", "lid-outer-right", "lid-inner-right")),
     f"{CASE_PREVIEW}/lid-folded-right.png": ("Lid folded, right", ("lid-folded-right",)),
     f"{CASE_PREVIEW}/lid-foot-right.png": ("Lid as tenting foot, right", ("lid-folded-right",)),
+    f"{KEYCAP_PREVIEW}/keycaps.png": ("Finger, homing and thumb keycap", ("keycap-1u", "keycap-1u-homing", "keycap-thumb")),
     f"{CRADLE_PREVIEW}/assembly-19mm-pocket.png": ("Cradle assembled, 19.05 mm ball", ("cradle-19mm-pocket",)),
     f"{CRADLE_PREVIEW}/section-19mm-pocket.png": ("Section, 19.05 mm ball, pocket", ("cradle-19mm-pocket",)),
 }
@@ -118,7 +129,7 @@ def measure(path) -> dict:
 
 
 def _stls() -> list[str]:
-    return sorted(str(p.relative_to(REPO)) for d in (CASE_STL, CRADLE_STL) for p in (REPO / d).glob("*.stl"))
+    return sorted(str(p.relative_to(REPO)) for d in (CASE_STL, CRADLE_STL, KEYCAP_STL) for p in (REPO / d).glob("*.stl"))
 
 
 def build() -> dict:

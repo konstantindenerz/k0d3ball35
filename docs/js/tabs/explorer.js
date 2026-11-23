@@ -4,7 +4,8 @@
 // World frame here is three.js Y up (unlike viewer.js, which keeps the CAD frame): world X = layout x,
 // world Y = height above the PCB top, world Z = layout y. The procedural parts are drawn from
 // data/layout.json; the printed case parts (tray, controller box cap, lid, folded lid) are the real
-// STLs from hardware/case, fetched per half on first use and turned into this frame here.
+// STLs from hardware/case, fetched per half on first use and turned into this frame here, and so
+// are the printed keycaps from hardware/keycaps (one STL per top, shared by both halves).
 // The left half is drawn mirrored (root.scale.x = -1), matching the mirrored left board files.
 // Sub routes: #explorer/right, #explorer/left.
 
@@ -194,6 +195,9 @@ let lidLayer = null;
 let labelNodes = [];
 let caseMeshes = {};     // key -> Mesh (geometry filled in once the STL is loaded)
 const caseCache = new Map();   // half -> Promise<{tray, cap, lid, lid_folded}: BufferGeometry>
+let capGeoms = null;           // Promise<{finger, homing, thumb}: BufferGeometry>, both halves
+let capPlaceholder = null;     // a box in the cap's place until the STLs are there
+let capMeshes = [];            // [Mesh, cap kind] of the half on screen
 const target = new THREE.Vector3();
 const clipPlane = new THREE.Plane(new THREE.Vector3(0, 0, -1), 0);
 let explode = 0, anim = null;
@@ -364,16 +368,24 @@ function build(which) {
     for (const k of H.keys) {
       g.add(box(D.switch_body, 2.2, D.switch_body, M.switchBody, k.x, 1.1, k.y, k.rot));
       g.add(box(11.5, 2.8, 11.5, M.switchBody, k.x, 3.6, k.y, k.rot));
-      g.add(box(4.5, 1.5, 3.0, M.stem, k.x, 5.75, k.y, k.rot));
+      g.add(box(8.0, 3.0, 4.0, M.stem, k.x, 6.5, k.y, k.rot));     // slider: housing top +5.0 to +8.0 at rest
     }
   }
-  // --- keycaps ---
+  // --- keycaps: the printed caps from hardware/keycaps, resting on the slider at plane_z ---
   {
-    const g = layer(t('Keycaps (MBK 1u)'), 34, '#F4F0E7', { x: 36, y: 10, z: 44 });
+    const g = layer(t('Keycaps (printed, Choc V1)'), 34, '#F4F0E7', { x: 36, y: 10, z: 44 });
+    const K = D.keycaps;
+    capPlaceholder ??= new THREE.BoxGeometry(D.keycap.width, K.top_z - K.plane_z + 1.3, D.keycap.height)
+      .translate(0, (K.top_z + K.plane_z - 1.3) / 2, 0);
+    capMeshes = [];
     for (const k of H.keys) {
-      const mat = k.kind === 'thumb' ? M.capThumb : (k.ref.endsWith('0') ? M.capGrey : M.cap);
-      g.add(box(D.keycap.width, 3.0, D.keycap.height, mat, k.x, 7.0, k.y, k.rot));
-      g.add(box(D.keycap.width - 3, 0.6, D.keycap.height - 3, mat, k.x, 8.6, k.y, k.rot));
+      const mat = k.cap === 'thumb' ? M.capThumb : (k.ref.endsWith('0') ? M.capGrey : M.cap);
+      const m = new THREE.Mesh(capPlaceholder, mat);
+      m.userData.cached = true;   // shared geometry, not disposed on rebuild
+      m.position.set(k.x, 0, k.y);
+      m.rotation.y = THREE.MathUtils.degToRad(k.rot);
+      g.add(m);
+      capMeshes.push([m, k.cap]);
     }
   }
   // --- ball ---
@@ -409,6 +421,7 @@ function build(which) {
   if (!ball && el.section.checked) { el.section.checked = false; setSection(false); }
   applyLidMode();
   attachCase(which);
+  attachKeycaps();
 }
 
 // ---------- case STLs, per half on first use ----------
@@ -452,6 +465,32 @@ async function attachCase(which) {
     for (const c of (caps[k] ?? []).slice(0, 2)) c.geometry = geoms[k];
   }
   hideStatus();
+}
+
+// ---------- keycap STLs, once for both halves ----------
+// The STLs are in their print frame: the cap stands on its back face. That frame is the cap frame
+// (x across, y away from the user, z up) turned so that print z = depth / 2 - cap y and print
+// y = cap z; in this page's frame (Z towards the user) it is a plain shift back by depth / 2,
+// up to plane_z where the cap rests on the slider.
+function loadKeycaps() {
+  if (!capGeoms) {
+    const K = D.keycaps;
+    const move = new THREE.Matrix4().makeTranslation(0, K.plane_z, -K.depth / 2);
+    capGeoms = Promise.all(Object.entries(K.files).map(async ([kind, path]) => {
+      const geom = transformGeometry(parseSTL(await fetchBuffer(path)), move);
+      geom.computeVertexNormals();
+      geom.computeBoundingSphere();
+      return [kind, geom];
+    })).then(Object.fromEntries);
+    capGeoms.catch(() => { capGeoms = null; });   // the boxes stay, a later build tries again
+  }
+  return capGeoms;
+}
+
+async function attachKeycaps() {
+  let geoms;
+  try { geoms = await loadKeycaps(); } catch { return; }
+  for (const [m, kind] of capMeshes) m.geometry = geoms[kind];
 }
 
 function showStatus(text, progress) {
@@ -511,7 +550,8 @@ function buildDims() {
     [t('Lid over the controller block (concept)'), `+${D.controller_lid_z.toFixed(1)} mm`],
     [t('Battery'), t('{cell}, {mah} mAh, bay {x} x {y} mm under the controller', { cell: H.battery.cell, mah: H.battery.capacity_mah, x: H.battery.bay.size.x, y: H.battery.bay.size.y })],
     [t('Battery well floor'), `${H.battery.well_floor_z.toFixed(1)} mm`],
-    [t('Keycap top'), `+${D.cap_top_z.toFixed(1)} mm`],
+    [t('Keycap top'), `+${D.keycaps.top_z.toFixed(1)} mm`],
+    [t('Keycap envelope (case checks)'), `+${D.cap_top_z.toFixed(1)} mm`],
     [t('Mounting holes'), `${H.holes.length} x M2`],
     [t('Test pads'), H.test_pads.labels.join(' ')],
   ];

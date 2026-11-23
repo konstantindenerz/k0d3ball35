@@ -43,6 +43,7 @@ case pocket right beside the thumb keys.
 | Firmware (ZMK) | r2.4 in progress: 35 keys, one shared pin set | [firmware/zmk-config](firmware/zmk-config) |
 | Documentation | build guide, firmware, fabrication, testing written for r2 | [docs](docs) |
 | Case | printed tray, controller box cap, PCB guard, pocket cover and hinged lid per half (OpenSCAD); test print pending | [hardware/case](hardware/case), [spec/11-case.md](spec/11-case.md) |
+| Keycaps | printed Choc V1 caps (dished finger, homing, rounded thumb) and a stem fit test, as an alternative to MBK; test print pending | [hardware/keycaps](hardware/keycaps) |
 | Tests and CI | pytest suite, workflows ready for GitHub | [tests](tests), [.github/workflows](.github/workflows) |
 
 Open work is tracked as markdown tickets in [issues/](issues/README.md). The r2 change itself is
@@ -93,6 +94,7 @@ hardware/right-pcb/   KiCad project of the right PCB (17 keys, FPC connector, po
 hardware/lib/         project symbol and footprint libraries
 hardware/trackball-cradle/  parametric cradle (pocket mount), STL and floor-footprint DXF exports
 hardware/case/        parametric printed case per half (tray, cap, guard, lid), STLs and previews
+hardware/keycaps/     parametric printed Choc V1 keycaps and their stem fit test, STLs and preview
 firmware/zmk-config/  ZMK shield, keymap, build matrix
 scripts/              generators and checks (schematic, routing, export, tickets)
 tests/                pytest suite incl. KiCad ERC/DRC gates
@@ -160,6 +162,7 @@ scripts/export.sh right                       # one half: gerbers, drill, zip, S
 make erc drc                                  # the KiCad gates on their own
 make -C hardware/trackball-cradle             # cradle STLs, floor DXF, previews, stack.json
 make case-data case                           # hardware/case: data.scad from the layout, tray/cap/lid STLs, previews, stack.json (needs OpenSCAD)
+make keycaps                                  # hardware/keycaps: keycap STLs, stem fit test, preview (needs OpenSCAD)
 ```
 
 `HALVES=right make route` limits the looping targets to one half. `scripts/build_board.sh` expects

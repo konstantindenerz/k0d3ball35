@@ -4,8 +4,8 @@
 A slicer repairs most defects silently and prints the result, so they have to be caught here: a
 second body is a stray sliver on the bed (the inner lid plates carried one of 2 mm3), an edge
 shared by four faces is a zero-thickness contact between two cuts, and an open edge is a hole.
-The files are the committed ones, i.e. what a builder downloads; test_case.py and test_cradle.py
-check that they match the sources.
+The files are the committed ones, i.e. what a builder downloads; test_case.py, test_cradle.py and
+test_keycaps.py check that they match the sources.
 """
 from __future__ import annotations
 
@@ -19,10 +19,11 @@ from scad_frame import load_layout_frame
 ROOT = Path(__file__).resolve().parents[1]
 CASE_STL = ROOT / "hardware" / "case" / "stl"
 CRADLE_STL = ROOT / "hardware" / "trackball-cradle" / "stl"
+KEYCAP_STL = ROOT / "hardware" / "keycaps" / "stl"
 
 # What is printed. lid-*.stl and lid-folded-*.stl show both plates together for the page and the
 # previews; the plates are printed one by one.
-PRINTED = sorted(p for p in list(CASE_STL.glob("*.stl")) + list(CRADLE_STL.glob("*.stl"))
+PRINTED = sorted(p for p in [*CASE_STL.glob("*.stl"), *CRADLE_STL.glob("*.stl"), *KEYCAP_STL.glob("*.stl")]
                  if not p.name.startswith(("lid-left", "lid-right", "lid-folded")))
 BED = 180.0     # the smallest common bed (Prusa Mini, Bambu A1 mini)
 
@@ -33,7 +34,8 @@ def test_the_list_is_complete():
         for part in ("tray", "box-cap", "guard", "lid-outer", "lid-inner", "pcb-test"):
             assert f"{part}-{half}.stl" in names
     assert {"pocket-cover-right.stl", "pocket-clip-right.stl", "cradle-19mm-pocket.stl",
-            "ball-19mm-test-half.stl"} <= names
+            "ball-19mm-test-half.stl", "keycap-1u.stl", "keycap-1u-homing.stl", "keycap-thumb.stl",
+            "keycap-fit-test.stl"} <= names
 
 
 @pytest.mark.parametrize("path", PRINTED, ids=lambda p: p.name)
@@ -67,6 +69,6 @@ def test_ci_renders_the_parts():
     assert len(scad) == 1, "one job in an OpenSCAD image"
     runs = " ".join(str(s.get("run", "")) for s in scad[0]["steps"])
     for name in ("test_case.py", "test_cradle.py", "test_retainer.py", "test_thin_walls.py", "test_print_parts.py",
-                 "test_case_pocket.py", "test_case_guard.py", "test_assembly_interference.py", "test_test_prints.py"):
+                 "test_case_pocket.py", "test_case_guard.py", "test_assembly_interference.py", "test_test_prints.py", "test_keycaps.py"):
         assert f"tests/{name}" in runs, f"{name} is not run with OpenSCAD in CI"
     assert "openscad --version" in runs

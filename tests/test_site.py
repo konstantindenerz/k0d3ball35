@@ -346,7 +346,7 @@ def test_makefile_has_pcb_3d():
 
 
 # ---------------------------------------------------------------- parts.json (Case and Trackball tabs)
-PART_DIRS = ("hardware/case/stl", "hardware/trackball-cradle/stl")
+PART_DIRS = ("hardware/case/stl", "hardware/trackball-cradle/stl", "hardware/keycaps/stl")
 
 
 @pytest.fixture(scope="module")

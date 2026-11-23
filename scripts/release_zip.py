@@ -19,7 +19,7 @@ REPO = Path(__file__).resolve().parents[1]
 PARTS = REPO / "docs" / "data" / "parts.json"
 URL = "https://github.com/konstantindenerz/k0d3ball35"
 FOLDERS = {"right": "right-half", "left": "left-half", "test": "test-prints", "cradle": "trackball-cradle",
-           "retainer": "ball-retainer"}
+           "retainer": "ball-retainer", "keycaps": "keycaps"}
 EPOCH = (2026, 1, 1, 0, 0, 0)     # fixed time stamps: the same commit gives the same zip
 
 
@@ -33,9 +33,11 @@ def readme(version: str) -> str:
     data = json.loads(PARTS.read_text())
     lines = [f"k0d3ball35 printed parts, {version}", "",
              "Status: untested. Nothing in here has been printed or fit-checked yet; this archive is",
-             "for test prints. Start with the folder test-prints.", "",
+             "for test prints. Start with the folder test-prints, and with keycap-fit-test.stl before",
+             "the keycaps.", "",
              f"Print settings and what to check: {URL}/blob/{version}/hardware/case/README.md",
              f"Cradle:                           {URL}/blob/{version}/hardware/trackball-cradle/README.md",
+             f"Keycaps and their fit test:       {URL}/blob/{version}/hardware/keycaps/README.md",
              "", "The files are in the print frame: seen from above as they lie on the bed, z up, in mm.", ""]
     for g in data["groups"]:
         rows = [(name, p) for name, p in entries() if p["group"] == g["id"]]

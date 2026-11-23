@@ -20,7 +20,7 @@ the layout and its tests. Details in `issues/hw-jlcpcb-order-r1.md`.
 | [x] | 35 (+10) | Diode | 1N4148W SOD-123 | https://keycapsss.com | ordered | |
 | [x] | 2 | Controller | nice!nano v2 | https://42keebs.eu/shop/parts/controllers/nice-nano-v2-wireless-controller/ | ordered | |
 | [ ] | 35 (+2) | Choc V1 switch | CPG1350 (Silent Linear, Pro Red or Sunset) | https://keycapsss.com/Kailh-Low-Profile-Choc-Switches-V1/KC10034-SI | **confirm**: not in the ordered list | check the keycapsss order; add to the next cart if missing |
-| [ ] | 35 | Keycap | MBK blank 1u Choc, 5 in an accent colour | https://42keebs.eu/shop/keycaps/mbk-blank-choc-keycaps/ or https://keycapsss.com | **confirm**: not in the ordered list | same |
+| [ ] | 35 | Keycap | MBK blank 1u Choc, 5 in an accent colour | https://42keebs.eu/shop/keycaps/mbk-blank-choc-keycaps/ or https://keycapsss.com | **confirm**: not in the ordered list | same; not needed if the printed caps from `hardware/keycaps` fit |
 
 ## 2. Mouser DE (open)
 

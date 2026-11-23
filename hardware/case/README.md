@@ -155,7 +155,9 @@ From `stack.json` (`make stack`):
 | lid lip bottom | +2.0 | +2.0 |
 | foot: tilt / fold / hinge axis above the desk / kickstand reach / free-end clearance | 18 deg / 43.2 deg / 37.8 / 53.3 / 7.2 | 18 deg / 56.9 deg / 37.8 / 34.5 / 1.6 |
 
-Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm.
+Over the desk: keycaps 20.8 mm, ball 23.75 mm, closed lid 27.3 mm. The keycap rows are the
+envelope the case is checked against (17.5 x 16.5 mm, +5.0 to +11.0); the printed caps from
+`hardware/keycaps` sit inside it, top at +10.6.
 
 ## Printing
 

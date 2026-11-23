@@ -30,6 +30,8 @@ PARTS = [
     "hardware/case/stl/pocket-cover-right.stl",
     "hardware/trackball-cradle/stl/cradle-19mm-pocket.stl",
     "hardware/case/stl/pocket-clip-right.stl",
+    "hardware/keycaps/stl/keycap-1u.stl", "hardware/keycaps/stl/keycap-1u-homing.stl",
+    "hardware/keycaps/stl/keycap-thumb.stl", "hardware/keycaps/stl/keycap-fit-test.stl",
 ]
 SKIN = 0.45      # mm: thinner than this does not print
 STEP = 0.4       # mm between sections

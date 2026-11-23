@@ -141,7 +141,6 @@
  "Key positions": "按键位置",
  "Key styles": "按键样式",
  "Keycap top": "键帽顶面",
- "Keycaps (MBK 1u)": "键帽 (MBK 1u)",
  "Keymap": "键位",
  "Keys": "按键",
  "KiCad board": "KiCad 电路板",
@@ -449,5 +448,17 @@
  "PCB test plate, left": "PCB 试打板，左",
  "Test ball, half": "测试球，半球",
  "The main board as a 1.6 mm printed plate with the mounting and switch holes, to test the fit before the boards are ordered.": "打印出来的 1.6 mm 主板，带安装孔和轴体孔，用于在下单 PCB 之前测试配合。",
- "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.": "19.05 mm 球的一半，打印两个后粘合，在真球到货前使用。用于测试配合和固定，不能用于测试追踪。"
+ "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.": "19.05 mm 球的一半，打印两个后粘合，在真球到货前使用。用于测试配合和固定，不能用于测试追踪。",
+ "Choc V1 cap, 17.4 x 16.4 mm, shallow cylindrical dish. 28 of them: 6 grey for the pinky columns, 22 white.": "Choc V1 键帽，17.4 x 16.4 mm，浅圆柱形凹面。共 28 个：小指列 6 个灰色，其余 22 个白色。",
+ "Finger, homing and thumb keycap": "手指、定位和拇指键帽",
+ "Flat top with a 1.5 mm round-over, no dish. 5 of them in the accent colour, 3 left and 2 right.": "平顶，1.5 mm 圆角，无凹面。强调色 5 个，左 3 右 2。",
+ "Keycap 1u, finger": "键帽 1u，手指",
+ "Keycap 1u, homing": "键帽 1u，定位键",
+ "Keycap envelope (case checks)": "键帽外形范围（外壳检查用）",
+ "Keycap stem fit test": "键帽轴脚配合测试",
+ "Keycap, thumb": "键帽，拇指",
+ "Keycaps": "键帽",
+ "Keycaps (printed, Choc V1)": "键帽（打印，Choc V1）",
+ "Six stem tabs, 0.00 to 0.25 mm off the legs, tab n has n notches. Print first, keep the loosest that holds on a Choc V1 switch.": "六个带轴脚的测试片，轴脚减小 0.00 到 0.25 mm，第 n 片有 n 个缺口。先打印它，在 Choc V1 轴上选能固定住的最松的一片。",
+ "The finger cap with a rounded bar for the index home keys, F and J. 2 of them.": "带圆形凸条的手指键帽，用于食指定位键 F 和 J。共 2 个。"
 }

@@ -32,7 +32,7 @@ Quantities marked "+n" include recommended spares.
 |-----|------|------|--------|-------|------------|-------|
 | 35 (+2) | Kailh Choc V1 switch | CPG1350, any stem; Silent Linear, Pro Red or Sunset recommended | https://keycapsss.com/Kailh-Low-Profile-Choc-Switches-V1/KC10034-SI | 6.90 to 7.90 EUR per 10 | https://42keebs.eu, https://splitkb.com | 18 left, 17 right. The video uses Choc V2 Silent Linear; V2 does not fit the V1 hot-swap socket |
 | 35 (+4) | Hot-swap socket | Kailh CPG135001S30 | https://42keebs.eu/shop/parts/kailh-choc-hot-swap-sockets/ | 1.50 EUR per 10 | https://keeb.supply/products/kailh-hotswap-sockets (2.20 EUR per 10), AliExpress | 18 left, 17 right |
-| 35 | Keycap | MBK blank 1u, Choc, PBT | https://42keebs.eu/shop/keycaps/mbk-blank-choc-keycaps/ | 0.40 to 0.70 EUR each | https://keycapsss.com (2.90 EUR per 10), Chosfox low profile | 5 in an accent colour for the thumb keys (3 left, 2 right), as in the reference build |
+| 35 | Keycap | MBK blank 1u, Choc, PBT | https://42keebs.eu/shop/keycaps/mbk-blank-choc-keycaps/ | 0.40 to 0.70 EUR each | https://keycapsss.com (2.90 EUR per 10), Chosfox low profile | 5 in an accent colour for the thumb keys (3 left, 2 right), as in the reference build. Or print them: `hardware/keycaps` (PETG or ASA, fit test first) |
 
 ## 4. Per-half electronics (quantities for both halves)
 

@@ -141,7 +141,6 @@
  "Key positions": "Позиции клавиш",
  "Key styles": "Типы клавиш",
  "Keycap top": "Верх кейкапа",
- "Keycaps (MBK 1u)": "Кейкапы (MBK 1u)",
  "Keymap": "Раскладка",
  "Keys": "Клавиши",
  "KiCad board": "Плата KiCad",
@@ -449,5 +448,17 @@
  "PCB test plate, left": "Тестовая пластина платы, левая",
  "Test ball, half": "Тестовый шар, половина",
  "The main board as a 1.6 mm printed plate with the mounting and switch holes, to test the fit before the boards are ordered.": "Основная плата в виде печатной пластины 1,6 мм с крепёжными отверстиями и отверстиями под переключатели — для проверки посадки до заказа плат.",
- "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.": "Половина шара 19,05 мм: печатается дважды и склеивается, пока нет настоящего шара. Для проверки посадки и удержания, не для проверки трекинга."
+ "Half a 19.05 mm ball, printed twice and glued, until the real ball is there. For fit and retention, not for tracking.": "Половина шара 19,05 мм: печатается дважды и склеивается, пока нет настоящего шара. Для проверки посадки и удержания, не для проверки трекинга.",
+ "Choc V1 cap, 17.4 x 16.4 mm, shallow cylindrical dish. 28 of them: 6 grey for the pinky columns, 22 white.": "Кейкап для Choc V1, 17,4 x 16,4 мм, неглубокая цилиндрическая выемка. 28 штук: 6 серых для мизинцевых столбцов, 22 белых.",
+ "Finger, homing and thumb keycap": "Кейкапы для пальцев, с меткой и для большого пальца",
+ "Flat top with a 1.5 mm round-over, no dish. 5 of them in the accent colour, 3 left and 2 right.": "Плоский верх со скруглением 1,5 мм, без выемки. 5 штук акцентного цвета: 3 слева, 2 справа.",
+ "Keycap 1u, finger": "Кейкап 1u, пальцевый",
+ "Keycap 1u, homing": "Кейкап 1u, с меткой",
+ "Keycap envelope (case checks)": "Габарит кейкапа (проверки корпуса)",
+ "Keycap stem fit test": "Тест посадки ножек кейкапа",
+ "Keycap, thumb": "Кейкап для большого пальца",
+ "Keycaps": "Кейкапы",
+ "Keycaps (printed, Choc V1)": "Кейкапы (печатные, Choc V1)",
+ "Six stem tabs, 0.00 to 0.25 mm off the legs, tab n has n notches. Print first, keep the loosest that holds on a Choc V1 switch.": "Шесть пластинок с ножками, ножки тоньше на 0,00–0,25 мм, на пластинке n — n насечек. Печатать первым; оставить самую свободную, которая держится на свитче Choc V1.",
+ "The finger cap with a rounded bar for the index home keys, F and J. 2 of them.": "Пальцевый кейкап с закруглённой планкой для домашних клавиш указательных пальцев, F и J. 2 штуки."
 }
