@@ -217,7 +217,41 @@ function caseMesh(key, mat) {
   const m = new THREE.Mesh(new THREE.BufferGeometry(), mat);
   m.userData.cached = true;     // geometry belongs to caseCache; not disposed on rebuild
   caseMeshes[key] = m;
-  return m;
+  return CAPPED.includes(key) ? new THREE.Group().add(m, ...sectionCap(key, mat)) : m;
+}
+
+// Section caps. The printed parts are closed shells, so a clipped one would show its hollow
+// inside: foot recesses and magnet pockets as loose bodies in the floor. Count the shell into
+// the stencil buffer (back faces up, front faces down) and fill the cut where the count is not 0.
+const CAPPED = ['tray', 'cradle', 'guard'];
+const capGeom = new THREE.PlaneGeometry(600, 120);
+const capMats = new Map();     // key -> [back shell, front shell, cut face]
+let caps = {};                 // key -> [back shell, front shell, cut face]: Mesh
+function sectionCap(key, mat) {
+  if (!capMats.has(key)) {
+    const shell = (side, op) => new THREE.MeshBasicMaterial({
+      side, colorWrite: false, depthWrite: false, depthTest: false, clippingPlanes: [clipPlane],
+      stencilWrite: true, stencilFunc: THREE.AlwaysStencilFunc, stencilFail: op, stencilZFail: op, stencilZPass: op,
+    });
+    const R = THREE.ReplaceStencilOp;
+    const face = new THREE.MeshStandardMaterial({
+      color: mat.color.clone().multiplyScalar(0.78), roughness: 1, side: THREE.DoubleSide,
+      stencilWrite: true, stencilRef: 0, stencilFunc: THREE.NotEqualStencilFunc, stencilFail: R, stencilZFail: R, stencilZPass: R,
+    });
+    capMats.set(key, [shell(THREE.BackSide, THREE.IncrementWrapStencilOp), shell(THREE.FrontSide, THREE.DecrementWrapStencilOp), face]);
+  }
+  const order = 1 + CAPPED.indexOf(key);
+  caps[key] = capMats.get(key).map((cm, i) => {
+    const c = new THREE.Mesh(i < 2 ? caseMeshes[key].geometry : capGeom, cm);
+    c.userData.cached = true;
+    c.renderOrder = order + (i < 2 ? 0 : 0.5);
+    c.visible = el.section.checked;
+    return c;
+  });
+  const face = caps[key][2];
+  face.position.set(target.x, 0, clipPlane.constant);
+  face.onAfterRender = (r) => r.clearStencil();
+  return caps[key];
 }
 
 // ---------- building one half ----------
@@ -230,6 +264,7 @@ function build(which) {
   }
   layers = [];
   caseMeshes = {};
+  caps = {};
   root.scale.x = which === 'left' ? -1 : 1;
   const B = H.bounds, ball = H.ball, S = H.stack, c = D.controller, PCB_T = D.pcb_thickness;
   const bx = ball ? ball.x : 0, bz = ball ? ball.y : 0;
@@ -412,7 +447,10 @@ async function attachCase(which) {
     return;
   }
   if (half !== which) return;      // switched halves while loading
-  for (const k of Object.keys(geoms)) if (caseMeshes[k]) caseMeshes[k].geometry = geoms[k];
+  for (const k of Object.keys(geoms)) if (caseMeshes[k]) {
+    caseMeshes[k].geometry = geoms[k];
+    for (const c of (caps[k] ?? []).slice(0, 2)) c.geometry = geoms[k];
+  }
   hideStatus();
 }
 
@@ -433,6 +471,7 @@ function hideStatus() { el.status.hidden = true; }
 // ---------- section view: clip everything in front of the ball centre ----------
 function setSection(on) {
   for (const m of Object.values(M)) { m.clippingPlanes = on ? [clipPlane] : []; m.needsUpdate = true; }
+  for (const c of Object.values(caps).flat()) c.visible = on;
   el.sectionLabel.hidden = !on;
 }
 
